@@ -277,6 +277,8 @@
     ******************************************************************************************************  -->
     <target name="build_package" depends="clear_build_files, build_dist_files, zip_package" description="Builds the package distro. file from repository contents." />
 
+	<target name="build_multi_extensions" depends="clear_build_files, build_dist_files_2, zip_multi_distros" description="Builds the multiple extension distros. file from repository contents. "/> 
+
 	<target name="clear_build_files" >
 	<!-- "deletes old build files for current project from the build location -->
 		<if>
@@ -300,6 +302,9 @@
 
 	</target>
 
+	<target name="build_dist_files_2">
+	</target>
+
 	<target name="zip_package">
 		<zip destfile="${build.folder}/${package.name}_${build.version}_${build.datetime}.zip">
 			<fileset dir="${build.folder}/${package.name}/tmp">
@@ -308,6 +313,14 @@
 		</zip>
 	</target>
 	
+	<target name="zip_multi_distros">
+		<foreach list="${element.list}" param="element.name" target="sub_zip_distro" />	
+	</target>
+
+	<target name="sub_zip_distro">
+		
+	</target>
+
 	<target name="build_extension">
 	<!-- Build collection in root build.folder of extension files repo.folder making up this package -->
 		<property name="source.folder" value="${repo.folder}/${package.name}" />
