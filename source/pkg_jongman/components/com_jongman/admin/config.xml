@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: config.xml 19439 2010-11-10 15:42:23Z prasit gebsaap$ -->
+<config>
+
+	<fieldset 
+		name="compat" 
+		label="COM_JONGMAN_CONFIG_COMPAT_LABEL" 
+		description="COM_JONGMAN_CONFIG_COMPAT_DESC">
+       <field name="jongman_css" type="list" default="1" 
+       		label="COM_JONGMAN_CONFIG_CSS_LABEL" 
+       		description="COM_JONGMAN_CONFIG_CSS_DESC">
+		    <option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+        <field 
+        	name="bootstrap_css" type="list" default="" 
+        	label="COM_JONGMAN_CONFIG_BOOTSTRAP_CSS_LABEL" 
+        	description="COM_JONGMAN_CONFIG_BOOTSTRAP_CSS_DESC">
+		    <option value="">JAUTO</option>
+		    <option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+        <field name="bootstrap_js" type="list" default="" 
+        	label="COM_JONGMAN_CONFIG_BOOTSTRAP_JS_LABEL" 
+        	description="COM_JONGMAN_CONFIG_BOOTSTRAP_JS_DESC">
+		    <option value="">JAUTO</option>
+            <option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+        <field name="jquery_site" type="list" default="" 
+        	label="COM_JONGMAN_CONFIG_JQUERY_SITE_LABEL" 
+        	description="COM_JONGMAN_CONFIG_JQUERY_DESC">
+		    <option value="">JAUTO</option>
+            <option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+        <field name="jquery_admin" type="list" default="" 
+        	label="COM_JONGMAN_CONFIG_JQUERY_ADMIN_LABEL" 
+        	description="COM_JONGMAN_CONFIG_JQUERY_DESC">
+		    <option value="">JAUTO</option>
+            <option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+	</fieldset>
+	
+	<fieldset name="schedule"
+		label="COM_JONGMAN_CONFIG_SCHEDULE_LABEL"
+		description="COM_JONGMAN_CONFIG_SCHEDULE_DESC"
+	>
+		<field
+			name="headerDateFormat" 
+			type="text"
+			class="inputbox"
+			default="d/m/Y"
+			value=""
+			label="COM_JONGMAN_CONFIG_HEADER_DATEFORMAT_LABEL"
+			description="COM_JONGMAN_CONFIG_HEADER_DATEFORMAT_DESC" />
+		<field
+			name="topNavigation" 
+			type="list"
+			class="inputbox"
+			default="0"
+			label="COM_JONGMAN_CONFIG_TOP_NAVIGATION_LABEL"
+			description="COM_JONGMAN_CONFIG_TOP_NAVIGATION_DESC"
+			>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>	
+		</field>
+		<field
+			name="useJumpDate"
+			type="list"
+			class="inputbox"
+			default="0"
+			label="COM_JONGMAN_CONFIG_USE_JUMPDATE_LABEL"
+			description="COM_JONGMAN_CONFIG_USE_JUMPDATE_DESC"
+			>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>	
+		</field>
+		<field
+			name="reservationBarDisplay"
+			type="list"
+			class="inputbox"
+			default="titleOnly"
+			label="COM_JONGMAN_CONFIG_RESERVATION_BAR_DISPLAY_LABEL"
+			description="COM_JONGMAN_CONFIG_RESERVATION_BAR_DISPLAY_DESC"			
+			>
+			<option value="userOnly">User Name</option>
+			<option value="titleOnly">Reservation Title</option>	
+			<option value="userAndTitle">User Name@Reseravtion Title</option>
+			<option value="none">Disabled</option>	
+		</field>
+		<field
+			name="reservationBarTextLength"
+			type="text"
+			class="inputbox"
+			default="10"
+			filter="int"
+			label="COM_JONGMAN_CONFIG_RESERVATION_BAR_TEXT_LENGTH_LABEL"
+			description="COM_JONGMAN_CONFIG_RESERVATION_BAR_TEXT_LENGTH_DESC" 
+		/>
+		<field
+			name="disableSummary"
+			type="list"
+			class="inputbox"
+			default="0"
+			label="COM_JONGMAN_CONFIG_RESERVATION_DISABLE_SUMMARY_LABEL"
+			description="COM_JONGMAN_CONFIG_RESERVATION_DISABLE_SUMMARY_DESC"			
+			>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>	
+		</field>
+	</fieldset>
+	
+	<fieldset
+		name="resevation"
+		label="COM_JONGMAN_CONFIG_RESERVATION_LABEL"
+		description="COM_JONGMAN_CONFIG_RESERVATION_DESC"
+	>
+		<field
+			name="proxyReservation" 
+			type="list"
+			default="0"
+			class="inputbox"
+			label="COM_JONGMAN_CONFIG_PROXY_RESERVATION_LABEL"
+			description="COM_JONGMAN_CONFIG_PROXY_RESERVATION_DESC"
+			>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field
+			name="privateReservation" 
+			type="list"
+			class="inputbox"
+			default="1"
+			label="COM_JONGMAN_CONFIG_PRIVATE_RESERVATION_LABEL"
+			description="COM_JONGMAN_CONFIG_PRIVATE_RESERVATION_DESC"
+			>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field
+			name="referLength"
+			type="integer"
+			first="6"
+			last="16"
+			step="1"
+			default="10"
+			class="inputbox"
+			filter="int"
+			label="COM_JONGMAN_CONFIG_REFER_LENGTH_LABEL"
+			description="COM_JONGMAN_CONFIG_REFER_LENGTH_DESC" 
+		/>
+	</fieldset>
+	<fieldset
+		name="permissions"
+		label="JCONFIG_PERMISSIONS_LABEL"
+		description="JCONFIG_PERMISSIONS_DESC"
+		>
+		<field
+			name="rules"
+			type="rules"
+			label="JCONFIG_PERMISSIONS_LABEL"
+			class="inputbox"
+			filter="rules"
+			validate="rules"
+			component="com_jongman"
+			section="component" />
+	</fieldset>
+</config>

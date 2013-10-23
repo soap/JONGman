@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+	<layout title="COM_JONGMAN_SCHEDULE_VIEW_CALENDAR_LAYOUT_TITLE">
+		<message>COM_JONGMAN_SCHEDULE_VIEW_CALENDAR_LAYOUT_DESC</message>
+	</layout>   
+	<!-- Add fields to the request variables for the layout. -->
+	<fields name="request">
+		<fieldset name="request"
+		>
+			<field addfieldpath="/administrator/components/com_jongman/models/fields"
+				name="id"
+				type="modal_schedules"
+				label="COM_JONGMAN_FIELD_SELECT_SCHEDULE_LABEL"
+				description="COM_JONGMAN_FIELD_SELECT_SCHEDULE_DESC"
+			/>
+		</fieldset>
+	</fields> 
+	<fields name="params">
+		<fieldset name="basic">
+			<field type="spacer" name="reservation_colour_spacer0" 
+				class="color"
+				label="COM_JONGMAN_RESERVATION_LEGEND_COLOUR_LABEL" 
+			/>
+			<field name="my_res_colour" 
+				type="color"
+				filter="color" 
+				id="my_res_colour"
+				label="COM_JONGMAN_PARAM_MY_RESERVATION_BACKGROUND_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_MY_RESERVATION_BACKGROUND_COLOUR_DESC" 
+			/>
+			<field name="my_res_text" type="color" id="my_res_text"
+				filter="color" 
+				label="COM_JONGMAN_PARAM_MY_RESERVATION_TEXT_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_MY_RESERVATION_TEXT_COLOUR_DESC" 
+			/>
+			<field type="spacer" name="reservation_colour_spacer1" class="color" hr="true" />			
+			<field name="my_past_res_colour" type="color" id="my_past_res_colour" 
+				filter="color" 
+				label="COM_JONGMAN_PARAM_MY_PAST_RESERVATION_BACKGROUND_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_MY_PAST_RESERVATION_BACKGROUND_COLOUR_DESC" 
+			/>
+			<field name="my_past_res_text" type="color" id="my_past_res_text" 
+				filter="color" 
+				label="COM_JONGMAN_PARAM_MY_PAST_RESERVATION_TEXT_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_MY_PAST_RESERVATION_TEXT_COLOUR_DESC" 
+			/>			
+			<field type="spacer" name="reservation_colour_spacer2" class="color" hr="true" />				
+			<field name="participant_res_colour" type="color" id="participant_res_colour"
+				filter="color" 
+				label="COM_JONGMAN_PARAM_PARTICIPANT_RESERVATION_BACKGROUND_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_PARTIPCIPANT_RESERVATION_BACKGROUND_COLOUR_DESC"  
+			/>
+			<field name="participant_res_text" type="color" id="participant_res_text"
+				filter="color" 
+				label="COM_JONGMAN_PARAM_PARTICIPANT_RESERVATION_TEXT_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_PARTIPCIPANT_RESERVATION_TEXT_COLOUR_DESC"  
+			/>
+			<field type="spacer" name="reservation_colour_spacer3" class="color" hr="true" />				
+			<field name="participant_past_res_colour" type="color" id="participant_past_res_colour"
+				filter="color" 
+			 	label="COM_JONGMAN_PARAM_PARTICIPANT_PAST_RESERVATION_BACKGROUND_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_PARTIPCIPANT_PAST_RESERVATION_BACKGROUND_COLOUR_DESC"  
+			/>
+			<field name="participant_past_res_text" type="color" id="participant_past_res_text"
+				filter="color" 
+			 	label="COM_JONGMAN_PARAM_PARTICIPANT_PAST_RESERVATION_TEXT_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_PARTIPCIPANT_PAST_RESERVATION_TEXT_COLOUR_DESC"  
+			/>			
+			<field type="spacer" name="reservation_colour_spacer4" class="color" hr="true" />	
+			<field name="other_res_colour" type="color" id="other_res_colour"
+				filter="color" 
+				label="COM_JONGMAN_PARAM_OTHER_RESERVATION_BACKGROUND_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_OTHER_RESERVATION_BACKGROUND_COLOUR_DESC"   
+			/>
+			<field name="other_res_text" type="color" id="other_res_text"
+				label="COM_JONGMAN_PARAM_OTHER_RESERVATION_TEXT_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_OTHER_RESERVATION_TEXT_COLOUR_DESC"   
+			/>
+			<field type="spacer" name="reservation_colour_spacer5" class="color" hr="true" />			
+			<field name="other_past_res_colour" type="color" id="other_past_res_colour"
+				filter="color" 
+				label="COM_JONGMAN_PARAM_OTHER_PAST_RESERVATION_BACKGROUND_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_OTHER_PAST_RESERVATION_BACKGROUND_COLOUR_DESC"   
+			/>
+			<field name="other_past_res_text" type="color" id="other_past_res_text"
+				filter="color" 
+				label="COM_JONGMAN_PARAM_OTHER_PAST_RESERVATION_TEXT_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_OTHER_PAST_RESERVATION_TEXT_COLOUR_DESC"   
+			/>			
+			<field type="spacer" name="reservation_colour_spacer6" class="color" hr="true" />			
+			<field name="pending_colour" type="color" id="pending_colour"
+				filter="color" 
+				label="COM_JONGMAN_PARAM_PENDING_RESERVATION_BACKGROUND_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_PENDING_RESERVATION_BACKGROUND_COLOUR_DESC"   
+			/>
+			<field name="pending_text" type="color" id="pending_text"
+				filter="color" 
+				label="COM_JONGMAN_PARAM_PENDING_RESERVATION_TEXT_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_PENDING_RESERVATION_TEXT_COLOUR_DESC"   
+			/>
+			<field type="spacer" name="reservation_colour_spacer7" class="color" hr="true" />			
+			<field name="blackout_colour" type="color" id="blackout_colour"
+				filter="color" 
+				label="COM_JONGMAN_PARAM_BLACKOUT_RESERVATION_BACKGROUND_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_BLACKOUT_RESERVATION_BACKGROUND_COLOUR_DESC"   
+			/>
+			<field name="blackout_text" type="color" id="blackout_text"
+				filter="color" 
+				label="COM_JONGMAN_PARAM_BLACKOUT_RESERVATION_TEXT_COLOUR_LABEL"
+				description="COM_JONGMAN_PARAM_BLACKOUT_RESERVATION_TEXT_COLOUR_DESC"   
+			/>
+		</fieldset>
+		<fieldset name="advanced">
+			<field name="topNavigation" type="list" default="1"
+				label="COM_JONGMAN_PARAM_TOP_NAVIGATTION_LABEL"
+				description="COM_JONGMAN_PARAM_TOP_NAVIGATTION_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+		</fieldset>
+	</fields>
+</metadata>

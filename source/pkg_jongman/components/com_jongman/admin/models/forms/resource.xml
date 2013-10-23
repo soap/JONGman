@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fieldset name="basic">
+        <field name="id" type="text" default="0"
+            readonly="true" class="readonly"
+			label="JGLOBAL_FIELD_ID_LABEL" description ="JGLOBAL_FIELD_ID_DESC"/>
+			
+        <field name="title" type="text" class="inputbox"
+			size="40" label="COM_JONGMAN_FIELD_RESOURCE_NAME_LABEL"
+			description="COM_JONGMAN_FIELD_RESOURCE_NAME_DESC"
+			required="true" />
+			
+        <field name="alias" type="text" class="inputbox"
+			size="40" label="JFIELD_ALIAS_LABEL"
+			description="COM_JONGMAN_FIELD_RESOURCE_ALIAS_DESC" />
+			
+        <field name="location" type="text" class="inputbox"
+			size="40" label="COM_JONGMAN_FIELD_RESOURCE_LOCATION_LABEL"
+			description="COM_JONGMAN_FIELD_RESOURCE_LOCATION_DESC"
+			required="true" />
+			
+        <field name="rphone" type="text" class="inputbox"
+			size="20" label="COM_JONGMAN_FIELD_RESOURCE_RPHONE_LABEL"
+			description="COM_JONGMAN_FIELD_RESOURCE_RPHONE_DESC"/>
+			     
+        <field name="min_res" type="text" class="inputbox"
+			size="10" 
+			label="COM_JONGMAN_FIELD_RESOURCE_MIN_RESERVATION_LENGTH_LABEL"
+			description="COM_JONGMAN_FIELD_RESOURCE_MIN_RESERVATION_LENGTH_DESC"
+			filter="intval"
+            required="true" />
+               
+        <field name="max_res" type="text" class="inputbox"
+			size="10" 
+			label="COM_JONGMAN_FIELD_RESOURCE_MAX_RESERVATION_LENGTH_LABEL"
+			description="COM_JONGMAN_FIELD_RESOURCE_MAX_RESERVATION_LENGTH_DESC"
+			filter="intval"
+            required="true" />
+                
+        <field name="min_notice_time" type="text" class="inputbox"
+			size="10" label="COM_JONGMAN_FIELD_RESOURCE_MIN_NOTICE_TIME_LABEL"
+			description="COM_JONGMAN_FIELD_RESOURCE_MIN_NOTICE_TIME_DESC"
+			filter="intval"
+            required="true" />
+               
+        <field name="max_notice_time" type="text" class="inputbox"
+			size="10" 
+			label="COM_JONGMAN_FIELD_RESOURCE_MAX_NOTICE_TIME_LABEL"
+			description="COM_JONGMAN_FIELD_RESOURCE_MAX_NOTICE_TIME_DESC"
+			filter="intval"
+            required="true" />
+                     
+        <field name="max_participants" type="text" class="inputbox"
+			size="10" 
+			label="COM_JONGMAN_FIELD_RESOURCE_MAX_PARTICIPANTS_LABEL"
+			description="COM_JONGMAN_FIELD_RESOURCE_MAX_PARTICIPANTS_DESC" 
+			filter="intval" />
+			     
+		<field name="allow_multi" type="radio" default="0"
+			filter="intval"
+			label="COM_JONGMAN_FIELD_RESOURCE_ALLOW_MULTI_LABEL"
+			description="COM_JONGMAN_FIELD_RESOURCE_ALLOW_MULTI_DESC">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+		</field>
+		        
+		<field name="need_approval" type="radio" default="0"
+			filter="intval"
+			label="COM_JONGMAN_FIELD_RESOURCE_NEED_APPROVAL_LABEL"
+			description="COM_JONGMAN_FIELD_RESOURCE_NEED_APPROVAL_DESC">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+		</field>
+		
+        <field name="schedule_id" type="jongmanselectschedule" 
+            label="COM_JONGMAN_FIELD_SCHEDULE_NAME_LABEL"
+            description="COM_JONGMAN_FIELD_SCHEDULE_NAME_DESC" 
+            required="true">
+            <option value="">COM_JONGMAN_OPTION_SELECT_SCHEDULE</option>
+        </field> 
+         
+            
+		<field name="published" type="list"
+			label="COM_JONGMAN_FIELD_STATUS_LABEL"
+            description="COM_JONGMAN_FIELD_RESOURCE_STATE_DESC"
+			class="inputbox" size="1" default="1">
+                <option value="1">JPUBLISHED</option>
+                <option value="0">JUNPUBLISHED</option>
+		</field>
+		
+        <field name="access" type="accesslevel" label="JFIELD_ACCESS_LABEL"
+            description="JFIELD_ACCESS_DESC" class="inputbox" size="1" />     
+    </fieldset>
+    
+    <fieldset name="accesscontrol">
+	
+		<field name="asset_id" type="hidden" filter="unset" /> 
+	
+		<field
+			name="rules"
+			type="rules"
+			label="JFIELD_RULES_LABEL"
+			decription="COM_JONGMAN_FIELD_RESOURCE_RESERVATION_RULES_DESC"
+			translate_label="false"
+			filter="rules"
+			validate="rules"
+			class="inputbox"
+			component="com_jongman"
+			section="resource_reservation" />
+	</fieldset>
+ </form>

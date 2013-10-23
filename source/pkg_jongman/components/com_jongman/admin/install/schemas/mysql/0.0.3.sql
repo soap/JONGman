@@ -1,0 +1,1 @@
+ALTER TABLE #__jongman_schedules ADD timezone VARCHAR(50) AFTER time_span;

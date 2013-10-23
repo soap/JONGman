@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!-- $Id$ -->
+<form>
+	<fieldset name="general">
+		<field name="id"
+			type="text"
+			label="COM_JONGMAN_FIELD_ID_LABEL"
+			description ="COM_JONGMAN_FIELD_ID_DESC"
+			default="0"
+			class="readonly"
+			size="10"
+			readonly="true"  />
+			
+		<field name="title"
+			type="text"
+			label="COM_JONGMAN_FIELD_RESERVATION_TITLE_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_TITLE_DESC"
+			class="inputbox" required="true"
+			size="45" />
+						
+		<field name="alias"
+			type="text"
+			label="JFIELD_ALIAS_LABEL"
+			description="JFIELD_ALIAS_DESC"
+			class="inputbox"
+			size="45" />
+		<field name="reserved_for" 
+			type="jongmanuser"
+			label="COM_JONGMAN_FIELD_RESERVATION_RESERVED_FOR_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_RESERVED_FOR_DESC" />
+			
+		<field name="resource_id" 
+			type="jongmanselectresource"  
+			filter="int"
+			size="1"
+			label="COM_JONGMAN_FIELD_RESERVATION_RESOURCE_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_RESOURCE_DESC" />
+		
+		<field name="schedule_id" type="hidden" filter="intval" />
+			
+		<field name="checked_out" type="hidden" filter="unset" />
+
+		<field name="checked_out_time" type="hidden" filter="unset" />
+
+		<field name="created_user_id" type="hidden" filter="unset" />
+
+		<field name="created_time"
+			type="text"
+			label="COM_JONGMAN_FIELD_RESERVATION_CREATED_TIME_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_CREATED_TIME_DESC"
+			class="readonly"
+			size="20"
+			readonly="true"
+			filter="unset" />
+
+		<field name="modified_by" type="hidden" filter="unset" />
+
+		<field name="modified_time"
+			type="text"
+			label="COM_JONGMAN_FIELD_RESERVATION_MODIFIED_TIME_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_MODIFIED_TIME_DESC"
+			class="readonly"
+			size="20"
+			readonly="true"
+			filter="unset" />
+			
+		<field name="description"
+			type="editor"
+			label="COM_JONGMAN_FIELD_RESERVATION_DESCRIPTION_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_DESCRIPTION_DESC"
+			buttons="false"
+			height="100"
+			class="inputbox"
+			size="40" />
+			
+	</fieldset>
+	<fieldset name="period">
+		<field name="start_date"
+			type="calendar" format="%Y-%m-%d"
+			required="true" onchange="startDateChange(this);"
+			label="COM_JONGMAN_FIELD_RESERVATION_START_DATE_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_START_DATE_DESC" />
+				
+		<field name="end_date"
+			type="calendar" format="%Y-%m-%d"
+			label="COM_JONGMAN_FIELD_RESERVATION_END_DATE_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_END_DATE_DESC" />
+		<field name="start_time" type="jongmanselecttime"
+			schedule_id = ""
+			label="COM_JONGMAN_FIELD_RESERVATION_START_TIME_LABEL" 
+			description="COM_JONGMAN_FIELD_RESERVATION_START_TIME_DESC" />
+		<field name="end_time" type="jongmanselecttime"
+			schedule_id = "" 
+			class="validate-endtimeverify"
+			label="COM_JONGMAN_FIELD_RESERVATION_END_TIME_LABEL" 
+			description="COM_JONGMAN_FIELD_RESERVATION_END_TIME_DESC" />
+	</fieldset>
+	<fieldset name="repeat">
+		<field
+			name="repeat_interval"
+			type="list"
+			onchange="changeInterval(this)"
+			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_DESC"
+			>
+			<option value="none">COM_JONGMAN_NONE</option>
+            <option value="daily">COM_JONGMAN_DAILY</option>
+            <option value="weekly">COM_JONGMAN_WEEKLY</option>
+            <option value="monthly">COM_JONGMAN_MONTHLY</option>
+            <option value="yearly">COM_JONGMAN_YEARLY</option> 
+		</field>		
+	
+		<field 
+			name="repeat_frequency"
+			type="integer" first="1" last="10" step="1"
+			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_FREQUENCY_LABEL"
+			decription="COM_JONGMAN_FIELD_RESERVATION_REPEAT_FREQUENCY_DESC" />
+	
+		<field 
+			name="frequency_unit" type="text"
+			readonly="true" class="readonly" />
+			
+		<field
+			name="repeat_day" type="checkboxes"
+			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_ON_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_ON_DESC">
+			<option value="0">SUNDAY</option>
+            <option value="1">MONDAY</option>
+			<option value="2">TUESDAY</option>
+			<option value="3">WEDNESDAY</option>
+			<option value="4">THURSDAY</option>
+			<option value="5">FRIDAY</option>
+			<option value="6">SATURDAY</option>
+		</field>
+	
+		<field
+			name="repeat_until_date" 
+			type="calendar"
+			filter="USER_UTC"
+			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_UNTIL_DATE_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_UNTIL_DATE_DESC" />
+			
+	</fieldset>
+</form>
