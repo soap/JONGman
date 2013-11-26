@@ -25,7 +25,8 @@ else {
 
 // Register the jongman library
 JLoader::registerPrefix('JM', JPATH_PLATFORM . '/jongman');
-
+JLoader::register('ScheduleLayout', JPATH_PLATFORM . '/jongman/domain/schedulelayout.php');
+JLoader::register('SchedulePeriod', JPATH_PLATFORM . '/jongman/domain/scheduleperiod.php');
 
 // Add include paths
 JHtml::addIncludePath(JPATH_PLATFORM . '/jongman/html');

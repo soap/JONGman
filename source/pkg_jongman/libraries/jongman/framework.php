@@ -1,13 +1,13 @@
 <?php
 /**
- * @package      Projectfork.Framework
+ * @package      JONGman.Framework
  *
- * @author       Tobias Kuhn (eaxs)
- * @copyright    Copyright (C) 2006-2012 Tobias Kuhn. All rights reserved.
+ * @author       Prasit Gebsaap
+ * @copyright    Copyright (C) 2009-2013 Prasit Gebsaap. All rights reserved.
  * @license      http://www.gnu.org/licenses/gpl.html GNU/GPL, see LICENSE.txt
  */
 
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
 
 // Make sure the cms libraries are loaded
