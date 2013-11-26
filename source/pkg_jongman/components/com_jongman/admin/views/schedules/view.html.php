@@ -35,6 +35,7 @@ class JongmanViewSchedules extends JView {
 			return false;
 		}
         $this->addToolbar();
+
         // Display the template
         parent::display($tpl);
 

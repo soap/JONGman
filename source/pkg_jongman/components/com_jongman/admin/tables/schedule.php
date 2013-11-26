@@ -17,10 +17,21 @@ class JongmanTableSchedule extends JTable
 	/**
 	 * @param	JDatabase	A database connector object
 	 */
-	function __construct(&$db){
+	function __construct($db){
 		parent::__construct('#__jongman_schedules', 'id', $db);
 	}
 
+	public function bind($src, $ignore = array())
+	{
+		if (isset($src['params']) && is_array($src['params'])) {
+			$registry = new JRegistry();
+			$registry->loadArray($src['params']);
+			$src['params'] = (string) $registry;
+		}
+		
+		return parent::bind($src, $ignore);		
+	}
+	
     function _getAssetName() {
 		$k = $this->_tbl_key;
 		return 'com_jongman.schedule.'.(int) $this->$k;

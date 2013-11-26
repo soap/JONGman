@@ -46,7 +46,10 @@ JHtml::_('behavior.keepalive');
             <ul class="adminformlist">
                 <li><?php echo $this->form->getLabel('id'); ?>
                     <?php echo $this->form->getInput('id'); ?></li>
-
+                    
+                <li><?php echo $this->form->getLabel('schedule_id'); ?>
+                    <?php echo $this->form->getInput('schedule_id'); ?></li>
+                       
                 <li><?php echo $this->form->getLabel('title'); ?>
                     <?php echo $this->form->getInput('title'); ?></li>
 
@@ -56,26 +59,11 @@ JHtml::_('behavior.keepalive');
                 <li><?php echo $this->form->getLabel('location'); ?>
                     <?php echo $this->form->getInput('location'); ?></li>
                 
-                <li><?php echo $this->form->getLabel('rphone'); ?>
-                    <?php echo $this->form->getInput('rphone'); ?></li>
+                <li><?php echo $this->form->getLabel('contact_info'); ?>
+                    <?php echo $this->form->getInput('contact_info'); ?></li>
                 
                 <li><?php echo $this->form->getLabel('note'); ?>
-                    <?php echo $this->form->getInput('note'); ?></li>             
-                
-                <li><?php echo $this->form->getLabel('min_res'); ?>
-                    <?php echo $this->form->getInput('min_res'); ?></li>
-
-                <li><?php echo $this->form->getLabel('max_res'); ?>
-                    <?php echo $this->form->getInput('max_res'); ?></li>
-
-                <li><?php echo $this->form->getLabel('min_notice_time'); ?>
-                    <?php echo $this->form->getInput('min_notice_time'); ?></li>
-
-                <li><?php echo $this->form->getLabel('max_notice_time'); ?>
-                    <?php echo $this->form->getInput('max_notice_time'); ?></li>
-
-                <li><?php echo $this->form->getLabel('schedule_id'); ?>
-                    <?php echo $this->form->getInput('schedule_id'); ?></li>                
+                    <?php echo $this->form->getInput('note'); ?></li>                          
 
                 <li><?php echo $this->form->getLabel('access'); ?>
                     <?php echo $this->form->getInput('access'); ?></li>
@@ -94,6 +82,7 @@ JHtml::_('behavior.keepalive');
     </div>
     <div class="width-40 fltrt">
     	<?php echo JHtml::_('sliders.start','resource-sliders-'.$this->item->id, array('useCookie'=>1)); ?>
+    	<?php echo $this->loadTemplate('params'); ?>
     	<?php echo JHtml::_('sliders.panel',JText::_('COM_JONGMAN_RESOURCE_FIELDSET_PUBLISHING'), 'resource-publishing'); ?>
     	<fieldset class="adminform">
     		<ul class="adminformlist">
@@ -123,7 +112,6 @@ JHtml::_('behavior.keepalive');
 			<?php echo JHtml::_('sliders.end'); ?>
 		</div>
 	<?php endif; ?>
-	<div>
     <input type="hidden" name="task" value=""/>
     <?php echo JHtml::_('form.token'); ?>
 </form>

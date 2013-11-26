@@ -47,20 +47,17 @@ $saveOrder	= $listOrder=='ordering';
 				<th>
 					<?php echo JHtml::_('grid.sort',  'COM_JONGMAN_HEADING_NAME', 'name', $listDirn, $listOrder); ?>
 				</th>
-                <th width="5%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_DAY_START')?>
+                <th width="35%">
+                    <?php echo JText::_('COM_JONGMAN_HEADING_RESERVANLE_SLOTS')?>
+                </th>
+                <th width="15%">
+                    <?php echo JText::_('COM_JONGMAN_HEADING_BLOCKED_SLOTS')?>
                 </th>
                 <th width="5%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_DAY_END')?>
+                	<?php echo JHtml::_('grid.sort','COM_JONGMAN_HEADING_FIRST_DAY', 's.weekday_start', $listDirn, $listOrder)?>
                 </th>
                 <th width="5%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_TIME_SPAN')?>
-                </th>
-                <th width="5%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_TIME_FORMAT')?>
-                </th>
-                <th width="5%">
-                    <?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_VIEW_DAYS', 'view_days', $listDirn, $listOrder)?>
+                    <?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_VIEW_DAYS', 's.view_days', $listDirn, $listOrder)?>
                 </th>
 				<th width="10%">
 					<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ACCESS', 'access_level', $listDirn, $listOrder); ?>
@@ -81,7 +78,7 @@ $saveOrder	= $listOrder=='ordering';
 			</tr>
 		</tfoot>
 		<tbody>
-        <?php if (count($this->items)==0) : ?>
+        <?php if (count($this->items)==0 || (!$this->items) ) : ?>
             <tr>
                 <td colspan="7" class="center"><?php echo JText::_("COM_JONGMAN_NO_RECORD")?></td>
             </tr>
@@ -110,17 +107,26 @@ $saveOrder	= $listOrder=='ordering';
 					<p class="smallsub">
 						<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias));?></p>
 				</td>
+				<?php 
+					$slots = $item->layout->getSlots();
+					$reservableSlots = array();
+					$blockedSlots = array();
+					foreach($slots as $slot) {
+                		if ($slot->periodType == PeriodTypes::RESERVABLE) {
+                			$reservableSlots[] = $slot->start->format('H:i').'-'.$slot->end->format('H:i');		
+                		}elseif( $slot->periodType == PeriodTypes::NONRESERVABLE) {
+                			$blockedSlots[] = $slot->start->format('H:i').'-'.$slot->end->format('H:i');	
+                		} 
+					}	
+				?>
                 <td class="center">
-                    <?php echo DateUtil::formatTime($item->day_start, false)?>
+                	<?php echo implode(',', $reservableSlots)?>
                 </td>
                 <td class="center">
-                    <?php echo DateUtil::formatTime($item->day_end, false)?>
+                	<?php echo implode(',', $blockedSlots)?>                    
                 </td>
                 <td class="center">
-                    <?php echo $item->time_span?>
-                </td>
-                <td class="center">
-                    <?php echo $item->time_format?>
+                	<?php echo $item->weekday_start?>
                 </td>
                 <td class="center">
                     <?php echo $item->view_days?>

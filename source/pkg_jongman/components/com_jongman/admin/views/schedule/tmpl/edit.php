@@ -50,14 +50,8 @@ JHtml::_('behavior.keepalive');
                 <li><?php echo $this->form->getLabel('alias'); ?>
                     <?php echo $this->form->getInput('alias'); ?></li>
 
-                <li><?php echo $this->form->getLabel('day_start'); ?>
-                    <?php echo $this->form->getInput('day_start'); ?></li>
-
-                <li><?php echo $this->form->getLabel('day_end'); ?>
-                    <?php echo $this->form->getInput('day_end'); ?></li>
-
-                <li><?php echo $this->form->getLabel('time_span'); ?>
-                    <?php echo $this->form->getInput('time_span'); ?></li>
+                <li><?php echo $this->form->getLabel('layout_id'); ?>
+                    <?php echo $this->form->getInput('layout_id'); ?></li>
 
                 <li><?php echo $this->form->getLabel('weekday_start'); ?>
                     <?php echo $this->form->getInput('weekday_start'); ?></li>
@@ -86,7 +80,12 @@ JHtml::_('behavior.keepalive');
         </fieldset>
     </div>
     <div class="width-40 fltrt">
-    
+		<?php echo JHtml::_('sliders.start','schedule-sliders-'.$this->item->id, array('useCookie' => 1)); ?>
+
+		<?php echo $this->loadTemplate('params'); ?>
+
+		<?php echo $this->loadTemplate('metadata'); ?>
+		<?php echo JHtml::_('sliders.end'); ?>    
     </div>
     <input type="hidden" name="task" value=""/>
     <?php echo JHtml::_('form.token'); ?>

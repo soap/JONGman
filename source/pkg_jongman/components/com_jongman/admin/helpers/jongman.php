@@ -19,35 +19,37 @@ class JongmanHelper {
 			'index.php?option=com_jongman&view=cpanel',
 			$vName == 'cpanel'
 		);
+		  
         JSubMenuHelper::addEntry(
-			JText::_('COM_JONGMAN_SCHEDULES'),
+			JText::_('COM_JONGMAN_SUBMENU_LAYOUTS'),
+			'index.php?option=com_jongman&view=layouts',
+			$vName == 'layouts'
+		);
+		  
+        JSubMenuHelper::addEntry(
+			JText::_('COM_JONGMAN_SUBMENU_SCHEDULES'),
 			'index.php?option=com_jongman&view=schedules',
 			$vName == 'schedules'
 		);
 		
         JSubMenuHelper::addEntry(
-			JText::_('COM_JONGMAN_RESOURCES'),
+			JText::_('COM_JONGMAN_SUBMENU_RESOURCES'),
 			'index.php?option=com_jongman&view=resources',
 			$vName == 'resources'
 		);
         
         JSubMenuHelper::addEntry(
-			JText::_('COM_JONGMAN_RESERVATIONS'),
+			JText::_('COM_JONGMAN_SUBMENU_RESERVATIONS'),
 			'index.php?option=com_jongman&view=reservations',
 			$vName == 'reservations'
 		);
 		
 		JSubMenuHelper::addEntry(
-			JText::_('COM_JONGMAN_QUOTAS'),
+			JText::_('COM_JONGMAN_SUBMENU_QUOTAS'),
 			'index.php?option=com_jongman&view=quotas',
 			$vName == 'quotas'
 		);
-        /*  
-        JSubMenuHelper::addEntry(
-			JText::_('COM_JONGMAN_BLACKOUTS'),
-			'index.php?option=com_jongman&view=blackouts',
-			$vName == 'blackouts'
-		);          
+		/*        
        
         JSubMenuHelper::addEntry(
 			JText::_('COM_JONGMAN_USERS'),

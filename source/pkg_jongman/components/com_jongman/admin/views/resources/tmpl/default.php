@@ -134,16 +134,16 @@ $saveOrder	= $listOrder=='ordering';
                     <?php echo $item->schedule_name?>
                 </td>
                 <td class="center">
-                    <?php echo $item->min_res?>
+                    <?php echo $item->min_reservation?>
                 </td>
                 <td class="center">
-                    <?php echo $item->max_res?>
+                    <?php echo $item->max_reservation?>
                 </td>
                 <td class="center">
-                    <?php echo $item->min_notice_time?>
+                    <?php echo $item->min_notice_duration?>
                 </td>
                 <td class="center">
-                    <?php echo $item->max_notice_time?>
+                    <?php echo $item->max_notice_duration?>
                 </td>                
                 <td class="center">           
                     <?php echo JHtml::_('jgrid.state', 

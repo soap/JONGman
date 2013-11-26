@@ -5,30 +5,19 @@
             readonly="true" class="readonly"
 			label="JGLOBAL_FIELD_ID_LABEL" description ="JGLOBAL_FIELD_ID_DESC"/>
         <field name="asset_id" type="hidden" filter="unset" />
-        <field name="name" type="text" class="inputbox"
+ 
+       <field name="name" type="text" class="inputbox"
 			size="40" label="COM_JONGMAN_FIELD_SCHEDULE_NAME_LABEL"
 			description="COM_JONGMAN_FIELD_SCHEDULE_NAME_DESC"
 			required="true" />
         <field name="alias" type="text" class="inputbox"
 			size="40" label="JFIELD_ALIAS_LABEL"
 			description="COM_JONGMAN_FIELD_SCHEDULE_ALIAS_DESC"/>
-        <field name="day_start" type="jongmanselecttime" class="inputbox"
-			label="COM_JONGMAN_FIELD_SCHEDULE_DAY_START_LABEL"
-			description="COM_JONGMAN_FIELD_SCHEDULE_DAY_START_DESC"
-			min="0" max="1440" step="30"
-			required="true" filter="intval" size="1" default="480" />
-      
-        <field name="day_end" type="jongmanselecttime" class="inputbox"
-			label="COM_JONGMAN_FIELD_SCHEDULE_DAY_END_LABEL"
-			description="COM_JONGMAN_FIELD_SCHEDULE_DAY_END_DESC"
-			min="0" max="1440" step="30"
-			required="true" filter="intval" size="1" default="1020" />
-			
-        <field name="time_span" type="jongmanselecttimespan" class="inputbox"
-			label="COM_JONGMAN_FIELD_SCHEDULE_TIME_SPAN_LABEL"
-			description="COM_JONGMAN_FIELD_SCHEDULE_TIME_SPAN_DESC"
-			required="true" filter="intval" size="1" />
-			
+		
+		<field name="layout_id" type="layout"
+			label="COM_JONGMAN_FIELD_SCHEDULE_LAYOUT_LABEL"
+			description="COM_JONGMAN_FIELD_SCHEDULE_LAYOUT_DESC"
+			/>
         <field name="view_days" type="list" class="inputbox"
             label="COM_JONGMAN_FIELD_SCHEDULE_VIEW_DAYS_LABEL"
             description="COM_JONGMAN_FIELD_SCHEDULE_VIEW_DAYS_DESC"
@@ -41,10 +30,7 @@
                 <option value="6">6</option>
                 <option value="7">7</option>
         </field>
-        <field name="timezone" type="timezone" 
-        	default="Asia/Bangkok" 
-        	label="COM_JONGMAN_FIELD_SCHEDULE_TIMEZONE_LABEL" 
-        	description="COM_JONGMAN_FIELD_SCHEDULE_TIMEZONE_DESC" />
+
         <field name="time_format" type="list" class="inputbox"
             label="COM_JONGMAN_FIELD_SCHEDULE_TIME_FORMAT_LABEL"
             description="COM_JONGMAN_FIELD_SCHEDULE_TIME_FORMAT_DESC"
@@ -85,4 +71,18 @@
         <field name="access" type="accesslevel" label="JFIELD_ACCESS_LABEL"
             description="JFIELD_ACCESS_DESC" class="inputbox" size="1" />     
     </fieldset>
+    
+	<fields name="params">
+		<fieldset name="basic" label="COM_JONGMAN_BASIC_PARAMS_FIELDSET_LABEL">
+			<field name="daily_date_format"
+				type="text" defualt="Y-m-d"
+				label="COM_JONGMAN_PARAM_SCHEDULE_DAILY_DATEFORMAT_LABEL"
+				description="COM_JONGMAN_PARAM_SCHEDULE_DAILY_DATEFORMAT_DESC"
+				/>
+		</fieldset>
+
+		<fieldset name="advanced" label="COM_JONGMAN_ADVANCED_PARAMS_FIELDSET_LABEL">
+
+		</fieldset>
+	</fields>
  </form>

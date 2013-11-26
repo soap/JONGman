@@ -23,6 +23,11 @@ class JongmanTableResource extends JTable
 
 	public function bind($array, $ignore = '')
 	{
+		if (isset($array['params']) && is_array($array['params'])) {
+			$registry = new JRegistry();
+			$registry->loadArray($array['params']);
+			$array['params'] = (string) $registry;
+		}
 		// Bind the rules. 
 		if (isset($array['rules']) && is_array($array['rules'])) { 
 			$rules = new JRules($array['rules']); 

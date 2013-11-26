@@ -36,31 +36,13 @@ class JongmanController extends JController
 
 		$view	= JRequest::getWord('view','cpanel');
 		$layout = JRequest::getWord('layout', 'default');
-		$id		= JRequest::getInt('id');
-        $view_list = array('cpanel', 'schedules', 'resources', 'quotas', 'reservations', 'blackouts');
+
+        $view_list = array('cpanel', 'layouts', 'schedules', 'resources', 'quotas', 'reservations', 'blackouts');
         if (in_array($view, $view_list) ){
             // Load the submenu.
             JongmanHelper::addSubmenu(JRequest::getWord('view', $this->default_view));    
         }
-		// Check for edit form.
-		if ($view == 'schedule' && $layout == 'edit' && !$this->checkEditId('com_jongman.edit.schedule', $id)) {
 
-			// Somehow the person just went to the form - we don't allow that.
-			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
-			$this->setMessage($this->getError(), 'error');
-			$this->setRedirect(JRoute::_('index.php?option=com_jongman&view=schedules', false));
-
-			return false;
-		}
-		else if ($view == 'resource' && $layout == 'edit' && !$this->checkEditId('com_jongman.edit.resource', $id)) {
-
-			// Somehow the person just went to the form - we don't allow that.
-			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
-			$this->setMessage($this->getError(), 'error');
-			$this->setRedirect(JRoute::_('index.php?option=com_jongman&view=resources', false));
-
-			return false;
-		}
 
 		parent::display();
 
