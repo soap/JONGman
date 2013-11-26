@@ -4,6 +4,7 @@ defined('_JEXEC') or die;
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
+JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, false, false);
 ?>
 <script type="text/javascript">
 	// Attach a behaviour to the submit button to check validation.
@@ -84,6 +85,17 @@ JHtml::_('behavior.keepalive');
 
 	</div>
 	<div class="clr"></div>
+
+		<div class="width-100 fltlft">
+			<?php echo JHtml::_('sliders.start','layout-timeslot-sliders-'.$this->item->id, array('useCookie'=>1)); ?>
+				<?php echo JHtml::_('sliders.panel',JText::_('COM_JONGMAN_TIMESLOT_FIELDSET_TIMESLOTS'), 'layout-timeslots'); ?>
+				<fieldset class="panelform">
+					<?php echo $this->form->getLabel('timeslots'); ?>
+					<?php echo $this->form->getInput('timeslots'); ?>
+				</fieldset>
+			<?php echo JHtml::_('sliders.end'); ?>
+		</div>
+	<?php echo $this->loadTemplate('timeslot')?>
 
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>

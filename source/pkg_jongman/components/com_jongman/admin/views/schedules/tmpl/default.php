@@ -126,7 +126,7 @@ $saveOrder	= $listOrder=='ordering';
                 	<?php echo implode(',', $blockedSlots)?>                    
                 </td>
                 <td class="center">
-                	<?php echo $item->weekday_start?>
+                	<?php echo JText::plural('COM_JONGMAN_DAY_OF_WEEK',$item->weekday_start)?>
                 </td>
                 <td class="center">
                     <?php echo $item->view_days?>

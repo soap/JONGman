@@ -13,7 +13,7 @@ jimport('joomla.form.helper');
 
 class JFormFieldTimeblock extends JFormField {
 
-    protected $type = 'JongmanSelectTime';
+    protected $type = 'Timeblock';
 
     public function getInput() {
         // Initialize variables.
@@ -87,7 +87,6 @@ class JFormFieldTimeblock extends JFormField {
 			}	
 		}
 		
-		$layout->getSpan
 
     }   
 

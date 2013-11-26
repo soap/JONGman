@@ -68,6 +68,11 @@
 				JTRASHED</option>
 		</field>
 
+		<field name="timeslots"
+			type="timeslots"
+			label="COM_JONGMAN_FIELD_TIMESLOT_LABEL"
+			description="COM_JONGMAN_FIELD_TIMESLOT_DESC"
+		/>
 		<field name="ordering"
 			type="text"
 			label="JFIELD_ORDERING_LABEL"
