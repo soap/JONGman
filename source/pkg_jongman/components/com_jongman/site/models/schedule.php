@@ -471,10 +471,25 @@ class JongmanModelSchedule extends JModelItem {
      */
 	public function getNavigation() 
 	{
-		require_once JPATH_COMPONENT.'/libraries/navigator.class.php';
+		jimport('jongman.html.navigator');
 		$schedule = $this->getItem();
-		$date = $this->getDateVars();
-		$navigator = new JongmanNavigator($date['firstDayTs'], $schedule->view_days);
+		$dates = $this->getScheduleDates();
+		
+		$startDate = $dates->getBegin();
+		$startDay = $schedule->weekday_start;
+		$scheduleLength = $schedule->view_days;
+		if ($startDay == 7)
+		{
+			$adjustment = $scheduleLength;
+			$prevAdjustment = $scheduleLength;
+		}
+		else
+		{
+			$adjustment = max($scheduleLength, 7);
+			$prevAdjustment = 7 * floor($adjustment / 7); // ie, if 10, we only want to go back 7 days so there is overlap
+		}
+
+		$navigator = new JMNavigator($startDate->AddDays(-$prevAdjustment), $startDate->AddDays($adjustment), $schedule->view_days);
 		
 		return $navigator;
 			
