@@ -1,9 +1,10 @@
 <?php
 defined('_JEXEC') or die;
 
+jimport('joomla.application.component.modelitem');
 require_once JPATH_COMPONENT."/libraries/dateutil.class.php";
 
-class JongmanModelSchedule extends JModel {
+class JongmanModelSchedule extends JModelItem {
 	
 	private $_scheduleId = null;
 	
@@ -37,6 +38,11 @@ class JongmanModelSchedule extends JModel {
     }
 	
     function populateState(){
+    	// Load state from the request.
+		
+    	$pk = JRequest::getInt('id');
+		$this->setState('schedule.id', $pk);
+		
     	$params = JComponentHelper::getParams('com_jongman');
 		
 		$menuitemid = JRequest::getInt( 'Itemid' );
@@ -49,16 +55,41 @@ class JongmanModelSchedule extends JModel {
 		$this->setState('params', $params);
     }
     
-	function setScheduleId($id)
+	/**
+	 * Method to get schedule data.
+	 * @param	integer	The id of the schedule.
+	 * @since	2.0	
+	 * @return	mixed	item object on success, false on failure.
+	 */
+	public function &getItem($pk = null)
 	{
-		$this->_scheduleId = $id;	
+		// Initialise variables.
+		$pk = (!empty($pk)) ? $pk : (int) $this->getState('schedule.id');
+
+		if ($this->_item === null) {
+			$this->_item = array();
+		}
+
+		if (!isset($this->_item[$pk])) {
+			$db = $this->getDbo();
+			$query = $db->getQuery(true);
+			$query->select("a.*, l.timezone")
+				->from("#__jongman_schedules AS a")
+				->join('LEFT', '#__jongman_layouts as l ON l.id=a.layout_id')
+				->where("a.id = ".$pk);
+			$db->setQuery($query);
+			
+			$this->_item[$pk] = $db->loadObject();
+		}
+		
+		return $this->_item[$pk];			
 	}
 	
-	function getScheduleId()
-	{
-		return $this->_scheduleId;
-	}
-	
+	/**
+	 * 
+	 * get schedule data
+	 * @deprecated 2.0 use getItem instead
+	 */
 	public function getSchedule()
 	{
 		if (empty($this->_schedule)) 
@@ -76,20 +107,41 @@ class JongmanModelSchedule extends JModel {
 		return $this->_schedule;
 	}
 	
-	public function getResources() 
+	/**
+	 * 
+	 * Get list of resources for this schedule
+	 * @param int $pk
+	 * @return array of resources
+	 * @since 1.0
+	 */
+	public function getResources($pk = null) 
 	{
-		$dbo = JFactory::getDbo();
-		$query = $dbo->getQuery(true);
+		// Initialise variables.
+		$pk = (!empty($pk)) ? $pk : (int) $this->getState('schedule.id');	
+			
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
 		
-		$query->select("id, title, status, need_approval, min_notice_time, max_notice_time, ordering, published")
+		$query->select("id, title, status, ordering, published, params")
 			->from("#__jongman_resources")
-			->where("schedule_id = ".$this->getScheduleId())
+			->where("schedule_id = ".$pk)
 			->order("ordering ASC");
-		$dbo->setQuery($query);
+		$db->setQuery($query);
+		$resources = $db->loadObjectList();
 		
-		return $dbo->loadObjectList();
+		foreach ($resources as $x => $resource) {
+			if (isset($resource->params) && !empty($resource->params)) {
+				$resources[$x]->params = new JRegistry($resource->params);	
+			}	
+		}
+		
+		return $resources;
 	}
 	
+	/**
+	 * 
+	 * Get list of reservation for this schedules
+	 */
 	public function getReservations()
 	{
 		$resourceids = $this->getResourceIds();
@@ -143,16 +195,148 @@ class JongmanModelSchedule extends JModel {
 	}
 	
 	/**
+	 * Get date range object for selected schedule
+	 * @return DateRange object
+	 * @since 2.0
+	 */
+	public function getScheduleDates()
+	{
+		jimport('jongman.date.date');
+		jimport('jongman.date.daterange');
+		$schedule = $this->getItem();
+		
+		$user = JFactory::getUser();
+		$userTimezone = $user->getParam('timezone', null);
+		$tz = empty($userTimezone) ? JFactory::getConfig()->get('offset') : $userTimezone;
+		$providedDate = JRequest::getString('date', null);
+		
+		$date = empty($selectedDate) ? JMDate::now() : new JMDate($providedDate, $tz);
+		
+		$selectedDate = $date->toTimezone($tz)->getDate();
+		$selectedWeekday = $selectedDate->weekday();
+		$scheduleLength = $schedule->view_days;
+		
+		$startDay = $schedule->weekday_start;
+		if ($startDay == 100 /* schedule::Today */) {
+			$startDate = $selectedDate;
+		}
+		else{
+			$adjustedDays = ($startDay - $selectedWeekday);
+			if ($selectedWeekday < $startDay) {
+				$adjustedDay = $adjustedDays - 7;
+			}
+			
+			$startDate = $selectedDate->addDays($adjustedDays);
+		}
+		
+		$applicableDates = new DateRange( $startDate, $startDate->addDays($scheduleLength) );
+		
+		return $applicableDates;
+	}
+	
+	/**
+	 * 
+	 * get schedule layout
+	 * @param unknown_type $pk
+	 * @param unknown_type $tz
+	 * @since 2.0
+	 */
+	protected function getScheduleLayout($pk = null, $tz = null)
+	{
+		jimport('jongman.date.time');
+		
+		$schedule = $this->getItem();
+		// Get time blocks from database
+		$blocks = $this->getTimeblocks($schedule->layout_id);
+
+		if (empty($tz)) {
+			$tz = $schedule->timezone;		
+		}
+		
+		$layout = new ScheduleLayout($tz);
+
+		foreach($blocks as $period) {
+			if ($period->availability_code == 1) {
+				$layout->appendPeriod(
+					Time::parse($period->start_time), Time::parse($period->end_time), 
+					$period->label, $period->day_of_week);
+			}else{
+				$layout->appendBlockedPeriod(
+					Time::parse($period->start_time), Time::parse($period->end_time), 
+					$period->label, $period->day_of_week);	
+			}	
+		}
+		
+		return $layout;
+	}
+	
+	/**
+	 * Get time blocks of selected schedule from database
+	 * @since 2.0
+	 */
+	private function getTimeblocks($layout_id = null) 
+	{
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
+		$query->select('*')
+			->from('#__jongman_time_blocks')
+			->where('layout_id = '.(int)$layout_id)
+			->order('id ASC');
+			
+		$db->setQuery($query);
+		
+		$rows = $db->loadObjectList();
+		
+		return $rows;
+		
+	}
+
+	/**
+	 * 
+	 * Get the reservation list 
+	 * @since 2.0
+	 */
+	private function getReservationList()
+	{
+		jimport('jongman.application.schedule.reservationlisting');
+		
+		$timezone = JFactory::getUser()->getParam('offset');
+		$list = new ReservationListing($timezone);
+		
+		//insert reservation data to the list
+
+		return $list;
+	}
+	
+	/**
+	 * 
+	 * Get daily layout object of the schedule reservation
+	 * @since 2.0
+	 */
+	public function getDailyLayout()
+	{
+		jimport('jongman.application.schedule.dailylayout');
+		
+		$scheduleLayout = $this->getScheduleLayout();
+		$reservationList = $this->getReservationList();
+		
+		$layout = new DailyLayout($reservationList, $scheduleLayout);
+		
+		return $layout;
+	}
+	
+	/**
 	 * 
 	 * Get date variables used in building reservation in week calendar
 	 * We assume UTC date from user, so converted to GMT as we store all date in GMT
 	 * @return array date variables
+	 * @deprecated 2.5
 	 */
 	public function getDateVars() 
 	{
 		if (!empty($this->_date_vars)) return $this->_date_vars;
 		
-		$schedule = $this->getSchedule();
+		$schedule = $this->getItem();
 		
 		$default = false;
 
@@ -218,11 +402,11 @@ class JongmanModelSchedule extends JModel {
     * $array[time] => rowspan
     * @param none
     * @return array of time value and it's associated rowspan value
-    * @global $conf
+    * @deprecated 2.5
     */
     public function getTimeArray() 
     {
-		$schedule = $this->getSchedule();
+		$schedule = $this->getItem();
 		
         $startDay = $startingTime = $schedule->day_start;
         $endDay   = $endingTime   = $schedule->day_end;
@@ -278,25 +462,33 @@ class JongmanModelSchedule extends JModel {
 	public function getNavigation() 
 	{
 		require_once JPATH_COMPONENT.'/libraries/navigator.class.php';
-		$schedule = $this->getSchedule();
+		$schedule = $this->getItem();
 		$date = $this->getDateVars();
 		$navigator = new JongmanNavigator($date['firstDayTs'], $schedule->view_days);
 		
 		return $navigator;
 			
 	}
-	
-	private function getResourceIds()
+
+	/**
+	 * 
+	 * Get resource id for the selected schedule in array format
+	 * @param unknown_type $pk
+	 * @return array of StdObj
+	 */
+	private function getResourceIds($pk = null)
 	{
+		$pk = (!empty($pk)) ? (int) $pk : (int) $this->getState('schedule.id');
 		$dbo = JFactory::getDbo();
         $query = $dbo->getQuery(true);
         $query->select("id")
         	->from("#__jongman_resources")
-        	->where("schedule_id = ".$this->getScheduleId()." AND published=1")
+        	->where("schedule_id = ".$pk)
+        	->where("published=1")
         	->order("ordering ASC");
         	
         $dbo->setQuery( $query );
-        $resource_ids = $dbo->loadResultArray();
+        $resource_ids = $dbo->loadColumn();
 
         return $resource_ids;
 	}

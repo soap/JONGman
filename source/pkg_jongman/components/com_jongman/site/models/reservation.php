@@ -11,7 +11,7 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
-
+jimport('jongman.date.date');
 /**
  * Reservation model.
  *
@@ -62,27 +62,27 @@ class JongmanModelReservation extends JModelAdmin
 	public function getItem($pk = null)
 	{
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState($this->getName() . '.id');
-		if ($result = parent::getItem($pk)) {
-			if (empty($pk)){
-				$result->schedule_id = JRequest::getInt('schedule_id');
-				$result->resource_id = JRequest::getInt('resource_id');
-				
-				$user 	= JFactory::getUser();
-				$config = JFactory::getConfig();
-				
-				$ts = JRequest::getInt('ts');
-				
-				// set date time to UTC ($tz = null)
-				$tz = null;
-				$result->start_date = JDate::getInstance(date("Y-m-d H:i:s",$ts), $tz)->format("Y-m-d");
-				$result->end_date = $result->start_date;
-				
-				$result->start_time = JRequest::getInt('tstart');
-				$result->end_time = JRequest::getInt('tend');
-				$result->reserved_for = $user->id;
-			} 			
-		}
+		$result = parent::getItem($pk);
+		$user 	= JFactory::getUser();
+		$config = JFactory::getConfig();
+		
+		if (empty($pk)){
+			$result->schedule_id = JRequest::getInt('schedule_id');
+			$result->resource_id = JRequest::getInt('resource_id');
+			$result->start_date = JRequest::getString('start');
+			$result->end_date = JRequest::getString('end');
+			$result->reserved_for = $user->id;
+		}else{
+			
+		} 			
 
+		$tz = $user->getParam('offset');
+		$start_date = new JMDate($result->start_date, $tz);
+		$end_date = new JMDate($result->end_date, $tz);
+		
+		$result->start_date = $start_date->format('Y-m-d');
+		$result->end_date = $end_date->format('Y-m-d');
+		
 		return $result;
 	}
 
@@ -122,33 +122,6 @@ class JongmanModelReservation extends JModelAdmin
 	protected function preprocessForm(JForm $form, $data, $group = 'content')
 	{
 		if (isset($data)) {
-			if (is_array($data)) $data = JArrayHelper::toObject($data);
-			if (is_object($data)) {
-				if (isset($data->schedule_id) && $data->schedule_id) {
-					$form->setFieldAttribute('resource_id', 'schedule_id', $data->schedule_id);
-				
-					$form->setFieldAttribute('start_time', 'schedule_id', $data->schedule_id);
-					$form->setFieldAttribute('end_time', 'schedule_id', $data->schedule_id);
-				}
-				if (isset($data->resource_id) && $data->resource_id) {
-					$resource = JTable::getInstance('Resource', 'JongmanTable');
-					$resource->load((int)$data->resource_id);
-					$form->setFieldAttribute('end_date', 'readonly', ($resource->allow_multi?'false':'true'));
-					if (!$resource->allow_multi) {
-						$form->setFieldAttribute('end_date', 'type', 'text');
-					}	
-				}
-			
-				$proxyReservation = (bool)JComponentHelper::getParams('com_jongman')->get('proxyReservation');
-				if (isset($data->reserved_for) && !$proxyReservation) {
-					$form->setFieldAttribute('reserved_for', 'readonly', 'true');
-				}
-				
-				if (!empty($data->id)) {
-					$form->setFieldAttribute('repeat_interval', 'readonly', 'true');
-				}
-			}
-
 		}
 		parent::preprocessForm($form, $data, $group);
 
@@ -180,44 +153,6 @@ class JongmanModelReservation extends JModelAdmin
 		return true;
 	}
 	
-	public function getSchedule($schedule_id = null) 
-	{
-		if (empty($this->_schedules)) $this->_schedules = array();
-		
-		if (!empty($this->_schedules[$schedule_id])) {
-			return $this->_schedules[$schedule_id];
-		}
-		
-		if (empty($schedule_id)) {
-			$schedule_id = JRequest::getInt('schedule_id');	
-		}
-		if (empty($schedule_id)) return null;
-		
-		$result = JTable::getInstance('Schedule', 'JongmanTable');
-		$result->load($schedule_id);
-		
-		$this->_schedules[$schedule_id] = $result;
-		return $this->_schedules[$schedule_id];
-	}
-	
-	public function getResource($resource_id = null)
-	{
-		if (empty($this->_resources)) $this->_resources = array();
-		
-		if (!empty($this->_resources[$resource_id])) {
-			return $this->_resources[$resource_id];
-		}
-		if (empty($resource_id)) {
-			$resource_id = JRequest::getInt('resource_id');	
-		}
-		if (empty($resource_id)) return null;
-		
-		$result = JTable::getInstance('Resource', 'JongmanTable');
-		$result->load($resource_id);
-		
-		$this->_resources[$resource_id] = $result;
-		return $this->_resources[$resource_id];	
-	}
 	/**
 	 * 
 	 * Validate resource availability
@@ -232,65 +167,12 @@ class JongmanModelReservation extends JModelAdmin
 	
 	/**
 	 * 
-	 * Check if reservation date is passed, allow only for Admin
-	 * @param unknown_type $data
-	 */
-	protected function checkStartDate($data)
-	{
-		$user = JFactory::getUser();
-		if (is_array($data)) $data = JArrayHelper::toObject($data);
-		if ($user->authorise('core.admin', 'com_jongman.resource.'.$data->resource_id)) 
-		{ 
-			return true;
-		}
-		
-		$date = JFactory::getDate();
-		
-		return true;
-	}
-	
-	/**
-	 * 
 	 * Check if the resource was booked or not
 	 * @param unknown_type $data
 	 */
 	
 	protected function isBooked($data) 
 	{
-		$user 	= JFactory::getUser();
-		$config = JFactory::getConfig();
-		
-		$rs = JArrayHelper::toObject($data);
-		$tz = new DateTimeZone($user->getParam('timezone', $config->get('offset')));
-		$start_date = JDate::getInstance($rs->start_date, $tz);
-		$rs->start_date = $start_date->toUnix();
-		
-		$end_date = JDate::getInstance($rs->end_date, $tz);
-		$rs->end_date = $end_date->toUnix();
-		
- 		// If it starts between the 2 dates, ends between the 2 dates, or surrounds the 2 dates, get it
-		$query = "SELECT COUNT(id) AS num FROM #__jongman_reservations "
-				. " WHERE resource_id = {$rs->resource_id} "
-				. " AND ("
-					// Is surrounded by
-					//(starts on a later day OR starts on same day at a later time) AND (ends on an earlier day OR ends on the same day at an earlier time)					
-					. " ( (start_date > {$rs->start_date} OR (start_date = {$rs->start_date} AND start_time > {$rs->start_time})) AND ( end_date < {$rs->end_date} OR (end_date = {$rs->end_date} AND end_time < {$rs->end_time})) )"
-					// Surrounds
-					//(starts on an earlier day OR starts on the same day at an earlier time) AND (ends on a later day OR ends on the same day at a later time)
-					. " OR ( (start_date < {$rs->start_date}  OR (start_date = {$rs->start_date}  AND start_time < {$rs->start_time})) AND (end_date > {$rs->end_date}  OR (end_date = {$rs->end_date}  AND end_time > {$rs->end_time})) )"
-					// Conflicts with the starting time
-					//(starts on an earlier day OR starts on the same day at an earlier time) AND (ends on a later day than the starting day OR ends on the same day as the starting day but at a later time)
-					. " OR ( (start_date < {$rs->start_date} OR (start_date = {$rs->start_date} AND start_time <= {$rs->start_time} )) AND (end_date > {$rs->start_date} OR (end_date = {$rs->start_date} AND end_time > {$rs->start_time} )) ) "
-					// Conflicts with the ending time
-					//(starts on an earlier day than this ends OR starts on the same day as this ends but at an earlier time) AND (ends on a day later than the ending day OR ends on the same day as the ending day but at a later time) 
-					. " OR ( (start_date < {$rs->end_date} OR (start_date = {$rs->end_date}  AND start_time < {$rs->end_time})) AND (end_date > {$rs->end_date}  OR (end_date = {$rs->end_date} AND end_time >= {$rs->end_time} )) )"
-				. " ) "; 
-        if (!empty($rs->id)) $query .= " AND id <> ".$rs->id;
-        $dbo = $this->getDbo();
-        $dbo->setQuery($query);
-		$sql = $dbo->getQuery();
-		
-		$count = (int)$dbo->loadResult();
-        return ($count > 0);   		
+
 	}
 }

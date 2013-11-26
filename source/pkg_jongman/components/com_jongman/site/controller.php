@@ -29,20 +29,35 @@ class JongmanController extends JControllerLegacy
 	 * @since	1.5
 	 */
 	public function display($cachable = false, $urlparams = false)
-	{		
-		require_once(JPATH_COMPONENT.'/helpers/jongman.php');
+	{	
+		JLoader::register('JongmanHelper', JPATH_COMPONENT . '/helpers/jongman.php');	
 		
-		if (JRequest::getCmd('view')=='schedule') {
+		$jquery_site = JComponentHelper::getParams('com_jongman')->get('jquery_site');
+		
+		if ($jquery_site == 1) {
+			JHtml::_('script', 'com_jongman/jquery/jquery-1.8.2.min.js', false, true);
+			JHtml::_('script', 'com_jongman/jquery/jquery-ui-1.9.0.custom.min.js', false, true);		
+			JHtml::_('script', 'com_jongman/jquery/jquery.qtip.min.js', false, true);
+			JHtml::_('script', 'com_jongman/jquery/jquery.noconflict.js', false, true);	
+			JHtml::_('stylesheet', 'com_jongman/jongman/jquery.qtip.min.css', false, true, false, false, false);							
+		}
+		$view = JFactory::getApplication()->input->getCmd('view');
+		if ($view =='schedule') {
 			if (JRequest::getCmd('layout')=='calendar') {
-					JHtml::_('stylesheet', 'com_jongman/jongman/calendar.css', false, true, false, false, false);		
+				JHtml::_('stylesheet', 'com_jongman/jongman/smoothness/jquery-ui-q.9.0.custom.css', false, true, false, false, false);	
+				JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, false, false);
+				JHtml::_('stylesheet', 'com_jongman/jongman/calendar.css', false, true, false, false, false);
+				JHtml::_('stylesheet', 'com_jongman/jongman/popup-reservation.css', false, true, false, false, false);
+				JHtml::_('script', 'com_jongman/jongman/resource-popup.js', false, true);						
+				JHtml::_('script', 'com_jongman/jongman/schedule.js', false, true);						
 			}
 		}
-		if (JRequest::getCmd('view')=='reservation') {
-			JHtml::_('stylesheet', 'com_jongman/jongman/jongman.css', false, true, false, false, false);
+		if ($view == 'reservation') {
 			JHtml::_('stylesheet', 'com_jongman/jongman/popup-reservation.css', false, true, false, false, false);
-			JHtml::_('script', 'com_jongman/jongman/reservation.js', false);	
+			JHtml::_('script', 'com_jongman/jongman/reservation.js', false, true);	
 		}
 
+		JHtml::_('stylesheet', 'com_jongman/jongman/jongman.css', false, true, false, false, false);
 		parent::display($cachable, $urlparams);
 		
 		return $this;

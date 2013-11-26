@@ -30,31 +30,52 @@ JHtml::_('behavior.keepalive');
 		}
 	}
 </script>
-
+<div class="edit">
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=edit&id='.(int) $this->item->id); ?>"
-	method="post" name="adminForm" id="reservation-form" class="form-validate">
-	<div class="formelm-buttons">
-		<button type="button" onclick="Joomla.submitbutton('reservation.save')">
+	method="post" name="adminForm" id="reservation-form" class="form-validate form-inline">
+	<div>
+	<div class="formelm-buttons btn-toolbar">
+		<button type="button" class="btn btn-info" onclick="Joomla.submitbutton('reservation.save')">
 			<?php echo JText::_('JSAVE') ?>
 		</button>
-		<button type="button" onclick="Joomla.submitbutton('reservation.cancel')">
+		<button type="button" class="btn btn-info" onclick="Joomla.submitbutton('reservation.cancel')">
 			<?php echo JText::_('JCANCEL') ?>
 		</button>
 	</div>
 	<div class="width-60 fltlft">
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_JONGMAN_RESERVATION_TITLE')?></legend>
-			<ul class="adminformlist">
-				<li>
+    		<div class="formelm control-group">
+                <div class="control-label">
 					<?php echo $this->form->getLabel('title'); ?>
 					<?php echo $this->form->getInput('title'); ?>
-				</li>
+				</div>
+			</div>
 
-				<li>
+    		<div class="formelm control-group">
+                <div class="control-label">
 					<?php echo $this->form->getLabel('alias'); ?>
 					<?php echo $this->form->getInput('alias'); ?>
-				</li>
-			</ul>
+				</div>
+			</div>
+    		<div class="formelm control-group">
+                <div class="control-label">
+					<?php echo $this->form->getLabel('resource_id'); ?>
+					<?php echo $this->form->getInput('resource_id'); ?>
+				</div>
+			</div>			
+    		<div class="formelm control-group">
+                <div class="control-label">
+					<?php echo $this->form->getLabel('start_date'); ?>
+					<?php echo $this->form->getInput('start_date'); ?>
+				</li>				
+    		<div class="formelm control-group">
+                <div class="control-label">
+					<?php echo $this->form->getLabel('end_date'); ?>
+					<?php echo $this->form->getInput('end_date'); ?>
+				</div>
+			</div>				
+
 
 			<?php echo $this->form->getLabel('description'); ?>
 			<div class="clr"></div>
@@ -75,3 +96,4 @@ JHtml::_('behavior.keepalive');
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>
 </form>
+</div>

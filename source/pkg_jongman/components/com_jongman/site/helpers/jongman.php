@@ -103,7 +103,7 @@ class JongmanHelper
     	// Create the fraction hour minute marks
     	for ($x = 0; $x < $totCol; $x++)
     	{
-        	$header .= "<td width=\"$width%\">&nbsp;</td>";
+        	$header .= "<td class=\"reslabel\" width=\"$width%\">&nbsp;</td>";
     	}
 
     	return $header;
@@ -119,18 +119,15 @@ class JongmanHelper
 	function getStartDayTable( $displayDate, $hour_header, $isCurrentDate ) 
 	{
 		return 
-			'<table class="day-outer">
-			    <tr>
-				   <td>
-                     <table class="day-inner">
-			             <tr class="scheduleTimes">
-			                <td rowspan="2" width="15%" class="'.($isCurrentDate ? 'scheduleDateCurrent' : 'scheduleDate').'">'.$displayDate.'</td>'
+			'<table class="reservations">
+				<tr class="scheduleTimes">
+			    	<td rowspan="2" width="15%" class="'.($isCurrentDate ? 'today' : 'resdate').'">'.$displayDate.'</td>'
                             .$hour_header.'</tr>';
 	}
 	
 	function getEndDayTable()
 	{
-		return '</table></td></tr></table><br />';
+		return '</table><br />';
 	}
 
 	/**
@@ -151,7 +148,7 @@ class JongmanHelper
     	$attribs = array("class"=>"modal", "rel"=>"{handler:'iframe', closeWithOverlay:false, size:{x:800, y:500}}");
 
     	// Start a new row and print out resource name
-    	echo "\n<tr class=\"$color\"><td class=\"resourceName\">";
+    	echo "\n<tr class=\"slots\"><td class=\"resourcename\">";
         // (type, resourceid, start_date, reservationid, scheduleid, is_blackout, read_only, pending, starttime, endtime)
     	if ($is_blackout) {
             //$url = "index.php?option=com_jongman&tmpl=component&task=reservation.edit&type=$ts&resourceid=$id&start_date=" + start_date + "&reservationid=" + reservationid + '&scheduleid=' + scheduleid + "&is_blackout=" + is_blackout + "&read_only=" + read_only + "&pending=" + pending + "&starttime=" + starttime + "&endtime=" + endtime;     
@@ -187,7 +184,7 @@ class JongmanHelper
 	*/
 	function print_blank_cols($cols, $start, $span, $ts, $resourceid, $scheduleid, $scheduleType, $clickable, $class = '') {
     	$is_blackout = (bool)($scheduleType == BLACKOUT_ONLY);
-		$offClass = $clickable ? 'onmouseover="className=\'clickover\'" onmouseout="className=\'clickout\'"' : 'class="o"';
+		$class = $clickable ? 'class="reservable clickres slot"': "unreservable slot";
 
     	$js = '';
     	$url = '';
@@ -214,7 +211,7 @@ class JongmanHelper
         		
                 $js = "onclick=\"javascript:SqueezeBox.fromElement('$url', $options)\"";
         	}
-        	echo "<td $offClass $js></td>";
+        	echo "<td $class $js></td>";
     	}
 	}
 
@@ -307,7 +304,7 @@ class JongmanHelper
 
 			}
     	}
-    	echo "<td colspan=\"$colspan\" style=\"color:$text;background-color:$color;\" $js>$cellSummary</td>";
+    	echo "<td colspan=\"$colspan\" class=\"reserved clickres slot\" $js>$cellSummary</td>";
 	}
 	/**
 	* Writes out the blackout cell
@@ -399,7 +396,7 @@ class JongmanHelper
         $printAllCols = ($schedule->view_days!=7);
 
         if ($scheduleType==BLACKOUT_ONLY) {
-            $url = 'index.php?option=com_jongman&task=schedule.display&id='.$schedule->id.'&type='.$scheduleType;     
+            $url = 'index.php?option=com_jongman&view=schedule&layout=canlendar&id='.$schedule->id.'&type='.$scheduleType;     
         }else{
             $url = JSite::getMenu()->getActive()->link;    
         }

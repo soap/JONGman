@@ -4,6 +4,7 @@
  */
 defined('_JEXEC') or die;
 jimport('joomla.application.component.controllerform');
+
 require_once(JPATH_COMPONENT.'/helpers/reservation.php');
 
 /**
@@ -419,13 +420,11 @@ class JongmanControllerReservation extends JControllerForm
 	{
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
 		
-		$resource_id = JRequest::getInt('resource_id', null);
-		$schedule_id = JRequest::getInt('schedule_id', null);
-		$ts = JRequest::getInt('ts', null); //date in unix timestamp format
-		$tstart = JRequest::getInt('tstart', null); //start time in format of minutes from 00:00:00
-		$tend = JRequest::getInt('tend', null); //end time in format of minutes from 00:00:00
-		$is_blackout = JRequest::getInt('is_blackout', null);
-		$type = JRequest::getCmd('type', null);
+		$resource_id = JRequest::getInt('rid', null);
+		$schedule_id = JRequest::getInt('sid', null);
+		
+		$start_date = JRequest::getString('sd', null);
+		$end_date = JRequest::getString('ed', null);
 		
 		if ($resource_id !== null) {
 			$append .= '&resource_id='.$resource_id;
@@ -435,25 +434,14 @@ class JongmanControllerReservation extends JControllerForm
 			$append .= '&schedule_id='.$schedule_id;
 		}
 		
-		if ($ts !== null) {
-			$append .= '&ts='.$ts;
+		if ($start_date !== null) {
+			$append .= '&start='.$start_date;
 		}
 		
-		if ($tstart !== null) {
-			$append .= '&tstart='.$tstart;
+		if ($end_date !== null) {
+			$append .= '&end='.$end_date;
 		}
 		
-		if ($tend !== null) {
-			$append .= '&tend='.$tend;
-		}
-		
-		if ($is_blackout !== null) {
-			$append .= '&is_blackout='.$is_blackout;
-		}
-		
-		if ($type!== null) {
-			$append .= '&type='.$type;
-		}
 		return $append;
 	}
 	
@@ -462,7 +450,7 @@ class JongmanControllerReservation extends JControllerForm
 
 		$append = parent::getRedirectToListAppend();
 		
-		$schedule_id = JRequest::getInt('schedule_id', null);
+		$schedule_id = JRequest::getInt('sid', null);
 		
 		return $append.'&layout=calendar&id='.$schedule_id;
 		
