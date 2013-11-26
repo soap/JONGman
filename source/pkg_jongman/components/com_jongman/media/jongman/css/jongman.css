@@ -124,3 +124,66 @@ td.clickout {
 }
 
 
+.validationSummary {
+	display: none;
+}
+
+ul.indented li {
+	margin-left: 25px;
+}
+
+.clear {
+	clear: both;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+#resourceDetailsPopup {
+	min-width: 300px;
+	max-width: 1000px;
+	width: auto;
+}
+
+#resourceDetailsPopup ul {
+	margin-left: 25px;
+}
+
+#resourceDetailsPopup h4 {
+	border-bottom: solid 1px #000;
+	font-size: 12pt;
+	margin-bottom: 3px;
+}
+
+#resourceDetailsPopup .customAttribute {
+	font-size: inherit;
+}
+
+#resourceDetailsPopup .attributes {
+	border-left: solid 1px #ced1c5;
+}
+
+#resourceDetailsPopup .description, #resourceDetailsPopup .attributes {
+	padding: 10px 5px;
+	float: left;
+	max-width: 400px;
+}
+
+#resourceDetailsPopup .resourceImage {
+	width: 200px;
+	float: left;
+}
+
+#resourceDetailsDiv {
+	display: none;
+	position: absolute;
+	border: solid 2px #212121;
+	background-color: #fafafa;
+	padding: 5px;
+	background-color: #fff;
+}
+
+.hidden {
+	display:none;
+}
