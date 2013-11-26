@@ -188,8 +188,9 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 	}
 
 	/**
-	 * @param Date $layoutDate
-	 * @param bool $hideBlockedPeriods
+	 * Get schedule layout after having completed appending periods 
+	 * @param Date $layoutDate	Layout for spefied date, you may use different layout for each day of week
+	 * @param bool $hideBlockedPeriods Get blocked period (unreservable) or not
 	 * @return array|SchedulePeriod[]
 	 */
 	public function getLayout(JMDate $layoutDate, $hideBlockedPeriods = false)
@@ -283,7 +284,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 
 	private function getLayoutDaily(JMDate $requestedDate, $hideBlockedPeriods = false)
 	{
-		if ($requestedDate->Timezone() != $this->targetTimezone)
+		if ($requestedDate->timezone() != $this->targetTimezone)
 		{
 			throw new Exception('Target timezone and requested timezone do not match');
 		}
@@ -394,12 +395,12 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 		return new $periodType($start, $end, $label, $labelEnd);
 	}
 
-	protected function SortItems(&$items)
+	protected function sortItems(&$items)
 	{
 		usort($items, array("ScheduleLayout", "SortBeginTimes"));
 	}
 
-	public function Timezone()
+	public function timezone()
 	{
 		return $this->targetTimezone;
 	}

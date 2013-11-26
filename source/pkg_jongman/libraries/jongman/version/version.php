@@ -24,10 +24,10 @@ final class JMVersion
     public $RELEASE = '2.0';
 
     /** @var  string  Maintenance version. */
-    public $DEV_LEVEL = '0';
+    public $DEV_LEVEL = '1';
 
     /** @var  string  Development status. */
-    public $DEV_STATUS = 'alpha';
+    public $DEV_STATUS = 'releae candidate';
 
     /** @var  string  Build number. */
     public $BUILD = '8';
