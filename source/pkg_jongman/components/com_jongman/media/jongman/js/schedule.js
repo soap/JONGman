@@ -4,7 +4,6 @@ function Schedule(opts)
 
 	this.init = function ()
 	{
-		this.initUserDefaultSchedule();
 		this.initRotateSchedule();
 		this.initReservations();
 
@@ -48,54 +47,21 @@ function Schedule(opts)
 
 	this.initNavigation = function ()
 	{
-		jQuery('.schedule_drop').hover(
-				function ()
-				{
-					jQuery("#schedule_list").show()
-				},
-				function ()
-				{
-					jQuery("#schedule_list").hide()
-				}
-		);
-
 		jQuery("#calendar_toggle").click(function (event)
 		{
 			event.preventDefault();
-
+			
 			var datePicker = jQuery("#datepicker");
 			datePicker.toggle();
 
 			if (datePicker.css("display") == "none")
 			{
-				jQuery(this).find("img").first().attr("src", "img/calendar.png");
+				jQuery(this).find("img").first().attr("src", "media/com_jongman/jongman/images/calendar.png");
 			}
 			else
 			{
-				jQuery(this).find("img").first().attr("src", "img/calendar-minus.png");
+				jQuery(this).find("img").first().attr("src", "media/com_jongman/jongman/images/calendar-minus.png");
 			}
-		});
-	};
-
-	this.initUserDefaultSchedule = function ()
-	{
-		var makeDefaultButton = jQuery('#make_default');
-		makeDefaultButton.show();
-
-		var defaultSetMessage = jQuery('#defaultSetMessage');
-		makeDefaultButton.click(function (e)
-		{
-			e.preventDefault();
-			var scheduleId = jQuery('#scheduleId').val();
-			var changeDefaultUrl = options.setDefaultScheduleUrl.replace("[scheduleId]", scheduleId);
-			jQuery.ajax({
-				url: changeDefaultUrl,
-				success: function (data)
-				{
-					defaultSetMessage.show().delay(5000).fadeOut();
-				}
-			});
-
 		});
 	};
 
@@ -229,11 +195,6 @@ function ChangeDate(year, month, day)
 	RedirectToSelf("sd", /sd=\d{4}-\d{1,2}-\d{1,2}/i, "sd=" + year + "-" + month + "-" + day);
 }
 
-function ChangeSchedule(scheduleId)
-{
-	RedirectToSelf("sid", /sid=\d+/i, "sid=" + scheduleId);
-}
-
 function RedirectToSelf(queryStringParam, regexMatch, substitution)
 {
 	var url = window.location.href;
@@ -251,8 +212,8 @@ function RedirectToSelf(queryStringParam, regexMatch, substitution)
 	{
 		newUrl = url + "?" + substitution;
 	}
-
-	newUrl = newUrl.replace("#", "");
-
+	
+	newUrl = newUrl.replace("#sc-top", "");
+	newUrl = newUrl.replace("sc-top", "");
 	window.location = newUrl;
 }
