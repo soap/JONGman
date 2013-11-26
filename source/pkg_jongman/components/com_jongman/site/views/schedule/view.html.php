@@ -73,7 +73,6 @@ class JongmanViewSchedule extends JViewLegacy
 		}
 
 		parent::display($tp);
-
 	}
 
 	/**

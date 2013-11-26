@@ -80,6 +80,15 @@ class JongmanModelSchedule extends JModelItem {
 			$db->setQuery($query);
 			
 			$this->_item[$pk] = $db->loadObject();
+			if (isset($this->_item[$pk]->params)) {
+				if (is_string($this->_item[$pk]->params)) {
+					$params = new JRegistry($this->_item[$pk]->params);
+					$this->_item[$pk]->params = $params;
+					//merge to model state -> 'params'
+					$params->merge($this->getState('params'));
+					$this->setState('params', $params);	
+				}	
+			}
 		}
 		
 		return $this->_item[$pk];			
@@ -208,16 +217,16 @@ class JongmanModelSchedule extends JModelItem {
 		$user = JFactory::getUser();
 		$userTimezone = $user->getParam('timezone', null);
 		$tz = empty($userTimezone) ? JFactory::getConfig()->get('offset') : $userTimezone;
-		$providedDate = JRequest::getString('date', null);
+		$providedDate = JRequest::getCmd('sd', null);
 		
-		$date = empty($selectedDate) ? JMDate::now() : new JMDate($providedDate, $tz);
-		
+		$date = empty($providedDate) ? JMDate::now() : new JMDate(preg_replace("/[a-zA-Z#]+/","",$providedDate), $tz);
+
 		$selectedDate = $date->toTimezone($tz)->getDate();
 		$selectedWeekday = $selectedDate->weekday();
-		$scheduleLength = $schedule->view_days;
+		$scheduleLength = (int)$schedule->view_days;
 		
 		$startDay = $schedule->weekday_start;
-		if ($startDay == 100 /* schedule::Today */) {
+		if ($startDay == 7) {
 			$startDate = $selectedDate;
 		}
 		else{
@@ -229,7 +238,7 @@ class JongmanModelSchedule extends JModelItem {
 			$startDate = $selectedDate->addDays($adjustedDays);
 		}
 		
-		$applicableDates = new DateRange( $startDate, $startDate->addDays($scheduleLength) );
+		$applicableDates = new DateRange( $startDate, $startDate->addDays($scheduleLength-1) );
 		
 		return $applicableDates;
 	}
@@ -458,6 +467,7 @@ class JongmanModelSchedule extends JModelItem {
      * @param none
      * @return navigation object
      * @since 2.0
+     * @todo rewrite me to use library class method
      */
 	public function getNavigation() 
 	{

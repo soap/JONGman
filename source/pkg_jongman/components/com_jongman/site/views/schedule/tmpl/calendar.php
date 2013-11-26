@@ -17,7 +17,8 @@ $lastDate = $this->scheduledates->getEnd();
 ?>
 <div>
 	<div class="schedule_title">
-		<span><?php echo $this->schedule->name?><a href="#" id="calendar-toggle"><img src="<?php echo $calLink?>"/></a></span>
+		<span><?php echo $this->schedule->name?></span>
+		<a href="#" id="calendar_toggle"><img src="<?php echo $calLink?>" alt="<?php echo JText::_('COM_JONGMAN_SHOWHIDE_CALENDAR')?>"/></a>
 	</div>
 	<div class="schedule_dates">
 		<?php echo $firstDate->format($headerDateFormat)?> - <?php echo $lastDate->format($headerDateFormat)?>	
@@ -32,9 +33,6 @@ endif;
 echo $this->loadTemplate('main');
 echo $this->loadTemplate('footer');
 ?>
-<div class="jm-containner">
-	<?php echo JongmanHelper::printJumpLinks($this->schedule, $this->state->get('scheduleType'), $this->datevars)?>
-</div>
 
 <script type="text/javascript">
 	var forceReload = false;
@@ -50,5 +48,17 @@ echo $this->loadTemplate('footer');
 
 		var schedule = new Schedule(scheduleOpts);
 		schedule.init();
+
+		jQuery('#datepicker').datepicker({
+			numberOfMonths: 3,
+			showButtonPanel: true,
+			onSelect: dpDateChanged,
+			dateFormat: 'yy-mm-dd',
+			firstDay: <?php echo $this->schedule->weekday_start?>,
+			currentText: '<?php echo JText::_('COM_JONGMAN_TODAY')?>'
+			
+		});
 	});
+
+	
 </script>

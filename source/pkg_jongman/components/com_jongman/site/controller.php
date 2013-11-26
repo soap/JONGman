@@ -44,7 +44,8 @@ class JongmanController extends JControllerLegacy
 		$view = JFactory::getApplication()->input->getCmd('view');
 		if ($view =='schedule') {
 			if (JRequest::getCmd('layout')=='calendar') {
-				JHtml::_('stylesheet', 'com_jongman/jongman/smoothness/jquery-ui-q.9.0.custom.css', false, true, false, false, false);	
+				$file = JUri::root().'media/com_jongman/jongman/css/smoothness/jquery-ui-1.9.0.custom.min.css';
+				JHtml::_('stylesheet', $file, false, true, false, false, false);	
 				JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, false, false);
 				JHtml::_('stylesheet', 'com_jongman/jongman/calendar.css', false, true, false, false, false);
 				JHtml::_('stylesheet', 'com_jongman/jongman/popup-reservation.css', false, true, false, false, false);
