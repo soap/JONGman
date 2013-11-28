@@ -92,5 +92,10 @@ class JongmanModelSchedule extends JModelAdmin
 		}
 
 		return $data;
-	}    
+	}
+
+	public function getLayouts()
+	{
+		
+	}
 }

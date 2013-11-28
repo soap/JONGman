@@ -87,6 +87,9 @@ JHtml::_('behavior.keepalive');
 		<?php echo $this->loadTemplate('metadata'); ?>
 		<?php echo JHtml::_('sliders.end'); ?>    
     </div>
+    <div class="width-90 fltlft">
+    	<?php echo $this->loadTemplate('layout')?>
+    </div>
     <input type="hidden" name="task" value=""/>
     <?php echo JHtml::_('form.token'); ?>
 </form>

@@ -2,6 +2,7 @@
 defined('_JEXEC') or die;
 
 JHtml::_('behavior.tooltip');
+JHtml::_('behavior.modal');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, false, false);
@@ -95,7 +96,6 @@ JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, f
 				</fieldset>
 			<?php echo JHtml::_('sliders.end'); ?>
 		</div>
-	<?php echo $this->loadTemplate('timeslot')?>
 
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>
