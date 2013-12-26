@@ -29,3 +29,16 @@ div.icon-48-users {
 div.icon-48-groups {
 	background: url('../images/icon-48-groups.png') no-repeat left;
 }
+
+#layoutDialog-left  textarea {
+	width: 300px;
+	height: 375px;
+}
+#layoutDialog-right  textarea {
+	width: 300px;
+	height: 375px;
+}
+
+#changeLayoutDialog p {
+	margin: 0;
+}

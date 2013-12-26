@@ -28,7 +28,7 @@ class JFormFieldLayout extends JFormField
 	{
 		// Initialize variables.
 		$html = array();
-		$link = 'index.php?option=com_jongman&amp;view=layouts&amp;layout=modal&amp;tmpl=component&amp;field=' . $this->id;
+		$link = 'index.php?option=com_jongman&amp;view=layouts&amp;layout=modal&amp;tmpl=component&amp;function=jmSelectLayout_' . $this->id;
 
 		// Initialize some field attributes.
 		$attr = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
@@ -42,7 +42,7 @@ class JFormFieldLayout extends JFormField
 
 		// Build the script.
 		$script = array();
-		$script[] = '	function jSelectUser_' . $this->id . '(id, title) {';
+		$script[] = '	function jmSelectLayout_' . $this->id . '(id, title) {';
 		$script[] = '		var old_id = document.getElementById("' . $this->id . '_id").value;';
 		$script[] = '		if (old_id != id) {';
 		$script[] = '			document.getElementById("' . $this->id . '_id").value = id;';

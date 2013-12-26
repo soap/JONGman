@@ -69,7 +69,7 @@
 		</field>
 
 		<field name="timeslots"
-			type="timeslots"
+			type="timeslot"
 			label="COM_JONGMAN_FIELD_TIMESLOT_LABEL"
 			description="COM_JONGMAN_FIELD_TIMESLOT_DESC"
 		/>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!-- $Id$ -->
+<form>
+	<fieldset name="static">
+	</fieldset>
+	<fieldset name="day_1">
+	</fieldset>
+
+</form>

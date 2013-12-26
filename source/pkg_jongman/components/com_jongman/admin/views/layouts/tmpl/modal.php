@@ -2,7 +2,7 @@
 defined('_JEXEC') or die;
 
 JHtml::_('behavior.tooltip');
-$function  = JRequest::getCmd('function', 'pfSelectLayout');
+$function  = JRequest::getCmd('function', 'jmSelectLayout');
 
 $user       = JFactory::getUser();
 $uid        = $user->get('id');
@@ -39,7 +39,7 @@ $list_dir   = $this->escape($this->state->get('list.direction'));
                 </th>
                 
                 <th width="5%">
-					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_TIMEZONE', 'a.timezone', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_TIMEZONE', 'a.timezone', $list_dir, $list_order); ?>
 				</th>
 				
                 <th width="30%">
@@ -61,14 +61,16 @@ $list_dir   = $this->escape($this->state->get('list.direction'));
                		<a class="pointer" onclick="if (window.parent) window.parent.<?php echo $this->escape($function);?>('<?php echo $item->id; ?>', '<?php echo $this->escape(addslashes($item->title)); ?>');">
                         <?php echo $this->escape($item->title); ?></a>
                 </td>
-                	<?php echo $this->escape($this->timezone)?>
-                <td>
-                <td>
                 
                 <td>
+                	<?php echo $this->escape($item->timezone)?>
+                </td>
+                <td>
+                
                 </td>
                 
                 <td>
+                
                 </td>
                 
                 <td class="center hidden-phone small">
