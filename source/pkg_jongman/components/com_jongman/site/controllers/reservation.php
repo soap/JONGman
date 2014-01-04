@@ -27,7 +27,7 @@ class JongmanControllerReservation extends JControllerForm
 		$app = JFactory::getApplication();
 		$model = $this->getModel();
 		$table = $model->getTable();
-		$cid = JRequest::getVar('cid', array(), 'post', 'array');
+		$cid = $app->input->getVar('cid', array());
 		$context = "$this->option.edit.$this->context";
 
 		// Determine the name of the primary key for the data.
@@ -43,7 +43,7 @@ class JongmanControllerReservation extends JControllerForm
 		}
 
 		// Get the previous record id (if any) and the current record id.
-		$recordId = (int) (count($cid) ? $cid[0] : JRequest::getInt($urlVar));
+		$recordId = (int) (count($cid) ? $cid[0] : $app->input->getInt($urlVar));
 		$checkin = property_exists($table, 'checked_out');
 
 		// Access check.
