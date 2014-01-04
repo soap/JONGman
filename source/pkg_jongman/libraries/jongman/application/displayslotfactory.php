@@ -3,7 +3,13 @@ defined('_JEXEC') or die;
 
 class JMDisplaySlotFactory
 {
-	
+	/**
+	 * 
+	 * This method can be override in the view
+	 * @param unknown_type $slot
+	 * @param unknown_type $slotRef
+	 * @param unknown_type $href
+	 */
 	protected function displayMyReserved(IReservationSlot $slot, $slotRef, $href) 
 	{
 		$html 	= array();
