@@ -22,7 +22,7 @@ $dailyDateFormat = $this->state->get('params')->get('daily_date_format', 'Y-m-d'
 		<?php endforeach?>
 		</tr>
 	<?php foreach ($this->resources as $resource) :?>
-	<?php 	$slots = $this->layout->getLayout($date, $resource->id);?>
+	<?php $slots = $this->layout->getLayout($date, $resource->id);?>
 		<tr class="slots">
 			<td class="resourcename">
 				<?php if ($this->layout->isDateReservable($date)) :?>

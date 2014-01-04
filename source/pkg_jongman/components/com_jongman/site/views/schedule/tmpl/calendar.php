@@ -1,4 +1,5 @@
 <?php
+defined('_JEXEC') or die;
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.modal');
 jimport('jongman.date.date');
@@ -33,7 +34,6 @@ endif;
 echo $this->loadTemplate('main');
 echo $this->loadTemplate('footer');
 ?>
-
 <script type="text/javascript">
 	var forceReload = false;
 	window.location.hash = 'sc-top';
