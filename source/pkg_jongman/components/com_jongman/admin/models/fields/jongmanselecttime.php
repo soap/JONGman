@@ -9,13 +9,19 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.form.helper');
-require_once JPATH_COMPONENT_SITE.'/libraries/dateutil.class.php';
+jimport('jongman.domain.schedulelayout.php');
 
 class JFormFieldJongmanSelectTime extends JFormField {
 
     protected $type = 'JongmanSelectTime';
+    
+    private $scheduleId;
+    private $resourceId;
 
-    public function getInput() {
+    public function getInput() 
+    {	
+    	$this->scheduleId = (int) $this->form->getValue('schedule_id');
+    	$this->resourceId = (int) $this->form->getValue('resource_id');
         // Initialize variables.
 		$html = array();
 		$attr = '';
@@ -49,43 +55,24 @@ class JFormFieldJongmanSelectTime extends JFormField {
 		return implode($html);
     }
     
-    protected function getOptions() {
-
+    protected function getOptions() 
+    {
         $options = array();
-        $min = (int)$this->element['min'];
-        $max = (int)$this->element['max'];
-        $step = (int)$this->element['step'];
-        if (empty($min)) $min = 0;
-        if (!empty($max) && !empty($step)) {
-        	for ($i=$min; $i <= $max; $i+=$step)
-			{
-            	$options[] = JHtml::_('select.option', (string)$i, DateUtil::formatTime($i, false));
+        $scheduleId = $this->scheduleId;
+        $resourceId = $this->resourceId;
+        
+        $user = JFactory::getUser();
+        $userTz = $user->getParam('timezone', 'UTC');
+        
+        $model = JModelLegacy::getInstance('Schedule', 'JongmanModel');
+        $layout = $model->getScheduleLayout($scheduleId, $userTz);
+		$periods = $layout->getLayout(new JMDate());        
+		foreach($periods as $period) {
+			if ($period->isReservable()) {
+        		$options[] = JHtml::_('select.option', $period->end(), $period->labelEnd());
 			}
-
-        	return $options;	
-        }
-        
-        $schedule_id = (int)$this->element['schedule_id'];
-        if (empty($schedule_id)) 
-        {
-        	$schedule_id = JRequest::getInt('schedule_id');
-        }
-        $dbo = JFactory::getDbo();
-        $query = $dbo->getQuery(true);
-        $query->select('day_start, day_end, time_span');
-        $query->from('#__jongman_schedules');
-        $query->where('id = '.$schedule_id);
-
-        $dbo->setQuery($query);
-        $result = $dbo->loadObject();
-        
-        $min = (int)$result->day_start;
-        $max = (int)$result->day_end;
-        $step = (int)$result->time_span;
-		for ($i=$min; $i <= $max; $i+=$step)
-		{
-            $options[] = JHtml::_('select.option', (string)$i, DateUtil::formatTime($i, false));
 		}
+
 
         return $options;
     }
