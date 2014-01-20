@@ -12,6 +12,9 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
 jimport('jongman.date.date');
+
+// add field definitions from backend
+JForm::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR . '/models/fields');
 /**
  * Reservation model.
  *
@@ -35,8 +38,6 @@ class JongmanModelReservation extends JModelAdmin
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
-		// add field definitions from backend
-		JForm::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR . '/models/fields');
 		// Get the form.
 		$form = $this->loadForm(
 			$this->option.'.'.$this->name,
@@ -81,7 +82,9 @@ class JongmanModelReservation extends JModelAdmin
 		$end_date = new JMDate($result->end_date, $tz);
 		
 		$result->start_date = $start_date->format('Y-m-d');
+		$result->start_time = $start_date->format('H:i:s');
 		$result->end_date = $end_date->format('Y-m-d');
+		$result->end_time = $end_date->format('H:i:s');
 		
 		return $result;
 	}

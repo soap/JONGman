@@ -107,7 +107,8 @@ JHtml::_('behavior.keepalive');
 		</div>
 		<div class="span6">
 		</div>
-		<input type="hidden" name="schedule_id" value="<?php echo $this->item->schedule_id?>>" />
-		<input type="hidden" name="task" value="" />
-		<?php echo JHtml::_('form.token'); ?>
-	</form>
+	</div>
+	<input type="hidden" name="schedule_id" value="<?php echo $this->item->schedule_id?>>" />
+	<input type="hidden" name="task" value="" />
+	<?php echo JHtml::_('form.token'); ?>
+</form>

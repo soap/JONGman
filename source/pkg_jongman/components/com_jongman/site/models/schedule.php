@@ -150,6 +150,7 @@ class JongmanModelSchedule extends JModelItem {
 	/**
 	 * 
 	 * Get list of reservation for this schedules
+	 * @deprecated since 1.0
 	 */
 	public function getReservations()
 	{
@@ -245,16 +246,16 @@ class JongmanModelSchedule extends JModelItem {
 	
 	/**
 	 * 
-	 * get schedule layout
+	 * load schedule layout data stored in database 
 	 * @param unknown_type $pk
 	 * @param unknown_type $tz
 	 * @since 2.0
 	 */
-	protected function getScheduleLayout($pk = null, $tz = null)
+	protected function loadScheduleLayout($pk = null, $tz = null)
 	{
 		jimport('jongman.date.time');
 		
-		$schedule = $this->getItem();
+		$schedule = $this->getItem($pk);
 		// Get time blocks from database
 		$blocks = $this->getTimeblocks($schedule->layout_id);
 
@@ -305,33 +306,52 @@ class JongmanModelSchedule extends JModelItem {
 	 * Get the reservation list 
 	 * @since 2.0
 	 */
-	private function getReservationList()
+	private function getReservationList($pk = null, $tz = null)
 	{
 		jimport('jongman.application.schedule.reservationlisting');
+		if (empty($tz)) {
+			$tz = JFactory::getUser()->getParam('offset');
+		}
+		$list = new ReservationListing($tz);
 		
-		$timezone = JFactory::getUser()->getParam('offset');
-		$list = new ReservationListing($timezone);
-		
-		//insert reservation data to the list
+		//@todo insert reservation data from database to the list
 
 		return $list;
 	}
 	
 	/**
 	 * 
-	 * Get daily layout object of the schedule reservation
+	 * Get schedule layout object of the schedule reservation (layout + reservation)
 	 * @since 2.0
 	 */
-	public function getDailyLayout()
+	public function getDailyLayout($pk = null, $tz = null)
 	{
 		jimport('jongman.application.schedule.dailylayout');
-		
-		$scheduleLayout = $this->getScheduleLayout();
+		// load schedule layout from database		
+		$scheduleLayout = $this->loadScheduleLayout($pk, $tz);
+		// load reservation data from database
 		$reservationList = $this->getReservationList();
 		
 		$layout = new DailyLayout($reservationList, $scheduleLayout);
 		
 		return $layout;
+	}
+	
+	/**
+	 * 
+	 * get schedule layout without reservation data
+	 * We use this for display time select options in reservation form (via JFormField)
+	 * @param unknown_type $pk
+	 * @param unknown_type $tz
+	 */
+	public function getScheduleLayout($pk = null, $tz = null)
+	{
+		jimport('jongman.domain.schedulelayout');
+		
+		// load schedule layout from database		
+		$scheduleLayout = $this->loadScheduleLayout($pk, $tz);
+		
+		return $scheduleLayout;
 	}
 	
 	/**

@@ -447,10 +447,13 @@ class JongmanControllerReservation extends JControllerForm
 	
 	protected function getRedirectToListAppend()
 	{
-
 		$append = parent::getRedirectToListAppend();
 		
-		$schedule_id = JRequest::getInt('sid', null);
+		$app = JFactory::getApplication();	
+		$schedule_id = $app->input->getInt('sid', null);
+		if (empty($schedule_id)) {
+			$schedule_id = $app->input->getInt('schedule_id', null);
+		}
 		
 		return $append.'&layout=calendar&id='.$schedule_id;
 		
