@@ -116,12 +116,6 @@ class JongmanModelReservation extends JModelAdmin
 
 		if (empty($data)) {
 			$data = $this->getItem();
-			//$start_date = new JDate($data->start_date); 
-			//$data->start_date = $start_date->format("Y-m-d");
-			
-			//$end_date = new JDate($data->end_date); 
-			//$data->end_date = $end_date->format("Y-m-d");
-			
 		}
 		return $data;
 	}
