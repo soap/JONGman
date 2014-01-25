@@ -10,7 +10,6 @@ JHtml::_('behavior.keepalive');
 	{
 		var form = document.id('reservation-form');
 		if (task == 'reservation.cancel' || document.formvalidator.isValid(form)) {
-			<?php //echo $this->form->getField('description')->save(); ?>
 			Joomla.submitform(task, form);
 		}
 		else {
@@ -34,7 +33,7 @@ JHtml::_('behavior.keepalive');
 	method="post" name="adminForm" id="reservation-form" class="form-validate form-inline">
 	<div class="row-fluid">
 		<div class="span-12">
-			<div class="formelm-buttons btn-toolbar">
+			<div class="formelm-buttons btn-toolbar pull-right">
 				<button type="button" class="btn btn-info"
 					onclick="Joomla.submitbutton('reservation.save')">
 					<?php echo JText::_('JSAVE') ?>
@@ -44,14 +43,15 @@ JHtml::_('behavior.keepalive');
 					<?php echo JText::_('JCANCEL') ?>
 				</button>
 			</div>
+			<div class="pull-left">
+				<legend>
+				<?php echo JText::_('COM_JONGMAN_RESERVATION_TITLE')?>
+				</legend>
+			</div>
 		</div>
 	</div>
 	<div class="row-fluid">
 		<div class="span6 form-horizontal">
-			<legend>
-			<?php echo JText::_('COM_JONGMAN_RESERVATION_TITLE')?>
-			</legend>
-
 			<div class="control-group">
 				<div class="control-label">
 				<?php echo $this->form->getLabel('title'); ?>
@@ -63,10 +63,10 @@ JHtml::_('behavior.keepalive');
 
 			<div class="control-group">
 				<div class="control-label">
-					<?php echo $this->form->getLabel('alias'); ?>
+					<?php echo $this->form->getLabel('reference_number'); ?>
 				</div>
 				<div class="controls">
-					<?php echo $this->form->getInput('alias'); ?>
+					<?php echo $this->form->getInput('reference_number'); ?>
 				</div>
 			</div>
 			
@@ -108,7 +108,9 @@ JHtml::_('behavior.keepalive');
 		<div class="span6">
 		</div>
 	</div>
-	<input type="hidden" name="schedule_id" value="<?php echo $this->item->schedule_id?>>" />
+	<?php echo $this->form->getInput('schedule_id')?>
+	
 	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="return" value="<?php echo base64_encode($this->state->get('return_page')); ?>" />
 	<?php echo JHtml::_('form.token'); ?>
 </form>

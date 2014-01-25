@@ -15,6 +15,7 @@ $calLink = JURI::root().'media/com_jongman/jongman/images/calendar.png';
 
 $firstDate = $this->scheduledates->getBegin();
 $lastDate = $this->scheduledates->getEnd();
+
 ?>
 <div>
 	<div class="schedule_title">

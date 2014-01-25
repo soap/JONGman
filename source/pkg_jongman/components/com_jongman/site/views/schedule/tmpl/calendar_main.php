@@ -1,9 +1,13 @@
 <?php
 defined('_JEXEC') or die;
 
+//return page url after reservation complete/cance
+$return = base64_encode(JFactory::getURI()->toString());
+
 $today = JMDate::now(); 
 $displayDates = $this->scheduledates->dates();
-$baseRef = 'index.php?option=com_jongman&task=reservation.add&Itemid='.JRequest::getInt('Itemid');
+$baseRef = 'index.php?option=com_jongman&task=reservation.add&return='.$return.'&Itemid='.JRequest::getInt('Itemid');
+
 $dailyDateFormat = $this->state->get('params')->get('daily_date_format', 'Y-m-d');
 ?>
 <div class="clear-both"></div>

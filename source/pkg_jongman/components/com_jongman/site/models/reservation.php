@@ -27,6 +27,22 @@ class JongmanModelReservation extends JModelAdmin
 	protected $_resources = null;
 
 	protected $_schedules = null;
+	
+	/**
+     * Method to auto-populate the model state.
+     * Note. Calling getState in this method will result in recursion.
+     *
+     * @return    void
+     */
+    protected function populateState()
+    {
+        // Load state from the request.
+        $pk = JRequest::getInt('id');
+        $this->setState($this->getName() . '.id', $pk);
+
+        $return = JRequest::getVar('return', null, 'default', 'base64');
+        $this->setState('return_page', base64_decode($return));
+    }
 	/**
 	 * Method to get the Reservation form.
 	 *
@@ -139,43 +155,118 @@ class JongmanModelReservation extends JModelAdmin
 	 */
 	protected function prepareTable($table)
 	{
-
 		jimport('joomla.filter.output');
-
-		// Prepare the alias.
-		$table->alias = JApplication::stringURLSafe($table->alias);
-		$params = JComponentHelper::getParams('com_jongman');
-		$referLength = (int)$params->get('referLength');
+		if ($table->id > 0) {
+			$params = JComponentHelper::getParams('com_jongman');
+			$referLength = (int)$params->get('referLength');
 		
-		if ($referLength <= 6) $referLength = 6;
-		// If the alias is empty, prepare from the value of the title.
-		if (empty($table->alias) || strlen($table->alias)) {
-			$table->alias = JUserHelper::genRandomPassword($referLength);
+			if ($referLength <= 6) $referLength = 6;
+			// If the alias is empty, prepare from the value of the title.
+			if (empty($table->reference_number) || strlen($table->reference_number)) {
+				$table->reference_number = JUserHelper::genRandomPassword($referLength);
+			}
 		}
-		
+		return true;
+	}
+	
+	
+	/**
+	 * Method to save the form data.
+	 *
+	 * @param   array  $data  The form data.
+	 *
+	 * @return  boolean  True on success, False on error.
+	 *
+	 * @since   11.1
+	 */
+	public function save($data)
+	{
+		// Initialise variables;
+		$dispatcher = JDispatcher::getInstance();
+		$table = $this->getTable();
+		$key = $table->getKeyName();
+		$pk = (!empty($data[$key])) ? $data[$key] : (int) $this->getState($this->getName() . '.id');
+		$isNew = true;
+
+		// Include the content plugins for the on save events.
+		JPluginHelper::importPlugin('content');
+
+		// Allow an exception to be thrown.
+		try
+		{
+			// Load the row if saving an existing record.
+			if ($pk > 0)
+			{
+				$table->load($pk);
+				$isNew = false;
+			}
+
+			// Bind the data.
+			if (!$table->bind($data))
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+
+			// Prepare the row for saving
+			$this->prepareTable($table);
+
+			// Check the data.
+			if (!$table->check())
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+
+			// Trigger the onContentBeforeSave event.
+			$result = $dispatcher->trigger($this->event_before_save, array($this->option . '.' . $this->name, &$table, $isNew));
+			if (in_array(false, $result, true))
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+
+			// Store the data.
+			if (!$table->store())
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+
+			// Clean the cache.
+			$this->cleanCache();
+
+			// Trigger the onContentAfterSave event.
+			$dispatcher->trigger($this->event_after_save, array($this->option . '.' . $this->name, &$table, $isNew));
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e->getMessage());
+
+			return false;
+		}
+
+		$pkName = $table->getKeyName();
+
+		if (isset($table->$pkName))
+		{
+			$this->setState($this->getName() . '.id', $table->$pkName);
+		}
+		$this->setState($this->getName() . '.new', $isNew);
+
 		return true;
 	}
 	
 	/**
-	 * 
-	 * Validate resource availability
-	 * @param unknown_type $data
+	 * override to add resource reservation validation 
+	 * @see JModelForm::validate()
 	 */
-	public function validateResource($data = null) 
+	public function validate($form, $data, $group = null)
 	{
-		$result = (!$this->isBooked($data));
-
-		return $result;
+		$validData = parent::validate($form, $data, $group);
+		if ($validData === false) return false;
+		// now we do our validation process
+		return $validData;
 	}
 	
-	/**
-	 * 
-	 * Check if the resource was booked or not
-	 * @param unknown_type $data
-	 */
-	
-	protected function isBooked($data) 
-	{
-
-	}
 }
