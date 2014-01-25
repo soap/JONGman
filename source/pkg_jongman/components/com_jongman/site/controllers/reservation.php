@@ -205,25 +205,6 @@ class JongmanControllerReservation extends JControllerForm
 
 			return false;
 		}
-		// Attempt to validate reservation (conflict or unavailable?)
-		if (!$model->validateResource($validData)) 
-		{
-			// Save the data in the session.
-			$app->setUserState($context . '.data', $validData);
-			
-			// Redirect back to the edit screen.
-			$this->setError(JText::sprintf('COM_JONGMAN_ERROR_RESOURCE_UNAVAILABLE_FAILED', $model->getError()));
-			$this->setMessage($this->getError(), 'error');	
-
-			$this->setRedirect(
-				JRoute::_(
-					'index.php?option=' . $this->option . '&view=' . $this->view_item
-					//. $this->getRedirectToItemAppend($recordId, $key), false
-					.'&layout=modal&tmpl=component'.(!empty($recordId)?"&$key=$recordId":""), false
-					)
-				);
-			return false;		
-		}
 		
 		// Attempt to save the data.
 
@@ -309,7 +290,7 @@ class JongmanControllerReservation extends JControllerForm
 					$this->setRedirect(
 						JRoute::_(
 							'index.php?option=' . $this->option . '&view=' . $this->view_list
-							.$this->getRedirectListAppend(), false
+							.$this->getRedirectToListAppend(), false
 							)
 					);
 				}
@@ -323,92 +304,14 @@ class JongmanControllerReservation extends JControllerForm
 	}
 
 	/**
-	 * Override to add support to redirect to closepopup view
+	 * Override to add support to redirect page with parameter
 	 * @see JControllerForm::cancel()
 	 */
 	public function cancel($key = null)
 	{
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-
-		// Initialise variables.
-		$app = JFactory::getApplication();
-		$model = $this->getModel();
-		$table = $model->getTable();
-		$checkin = property_exists($table, 'checked_out');
-		$context = "$this->option.edit.$this->context";
-
-		if (empty($key))
-		{
-			$key = $table->getKeyName();
-		}
-
-		$recordId = JRequest::getInt($key);
-
-		// Attempt to check-in the current record.
-		if ($recordId)
-		{
-			// Check we are holding the id in the edit list.
-			if (!$this->checkEditId($context, $recordId))
-			{
-				// Somehow the person just went to the form - we don't allow that.
-				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $recordId));
-				$this->setMessage($this->getError(), 'error');
-				if (JRequest::getInt('popup') == 1) {
-					$this->setRedirect(
-						JRoute::_('index.php?option='.$this->option.'&view=closepopup&cancel=1&refresh=0')
-					);
-				}else {
-					$this->setRedirect(
-						JRoute::_(
-							'index.php?option=' . $this->option . '&view=' . $this->view_list
-							. $this->getRedirectToListAppend(), false
-						)
-					);
-				}
-				return false;
-			}
-
-			if ($checkin)
-			{
-				if ($model->checkin($recordId) === false)
-				{
-					// Check-in failed, go back to the record and display a notice.
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError()));
-					$this->setMessage($this->getError(), 'error');
-					if (JRequest::getInt('popup') == 1) {
-						
-						$this->setRedirect(
-							JRoute::_('index.php?option='.$this->option.'&view=closepopup&cancel=1&refresh=0')
-						);
-					}else {
-						$this->setRedirect(
-							JRoute::_(
-								'index.php?option=' . $this->option . '&view=' . $this->view_item
-								. $this->getRedirectToItemAppend($recordId, $key), false
-							)
-						);
-					}
-					return false;
-				}
-			}
-		}
-
-		// Clean the session data and redirect.
-		$this->releaseEditId($context, $recordId);
-		$app->setUserState($context . '.data', null);
-		if (JRequest::getInt('popup') == 1) {
-			$this->setRedirect(
-				JRoute::_('index.php?option='.$this->option.'&view=closepopup&cancel=1&refresh=0')
-			);
-		}else {
-			$this->setRedirect(
-				JRoute::_(
-					'index.php?option=' . $this->option . '&view=' . $this->view_list
-					. $this->getRedirectToListAppend(), false
-				)
-			);
-		}
-		return true;
+		parent::cancel($key);
+		
+		$this->setRedirect($this->getReturnPage());
 	}
 
 	protected function allowEdit($data=array(), $key = 'id')
@@ -419,12 +322,15 @@ class JongmanControllerReservation extends JControllerForm
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id') 
 	{
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
+		$input = JFactory::getApplication()->input;
 		
-		$resource_id = JRequest::getInt('rid', null);
-		$schedule_id = JRequest::getInt('sid', null);
+		$resource_id = $input->getInt('rid', null);
+		$schedule_id = $input->getInt('sid', null);
 		
-		$start_date = JRequest::getString('sd', null);
-		$end_date = JRequest::getString('ed', null);
+		$start_date = $input->getString('sd', null);
+		$end_date = $input->getString('ed', null);
+		
+		$return = $this->getReturnPage();
 		
 		if ($resource_id !== null) {
 			$append .= '&resource_id='.$resource_id;
@@ -442,6 +348,10 @@ class JongmanControllerReservation extends JControllerForm
 			$append .= '&end='.$end_date;
 		}
 		
+		if ($return !== null) {
+			$append .= '&return='.base64_encode($return);
+		}
+		
 		return $append;
 	}
 	
@@ -457,5 +367,12 @@ class JongmanControllerReservation extends JControllerForm
 		
 		return $append.'&layout=calendar&id='.$schedule_id;
 		
+	}
+	
+	protected function getReturnPage()
+	{
+		$return = JRequest::getVar('return', null, 'default', 'base64');
+
+        return base64_decode($return);
 	}
 }
