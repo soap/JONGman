@@ -98,7 +98,8 @@
 				readonly="true" />
 				
 			<field name="description"
-				type="editor"
+				type="textarea"
+				cols="30" rows="5"
 				label="COM_JONGMAN_FIELD_RESERVATION_DESCRIPTION_LABEL"
 				description="COM_JONGMAN_FIELD_RESERVATION_DESCRIPTION_DESC"
 				class="inputbox"
