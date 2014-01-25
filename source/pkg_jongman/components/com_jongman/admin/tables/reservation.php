@@ -68,50 +68,7 @@ class JongmanTableReservation extends JTable
 	 * @since   1.0
 	 */
 	public function store($updateNulls = false)
-	{
-		// Initialiase variables.
-		$date	= JFactory::getDate()->toSql();
-		$user 	= JFactory::getUser();
-		$config = JFactory::getConfig();
-		
-		if (empty($this->id)) {
-			// New record.
-			$this->created_time		= $date;
-			$this->created_by		= $user->get('id');
-		} 
-		else {
-			// Existing record.
-			$this->modified_time	= $date;
-			$this->modified_by		= $user->get('id');
-		}
-		
-		if (empty($this->reserved_for)) {
-			$this->reserved_for = $user->get('id');
-		}
-		
-		$tz = new DateTimeZone($user->getParam('timezone', $config->get('offset')));
-		$date = JDate::getInstance($this->start_date, $tz);
-		
-		$this->start_date = $date->toUnix();
-		
-		$dbo = $this->getDbo();
-		$query = $dbo->getQuery(true);
-		$query->select('allow_multi');
-		$query->from('#__jongman_resources');
-		$query->where('id = '.$this->resource_id);
-		
-		$dbo->setQuery($query);
-		if ($dbo->loadResult()==1) {
-			$date = JDate::getInstance($this->end_date, $tz);
-			$this->end_date = $date->toUnix();
-		}else{
-			$this->end_date = $this->start_date;
-		}
-		
-		if ($this->end_date < $this->start_date) {
-			$this->end_date = $this->start_date;
-		}
-		
+	{	
 		// Attempt to store the data.
 		return parent::store($updateNulls);
 	}
