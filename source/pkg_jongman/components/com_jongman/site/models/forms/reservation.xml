@@ -18,12 +18,14 @@
 			class="inputbox" required="true"
 			size="45" />
 						
-		<field name="alias"
+		<field name="reference_number"
 			type="text"
-			label="JFIELD_ALIAS_LABEL"
-			description="JFIELD_ALIAS_DESC"
-			class="inputbox"
+			readonly="true"
+			label="COM_JONGMAN_FIELD_REFERENCE_NUMBER_LABEL"
+			description="COM_JONGMAN_FIELD_REFERENCE_NUMBER_DESC"
+			class="inputbox readonly"
 			size="45" />
+			
 		<field name="reserved_for" 
 			type="jongmanuser"
 			label="COM_JONGMAN_FIELD_RESERVATION_RESERVED_FOR_LABEL"
@@ -65,13 +67,11 @@
 			filter="unset" />
 			
 		<field name="description"
-			type="editor"
+			type="textarea"
 			label="COM_JONGMAN_FIELD_RESERVATION_DESCRIPTION_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_DESCRIPTION_DESC"
-			buttons="false"
-			height="100"
-			class="inputbox"
-			size="40" />
+			rows="5" cols="100"
+			class="" />
 			
 	</fieldset>
 	<fieldset name="period">
