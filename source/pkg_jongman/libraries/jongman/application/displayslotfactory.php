@@ -1,6 +1,11 @@
 <?php
 defined('_JEXEC') or die;
 
+/**
+ * 
+ * Display slot based on slot type, can be overriden in view class
+ *
+ */
 class JMDisplaySlotFactory
 {
 	/**
