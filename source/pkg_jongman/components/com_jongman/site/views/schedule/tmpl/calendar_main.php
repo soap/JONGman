@@ -4,7 +4,7 @@ defined('_JEXEC') or die;
 //return page url after reservation complete/cance
 $return = base64_encode(JFactory::getURI()->toString());
 
-$today = JMDate::now(); 
+$today = RFDate::now(); 
 $displayDates = $this->scheduledates->dates();
 $baseRef = 'index.php?option=com_jongman&task=reservation.add&return='.$return.'&Itemid='.JRequest::getInt('Itemid');
 
@@ -39,7 +39,7 @@ $dailyDateFormat = $this->state->get('params')->get('daily_date_format', 'Y-m-d'
 			foreach ($slots as $slot) :
 				$slotRef = $slot->beginDate()->format('YmdHis').$resource->id;
 				$href = "{$baseRef}&rid={$resource->id}&sid={$this->schedule->id}&rd={$date->format('Y-m-d')}";
-				echo JMDisplaySlotFactory::display($slot, $slotRef, $href, true, $this);
+				echo RFDisplaySlotFactory::display($slot, $slotRef, $href, true, $this);
 			endforeach;
 		?>
 		</tr>	
