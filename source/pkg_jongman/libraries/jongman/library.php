@@ -30,8 +30,9 @@ jimport('jongman.base.ireservationslot');
 // I want to user JM prefix, but JLoader cannot support it, as Joomla 's J matched first
 JLoader::registerPrefix('RF', JPATH_PLATFORM . '/jongman');
 
-//discover classes prefixed by JM in the folder
+//discover classes prefixed by RF in the folder
 JLoader::discover('RF', JPATH_PLATFORM . '/jongman/utils');
+JLoader::discover('RF', JPATH_PLATFORM . '/jongman/reservation');
 
 // Add include paths
 JHtml::addIncludePath(JPATH_PLATFORM . '/jongman/html');
