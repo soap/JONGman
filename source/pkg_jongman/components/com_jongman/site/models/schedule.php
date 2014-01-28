@@ -2,7 +2,9 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modelitem');
-require_once JPATH_COMPONENT."/libraries/dateutil.class.php";
+jimport('jongman.layout.schedule');
+
+//require_once JPATH_COMPONENT."/libraries/dateutil.class.php";
 
 class JongmanModelSchedule extends JModelItem {
 	
@@ -206,7 +208,7 @@ class JongmanModelSchedule extends JModelItem {
 	
 	/**
 	 * Get date range object for selected schedule
-	 * @return DateRange object
+	 * @return RFDateRange object
 	 * @since 2.0
 	 */
 	public function getScheduleDates()
@@ -220,7 +222,7 @@ class JongmanModelSchedule extends JModelItem {
 		$tz = empty($userTimezone) ? JFactory::getConfig()->get('offset') : $userTimezone;
 		$providedDate = JRequest::getCmd('sd', null);
 		
-		$date = empty($providedDate) ? JMDate::now() : new JMDate(preg_replace("/[a-zA-Z#]+/","",$providedDate), $tz);
+		$date = empty($providedDate) ? RFDate::now() : new RFDate(preg_replace("/[a-zA-Z#]+/","",$providedDate), $tz);
 
 		$selectedDate = $date->toTimezone($tz)->getDate();
 		$selectedWeekday = $selectedDate->weekday();
@@ -239,7 +241,7 @@ class JongmanModelSchedule extends JModelItem {
 			$startDate = $selectedDate->addDays($adjustedDays);
 		}
 		
-		$applicableDates = new DateRange( $startDate, $startDate->addDays($scheduleLength-1) );
+		$applicableDates = new RFDateRange( $startDate, $startDate->addDays($scheduleLength-1) );
 		
 		return $applicableDates;
 	}
@@ -263,16 +265,16 @@ class JongmanModelSchedule extends JModelItem {
 			$tz = $schedule->timezone;		
 		}
 		
-		$layout = new ScheduleLayout($tz);
+		$layout = new RFLayoutSchedule($tz);
 
 		foreach($blocks as $period) {
 			if ($period->availability_code == 1) {
 				$layout->appendPeriod(
-					Time::parse($period->start_time), Time::parse($period->end_time), 
+					RFTime::parse($period->start_time), RFTime::parse($period->end_time), 
 					$period->label, $period->day_of_week);
 			}else{
 				$layout->appendBlockedPeriod(
-					Time::parse($period->start_time), Time::parse($period->end_time), 
+					RFTime::parse($period->start_time), RFTime::parse($period->end_time), 
 					$period->label, $period->day_of_week);	
 			}	
 		}
@@ -312,7 +314,7 @@ class JongmanModelSchedule extends JModelItem {
 		if (empty($tz)) {
 			$tz = JFactory::getUser()->getParam('offset');
 		}
-		$list = new ReservationListing($tz);
+		$list = new RFReservationListing($tz);
 		
 		//@todo insert reservation data from database to the list
 
@@ -332,7 +334,7 @@ class JongmanModelSchedule extends JModelItem {
 		// load reservation data from database
 		$reservationList = $this->getReservationList();
 		
-		$layout = new DailyLayout($reservationList, $scheduleLayout);
+		$layout = new RFLayoutDaily($reservationList, $scheduleLayout);
 		
 		return $layout;
 	}
@@ -509,7 +511,7 @@ class JongmanModelSchedule extends JModelItem {
 			$prevAdjustment = 7 * floor($adjustment / 7); // ie, if 10, we only want to go back 7 days so there is overlap
 		}
 
-		$navigator = new JMNavigator($startDate->AddDays(-$prevAdjustment), $startDate->AddDays($adjustment), $schedule->view_days);
+		$navigator = new RFNavigator($startDate->AddDays(-$prevAdjustment), $startDate->AddDays($adjustment), $schedule->view_days);
 		
 		return $navigator;
 			
