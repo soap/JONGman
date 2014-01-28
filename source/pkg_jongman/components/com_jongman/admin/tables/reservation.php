@@ -22,6 +22,9 @@ jimport('joomla.database.table');
  */
 class JongmanTableReservation extends JTable
 {
+	
+	private $_instances = array();  // start_date, end_date, reservation_id, reference_number
+	
 	/**
 	 * Constructor.
 	 *
@@ -69,8 +72,14 @@ class JongmanTableReservation extends JTable
 	 */
 	public function store($updateNulls = false)
 	{	
-		// Attempt to store the data.
-		return parent::store($updateNulls);
+		$stored =  parent::store($updateNulls);
+		if (!$stored) return false;
+		
+		if (empty($this->_instances)) return stored;
+		//now we try to save instances
+		
+		return true;
+		
 	}
 	
 	function load($keys = null, $reset = true) {
@@ -92,5 +101,9 @@ class JongmanTableReservation extends JTable
 		}
 		return $ret;
 	}
-	
+
+	function setDateRange($date)
+	{
+		
+	}
 }
