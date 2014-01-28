@@ -1,8 +1,8 @@
 <?php
 defined('_JEXEC') or die;
-jimport('jongman.application.schedule.ireservationlisting');
+jimport('jongman.base.ireservationlisting');
 
-class ReservationListing implements IMutableReservationListing
+class RFReservationListing implements IMutableReservationListing
 {
 	/**
 	 * @param string $targetTimezone
@@ -70,7 +70,7 @@ class ReservationListing implements IMutableReservationListing
 		$this->_reservationByResource[$item->resourceId()][] = $item;
 	}
 
-	protected function addOnDate(ReservationListItem $item, JMDate $date)
+	protected function addOnDate(ReservationListItem $item, RFDate $date)
 	{
 //		Log::Debug('Adding id %s on %s', $item->Id(), $date);
 		$this->_reservationsByDate[$date->format('Ymd')][] = $item;
@@ -133,7 +133,7 @@ class ReservationListing implements IMutableReservationListing
 		return new ReservationListing($this->timezone);
 	}
 
-	public function onDateForResource(JMDate $date, $resourceId)
+	public function onDateForResource(RFDate $date, $resourceId)
 	{
         $key = $date->format('Ymd') . '|' . $resourceId;
 

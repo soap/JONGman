@@ -1,8 +1,8 @@
 <?php
 defined('_JEXEC') or die;
-jimport('jongman.application.schedule.ireservationslot');
+jimport('jongman.base.ireservationslot');
 
-class ReservationSlot implements IReservationSlot
+class RFReservationSlot implements IReservationSlot
 {
 	/**
 	 * @var Date
@@ -46,7 +46,7 @@ class ReservationSlot implements IReservationSlot
 	 * @param int $periodSpan
 	 * @param ReservationItemView $reservation
 	 */
-	public function __construct(SchedulePeriod $begin, SchedulePeriod $end, JMDate $displayDate, $periodSpan,
+	public function __construct(SchedulePeriod $begin, SchedulePeriod $end, RFDate $displayDate, $periodSpan,
 								ReservationItem $reservation)
 	{
 		$this->_reservation = $reservation;
@@ -131,14 +131,14 @@ class ReservationSlot implements IReservationSlot
 		return $this->_reservation->RequiresApproval;
 	}
 
-	public function isPastDate(JMDate $date)
+	public function isPastDate(RFDate $date)
 	{
 		return $this->_displayDate->setTime($this->begin())->lessThan($date);
 	}
 
 	public function toTimezone($timezone)
 	{
-		return new ReservationSlot(
+		return new RFReservationSlot(
 			$this->beginDate()->toTimezone($timezone), 
 			$this->endDate()->toTimezone($timezone), 
 			$this->date(), $this->periodSpan(), $this->_reservation);

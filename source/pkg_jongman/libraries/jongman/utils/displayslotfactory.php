@@ -6,7 +6,7 @@ defined('_JEXEC') or die;
  * Display slot based on slot type, can be overriden in view class
  *
  */
-class JMDisplaySlotFactory
+class RFDisplaySlotFactory
 {
 	/**
 	 * 
@@ -144,7 +144,7 @@ class JMDisplaySlotFactory
 			}
 			else
 			{
-				if ($slot->isPastDate(JMDate::now()) && !self::userHasAdminRights($slot))
+				if ($slot->isPastDate(RFDate::now()) && !self::userHasAdminRights($slot))
 				{
 					return 'displayPastTime';
 				}

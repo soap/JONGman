@@ -1,72 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 
-jimport('jongman.domain.value.dayofweek');
-jimport('jongman.domain.scheduleperiod');
-
-
-interface ILayoutTimezone
-{
-	public function timezone();
-}
-
-interface IDailyScheduleLayout
-{
-	/**
-	 * @return bool
-	 */
-	public function usesDailyLayouts();
-}
-
-interface IScheduleLayout extends ILayoutTimezone, IDailyScheduleLayout
-{
-	/**
-	 * @param Date $layoutDate
-	 * @param bool $hideBlockedPeriods
-	 * @return SchedulePeriod[]|array of SchedulePeriod objects
-	 */
-	public function getLayout(JMDate $layoutDate, $hideBlockedPeriods = false);
-
-	/**
-	 * @abstract
-	 * @param Date $date
-	 * @return SchedulePeriod|null period which occurs at this datetime. Includes start time, excludes end time. null if no match is found
-	 */
-	public function getPeriod(JMDate $date);
-}
-
-interface ILayoutCreation extends ILayoutTimezone, IDailyScheduleLayout
-{
-	/**
-	 * Appends a period to the schedule layout
-	 *
-	 * @param Time $startTime starting time of the schedule in specified timezone
-	 * @param Time $endTime ending time of the schedule in specified timezone
-	 * @param string $label optional label for the period
-	 * @param DayOfWeek|int|null $dayOfWeek
-	 */
-	function appendPeriod(Time $startTime, Time $endTime, $label = null, $dayOfWeek = null);
-
-	/**
-	 * Appends a period that is not reservable to the schedule layout
-	 *
-	 * @param Time $startTime starting time of the schedule in specified timezone
-	 * @param Time $endTime ending time of the schedule in specified timezone
-	 * @param string $label optional label for the period
-	 * @param DayOfWeek|int|null $dayOfWeek
-	 * @return void
-	 */
-	function appendBlockedPeriod(Time $startTime, Time $endTime, $label = null, $dayOfWeek = null);
-
-	/**
-	 *
-	 * @param DayOfWeek|int|null $dayOfWeek
-	 * @return LayoutPeriod[] array of LayoutPeriod
-	 */
-	function getSlots($dayOfWeek = null);
-}
-
-class ScheduleLayout implements IScheduleLayout, ILayoutCreation
+class RFLayoutSchedule implements ILayoutSchedule, ILayoutCreation
 {
 	/**
 	 * @var array|LayoutPeriod[]
@@ -142,9 +77,9 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 	 * @param string $label optional label for the period
 	 * @param DayOfWeek|int|null $dayOfWeek
 	 */
-	public function appendPeriod(Time $startTime, Time $endTime, $label = null, $dayOfWeek = null)
+	public function appendPeriod(RFTime $startTime, RFTime $endTime, $label = null, $dayOfWeek = null)
 	{
-		$this->appendGenericPeriod($startTime, $endTime, PeriodTypes::RESERVABLE, $label, $dayOfWeek);
+		$this->appendGenericPeriod($startTime, $endTime, RFSchedulePeriodTypes::RESERVABLE, $label, $dayOfWeek);
 	}
 
 	/**
@@ -156,16 +91,16 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 	 * @param DayOfWeek|int|null $dayOfWeek
 	 * @return void
 	 */
-	public function appendBlockedPeriod(Time $startTime, Time $endTime, $label = null, $dayOfWeek = null)
+	public function appendBlockedPeriod(RFTime $startTime, RFTime $endTime, $label = null, $dayOfWeek = null)
 	{
-		$this->appendGenericPeriod($startTime, $endTime, PeriodTypes::NONRESERVABLE, $label, $dayOfWeek);
+		$this->appendGenericPeriod($startTime, $endTime, RFSchedulePeriodTypes::NONRESERVABLE, $label, $dayOfWeek);
 	}
 
-	protected function appendGenericPeriod(Time $startTime, Time $endTime, $periodType, $label = null,
+	protected function appendGenericPeriod(RFTime $startTime, RFTime $endTime, $periodType, $label = null,
 										   $dayOfWeek = null)
 	{
 		$this->layoutTimezone = $startTime->timezone();
-		$layoutPeriod = new LayoutPeriod($startTime, $endTime, $periodType, $label);
+		$layoutPeriod = new RFLayoutPeriod($startTime, $endTime, $periodType, $label);
 		if (!is_null($dayOfWeek))
 		{
 			$this->usingDailyLayouts = true;
@@ -182,7 +117,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 	 * @param Date $end
 	 * @return bool
 	 */
-	protected function spansMidnight(JMDate $start, JMDate $end)
+	protected function spansMidnight(RFDate $start, RFDate $end)
 	{
 		return !$start->dateEquals($end) && !$end->isMidnight();
 	}
@@ -193,7 +128,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 	 * @param bool $hideBlockedPeriods Get blocked period (unreservable) or not
 	 * @return array|SchedulePeriod[]
 	 */
-	public function getLayout(JMDate $layoutDate, $hideBlockedPeriods = false)
+	public function getLayout(RFDate $layoutDate, $hideBlockedPeriods = false)
 	{
 		if ($this->usingDailyLayouts)
 		{
@@ -208,12 +143,12 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 			return $cachedValues;
 		}
 
-		$list = new PeriodList();
+		$list = new RFSchedulePeriodList();
 
 		$periods = $this->getPeriods($layoutDate);
 
 		$layoutTimezone = $periods[0]->timezone();
-		$workingDate = JMDate::Create($layoutDate->year(), $layoutDate->month(), $layoutDate->day(), 0, 0, 0,
+		$workingDate = RFDate::Create($layoutDate->year(), $layoutDate->month(), $layoutDate->day(), 0, 0, 0,
 									$layoutTimezone);
 		$midnight = $layoutDate->getDate();
 
@@ -255,7 +190,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 					// add compensating period at end
 					$start = $layoutDate->setTime($startTime);
 					$end = $periodEnd->addDays(1);
-					$list->Add($this->buildPeriod($periodType, $start, $end, $label, $labelEnd));
+					$list->add($this->buildPeriod($periodType, $start, $end, $label, $labelEnd));
 				}
 				else
 				{
@@ -282,7 +217,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 		return $layout;
 	}
 
-	private function getLayoutDaily(JMDate $requestedDate, $hideBlockedPeriods = false)
+	private function getLayoutDaily(RFDate $requestedDate, $hideBlockedPeriods = false)
 	{
 		if ($requestedDate->timezone() != $this->targetTimezone)
 		{
@@ -296,7 +231,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 		}
 
 		// check cache
-		$baseDateInLayoutTz = JMDate::create($requestedDate->year(), $requestedDate->month(), $requestedDate->day(),
+		$baseDateInLayoutTz = RFDate::create($requestedDate->year(), $requestedDate->month(), $requestedDate->day(),
 										   0, 0, 0, $this->layoutTimezone);
 
 
@@ -324,7 +259,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 			{
 				$adjustedDate = $requestedDate->addDays($adjustment);
 				$baseDateInLayoutTz = $baseDateInLayoutTz->addDays($adjustment);
-				$this->AddDailyPeriods($adjustedDate->weekday(), $baseDateInLayoutTz, $requestedDate, $list);
+				$this->addDailyPeriods($adjustedDate->weekday(), $baseDateInLayoutTz, $requestedDate, $list);
 			}
 		}
 		$layout = $list->getItems();
@@ -385,19 +320,19 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 		return null;
 	}
 
-	private function bothDatesAreOff(JMDate $start, JMDate $end, JMDate $layoutDate)
+	private function bothDatesAreOff(RFDate $start, RFDate $end, RFDate $layoutDate)
 	{
 		return !$start->dateEquals($layoutDate) && !$end->dateEquals($layoutDate);
 	}
 
-	private function buildPeriod($periodType, JMDate $start, JMDate $end, $label, $labelEnd = null)
+	private function buildPeriod($periodType, RFDate $start, RFDate $end, $label, $labelEnd = null)
 	{
 		return new $periodType($start, $end, $label, $labelEnd);
 	}
 
 	protected function sortItems(&$items)
 	{
-		usort($items, array("ScheduleLayout", "SortBeginTimes"));
+		usort($items, array("RFLayoutSchedule", "SortBeginTimes"));
 	}
 
 	public function timezone()
@@ -429,7 +364,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 	 */
 	public static function parse($timezone, $reservableSlots, $blockedSlots)
 	{
-		$parser = new LayoutParser($timezone);
+		$parser = new RFLayoutParser($timezone);
 		$parser->addReservable($reservableSlots);
 		$parser->addBlocked($blockedSlots);
 		return $parser->getLayout();
@@ -444,14 +379,14 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 	 */
 	public static function parseDaily($timezone, $reservableSlots, $blockedSlots)
 	{
-		if (count($reservableSlots) != DayOfWeek::NumberOfDays || count($blockedSlots) != DayOfWeek::NumberOfDays)
+		if (count($reservableSlots) != RFDayOfWeek::NumberOfDays || count($blockedSlots) != RFDayOfWeek::NumberOfDays)
 		{
 			throw new Exception(sprintf('LayoutParser ParseDaily missing slots. $reservableSlots=%s, $blockedSlots=%s',
 										count($reservableSlots), count($blockedSlots)));
 		}
-		$parser = new LayoutParser($timezone);
+		$parser = new RFLayoutParser($timezone);
 
-		foreach (DayOfWeek::Days() as $day)
+		foreach (RFDayOfWeek::Days() as $day)
 		{
 			$parser->AddReservable($reservableSlots[$day], $day);
 			$parser->AddBlocked($blockedSlots[$day], $day);
@@ -464,7 +399,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 	 * @param Date $date
 	 * @return SchedulePeriod period which occurs at this datetime. Includes start time, excludes end time
 	 */
-	public function getPeriod(JMDate $date)
+	public function getPeriod(RFDate $date)
 	{
 		$timezone = $this->layoutTimezone;
 		$tempDate = $date->toTimezone($timezone);
@@ -473,9 +408,9 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 		/** @var $period LayoutPeriod */
 		foreach ($periods as $period)
 		{
-			$start = JMDate::create($tempDate->year(), $tempDate->month(), $tempDate->day(), $period->start->hour(),
+			$start = RFDate::create($tempDate->year(), $tempDate->month(), $tempDate->day(), $period->start->hour(),
 								  $period->start->Minute(), 0, $timezone);
-			$end = JMDate::create($tempDate->year(), $tempDate->month(), $tempDate->day(), $period->end->hour(),
+			$end = RFDate::create($tempDate->year(), $tempDate->month(), $tempDate->day(), $period->end->hour(),
 								$period->end->minute(), 0, $timezone);
 
 			if ($end->lessThan($start) || $end->isMidnight())
@@ -500,7 +435,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 		return $this->usingDailyLayouts;
 	}
 
-	private function getPeriods(JMDate $layoutDate)
+	private function getPeriods(RFDate $layoutDate)
 	{
 		if ($this->usingDailyLayouts)
 		{
@@ -513,208 +448,3 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 		}
 	}
 }
-
-class LayoutParser
-{
-	private $layout;
-	private $timezone;
-
-	public function __construct($timezone)
-	{
-		$this->layout = new ScheduleLayout($timezone);
-		$this->timezone = $timezone;
-	}
-
-	public function addReservable($reservableSlots, $dayOfWeek = null)
-	{
-		$cb = array($this, 'appendPeriod');
-		$this->parseSlots($reservableSlots, $dayOfWeek, $cb);
-	}
-
-	public function addBlocked($blockedSlots, $dayOfWeek = null)
-	{
-		$cb = array($this, 'appendBlocked');
-
-		$this->parseSlots($blockedSlots, $dayOfWeek, $cb);
-	}
-
-	public function getLayout()
-	{
-		return $this->layout;
-	}
-
-	private function appendPeriod($start, $end, $label, $dayOfWeek = null)
-	{
-		$this->layout->AppendPeriod(Time::Parse($start, $this->timezone),
-									Time::Parse($end, $this->timezone),
-									$label,
-									$dayOfWeek);
-	}
-
-	private function appendBlocked($start, $end, $label, $dayOfWeek = null)
-	{
-		$this->layout->AppendBlockedPeriod(Time::Parse($start, $this->timezone),
-										   Time::Parse($end, $this->timezone),
-										   $label,
-										   $dayOfWeek);
-	}
-
-	private function parseSlots($allSlots, $dayOfWeek, $callback)
-	{
-		$lines = preg_split("/[\n]/", $allSlots, -1, PREG_SPLIT_NO_EMPTY);
-
-		foreach ($lines as $slotLine)
-		{
-			$label = null;
-			$parts = preg_split('/(\d?\d:\d\d\s*\-\s*\d?\d:\d\d)(.*)/', trim($slotLine), -1,
-								PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-			$times = explode('-', $parts[0]);
-			$start = trim($times[0]);
-			$end = trim($times[1]);
-
-			if (count($parts) > 1)
-			{
-				$label = trim($parts[1]);
-			}
-
-			call_user_func($callback, $start, $end, $label, $dayOfWeek);
-		}
-	}
-}
-
-class LayoutPeriod
-{
-	/**
-	 * @var Time
-	 */
-	public $start;
-
-	/**
-	 * @var Time
-	 */
-	public $end;
-
-	/**
-	 * @var PeriodTypes
-	 */
-	public $periodType;
-
-	/**
-	 * @var string
-	 */
-	public $label;
-
-	/**
-	 * @return string
-	 */
-	public function periodTypeClass()
-	{
-		if ($this->periodType == PeriodTypes::RESERVABLE)
-		{
-			return 'SchedulePeriod';
-		}
-
-		return 'NonSchedulePeriod';
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isReservable()
-	{
-		return $this->periodType == PeriodTypes::RESERVABLE;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isLabelled()
-	{
-		return !empty($this->label);
-	}
-
-	/**
-	 * @return string
-	 */
-	public function timezone()
-	{
-		return $this->start->timezone();
-	}
-
-	public function __construct(Time $start, Time $end, $periodType = PeriodTypes::RESERVABLE, $label = null)
-	{
-		$this->start = $start;
-		$this->end = $end;
-		$this->periodType = $periodType;
-		$this->label = $label;
-	}
-
-	/**
-	 * Compares the starting times
-	 */
-	public function compare(LayoutPeriod $other)
-	{
-		return $this->start->compare($other->start);
-	}
-}
-
-class PeriodList
-{
-	private $items = array();
-	private $_addedStarts = array();
-	private $_addedTimes = array();
-	private $_addedEnds = array();
-
-	public function add(SchedulePeriod $period)
-	{
-		if (!$period->IsReservable())
-		{
-			//TODO: Config option to hide non-reservable periods
-		}
-
-		if ($this->alreadyAdded($period->beginDate(), $period->endDate()))
-		{
-			//echo "already added $period\n";
-			return;
-		}
-
-		//echo "\nadding {$period->BeginDate()} - {$period->EndDate()}";
-		$this->items[] = $period;
-	}
-
-	public function getItems()
-	{
-		return $this->items;
-	}
-
-	private function alreadyAdded(JMDate $start, JMDate $end)
-	{
-		$startExists = false;
-		$endExists = false;
-
-		if (array_key_exists($start->timestamp(), $this->_addedStarts))
-		{
-			$startExists = true;
-		}
-
-		if (array_key_exists($end->timestamp(), $this->_addedEnds))
-		{
-			$endExists = true;
-		}
-
-		$this->_addedTimes[$start->timestamp()] = true;
-		$this->_addedEnds[$end->timestamp()] = true;
-
-		return $startExists || $endExists;
-	}
-}
-
-class ReservationLayout extends ScheduleLayout implements IScheduleLayout
-{
-	protected function spansMidnight(JMDate $start, JMDate $end)
-	{
-		return false;
-	}
-}
-
-?>

@@ -1,14 +1,13 @@
 <?php
 defined('_JEXEC') or die;
-jimport('jongman.date.date');
-jimport('jongman.date.time');
+
 /**
  * 
  * Pagination/Navigation class for JONGman schedule
  * @author Prasit Gebsaap
  * @since version 2.0
  */
-class JMNavigator extends JObject 
+class RFNavigator extends JObject 
 {	
 	private $start_date;
 	private $end_date;

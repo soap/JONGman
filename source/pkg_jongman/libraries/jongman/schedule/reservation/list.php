@@ -1,25 +1,8 @@
 <?php
-/**
-Copyright 2011-2013 Nick Korbel
 
-This file is part of phpScheduleIt.
+defined('_JEXEC') or die;
 
-phpScheduleIt is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
 
-phpScheduleIt is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with phpScheduleIt.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-jimport('jongman.application.schedule.reservationslot');
-jimport('jongman.application.schedule.emptyreservationslot');
 interface IScheduleReservationList
 {
 	/**
@@ -28,7 +11,7 @@ interface IScheduleReservationList
 	function buildSlots();
 }
 
-class ScheduleReservationList implements IScheduleReservationList
+class RFScheduleReservationList implements IScheduleReservationList
 {
 	/**
 	 * @var array|ReservationListItem[]
@@ -88,7 +71,7 @@ class ScheduleReservationList implements IScheduleReservationList
 	 * @param Date $layoutDate
 	 * @param bool $hideBlockedPeriods
 	 */
-	public function __construct($items, IScheduleLayout $layout, JMDate $layoutDate, $hideBlockedPeriods = false)
+	public function __construct($items, ILayoutSchedule $layout, RFDate $layoutDate, $hideBlockedPeriods = false)
 	{
 		$this->_items = $items;
 		$this->_layout = $layout;
@@ -96,7 +79,7 @@ class ScheduleReservationList implements IScheduleReservationList
 		$this->_layoutDateStart = $layoutDate->toTimezone($this->_destinationTimezone)->getDate();
 		$this->_layoutDateEnd = $this->_layoutDateStart->addDays(1);
 		$this->_layoutItems = $this->_layout->getLayout($layoutDate, $hideBlockedPeriods); //daily layout
-		$this->_midnight = new Time(0, 0, 0, $this->_destinationTimezone);
+		$this->_midnight = new RFTime(0, 0, 0, $this->_destinationTimezone);
 
 		$this->indexLayout();
 		$this->indexItems();
@@ -133,7 +116,7 @@ class ScheduleReservationList implements IScheduleReservationList
 			}
 			else
 			{
-				$slots[] = new EmptyReservationSlot($layoutItem, $layoutItem, $this->_layoutDateStart, $layoutItem->isReservable());
+				$slots[] = new RFReservationSlotEmpty($layoutItem, $layoutItem, $this->_layoutDateStart, $layoutItem->isReservable());
 			}
 		}
 
@@ -169,13 +152,13 @@ class ScheduleReservationList implements IScheduleReservationList
 		}
 	}
 
-	private function itemStartsOnPastDate(ReservationListItem $item)
+	private function itemStartsOnPastDate(RFReservationListItem $item)
 	{
 		//Log::Debug("PAST");
 		return $item->startDate()->lessThan($this->_layoutDateStart);
 	}
 
-	private function itemEndsOnFutureDate(ReservationListItem $item)
+	private function itemEndsOnFutureDate(RFReservationListItem $item)
 	{
 		//Log::Debug("%s %s %s", $reservation->GetReferenceNumber(), $reservation->GetEndDate()->GetDate(), $this->_layoutDateEnd->GetDate());
 		return $item->endDate()->compare($this->_layoutDateEnd) >= 0;
@@ -198,7 +181,7 @@ class ScheduleReservationList implements IScheduleReservationList
 	 * @param Date $endingTime
 	 * @return int index of $_layoutItems which has the corresponding $endingTime
 	 */
-	private function getLayoutIndexEndingAt(JMDate $endingTime)
+	private function getLayoutIndexEndingAt(RFDate $endingTime)
 	{
 		$timeKey = $endingTime->timestamp();
 
@@ -214,7 +197,7 @@ class ScheduleReservationList implements IScheduleReservationList
 	 * @param Date $beginTime
 	 * @return ReservationListItem
 	 */
-	private function getItemStartingAt(JMDate $beginTime)
+	private function getItemStartingAt(RFDate $beginTime)
 	{
 		$timeKey = $beginTime->timestamp();
 		if (array_key_exists($timeKey, $this->_itemsByStartTime))
@@ -228,7 +211,7 @@ class ScheduleReservationList implements IScheduleReservationList
 	 * @param Date $endingTime
 	 * @return int index of $_layoutItems which has the closest ending time to $endingTime without going past it
 	 */
-	private function findClosestLayoutIndexBeforeEndingTime(JMDate $endingTime)
+	private function findClosestLayoutIndexBeforeEndingTime(RFDate $endingTime)
 	{
 		for ($i = count($this->_layoutItems) - 1; $i >= 0; $i--)
 		{
@@ -247,7 +230,7 @@ class ScheduleReservationList implements IScheduleReservationList
 	 * @param ReservationListItem $item
 	 * @return SchedulePeriod which has the closest starting time to $endingTime without going prior to it
 	 */
-	private function findClosestLayoutIndexBeforeStartingTime(ReservationListItem $item)
+	private function findClosestLayoutIndexBeforeStartingTime(RFReservationListItem $item)
 	{
 		for ($i = count($this->_layoutItems) - 1; $i >= 0; $i--)
 		{
@@ -268,7 +251,7 @@ class ScheduleReservationList implements IScheduleReservationList
 	 * @param ReservationListItem $item
 	 * @return bool
 	 */
-	private function itemIsNotOnLayoutBoundary(ReservationListItem $item)
+	private function itemIsNotOnLayoutBoundary(RFReservationListItem $item)
 	{
 		$timeKey = $item->startDate()->timestamp();
 		return !(array_key_exists($timeKey, $this->_layoutByStartTime));
@@ -286,7 +269,7 @@ class LayoutIndexCache
 	 * @param Date $date
 	 * @return bool
 	 */
-	public static function contains(JMDate $date)
+	public static function contains(RFDate $date)
 	{
 		return array_key_exists($date->timestamp(), self::$_cache);
 	}
@@ -297,12 +280,12 @@ class LayoutIndexCache
 	 * @param Date $startDate
 	 * @param Date $endDate
 	 */
-	public static function add(JMDate $date, $schedulePeriods, JMDate $startDate, JMDate $endDate)
+	public static function add(RFDate $date, $schedulePeriods, RFDate $startDate, RFDate $endDate)
 	{
 		self::$_cache[$date->timestamp()] = new CachedLayoutIndex($schedulePeriods, $startDate, $endDate);
 	}
 
-	public static function get(JMDate $date)
+	public static function get(RFDate $date)
 	{
 		return self::$_cache[$date->timestamp()];
 	}
@@ -321,7 +304,7 @@ class CachedLayoutIndex
 	 * @param Date $startDate
 	 * @param Date $endDate
 	 */
-	public function __construct($schedulePeriods, JMDate $startDate, JMDate $endDate)
+	public function __construct($schedulePeriods, RFDate $startDate, RFDate $endDate)
 	{
 		$this->_firstLayoutTime = $endDate;
 

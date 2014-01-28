@@ -23,24 +23,27 @@ else {
     return;
 }
 
-// Register the jongman library
-JLoader::registerPrefix('JM', JPATH_PLATFORM . '/jongman');
-JLoader::register('ScheduleLayout', JPATH_PLATFORM . '/jongman/domain/schedulelayout.php');
-JLoader::register('SchedulePeriod', JPATH_PLATFORM . '/jongman/domain/scheduleperiod.php');
+//base interface definitions
+jimport('jongman.base.ilayout');
+jimport('jongman.base.ireservationslot');
+
+// I want to user JM prefix, but JLoader cannot support it, as Joomla 's J matched first
+JLoader::registerPrefix('RF', JPATH_PLATFORM . '/jongman');
+
+//discover classes prefixed by JM in the folder
+JLoader::discover('RF', JPATH_PLATFORM . '/jongman/utils');
 
 // Add include paths
 JHtml::addIncludePath(JPATH_PLATFORM . '/jongman/html');
-//JModelLegacy::addIncludePath(JPATH_PLATFORM . '/jongman/model', 'PFModel');
-//JTable::addIncludePath(JPATH_PLATFORM . '/jongman/table', 'PFTable');
 JForm::addFieldPath(JPATH_PLATFORM . '/jongman/form/fields');
 JForm::addRulePath(JPATH_PLATFORM . '/jongman/form/rules');
 
 
 // Define version
-if (!defined('JMVERSION')) {
+if (!defined('RFVERSION')) {
 	// Do we really need this 
 	jimport('jongman.version.version');
     $jmversion = new JMVersion();
 
-    define('JMVERSION', $jmversion->getShortVersion());
+    define('RFVERSION', $jmversion->getShortVersion());
 }

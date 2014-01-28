@@ -11,7 +11,7 @@
 defined('_JEXEC') or die();
 
 
-abstract class JMToolbar
+abstract class RFToolbar
 {
     protected static $html = array();
 

@@ -15,8 +15,8 @@ if (!defined('JPATH_PLATFORM')) {
     require_once dirname(__FILE__) . '/../cms.php';
 }
 
-if (!defined('JM_FRAMEWORK')) {
-    define('JM_FRAMEWORK', 1);
+if (!defined('RF_FRAMEWORK')) {
+    define('RF_FRAMEWORK', 1);
 }
 else {
     // Make sure we run the code below only once

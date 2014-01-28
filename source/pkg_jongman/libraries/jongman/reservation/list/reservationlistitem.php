@@ -1,7 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 
-class ReservationListItem
+class RFReservationListItem
 {
 	/**
 	 * @var IReservedItemView
@@ -29,7 +29,7 @@ class ReservationListItem
 		return $this->item->getEndDate();
 	}
 
-	public function occursOn(JMDate $date)
+	public function occursOn(RFDate $date)
 	{
 		return $this->item->occursOn($date);
 	}
@@ -41,9 +41,9 @@ class ReservationListItem
 	 * @param int $span
 	 * @return IReservationSlot
 	 */
-	public function buildSlot(SchedulePeriod $start, SchedulePeriod $end, JMDate $displayDate, $span)
+	public function buildSlot(RFSchedulePeriod $start, RFSchedulePeriod $end, RFDate $displayDate, $span)
 	{
-		return new ReservationSlot($start, $end, $displayDate, $span, $this->item);
+		return new RFReservationSlot($start, $end, $displayDate, $span, $this->item);
 	}
 
 	/**
@@ -62,19 +62,3 @@ class ReservationListItem
 		return $this->item->getId();
 	}
 }
-
-class BlackoutListItem extends ReservationListItem
-{
-	/**
-	 * @param SchedulePeriod $start
-	 * @param SchedulePeriod $end
-	 * @param Date $displayDate
-	 * @param int $span
-	 * @return IReservationSlot
-	 */
-	public function buildSlot(SchedulePeriod $start, SchedulePeriod $end, JMDate $displayDate, $span)
-	{
-		return new BlackoutSlot($start, $end, $displayDate, $span, $this->item);
-	}
-}
-?>

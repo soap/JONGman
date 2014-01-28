@@ -1,38 +1,36 @@
 <?php
 defined('_JEXEC') or die;
 
-jimport('jongman.application.domain.*');
-jimport('jongman.application.schedule.schedulereservationlist');
 
-interface IDailyLayout
+interface ILayoutDaily
 {
 	/**
 	 * @param Date $date
 	 * @param int $resourceId
 	 * @return array|IReservationSlot[]
 	 */
-	function getLayout(JMDate $date, $resourceId);
+	function getLayout(RFDate $date, $resourceId);
 
 	/**
 	 * @param Date $date
 	 * @return bool
 	 */
-	function isDateReservable(JMDate $date);
+	function isDateReservable(RFDate $date);
 
 	/**
 	 * @param Date $displayDate
 	 * @return string[]
 	 */
-	function getLabels(JMDate $displayDate);
+	function getLabels(RFDate $displayDate);
 
 	/**
 	 * @param Date $displayDate
 	 * @return mixed
 	 */
-	function getPeriods(JMDate $displayDate);
+	function getPeriods(RFDate $displayDate);
 }
 
-class DailyLayout implements IDailyLayout
+class RFLayoutDaily implements ILayoutDaily
 {
 	/**
 	 * @var IReservationListing
@@ -47,7 +45,7 @@ class DailyLayout implements IDailyLayout
 	 * @param IReservationListing $listing List of reservation data for schedule
 	 * @param IScheduleLayout $layout schedule layout blocks
 	 */
-	public function __construct(IReservationListing $listing, IScheduleLayout $layout)
+	public function __construct(IReservationListing $listing, ILayoutSchedule $layout)
 	{
 		// Just store the provided data
 		$this->_reservationListing = $listing;
@@ -58,12 +56,12 @@ class DailyLayout implements IDailyLayout
 	 * Get display slots for resource specified by $resourceId on date specified by $date
 	 * @see IDailyLayout::getLayout()
 	 */
-	public function getLayout(JMDate $date, $resourceId)
+	public function getLayout(RFDate $date, $resourceId)
 	{
 		$hideBlocked = false;
 		$items = $this->_reservationListing->onDateForResource($date, $resourceId);
 
-		$list = new ScheduleReservationList($items, $this->_scheduleLayout, $date, $hideBlocked);
+		$list = new RFScheduleReservationList($items, $this->_scheduleLayout, $date, $hideBlocked);
 		$slots = $list->buildSlots();
 
 		return $slots;
@@ -73,12 +71,12 @@ class DailyLayout implements IDailyLayout
 	 * check if the provided date is reservable
 	 * @see IDailyLayout::isDateReservable()
 	 */
-	public function isDateReservable(JMDate $date)
+	public function isDateReservable(RFDate $date)
 	{
-		return !$date->getDate()->lessThan(JMDate::now()->getDate());
+		return !$date->getDate()->lessThan(RFDate::now()->getDate());
 	}
 
-	public function getLabels(JMDate $displayDate)
+	public function getLabels(RFDate $displayDate)
 	{
 		$hideBlocked = false;
 
@@ -107,7 +105,7 @@ class DailyLayout implements IDailyLayout
 	 * Get periods on the date for the current schedule
 	 * @see IDailyLayout::getPeriods()
 	 */
-	public function getPeriods(JMDate $displayDate, $fitToHours = false)
+	public function getPeriods(RFDate $displayDate, $fitToHours = false)
 	{
 		$hideBlocked = false;
 
@@ -142,57 +140,10 @@ class DailyLayout implements IDailyLayout
 				$i--;
 
 			}
-			$periodsToReturn[] = new SpanablePeriod($currentPeriod, $span);
+			$periodsToReturn[] = new RFSchedulePeriodSpanable($currentPeriod, $span);
 
 		}
 
 		return $periodsToReturn;
-	}
-}
-
-interface IDailyLayoutFactory
-{
-	/**
-	 * @param IReservationListing $listing
-	 * @param IScheduleLayout $layout
-	 * @return IDailyLayout
-	 */
-	function Create(IReservationListing $listing, IScheduleLayout $layout);
-}
-
-class DailyLayoutFactory implements IDailyLayoutFactory
-{
-	public function create(IReservationListing $listing, IScheduleLayout $layout)
-	{
-		return new DailyLayout($listing, $layout);
-	}
-}
-
-class SpanablePeriod extends SchedulePeriod
-{
-	private $span = 1;
-	private $period;
-
-	public function __construct(SchedulePeriod $period, $span = 1)
-	{
-		$this->span = $span;
-		$this->period = $period;
-		parent::__construct($period->beginDate(), $period->endDate(), $period->_label);
-
-	}
-
-	public function span()
-	{
-		return $this->span;
-	}
-
-	public function setSpan($span)
-	{
-		$this->span = $span;
-	}
-
-	public function isReservable()
-	{
-		return $this->period->isReservable();
 	}
 }

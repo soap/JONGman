@@ -1,13 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 
-class PeriodTypes
-{
-	const RESERVABLE = 1;
-	const NONRESERVABLE = 2;
-}
-
-class SchedulePeriod
+class RFSchedulePeriod
 {
 	/**
 	 * @var Date
@@ -23,7 +17,7 @@ class SchedulePeriod
 
 	protected $_id;
 
-	public function __construct(JMDate $begin, JMDate $end, $label = null)
+	public function __construct(RFDate $begin, RFDate $end, $label = null)
 	{
 		$this->_begin = $begin;
 		$this->_end = $end;
@@ -110,12 +104,12 @@ class SchedulePeriod
 
 	public function toUtc()
 	{
-		return new SchedulePeriod($this->_begin->toUtc(), $this->_end->toUtc(), $this->_label);
+		return new RFSchedulePeriod($this->_begin->toUtc(), $this->_end->toUtc(), $this->_label);
 	}
 
 	public function toTimezone($timezone)
 	{
-		return new SchedulePeriod($this->_begin->toTimezone($timezone), $this->_end->toTimezone($timezone), $this->_label);
+		return new RFSchedulePeriod($this->_begin->toTimezone($timezone), $this->_end->toTimezone($timezone), $this->_label);
 	}
 
 	public function __toString()
@@ -126,7 +120,7 @@ class SchedulePeriod
 	/**
 	 * Compares the starting datetimes
 	 */
-	public function compare(SchedulePeriod $other)
+	public function compare(RFSchedulePeriod $other)
 	{
 		return $this->_begin->compare($other->_begin);
 	}
@@ -139,30 +133,12 @@ class SchedulePeriod
 	/**
 	 * @return string
 	 */
-	public function Id()
+	public function id()
 	{
 		if (empty($this->_id))
 		{
 			$this->_id = uniqid();
 		}
 		return $this->_id;
-	}
-}
-
-class NonSchedulePeriod extends SchedulePeriod
-{
-	public function isReservable()
-	{
-		return false;
-	}
-
-	public function toUtc()
-	{
-		return new NonSchedulePeriod($this->_begin->toUtc(), $this->_end->toUtc(), $this->_label);
-	}
-
-	public function toTimezone($timezone)
-	{
-		return new NonSchedulePeriod($this->_begin->toTimezone($timezone), $this->_end->toTimezone($timezone), $this->_label);
 	}
 }

@@ -75,7 +75,7 @@ interface IReservationSlot
 	 * @param $date Date
 	 * @return bool
 	 */
-	public function isPastDate(JMDate $date);
+	public function isPastDate(RFDate $date);
 	
 	/**
 	 * @param string $timezone

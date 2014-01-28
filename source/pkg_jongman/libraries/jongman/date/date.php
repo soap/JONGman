@@ -2,7 +2,7 @@
 defined('_JEXEC') or die;
 
 
-class JMDate
+class RFDate
 {
 	/**
 	 * @var DateTime
@@ -60,7 +60,7 @@ class JMDate
 			$month = $month - ($yearOffset * 12);
 		}
 
-		return new JMDate(sprintf('%04d-%02d-%02d %02d:%02d:%02d', $year, $month, $day, $hour, $minute,
+		return new RFDate(sprintf('%04d-%02d-%02d %02d:%02d:%02d', $year, $month, $day, $hour, $minute,
 								$second), $timezone);
 	}
 
@@ -76,7 +76,7 @@ class JMDate
 		{
 			return NullDate::Instance();
 		}
-		return new JMDate($dateString, $timezone);
+		return new RFDate($dateString, $timezone);
 	}
 
 	/**
@@ -94,7 +94,7 @@ class JMDate
 		$timeOffsetString = $date->getTimezone()->getName();
 		$offsetParts = explode(':', $timeOffsetString);
 
-		$d = new JMDate($date->format(Date::SHORT_FORMAT), 'UTC');
+		$d = new RFDate($date->format(Date::SHORT_FORMAT), 'UTC');
 		$offsetMinutes = ($offsetParts[0] * -60) + $offsetParts[1];
 		return $d->AddMinutes($offsetMinutes);
 	}
@@ -111,7 +111,7 @@ class JMDate
 			return self::$_Now;
 		}
 
-		return new JMDate('now');
+		return new RFDate('now');
 	}
 
 	/**
@@ -141,9 +141,9 @@ class JMDate
 		$date = new DateTime($this->timestring, new DateTimeZone($this->timezone));
 
 		$date->setTimezone(new DateTimeZone($timezone));
-		$adjustedDate = $date->format(JMDate::SHORT_FORMAT);
+		$adjustedDate = $date->format(RFDate::SHORT_FORMAT);
 
-		return new JMDate($adjustedDate, $timezone);
+		return new RFDate($adjustedDate, $timezone);
 	}
 
 	/**
@@ -151,7 +151,7 @@ class JMDate
 	 */
 	public function copy()
 	{
-		return new JMDate($this->timestring, $this->timezone());
+		return new RFDate($this->timestring, $this->timezone());
 	}
 
 	/**
@@ -192,7 +192,7 @@ class JMDate
 		{
 			return NullDate::getInstance();
 		}
-		return JMDate::parse($databaseValue, 'UTC');
+		return RFDate::parse($databaseValue, 'UTC');
 	}
 
 	/**
@@ -212,7 +212,7 @@ class JMDate
 	 */
 	public function getTime()
 	{
-		return new Time($this->hour(), $this->minute(), $this->second(), $this->timezone());
+		return new RFTime($this->hour(), $this->minute(), $this->second(), $this->timezone());
 	}
 
 	/**
@@ -222,7 +222,7 @@ class JMDate
 	 */
 	public function getDate()
 	{
-		return JMDate::create($this->year(), $this->month(), $this->day(), 0, 0, 0, $this->timezone());
+		return RFDate::create($this->year(), $this->month(), $this->day(), 0, 0, 0, $this->timezone());
 	}
 
 	/**
@@ -234,7 +234,7 @@ class JMDate
 	 * @param Date $date
 	 * @return int comparison result
 	 */
-	public function compare(JMDate $date)
+	public function compare(RFDate $date)
 	{
 		$date2 = $date;
 		if ($date2->timezone() != $this->timezone())
@@ -266,7 +266,7 @@ class JMDate
 	 * @param Date $date
 	 * @return int comparison result
 	 */
-	public function compareTime(JMDate $date)
+	public function compareTime(RFDate $date)
 	{
 		$date2 = $date;
 		if ($date2->timezone() != $this->timezone())
@@ -298,7 +298,7 @@ class JMDate
 	 * @param Date $end
 	 * @return bool if the current object is greater than the one passed in
 	 */
-	public function greaterThan(JMDate $end)
+	public function greaterThan(RFDate $end)
 	{
 		return $this->compare($end) > 0;
 	}
@@ -308,7 +308,7 @@ class JMDate
 	 * @param Date $end
 	 * @return bool if the current object is less than the one passed in
 	 */
-	public function lessThan(JMDate $end)
+	public function lessThan(RFDate $end)
 	{
 		return $this->compare($end) < 0;
 	}
@@ -319,7 +319,7 @@ class JMDate
 	 * @param Date $date
 	 * @return bool
 	 */
-	public function equals(JMDate $date)
+	public function equals(RFDate $date)
 	{
 		return $this->compare($date) == 0;
 	}
@@ -328,7 +328,7 @@ class JMDate
 	 * @param Date $date
 	 * @return bool
 	 */
-	public function dateEquals(JMDate $date)
+	public function dateEquals(RFDate $date)
 	{
 		$date2 = $date;
 		if ($date2->timezone() != $this->timezone())
@@ -376,7 +376,7 @@ class JMDate
 	public function addDays($days)
 	{
 		// can also use DateTime->modify()
-		return new JMDate($this->Format(self::SHORT_FORMAT) . " +" . $days . " days", $this->timezone);
+		return new RFDate($this->Format(self::SHORT_FORMAT) . " +" . $days . " days", $this->timezone);
 	}
 
 	/**
@@ -385,7 +385,7 @@ class JMDate
 	 */
 	public function addMonths($months)
 	{
-		return new JMDate($this->Format(self::SHORT_FORMAT) . " +" . $months . " months", $this->timezone);
+		return new RFDate($this->Format(self::SHORT_FORMAT) . " +" . $months . " months", $this->timezone);
 	}
 
 	/**
@@ -394,7 +394,7 @@ class JMDate
 	 */
 	public function addMinutes($minutes)
 	{
-		return new JMDate($this->Format(self::SHORT_FORMAT) . " +" . $minutes . " minutes", $this->timezone);
+		return new RFDate($this->Format(self::SHORT_FORMAT) . " +" . $minutes . " minutes", $this->timezone);
 	}
 
 	/**
@@ -403,7 +403,7 @@ class JMDate
 	 */
 	public function removeMinutes($minutes)
 	{
-		return new JMDate($this->format(self::SHORT_FORMAT) . " -" . $minutes . " minutes", $this->timezone);
+		return new RFDate($this->format(self::SHORT_FORMAT) . " -" . $minutes . " minutes", $this->timezone);
 	}
 
 	/**
@@ -411,9 +411,9 @@ class JMDate
 	 * @param bool $isEndTime
 	 * @return Date
 	 */
-	public function setTime(Time $time, $isEndTime = false)
+	public function setTime(RFTime $time, $isEndTime = false)
 	{
-		$date = JMDate::create($this->year(), $this->month(), $this->day(), $time->hour(), $time->minute(),
+		$date = RFDate::create($this->year(), $this->month(), $this->day(), $time->hour(), $time->minute(),
 							 $time->Second(), $this->timezone());
 
 		if ($isEndTime)
@@ -441,16 +441,16 @@ class JMDate
 	 * @param Date $date
 	 * @return DateDiff
 	 */
-	public function getDifference(JMDate $date)
+	public function getDifference(RFDate $date)
 	{
-		return DateDiff::betweenDates($this, $date);
+		return RFDateDiff::betweenDates($this, $date);
 	}
 
 	/**
 	 * @param DateDiff $difference
 	 * @return Date
 	 */
-	public function applyDifference(DateDiff $difference)
+	public function applyDifference(RFDateDiff $difference)
 	{
 		if ($difference->isNull())
 		{
@@ -462,7 +462,7 @@ class JMDate
 		$date = new DateTime($dateStr, new DateTimeZone('UTC'));
 		$date->setTimezone(new DateTimeZone($this->timezone()));
 
-		return new JMDate($date->format(self::SHORT_FORMAT), $this->timezone());
+		return new RFDate($date->format(self::SHORT_FORMAT), $this->timezone());
 	}
 
 	private function initParts()
@@ -545,7 +545,7 @@ class JMDate
 	 * Only used for unit testing
 	 * @param Date $date
 	 */
-	public static function _setNow(JMDate $date)
+	public static function _setNow(RFDate $date)
 	{
 		if (is_null($date))
 		{
@@ -603,7 +603,7 @@ class JMDate
 	}
 }
 
-class NullDate extends JMDate
+class NullDate extends RFDate
 {
 	/**
 	 * @var NullDate
@@ -646,191 +646,5 @@ class NullDate extends JMDate
 	}
 }
 
-class DateDiff
-{
-	/**
-	 * @var int
-	 */
-	private $seconds = 0;
-
-	/**
-	 * @param int $seconds
-	 */
-	public function __construct($seconds)
-	{
-		$this->seconds = intval($seconds);
-	}
-
-	/**
-	 * @return int
-	 */
-	public function totalSeconds()
-	{
-		return $this->seconds;
-	}
-
-	public function days()
-	{
-		$days = intval($this->seconds / 86400);
-		return $days;
-	}
-
-	public function hours()
-	{
-		$hours = intval($this->seconds / 3600) - intval($this->Days() * 24);
-		return $hours;
-	}
-
-	public function minutes()
-	{
-		$minutes = intval(($this->seconds / 60) % 60);
-		return $minutes;
-	}
-
-	/**
-	 * @static
-	 * @param Date $date1
-	 * @param Date $date2
-	 * @return DateDiff
-	 */
-	public static function betweenDates(JMDate $date1, JMDate $date2)
-	{
-		if ($date1->equals($date2))
-		{
-			return DateDiff::null();
-		}
-
-		$compareDate = $date2;
-		if ($date1->timezone() != $date2->timezone())
-		{
-			$compareDate = $date2->toTimezone($date1->timezone());
-		}
-
-		return new DateDiff($compareDate->timestamp() - $date1->timestamp());
-	}
-
-	/**
-	 * @static
-	 * @param string $timeString in #d#h#m, for example 2d22h13m for 2 days 22 hours 13 minutes
-	 * @return DateDiff
-	 */
-	public static function fromTimeString($timeString)
-	{
-		if (strpos($timeString, 'd') === false && strpos($timeString, 'h') === false && strpos($timeString,
-																							   'm') === false
-		)
-		{
-			throw new Exception('Time format must contain at least a day, hour or minute. For example: 12d1h22m');
-		}
-
-		$matches = array();
-
-		preg_match('/(\d*d)?(\d*h)?(\d*m)?/i', $timeString, $matches);
-
-		$day = 0;
-		$hour = 0;
-		$minute = 0;
-		$num_set = 0;
-
-		if (isset($matches[1]))
-		{
-			$num_set++;
-			$day = intval(substr($matches[1], 0, -1));
-		}
-		if (isset($matches[2]))
-		{
-			$num_set++;
-			$hour = intval(substr($matches[2], 0, -1));
-		}
-		if (isset($matches[3]))
-		{
-			$num_set++;
-			$minute = intval(substr($matches[3], 0, -1));
-		}
-
-		if ($num_set == 0)
-		{
-			/**
-			 * We didn't actually match anything, throw an exception
-			 * instead of silently returning 0
-			 */
-
-			throw new Exception('Time format must be in day, hour, minute order');
-		}
-
-		return self::create($day, $hour, $minute);
-	}
-
-	/**
-	 * @static
-	 * @param int $days
-	 * @param int $hours
-	 * @param int $minutes
-	 * @return DateDiff
-	 */
-	public static function create($days, $hours, $minutes)
-	{
-		return new DateDiff(($days * 24 * 60 * 60) + ($hours * 60 * 60) + ($minutes * 60));
-	}
-
-	/**
-	 * @static
-	 * @return DateDiff
-	 */
-	public static function null()
-	{
-		return new DateDiff(0);
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isNull()
-	{
-		return $this->seconds == 0;
-	}
-
-	/**
-	 * @param DateDiff $diff
-	 * @return DateDiff
-	 */
-	public function add(Datediff $diff)
-	{
-		return new DateDiff($this->seconds + $diff->seconds);
-	}
-
-	/**
-	 * @param DateDiff $diff
-	 * @return bool
-	 */
-	public function greaterThan(DateDiff $diff)
-	{
-		return $this->seconds > $diff->seconds;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		$str = '';
-
-		if ($this->Days() > 0)
-		{
-			$str .= $this->Days() . ' days ';
-		}
-		if ($this->Hours() > 0)
-		{
-			$str .= $this->Hours() . ' hours ';
-		}
-		if ($this->Minutes() > 0)
-		{
-			$str .= $this->Minutes() . ' minutes';
-		}
-
-		return $str;
-		//return sprintf('%dd%dh%dm', $this->Days(), $this->Hours(), $this->Minutes());
-	}
-}
 
 ?>

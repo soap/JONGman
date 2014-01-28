@@ -5,7 +5,7 @@ jimport('jongman.application.schedule.ireservationslot');
 //require_once(ROOT_DIR . 'Domain/Values/ReservationStartTimeConstraint.php');
 
 
-class EmptyReservationSlot implements IReservationSlot
+class RFReservationSlotEmpty implements IReservationSlot
 {
 	/**
 	 * @var Date
@@ -38,7 +38,7 @@ class EmptyReservationSlot implements IReservationSlot
 	protected $_beginSlotId;
 	protected $_endSlotId;
 
-	public function __construct(SchedulePeriod $begin, SchedulePeriod $end, JMDate $displayDate, $isReservable)
+	public function __construct(RFSchedulePeriod $begin, RFSchedulePeriod $end, RFDate $displayDate, $isReservable)
 	{
 		$this->_begin = $begin->beginDate();
 		$this->_end = $end->endDate();
@@ -129,7 +129,7 @@ class EmptyReservationSlot implements IReservationSlot
 		return false;
 	}
 
-	public function isPastDate(JMDate $date)
+	public function isPastDate(RFDate $date)
 	{
 		$constraint = '';
 

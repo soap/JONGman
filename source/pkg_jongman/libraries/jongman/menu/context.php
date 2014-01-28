@@ -11,7 +11,7 @@
 defined('_JEXEC') or die();
 
 
-class JMMenuContext
+class RFMenuContext
 {
     protected $component;
 
