@@ -11,7 +11,6 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
-jimport('jongman.date.date');
 
 // add field definitions from backend
 JForm::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR . '/models/fields');
@@ -94,8 +93,8 @@ class JongmanModelReservation extends JModelAdmin
 		} 			
 
 		$tz = $user->getParam('offset');
-		$start_date = new JMDate($result->start_date, $tz);
-		$end_date = new JMDate($result->end_date, $tz);
+		$start_date = new RFDate($result->start_date, $tz);
+		$end_date = new RFDate($result->end_date, $tz);
 		
 		$result->start_date = $start_date->format('Y-m-d');
 		$result->start_time = $start_date->format('H:i:s');
@@ -156,16 +155,21 @@ class JongmanModelReservation extends JModelAdmin
 	protected function prepareTable($table)
 	{
 		jimport('joomla.filter.output');
-		if ($table->id > 0) {
+		if (empty($table->id)) {
 			$params = JComponentHelper::getParams('com_jongman');
-			$referLength = (int)$params->get('referLength');
+			$referenceLength = (int)$params->get('referenceLength');
 		
-			if ($referLength <= 6) $referLength = 6;
+			if ($referenceLength <= 6) $referenceLength = 6;
 			// If the alias is empty, prepare from the value of the title.
-			if (empty($table->reference_number) || strlen($table->reference_number)) {
-				$table->reference_number = JUserHelper::genRandomPassword($referLength);
+			if (empty($table->reference_number) || strlen($table->reference_number) < $referenceLength) {
+				$table->reference_number = JUserHelper::genRandomPassword($referenceLength);
 			}
 		}
+		
+		//$start_date = new RFDate($table->start_date, );
+		//end_date = new RFDate($table->end_date, )
+		 
+		
 		return true;
 	}
 	
@@ -265,6 +269,11 @@ class JongmanModelReservation extends JModelAdmin
 	{
 		$validData = parent::validate($form, $data, $group);
 		if ($validData === false) return false;
+		
+		$validData['start_date'] = $validData['start_date'].' '.$validData['start_time'];
+		$validData['end_date'] = $validData['end_date'].' '.$validData['end_time'];
+		
+		var_dump($validData); jexit();
 		// now we do our validation process
 		return $validData;
 	}
