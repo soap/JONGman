@@ -9,7 +9,6 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.form.helper');
-jimport('jongman.domain.schedulelayout.php');
 
 class JFormFieldJongmanSelectTime extends JFormField {
 
@@ -66,7 +65,7 @@ class JFormFieldJongmanSelectTime extends JFormField {
         
         $model = JModelLegacy::getInstance('Schedule', 'JongmanModel');
         $layout = $model->getScheduleLayout($scheduleId, $userTz);
-		$periods = $layout->getLayout(new JMDate());        
+		$periods = $layout->getLayout(new RFDate());        
 		foreach($periods as $period) {
 			if ($period->isReservable()) {
         		$options[] = JHtml::_('select.option', $period->end(), $period->labelEnd());
