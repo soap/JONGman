@@ -150,11 +150,7 @@ class JongmanModelSchedules extends JModelList
 	}
 
 	public function getItems()
-	{
-		jimport('jongman.application.domain.schedulelayout');
-		jimport('jongman.date.time');
-		jimport('jongman.domain.scheduleperiod');
-		
+	{	
 		if ($items = parent::getItems()) {
 			$db 	= $this->getDbo();
 			$query 	= $db->getQuery(true);
@@ -169,15 +165,15 @@ class JongmanModelSchedules extends JModelList
 				$blocks = $db->loadObjectList();
 
 				$timezone = $item->timezone;
-				$layout = new ScheduleLayout($timezone);
+				$layout = new RFLayoutSchedule($timezone);
 				foreach ($blocks as $period) {
 					if ($period->availability_code == 1) {
 						$layout->appendPeriod(
-							Time::parse($period->start_time), Time::parse($period->end_time), 
+							RFTime::parse($period->start_time), RFTime::parse($period->end_time), 
 							$period->label, $period->day_of_week);
 					}else{
 						$layout->appendBlockedPeriod(
-							Time::parse($period->start_time), Time::parse($period->end_time), 
+							RFTime::parse($period->start_time), RFTime::parse($period->end_time), 
 							$period->label, $period->day_of_week);	
 					}	
 				}

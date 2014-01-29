@@ -84,10 +84,10 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_END_DATE', 'end_date', $listDirn, $listOrder); ?>
 				</th>							
 				<th width="10%">
-					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_OWNER', 'ure.name', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_OWNER', 'owner', $listDirn, $listOrder); ?>
 				</th>
 				<th width="5%">
-					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_STATE', 're.state', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_STATE', 'a.state', $listDirn, $listOrder); ?>
 				</th>
 				<th width="10%">
 					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ACCESS', 'access_level', $listDirn, $listOrder); ?>
@@ -145,16 +145,16 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 					<?php echo $this->escape($item->schedule_title)?>
 				</td>
 				<td>
-					<?php echo $this->escape($item->resource_title)?>
+					<?php //echo $this->escape($item->resource_title)?>
 				</td>
 				<td>
-					<?php echo JDate::getInstance($item->start_date)->format("Y-m-d");?>
+					<?php //echo JDate::getInstance($item->start_date)->format("Y-m-d");?>
 				</td>
 				<td>
-					<?php echo JDate::getInstance($item->end_date)->format("Y-m-d");?>
+					<?php //echo JDate::getInstance($item->end_date)->format("Y-m-d");?>
 				</td>				
 				<td>
-					<?php echo $this->escape($item->reserved_for_name); ?>
+					<?php echo $this->escape($item->owner); ?>
 				</td>
 				<td class="center">
 					<?php echo JHtml::_('jgrid.published', $item->state, $i, 'reservations.', $canChange); ?>
@@ -163,10 +163,10 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 					<?php echo $this->escape($item->access_level); ?>
 				</td>
 				<td class="center">
-					<?php echo $this->escape($item->reserved_by_name); ?>
+					<?php echo $this->escape($item->author); ?>
 				</td>
 				<td class="center">
-					<?php echo JHtml::_('date', $item->created_time, JText::_('DATE_FORMAT_LC4')); ?>
+					<?php echo JHtml::_('date', $item->created, JText::_('DATE_FORMAT_LC4')); ?>
 				</td>
 				<td class="center">
 					<?php echo (int) $item->id; ?>

@@ -112,9 +112,9 @@ $saveOrder	= $listOrder=='ordering';
 					$reservableSlots = array();
 					$blockedSlots = array();
 					foreach($slots as $slot) {
-                		if ($slot->periodType == PeriodTypes::RESERVABLE) {
+                		if ($slot->periodType == RFSchedulePeriodTypes::RESERVABLE) {
                 			$reservableSlots[] = $slot->start->format('H:i').'-'.$slot->end->format('H:i');		
-                		}elseif( $slot->periodType == PeriodTypes::NONRESERVABLE) {
+                		}elseif( $slot->periodType == RFSchedulePeriodTypes::NONRESERVABLE) {
                 			$blockedSlots[] = $slot->start->format('H:i').'-'.$slot->end->format('H:i');	
                 		} 
 					}	

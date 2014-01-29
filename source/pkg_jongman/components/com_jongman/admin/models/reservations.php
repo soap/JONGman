@@ -21,7 +21,7 @@ class JongmanModelReservations extends JModelList
 	 * @return  void
 	 * @since   1.0
 	 */
-	protected function populateState($ordering = 're.start_date', $direction = 'asc')
+	protected function populateState($ordering = 'a.title', $direction = 'asc')
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
@@ -42,8 +42,8 @@ class JongmanModelReservations extends JModelList
 		$resourceId = $this->getUserStateFromRequest($this->context.'.filter.resource_id', 'filter_resource_id', null, 'int');
 		$this->setState('filter.resource_id', $resourceId);
 		
-		$reservationCategory = $this->getUserStateFromRequest($this->context.'.filter.reservation_category', 'filter_reservation_category', null, 'int');
-		$this->setState('filter.reservation_category', $reservationCategory);
+		$reservationType = $this->getUserStateFromRequest($this->context.'.filter.reservation_type', 'filter_reservation_type', null, 'int');
+		$this->setState('filter.reservation_type', $reservationType);
 		
 		// Load the parameters.
 		$params = JComponentHelper::getParams('com_jongman');
@@ -68,55 +68,43 @@ class JongmanModelReservations extends JModelList
 		$query->select(
 			$this->getState(
 				'list.select',
-				're.id, re.alias as alias, re.title as title, '
-				.'from_unixtime(re.start_date) as start_date, from_unixtime(re.end_date) as end_date,'
-				.'re.checked_out, re.checked_out_time, re.resource_id,'
-				.'re.state, re.access, re.created_time'
+				'a.id, a.alias as alias, a.title as title, a.owner_id, ' .
+				'a.checked_out, a.checked_out_time, ' .
+				'a.state, a.access, a.created'
 			)
 		);
-		$query->from('#__jongman_reservations AS re');
+		$query->from('#__jongman_reservations AS a');
 
 		// Join over the users for the checked out user.
 		$query->select('uc.name AS editor');
-		$query->join('LEFT', '#__users AS uc ON uc.id=re.checked_out');
+		$query->join('LEFT', '#__users AS uc ON uc.id=a.checked_out');
+		
+		// Join over the users for the owner user.
+		$query->select('own.name AS owner');
+		$query->join('LEFT', '#__users AS own ON own.id=a.owner_id');
 
 		// Join over the asset groups.
 		$query->select('ag.title AS access_level');
-		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = re.access');
-
-		// Join over the resources.
-		$query->select('res.title AS resource_title');
-		$query->join('LEFT', '#__jongman_resources AS res ON res.id = re.resource_id');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id=a.access');
 
 		// Join over the schedules.
 		$query->select('sc.name AS schedule_title');
-		$query->join('LEFT', '#__jongman_schedules AS sc ON sc.id = re.schedule_id');
+		$query->join('LEFT', '#__jongman_schedules AS sc ON sc.id=a.schedule_id');
 				
 		// Join over the users for the author.
-		$query->select('ure.name AS reserved_by_name');
-		$query->join('LEFT', '#__users AS ure ON ure.id = re.created_by');
-
-		// Join over the users for the author.
-		$query->select('urb.name AS reserved_for_name');
-		$query->join('LEFT', '#__users AS urb ON urb.id = re.reserved_for');
+		$query->select('au.name AS author');
+		$query->join('LEFT', '#__users AS au ON au.id=a.created_by');
 		
-		$reservationCategory = $this->getState('filter.reservation_category');
-		if ($reservationCategory == 1) {
-			$query->where('is_blackout <> 1');
-		}else if ($reservationCategory == 2) {
-			$query->where('is_blackout = 1');
+		if ($reservationType = $this->getState('filter.reservation_type')) {
+			$query->where('a.type_id ='.(int)$reservationType);
 		}
-		
+		/*
 		if ($scheduleId = $this->getState('filter.schedule_id')) {
 			$query->where('re.schedule_id ='.(int)$scheduleId);	
-		}
-		
-		if ($resourceId = $this->getState('filter.resource_id')) {
-			$query->where('re.resource_id ='.(int)$resourceId);	
-		}
+		}*/
 		
 		if ($access = $this->getState('filter.access')) {
-			$query->where('re.access = '.$access);
+			$query->where('a.access = '.$access);
 		}
 		
 		// Add the list ordering clause.
