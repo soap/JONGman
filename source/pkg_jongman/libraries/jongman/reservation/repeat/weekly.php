@@ -22,7 +22,9 @@ class RFReservationRepeatWeekly extends RFReservationRepeatAbstract
 		{
 			$daysOfWeek = array();
 		}
+		
 		$this->_daysOfWeek = $daysOfWeek;
+		
 		if ($this->_daysOfWeek != null)
 		{
 			sort($this->_daysOfWeek);
@@ -33,6 +35,7 @@ class RFReservationRepeatWeekly extends RFReservationRepeatAbstract
 	{
 		if (empty($this->_daysOfWeek))
 		{
+			// use begin date 's weekday
 			$this->_daysOfWeek = array($startingRange->getBegin()->weekday());
 		}
 
