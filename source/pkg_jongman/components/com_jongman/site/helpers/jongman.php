@@ -8,6 +8,19 @@ defined('_JEXEC') or die;
 class JongmanHelper 
 {
 	
+	public static function getUserTimezone($uid = null) 
+	{
+		if ($uid === null) {
+			$user = JFactory::getUser();
+		}else{
+			$user = JFactory::getUser($uid);
+		}
+		$timezone = $user->getParam('timezone', null);
+		if ($timezone === null) $timezone = JFactory::getConfig()->get('offset', 'UTC');
+		
+		return $timezone;
+	}
+	
 	function isAdmin( $uid = null, $resource_id = null )
 	{
 		if (empty($uid)) {
