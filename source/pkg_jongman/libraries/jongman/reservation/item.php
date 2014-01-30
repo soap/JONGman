@@ -215,7 +215,7 @@ class RFReservationItem implements IReservedItem
 
 		if (!empty($startDate) && !empty($endDate))
 		{
-			$this->date = new DateRange($startDate, $endDate);
+			$this->date = new RFDateRange($startDate, $endDate);
 		}
 
 		if (!empty($participant_list))
@@ -236,10 +236,10 @@ class RFReservationItem implements IReservedItem
 	 */
 	public static function populate($row)
 	{
-		$view = new ReservationItem (
+		$view = new RFReservationItem (
 			$row->alias,
-			JMDate::fromDatabase($row->start_date),
-			JMDate::fromDatabase($row->end_date),
+			RFDate::fromDatabase($row->start_date),
+			RFDate::fromDatabase($row->end_date),
 			$row->resource_title,
 			$row->resource_id,
 			$row->id,
@@ -248,7 +248,7 @@ class RFReservationItem implements IReservedItem
 			$row->schedule_id,
 			$row->owner_firstname,
 			$row->owner_lastname,
-			$row->owner_user_id,
+			$row->owner_id,
 			$row->owner_phone,
 			$row->owner_unit,
 			$row->owner_position,
@@ -258,8 +258,8 @@ class RFReservationItem implements IReservedItem
 
 		if (isset($row->created))
 		{
-			$view->createdDate = JMDate::fromDatabase($row->created);
-			$view->dateCreated = JMDate::fromDatabase($row->created);
+			$view->createdDate = RFDate::fromDatabase($row->created);
+			$view->dateCreated = RFDate::fromDatabase($row->created);
 		}
 
 		if (isset($row->modified))
