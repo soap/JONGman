@@ -25,7 +25,12 @@ else {
 
 //base interface definitions
 jimport('jongman.base.ilayout');
+jimport('jongman.base.irepeats');
+jimport('jongman.base.ireservationlisting');
 jimport('jongman.base.ireservationslot');
+jimport('jongman.base.irservationvalidationrule');
+jimport('jongman.base.ireserveditem');
+
 
 // I want to user JM prefix, but JLoader cannot support it, as Joomla 's J matched first
 JLoader::registerPrefix('RF', JPATH_PLATFORM . '/jongman');
