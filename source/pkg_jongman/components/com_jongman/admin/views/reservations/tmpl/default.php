@@ -7,7 +7,7 @@
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
-//JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+
 JHtml::_('behavior.tooltip');
 
 $user		= JFactory::getUser();
