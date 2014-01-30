@@ -87,7 +87,7 @@ class JongmanModelReservation extends JModelAdmin
 			$result->resource_id = JRequest::getInt('resource_id');
 			$result->start_date = JRequest::getString('start');
 			$result->end_date = JRequest::getString('end');
-			$result->reserved_for = $user->id;
+			$result->owner_id = $user->id;
 		}else{
 			
 		} 			
@@ -164,11 +164,7 @@ class JongmanModelReservation extends JModelAdmin
 			if (empty($table->reference_number) || strlen($table->reference_number) < $referenceLength) {
 				$table->reference_number = JUserHelper::genRandomPassword($referenceLength);
 			}
-		}
-		
-		//$start_date = new RFDate($table->start_date, );
-		//end_date = new RFDate($table->end_date, )
-		 
+		} 
 		
 		return true;
 	}
@@ -273,7 +269,14 @@ class JongmanModelReservation extends JModelAdmin
 		$validData['start_date'] = $validData['start_date'].' '.$validData['start_time'];
 		$validData['end_date'] = $validData['end_date'].' '.$validData['end_time'];
 		
-		var_dump($validData); jexit();
+		list ($validData['start_date'], $t) = explode(' ', $validData['start_date']);
+		list ($validData['end_date'], $t) = explode(' ', $validData['end_date']);
+		
+		$input = $validData;
+		$input['repeatOptions'] = new RFReservationRepeatNone();
+		$reservationSeries = new RFReservationSeries();
+		$reservationSeries->bind($input);
+		
 		// now we do our validation process
 		return $validData;
 	}

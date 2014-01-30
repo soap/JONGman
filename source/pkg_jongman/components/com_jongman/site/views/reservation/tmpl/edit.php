@@ -69,7 +69,15 @@ JHtml::_('behavior.keepalive');
 					<?php echo $this->form->getInput('reference_number'); ?>
 				</div>
 			</div>
-			
+			<div class="control-group">
+				<div class="control-label">
+					<?php echo $this->form->getLabel('owner_id'); ?>
+				</div>
+				<div class="controls">
+					<?php echo $this->form->getInput('owner_id'); ?>
+				</div>
+			</div>
+						
 			<div class="control-group">
 				<div class="control-label">
 					<?php echo $this->form->getLabel('resource_id'); ?>
@@ -108,6 +116,7 @@ JHtml::_('behavior.keepalive');
 		<div class="span6">
 		</div>
 	</div>
+	<?php echo $this->form->getInput('created_by')?>
 	<?php echo $this->form->getInput('schedule_id')?>
 	
 	<input type="hidden" name="task" value="" />

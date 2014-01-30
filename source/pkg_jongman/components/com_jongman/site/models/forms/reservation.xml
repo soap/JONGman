@@ -26,8 +26,8 @@
 			class="inputbox readonly"
 			size="45" />
 			
-		<field name="reserved_for" 
-			type="jongmanuser"
+		<field name="owner_id" 
+			type="user"
 			label="COM_JONGMAN_FIELD_RESERVATION_RESERVED_FOR_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_RESERVED_FOR_DESC" />
 			
@@ -44,9 +44,9 @@
 
 		<field name="checked_out_time" type="hidden" filter="unset" />
 
-		<field name="created_user_id" type="hidden" filter="unset" />
+		<field name="created_by" type="hidden" filter="unset" />
 
-		<field name="created_time"
+		<field name="created"
 			type="text"
 			label="COM_JONGMAN_FIELD_RESERVATION_CREATED_TIME_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_CREATED_TIME_DESC"
@@ -57,7 +57,7 @@
 
 		<field name="modified_by" type="hidden" filter="unset" />
 
-		<field name="modified_time"
+		<field name="modified"
 			type="text"
 			label="COM_JONGMAN_FIELD_RESERVATION_MODIFIED_TIME_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_MODIFIED_TIME_DESC"

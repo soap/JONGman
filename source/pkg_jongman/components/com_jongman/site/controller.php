@@ -47,8 +47,8 @@ class JongmanController extends JControllerLegacy
 				$file = JUri::root().'media/com_jongman/jongman/css/smoothness/jquery-ui-1.9.0.custom.min.css';
 				JHtml::_('stylesheet', $file, false, true, false, false, false);	
 				JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, false, false);
-				JHtml::_('stylesheet', 'com_jongman/jongman/calendar.css', false, true, false, false, false);
-				JHtml::_('stylesheet', 'com_jongman/jongman/popup-reservation.css', false, true, false, false, false);
+					JHtml::_('stylesheet', 'com_jongman/jongman/calendar.css', false, true, false, false, false);
+			JHtml::_('stylesheet', 'com_jongman/jongman/popup-reservation.css', false, true, false, false, false);
 				JHtml::_('script', 'com_jongman/jongman/resource-popup.js', false, true);						
 				JHtml::_('script', 'com_jongman/jongman/schedule.js', false, true);						
 			}
@@ -62,5 +62,17 @@ class JongmanController extends JControllerLegacy
 		parent::display($cachable, $urlparams);
 		
 		return $this;
+	}
+	
+	public function getModel($name = '', $prefix = '', $config = array()) 
+	{
+		$view = JFactory::getApplication()->input->getCmd('view'); 
+		if ($name == 'users' || (empty($name) && $view == 'users') ) {
+			JModel::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_users/models/', 'UsersModel');
+			$name = 'users';
+			$prefix = 'UsersModel';		
+		} 
+
+		return parent::getModel($name, $prefix, $config);
 	}
 }
