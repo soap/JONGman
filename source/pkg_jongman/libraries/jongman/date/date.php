@@ -178,7 +178,7 @@ class RFDate
 	 */
 	public function toDatabase()
 	{
-		return $this->toUtc()->Format('Y-m-d H:i:s');
+		return $this->toUtc()->format('Y-m-d H:i:s');
 	}
 
 	/**
