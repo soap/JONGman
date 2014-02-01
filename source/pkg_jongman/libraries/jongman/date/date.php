@@ -1,7 +1,6 @@
 <?php
 defined('_JEXEC') or die;
 
-
 class RFDate
 {
 	/**
@@ -74,7 +73,7 @@ class RFDate
 	{
 		if (empty($dateString))
 		{
-			return NullDate::Instance();
+			return RFDateNull::Instance();
 		}
 		return new RFDate($dateString, $timezone);
 	}
@@ -87,7 +86,7 @@ class RFDate
 	{
 		if (empty($dateString))
 		{
-			return NullDate::Instance();
+			return RFDateNull::Instance();
 		}
 
 		$date = new DateTime($dateString);
@@ -190,7 +189,7 @@ class RFDate
 	{
 		if (empty($databaseValue))
 		{
-			return NullDate::getInstance();
+			return RFDateNull::getInstance();
 		}
 		return RFDate::parse($databaseValue, 'UTC');
 	}
@@ -339,7 +338,7 @@ class RFDate
 		return ($this->day() == $date2->day() && $this->month() == $date2->month() && $this->year() == $date2->year());
 	}
 
-	public function dateCompare(Date $date)
+	public function dateCompare(RFDate $date)
 	{
 		$date2 = $date;
 		if ($date2->timezone() != $this->timezone())
@@ -602,49 +601,3 @@ class RFDate
 		return $this->setTime(new Time($time->hour(), $time->minute(), 0, $this->timezone()));
 	}
 }
-
-class NullDate extends RFDate
-{
-	/**
-	 * @var NullDate
-	 */
-	private static $ndate;
-
-	public function __construct()
-	{
-		//parent::__construct();
-	}
-
-	public static function getInstance()
-	{
-		if (self::$ndate == null)
-		{
-			self::$ndate = new NullDate();
-		}
-
-		return self::$ndate;
-	}
-
-	public function format($format)
-	{
-		return '';
-	}
-
-	public function toString()
-	{
-		return '';
-	}
-
-	public function toDatabase()
-	{
-		return null;
-	}
-
-	public function toTimezone($timezone)
-	{
-		return $this;
-	}
-}
-
-
-?>
