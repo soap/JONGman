@@ -12,7 +12,7 @@ class RFReservationRepeatDayofmonth extends RFReservationRepeatAbstract
 		parent::__construct($interval, $terminationDate);
 	}
 
-	public function GetDates(DateRange $startingRange)
+	public function getDates(DateRange $startingRange)
 	{
 		$dates = array();
 

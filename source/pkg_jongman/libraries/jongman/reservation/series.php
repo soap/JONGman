@@ -37,7 +37,6 @@ class RFReservationSeries
 				);
 
 		$this->repeats($data['repeatOptions']);
-		var_dump($this);
 	}
 	
 	public function currentInstance()
