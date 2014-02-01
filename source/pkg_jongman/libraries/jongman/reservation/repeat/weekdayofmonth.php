@@ -1,7 +1,6 @@
 <?php
 defined('_JEXEC') or die;
 
-
 class RFReservationRepeatWeekdayofmonth extends RFReservationRepeatAbstract
 {
 	private $_typeList = array(1 => 'first', 2 => 'second', 3 => 'third', 4 => 'fourth', 5 => 'fifth');

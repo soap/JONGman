@@ -11,7 +11,7 @@ class RFReservationRepeatNone implements IRepeatOptions
 
 	public function repeatType()
 	{
-		return RFReservationRepeatType::None;
+		return RFReservationRepeatType::NONE;
 	}
 
 	public function configurationString()
