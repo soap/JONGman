@@ -143,7 +143,7 @@ class RFReservation
 	 * @param array|int[] $participantIds
 	 * @return void
 	 */
-	public function WithParticipants($participantIds)
+	public function withParticipants($participantIds)
 	{
 		$this->_participantIds = $participantIds;
 		$this->unchangedParticipants = $participantIds;
@@ -152,7 +152,7 @@ class RFReservation
 	/**
 	 * @param int $participantId
 	 */
-	public function WithParticipant($participantId)
+	public function withParticipant($participantId)
 	{
 		$this->_participantIds[] = $participantId;
 		$this->unchangedParticipants[] = $participantId;
@@ -271,7 +271,7 @@ class RFReservation
 	/**
 	 * @return bool
 	 */
-	public function IsNew()
+	public function isNew()
 	{
 		return $this->reservationId() == null;
 	}
@@ -280,7 +280,7 @@ class RFReservation
 	 * @param int $inviteeId
 	 * @return bool whether the invitation was accepted
 	 */
-	public function AcceptInvitation($inviteeId)
+	public function acceptInvitation($inviteeId)
 	{
 		if (in_array($inviteeId, $this->_inviteeIds))
 		{

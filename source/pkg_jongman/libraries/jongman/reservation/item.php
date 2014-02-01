@@ -57,6 +57,11 @@ class RFReservationItem implements IReservedItem
 	/**
 	 * @var null|string
 	 */
+	public $fullName;
+	
+	/**
+	 * @var null|string
+	 */
 	public $firstName;
 
 	/**
@@ -164,6 +169,7 @@ class RFReservationItem implements IReservedItem
 	 * @param $title string
 	 * @param $description string
 	 * @param $scheduleId int
+	 * @param $userName string;
 	 * @param $userFirstName string
 	 * @param $userLastName string
 	 * @param $userId int
@@ -183,12 +189,13 @@ class RFReservationItem implements IReservedItem
 		$title = null,
 		$description = null,
 		$scheduleId = null,
-		$userFirstName = null,
-		$userLastName = null,
+		$userName = null,
+		//$userFirstName = null,
+		//$userLastName = null,
 		$userId = null,
-		$userPhone = null,
-		$userOrganization = null,
-		$userPosition = null,
+		//$userPhone = null,
+		//$userOrganization = null,
+		//$userPosition = null,
 		$participant_list = null,
 		$invitee_list = null
 	)
@@ -203,13 +210,14 @@ class RFReservationItem implements IReservedItem
 		$this->title = $title;
 		$this->description = $description;
 		$this->scheduleId = $scheduleId;
-		$this->firstName = $userFirstName;
-		$this->ownerFirstName = $userFirstName;
-		$this->lastName = $userLastName;
-		$this->ownerLastName = $userLastName;
-		$this->ownerPhone = $userPhone;
-		$this->ownerOrganization = $userOrganization;
-		$this->ownerPosition = $userPosition;
+		$this->fullName = $userName;
+		//$this->firstName = $userFirstName;
+		//$this->ownerFirstName = $userFirstName;
+		//$this->lastName = $userLastName;
+		//$this->ownerLastName = $userLastName;
+		//$this->ownerPhone = $userPhone;
+		//$this->ownerOrganization = $userOrganization;
+		//$this->ownerPosition = $userPosition;
 		$this->userId = $userId;
 		$this->userLevelId = $userLevelId;
 
@@ -246,12 +254,13 @@ class RFReservationItem implements IReservedItem
 			$row->title,
 			$row->description,
 			$row->schedule_id,
-			$row->owner_firstname,
-			$row->owner_lastname,
+			$row->owner_name,
+			//$row->owner_firstname,
+			//$row->owner_lastname,
 			$row->owner_id,
-			$row->owner_phone,
-			$row->owner_unit,
-			$row->owner_position,
+			//$row->owner_phone,
+			//$row->owner_unit,
+			//$row->owner_position,
 			$row->participant_list,
 			$row->invitee_list
 		);
@@ -264,7 +273,7 @@ class RFReservationItem implements IReservedItem
 
 		if (isset($row->modified))
 		{
-			$view->modifiedDate = JMDate::fromDatabase($row->modified);
+			$view->modifiedDate = RFDate::fromDatabase($row->modified);
 		}
 
 		if (isset($row->repeat_type))

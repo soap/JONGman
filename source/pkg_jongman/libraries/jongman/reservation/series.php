@@ -28,7 +28,7 @@ class RFReservationSeries
 	 */
 	public function bind($data)
 	{
-		$this->userId = $data['created_by'];
+		$this->userId = JFactory::getUser()->get('id');
 		$this->resource = $data['resource_id'];
 		$this->bookedBy = JFactory::getUser((int)$data['owner_id']);
 		$userTz = JFactory::getUser($this->userId)->getParam('timezone'); 
@@ -93,7 +93,7 @@ class RFReservationSeries
 		/** @var $instance Reservation */
 		foreach ($this->_instances as $instance)
 		{
-			if ($instance->StartDate()->DateEquals($reservationDate->GetBegin()))
+			if ($instance->startDate()->dateEquals($reservationDate->getBegin()))
 			{
 				return true;
 			}
