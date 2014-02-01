@@ -143,7 +143,6 @@
 		<field
 			name="repeat_terminated" 
 			type="calendar"
-			required="true"
 			filter="USER_UTC"
 			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_UNTIL_DATE_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_UNTIL_DATE_DESC" />		
