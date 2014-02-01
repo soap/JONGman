@@ -17,7 +17,7 @@ jimport('joomla.database.table');
  * Reservation table.
  *
  * @package     JONGman
- * @subpackage  Frontend
+ * @subpackage  com_jongman
  * @since       1.0
  */
 class JongmanTableReservation extends JTable
@@ -61,11 +61,27 @@ class JongmanTableReservation extends JTable
 	{
 		$success = parent::bind($array, $ignore);
 		if (!$success) return false;
+
+		$user = JFactory::getUser();
+		$date = JFactory::getDate();
+	
+		if (empty($this->_tbl_key)) {
+			if (isset($this->created_by) && empty($this->created_by)) {
+				$this->created_by = $user->get('id');
+			}	
+		}else{
+			if (isset($this->modified_by)) {
+				$this->modifed_by = $user->get('id');
+			}
+			if (isset($this->modified)) {
+				$this->modified = $date->toSql();
+			}
+		} 
 		
 		if (isset($array['instances'])) {
 			$this->_instances = $array['instances'];
 		}
-		var_dump($this); jexit();
+
 		return true;
 	}
 
@@ -83,7 +99,24 @@ class JongmanTableReservation extends JTable
 		if (!$stored) return false;
 		
 		if (empty($this->_instances)) return stored;
-		//now we try to save instances
+		$table = JTable::getInstance('Instance', 'JongmanTable');
+		
+		foreach($this->_instances as $key => $instance ) {
+			$keys = array('reference_number' => $key);
+			if ( !$instance->isNew() ) {
+				$keys['reservation_id'] = $instance->reservationId();
+			} 
+			$src = array();
+			$src['start_date'] = $instance->startDate()->toDatabase();
+			$src['end_date'] = $instance->endDate()->toDatabase();
+			$src['reference_number'] = $key;
+			$src['reservation_id'] = $this->id;
+
+			$table->load($keys);
+			$table->bind($src);	
+
+			$table->store();
+		}
 		
 		return true;
 		
