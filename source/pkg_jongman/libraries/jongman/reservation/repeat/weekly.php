@@ -90,8 +90,11 @@ class RFReservationRepeatWeekly extends RFReservationRepeatAbstract
 
 	public function configurationString()
 	{
-		$config = parent::ConfigurationString();
-		return sprintf("%s|days=%s", $config, implode(',', $this->_daysOfWeek));
+		$obj = new JRegistry();
+		$obj->loadString(parent::ConfigurationString());
+		
+		$obj->set('days', $this->_daysOfWeek);
+		return $obj->toString();
 	}
 
 	public function hasSameConfigurationAs(IRepeatOptions $repeatOptions)

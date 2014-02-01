@@ -16,7 +16,7 @@ class RFReservationRepeatWeekdayofmonth extends RFReservationRepeatAbstract
 		parent::__construct($interval, $terminationDate);
 	}
 
-	public function getDates(DateRange $startingRange)
+	public function getDates(RFDateRange $startingRange)
 	{
 		$dates = array();
 
@@ -71,11 +71,13 @@ class RFReservationRepeatWeekdayofmonth extends RFReservationRepeatAbstract
 
 	public function configurationString()
 	{
-		$config = parent::configurationString();
-		return sprintf("%s|type=%s", $config, ReservationRepeatMonthlytype::DayOfWeek);
+		$obj = new JRegistry();
+		$obj->loadString(parent::ConfigurationString());		
+		$obj->set('type', RFReservationRepeatMonthlytype::DayOfWeek);
+		return $obj->toString();
 	}
 
-	private function getWeekNumber(Date $firstDate, $firstWeekdayOfMonth)
+	private function getWeekNumber(RFDate $firstDate, $firstWeekdayOfMonth)
 	{
 		$week = ceil($firstDate->Day() / 7);
 //		if ($firstWeekdayOfMonth > $firstDate->Weekday())
@@ -86,7 +88,7 @@ class RFReservationRepeatWeekdayofmonth extends RFReservationRepeatAbstract
 		return $week;
 	}
 
-	private function GetWeekNumberOfMonth($week, $month, $year, $desiredDayOfWeek)
+	private function getWeekNumberOfMonth($week, $month, $year, $desiredDayOfWeek)
 	{
 		$firstWeekdayOfMonth = date('w', mktime(0, 0, 0, $month, 1, $year));
 

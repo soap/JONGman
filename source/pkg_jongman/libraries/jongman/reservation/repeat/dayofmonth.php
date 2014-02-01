@@ -12,7 +12,7 @@ class RFReservationRepeatDayofmonth extends RFReservationRepeatAbstract
 		parent::__construct($interval, $terminationDate);
 	}
 
-	public function getDates(DateRange $startingRange)
+	public function getDates(RFDateRange $startingRange)
 	{
 		$dates = array();
 
@@ -48,8 +48,10 @@ class RFReservationRepeatDayofmonth extends RFReservationRepeatAbstract
 
 	public function configurationString()
 	{
-		$config = parent::configurationString();
-		return sprintf("%s|type=%s", $config, ReservationRepeatMonthlytype::DayOfMonth);
+		$obj = new JRegistry();
+		$obj->loadString(parent::ConfigurationString());		
+		$obj->set('type', RFReservationRepeatMonthlytype::DayOfMonth);
+		return $obj->toString();
 	}
 
 	private function dayExistsInNextMonth($date, $monthsFromStart)
