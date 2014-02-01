@@ -34,6 +34,13 @@ var JMrepeatoptions =
 	        		jQuery('#jform_repeat_interval_unit').text('Year(s)');
 	        	break;
         }
+        
+		termateEl = jQuery('#jform_repeat_terminated');
+		if (option.val() == 'none') {
+			terminateEl.removeClass('requried');
+		}else{ 
+			terminateEl.addClass('requried');
+		}
 	},
 
 }
