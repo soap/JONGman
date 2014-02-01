@@ -30,7 +30,7 @@ class JongmanController extends JControllerLegacy
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{	
-		JLoader::register('JongmanHelper', JPATH_COMPONENT . '/helpers/jongman.php');	
+		
 		
 		$jquery_site = JComponentHelper::getParams('com_jongman')->get('jquery_site');
 		
@@ -47,8 +47,8 @@ class JongmanController extends JControllerLegacy
 				$file = JUri::root().'media/com_jongman/jongman/css/smoothness/jquery-ui-1.9.0.custom.min.css';
 				JHtml::_('stylesheet', $file, false, true, false, false, false);	
 				JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, false, false);
-					JHtml::_('stylesheet', 'com_jongman/jongman/calendar.css', false, true, false, false, false);
-			JHtml::_('stylesheet', 'com_jongman/jongman/popup-reservation.css', false, true, false, false, false);
+				JHtml::_('stylesheet', 'com_jongman/jongman/calendar.css', false, true, false, false, false);
+				JHtml::_('stylesheet', 'com_jongman/jongman/popup-reservation.css', false, true, false, false, false);
 				JHtml::_('script', 'com_jongman/jongman/resource-popup.js', false, true);						
 				JHtml::_('script', 'com_jongman/jongman/schedule.js', false, true);						
 			}

@@ -59,7 +59,14 @@ class JongmanTableReservation extends JTable
 	 */
 	public function bind($array, $ignore = '')
 	{
-		return  parent::bind($array, $ignore);
+		$success = parent::bind($array, $ignore);
+		if (!$success) return false;
+		
+		if (isset($array['instances'])) {
+			$this->_instances = $array['instances'];
+		}
+		var_dump($this); jexit();
+		return true;
 	}
 
 	/**

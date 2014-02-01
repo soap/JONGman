@@ -113,7 +113,8 @@ JHtml::_('behavior.keepalive');
 				</div>
 			</div>
 		</div>
-		<div class="span6">
+		<div class="span6 form-horizontal">
+			<?php echo $this->loadTemplate('repeatoptions')?>
 		</div>
 	</div>
 	<?php echo $this->form->getInput('created_by')?>

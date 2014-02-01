@@ -96,11 +96,11 @@
 			label="COM_JONGMAN_FIELD_RESERVATION_END_TIME_LABEL" 
 			description="COM_JONGMAN_FIELD_RESERVATION_END_TIME_DESC" />
 	</fieldset>
-	<fieldset name="repeat">
+	<fieldset name="repeat_options">
 		<field
-			name="repeat_interval"
+			name="repeat_type"
 			type="list"
-			onchange="changeInterval(this)"
+			onchange="JMrepeatoptions.toggle(this,'repeat_interval,repeat_days,repeat_terminated');"
 			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_DESC"
 			>
@@ -112,34 +112,40 @@
 		</field>		
 	
 		<field 
-			name="repeat_frequency"
-			type="integer" first="1" last="10" step="1"
-			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_FREQUENCY_LABEL"
-			decription="COM_JONGMAN_FIELD_RESERVATION_REPEAT_FREQUENCY_DESC" />
-	
-		<field 
-			name="frequency_unit" type="text"
-			readonly="true" class="readonly" />
+			name="repeat_interval"
+			type="repeatinterval" 
+			first="1" last="10" step="1" class="span8"
+			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_INTERVAL_LABEL"
+			decription="COM_JONGMAN_FIELD_RESERVATION_REPEAT_INTERVAL_DESC" />
 			
 		<field
-			name="repeat_day" type="checkboxes"
-			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_ON_LABEL"
-			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_ON_DESC">
-			<option value="0">SUNDAY</option>
-            <option value="1">MONDAY</option>
+			name="repeat_days" type="checkboxes"
+			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_DAYS_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_DAYS_DESC">
+			<option value="0" class="checkbox">SUNDAY</option>
+            <option value="1" class="checkbox">MONDAY</option>
 			<option value="2">TUESDAY</option>
 			<option value="3">WEDNESDAY</option>
 			<option value="4">THURSDAY</option>
 			<option value="5">FRIDAY</option>
 			<option value="6">SATURDAY</option>
 		</field>
+		
+		<field
+			name="repeat_monthly_type" type="list" class="inline"
+			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_MONTHLY_TYPE_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_MONTHLY_TYPE_DESC"
+			>
+			<option value="1">COM_JONGMAN_RESERVATION_REPEAT_DAYOFWEEK</option>
+			<option value="1">COM_JONGMAN_RESERVATION_REPEAT_DAYOFMONTH</option>
+		</field>
 	
 		<field
-			name="repeat_until_date" 
+			name="repeat_terminated" 
 			type="calendar"
+			required="true"
 			filter="USER_UTC"
 			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_UNTIL_DATE_LABEL"
-			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_UNTIL_DATE_DESC" />
-			
+			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_UNTIL_DATE_DESC" />		
 	</fieldset>
 </form>

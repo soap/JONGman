@@ -1,7 +1,42 @@
-/**
- * 
- */
+var JMrepeatoptions =
+{
+	/**
+	 * Function that dynamically reloads the specified form fields
+	 * @param    string    fs    The form fields to reload (comma separated)
+	 */
+		
+	toggle: function(src, fs) {
+        // Get elements from string
+        var els = fs.split(',');
+        var option = jQuery('#'+src.id);
+        switch(option.val()) {
+	        case 'none' :
+	        	jQuery('.repeatoption').hide();
+	        	break;
+	        case 'daily' :
+	        		jQuery('.repeatoption').show();
+	        		jQuery('.not-daily').hide();
+	        		jQuery('#jform_repeat_interval_unit').text('Day(s)');
+	        	break;
+	        case 'weekly' :
+        			jQuery('.repeatoption').show();
+        			jQuery('.not-weekly').hide();
+        			jQuery('#jform_repeat_interval_unit').text('Week(s)');
+	        	break;
+	        case 'monthly' :
+	        		jQuery('.repeatoption').show();
+	        		jQuery('.not-monthly').hide();
+	        		jQuery('#jform_repeat_interval_unit').text('Month(s)');
+	        	break;
+	        case 'yearly':
+	        		jQuery('.repeatoption').show();
+	        		jQuery('.not-yearly').hide();
+	        		jQuery('#jform_repeat_interval_unit').text('Year(s)');
+	        	break;
+        }
+	},
 
+}
 
 function isIE() {
 	return document.all;
@@ -10,14 +45,13 @@ function isIE() {
 // BUGFIX by Eric Maclot
 function isIE7() {
     return (document.all && (typeof document.body.style.maxHeight != "undefined"));
-}
- 
+} 
 
 function changeInterval(opt) {
-    until_el = document.id("repeat_until_div");
-    frequency_el = document.id("repeat_frequency_div");
-    frequency_unit_el = document.id("jform_frequency_unit");
-    repeat_days_el = document.id('repeat_days_div');
+    elTerminateDate = document.id("jform_repeat_until");
+    elRepeatType = document.id("jform_repeat_type");
+    elIntervalUnit = document.id("jform_repeat_interval_unit");
+    elRepeatDays = document.id('repeat_days_div');
     if (opt.options[0].selected == true) {
     	until_el.hide();
     	frequency_el.hide();
