@@ -117,7 +117,7 @@ JHtml::_('behavior.keepalive');
 			<?php echo $this->loadTemplate('repeatoptions')?>
 		</div>
 	</div>
-	<?php echo $this->form->getInput('created_by')?>
+
 	<?php echo $this->form->getInput('schedule_id')?>
 	
 	<input type="hidden" name="task" value="" />
