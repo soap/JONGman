@@ -88,8 +88,7 @@ class JongmanModelReservation extends JModelAdmin
 			$result->start_date = JRequest::getString('start');
 			$result->end_date = JRequest::getString('end');
 			$result->owner_id = $user->id;
-		}else{
-			
+			$result->created_by = $user->id;
 		} 			
 
 		$tz = $user->getParam('offset');
@@ -153,19 +152,7 @@ class JongmanModelReservation extends JModelAdmin
 	 * @since   1.0
 	 */
 	protected function prepareTable($table)
-	{
-		jimport('joomla.filter.output');
-		if (empty($table->id)) {
-			$params = JComponentHelper::getParams('com_jongman');
-			$referenceLength = (int)$params->get('referenceLength');
-		
-			if ($referenceLength <= 6) $referenceLength = 6;
-			// If the alias is empty, prepare from the value of the title.
-			if (empty($table->reference_number) || strlen($table->reference_number) < $referenceLength) {
-				$table->reference_number = JUserHelper::genRandomPassword($referenceLength);
-			}
-		} 
-		
+	{	
 		return true;
 	}
 	
@@ -177,55 +164,60 @@ class JongmanModelReservation extends JModelAdmin
 	{
 		$validData = parent::validate($form, $data, $group);
 		if ($validData === false) return false;
+		$t = '';
+		list ($validData['start_date'], $t) = explode(' ', $validData['start_date']);
+		list ($validData['end_date'], $t) = explode(' ', $validData['end_date']);
 		
 		$validData['start_date'] = $validData['start_date'].' '.$validData['start_time'];
 		$validData['end_date'] = $validData['end_date'].' '.$validData['end_time'];
 		
-		list ($validData['start_date'], $t) = explode(' ', $validData['start_date']);
-		list ($validData['end_date'], $t) = explode(' ', $validData['end_date']);
-		
 		$input = $validData;
 		$tz = JongmanHelper::getUserTimezone();
-		
+		if (empty($input['id'])) {
+			
+		}
 		switch ((string) $input['repeat_type']) {
 			case 'daily': 
-					$input['repeatOptions'] = new RFReservationRepeatDaily(
+					$repeatOption = new RFReservationRepeatDaily(
 												$input['repeat_interval'],
 												RFDate::parse($input['repeat_terminated'], $tz)
 											);
 				break;
 			case 'weekly' :
-					$input['repeatOptions'] = new RFReservationRepeatWeekly(
+					$repeatOption = new RFReservationRepeatWeekly(
 												$input['repeat_interval'],
 												RFDate::parse($input['repeat_terminated'], $tz),
 												$input['repeat_days']
 											);
 				break;
 			case 'monthly' :
-					$input['repeatOptions'] = new RFReservationRepeatMonthly(
+					$class = 'RFReservationRepeat'.ucfirst($input['repeat_monthly_type']);
+					$repeatOption = new $class(
 												$input['repeat_interval'],
 												RFDate::parse($input['repeat_terminated'], $tz)					
 											);
 				break;
 			case 'yearly' :
-					$input['repeatOptions'] = new RFReservationRepeatYearly(
+					$repeatOption = new RFReservationRepeatYearly(
 												$input['repeat_interval'],
 												RFDate::parse($input['repeat_terminated'], $tz)					
 										);
 				break;
 			default:
-					$input['repeatOptions'] = new RFReservationRepeatNone();
+					$repeatOption = new RFReservationRepeatNone();
 				break;
 				
 		}
 		
+		$input['repeatOptions'] = $repeatOption;
 		$reservationSeries = new RFReservationSeries();
 		$reservationSeries->bind($input);
 		//start reservation validation here
 		
 		//if success then add instances
 		$validData['instances'] = $reservationSeries->getInstances();
-		
+
+		$validData['repeat_options'] = $repeatOption->configurationString();
 		// now we do our validation process
 		return $validData;
 	}
