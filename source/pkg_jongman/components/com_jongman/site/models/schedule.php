@@ -4,15 +4,13 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.modelitem');
 jimport('jongman.layout.schedule');
 
-//require_once JPATH_COMPONENT."/libraries/dateutil.class.php";
-
 class JongmanModelSchedule extends JModelItem {
 	
 	private $_scheduleId = null;
 	
 	private $_schedule = null; 
 	
-	private $_date_vars;
+	private $_dates = null;
     
     function __construct($config = array())
     {
@@ -215,6 +213,9 @@ class JongmanModelSchedule extends JModelItem {
 	{
 		jimport('jongman.date.date');
 		jimport('jongman.date.daterange');
+		
+		if (!empty($this->_dates)) return $this->_dates;
+		
 		$schedule = $this->getItem();
 		
 		$user = JFactory::getUser();
@@ -241,9 +242,9 @@ class JongmanModelSchedule extends JModelItem {
 			$startDate = $selectedDate->addDays($adjustedDays);
 		}
 		
-		$applicableDates = new RFDateRange( $startDate, $startDate->addDays($scheduleLength-1) );
+		$this->_dates = new RFDateRange( $startDate, $startDate->addDays($scheduleLength-1) );
 		
-		return $applicableDates;
+		return $this->_dates;
 	}
 	
 	/**
@@ -259,7 +260,7 @@ class JongmanModelSchedule extends JModelItem {
 		
 		$schedule = $this->getItem($pk);
 		// Get time blocks from database
-		$blocks = $this->getTimeblocks($schedule->layout_id);
+		$blocks = $this->loadTimeblocks($schedule->layout_id);
 
 		if (empty($tz)) {
 			$tz = $schedule->timezone;		
@@ -286,7 +287,7 @@ class JongmanModelSchedule extends JModelItem {
 	 * Get time blocks of selected schedule from database
 	 * @since 2.0
 	 */
-	private function getTimeblocks($layout_id = null) 
+	private function loadTimeblocks($layout_id = null) 
 	{
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
@@ -308,7 +309,7 @@ class JongmanModelSchedule extends JModelItem {
 	 * Get the reservation list 
 	 * @since 2.0
 	 */
-	private function getReservationList($pk = null, $tz = null)
+	private function getReservationList($dateRange, $scheduleId = null, $resourceId=null, $userId = null, $tz = null)
 	{
 		jimport('jongman.application.schedule.reservationlisting');
 		if (empty($tz)) {
@@ -331,8 +332,9 @@ class JongmanModelSchedule extends JModelItem {
 		jimport('jongman.application.schedule.dailylayout');
 		// load schedule layout from database		
 		$scheduleLayout = $this->loadScheduleLayout($pk, $tz);
+		$dateRange = $this->getScheduleDates();
 		// load reservation data from database
-		$reservationList = $this->getReservationList();
+		$reservationList = $this->getReservationList($dateRange, $pk, null, null, $tz);
 		
 		$layout = new RFLayoutDaily($reservationList, $scheduleLayout);
 		
