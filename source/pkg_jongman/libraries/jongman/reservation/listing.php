@@ -5,14 +5,6 @@ jimport('jongman.base.ireservationlisting');
 class RFReservationListing implements IMutableReservationListing
 {
 	/**
-	 * @param string $targetTimezone
-	 */
-	public function __construct($targetTimezone)
-	{
-		$this->timezone = $targetTimezone;
-	}
-
-	/**
 	 * @var string
 	 */
 	protected $timezone;
@@ -37,17 +29,25 @@ class RFReservationListing implements IMutableReservationListing
 	 */
 	protected $_reservationsByDateAndResource = array();
 
+	/**
+	 * @param string $targetTimezone
+	 */
+	public function __construct($targetTimezone)
+	{
+		$this->timezone = $targetTimezone;
+	}
+	
 	public function add($reservation)
 	{
-		$this->addItem(new ReservationListItem($reservation));
+		$this->addItem(new RFReservationListItem($reservation));
 	}
 
 	public function addBlackout($blackout)
 	{
-		$this->addItem(new BlackoutListItem($blackout));
+		$this->addItem(new RFBlackoutListItem($blackout));
 	}
 
-	protected function addItem(ReservationListItem $item)
+	protected function addItem(RFReservationListItem $item)
 	{
 		$currentDate = $item->startDate()->toTimezone($this->timezone);
 		$lastDate = $item->endDate()->toTimezone($this->timezone);
@@ -70,7 +70,7 @@ class RFReservationListing implements IMutableReservationListing
 		$this->_reservationByResource[$item->resourceId()][] = $item;
 	}
 
-	protected function addOnDate(ReservationListItem $item, RFDate $date)
+	protected function addOnDate(RFReservationListItem $item, RFDate $date)
 	{
 //		Log::Debug('Adding id %s on %s', $item->Id(), $date);
 		$this->_reservationsByDate[$date->format('Ymd')][] = $item;
@@ -93,7 +93,7 @@ class RFReservationListing implements IMutableReservationListing
 	 */
 	private function create($reservations)
 	{
-		$reservationListing = new ReservationListing($this->timezone);
+		$reservationListing = new RFReservationListing($this->timezone);
 
 		if ($reservations != null)
 		{
@@ -130,7 +130,7 @@ class RFReservationListing implements IMutableReservationListing
 			return $this->create($this->_reservationByResource[$resourceId]);
 		}
 		
-		return new ReservationListing($this->timezone);
+		return new RFReservationListing($this->timezone);
 	}
 
 	public function onDateForResource(RFDate $date, $resourceId)

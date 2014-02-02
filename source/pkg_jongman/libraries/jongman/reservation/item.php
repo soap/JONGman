@@ -278,16 +278,16 @@ class RFReservationItem implements IReservedItem
 
 		if (isset($row->repeat_type))
 		{
-			$repeatConfig = RepeatConfiguration::Create($row[ColumnNames::REPEAT_TYPE],
-														$row[ColumnNames::REPEAT_OPTIONS]);
+			$repeatConfig = new JRegistry();
+			$repeatConfig->loadString($row->repeat_options);
 
-			$view->repeatType = $repeatConfig->type;
-			$view->repeatInterval = $repeatConfig->interval;
-			$view->repeatWeekdays = $repeatConfig->weekdays;
-			$view->repeatMonthlyType = $repeatConfig->monthlyType;
-			$view->repeatTerminationDate = $repeatConfig->terminationDate;
+			$view->repeatType = $row->repeat_type;
+			$view->repeatInterval = $repeatConfig->get('interval');
+			$view->repeatWeekdays = $repeatConfig->get('weekdays');
+			$view->repeatMonthlyType = $repeatConfig->get('monthlyType');
+			$view->repeatTerminationDate = $repeatConfig->get('terminationDate');
 
-			$view->isRecurring = ($row->repeat_type != 0);
+			$view->isRecurring = ($row->repeat_type !== 'none');
 		}
 
 		if (isset($row->state))
@@ -302,7 +302,7 @@ class RFReservationItem implements IReservedItem
 
 		if (isset($row->series_id))
 		{
-			$view->seriesId = $row->series_id;
+			$view->seriesId = $row->id;
 		}
 
 		return $view;
@@ -312,7 +312,7 @@ class RFReservationItem implements IReservedItem
 	 * @param Date $date
 	 * @return bool
 	 */
-	public function occursOn(Date $date)
+	public function occursOn(RFDate $date)
 	{
 		return $this->date->occursOn($date);
 	}
