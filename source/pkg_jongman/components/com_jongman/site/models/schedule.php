@@ -310,14 +310,33 @@ class JongmanModelSchedule extends JModelItem {
 	 * @since 2.0
 	 */
 	private function getReservationList($dateRange, $scheduleId = null, $resourceId=null, $userId = null, $tz = null)
-	{
-		jimport('jongman.application.schedule.reservationlisting');
+	{		
+		$context = $this->option.'.reservations.schedule'.$scheduleId;
+		$app = JFactory::getApplication();
+		$app->setUserState($context.'.filter.start_date', $dateRange->getBegin()->format('Y-m-d H:i:s'));
+		$app->setUserState($context.'.filter.end_date', $dateRange->getEnd()->format('Y-m-d H:i:s'));
+		$app->setUserState($context.'.filter.schedule_id', $scheduleId);
+		$app->setUserState($context.'.filter.resource_id', $resourceId);
+		$app->setUserState($context.'.filter.user_id', $userId);
+		
+		$config = array('context'=>$context);
+		$rModel = JModel::getInstance('Reservations', 'JongmanModel', $config);
+		$resItems = $rModel->getItems();
+		
 		if (empty($tz)) {
-			$tz = JFactory::getUser()->getParam('offset');
+			$tz = JongmanHelper::getUserTimezone();
 		}
+		
 		$list = new RFReservationListing($tz);
 		
-		//@todo insert reservation data from database to the list
+		foreach($resItems as $item) {
+			$reservationItem = RFReservationItem::populate($item);
+			$list->add($reservationItem);	
+		}
+		//add reservation first
+		
+		//then blackout later 
+		
 
 		return $list;
 	}
