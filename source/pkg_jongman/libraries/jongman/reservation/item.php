@@ -193,6 +193,7 @@ class RFReservationItem implements IReservedItem
 		//$userFirstName = null,
 		//$userLastName = null,
 		$userId = null,
+		$userLevelId = null,
 		//$userPhone = null,
 		//$userOrganization = null,
 		//$userPosition = null,
@@ -245,19 +246,20 @@ class RFReservationItem implements IReservedItem
 	public static function populate($row)
 	{
 		$view = new RFReservationItem (
-			$row->alias,
+			$row->reference_number,
 			RFDate::fromDatabase($row->start_date),
 			RFDate::fromDatabase($row->end_date),
 			$row->resource_title,
 			$row->resource_id,
-			$row->id,
-			$row->title,
-			$row->description,
+			$row->reservation_id,
+			$row->reservation_title,
+			$row->reservation_description,
 			$row->schedule_id,
 			$row->owner_name,
 			//$row->owner_firstname,
 			//$row->owner_lastname,
 			$row->owner_id,
+			$row->user_level,
 			//$row->owner_phone,
 			//$row->owner_unit,
 			//$row->owner_position,
@@ -292,7 +294,7 @@ class RFReservationItem implements IReservedItem
 
 		if (isset($row->state))
 		{
-			$view->requiresApproval = $row-> state == 1;
+			$view->requiresApproval = $row->state == 1;
 		}
 
 		if (isset($row->owner_email))

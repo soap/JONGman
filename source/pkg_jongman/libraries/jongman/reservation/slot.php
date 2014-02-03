@@ -46,8 +46,8 @@ class RFReservationSlot implements IReservationSlot
 	 * @param int $periodSpan
 	 * @param ReservationItemView $reservation
 	 */
-	public function __construct(SchedulePeriod $begin, SchedulePeriod $end, RFDate $displayDate, $periodSpan,
-								ReservationItem $reservation)
+	public function __construct(RFSchedulePeriod $begin, RFSchedulePeriod $end, RFDate $displayDate, $periodSpan,
+								RFReservationItem $reservation)
 	{
 		$this->_reservation = $reservation;
 		$this->_begin = $begin->beginDate();
@@ -113,7 +113,7 @@ class RFReservationSlot implements IReservationSlot
 		{
 			return SlotLabelFactory::Create($this->_reservation);
 		}
-		return $factory->Format($this->_reservation);
+		return $factory->format($this->_reservation);
 	}
 
 	public function isReservable()
@@ -128,7 +128,7 @@ class RFReservationSlot implements IReservationSlot
 
 	public function isPending()
 	{
-		return $this->_reservation->RequiresApproval;
+		return $this->_reservation->requiresApproval;
 	}
 
 	public function isPastDate(RFDate $date)
@@ -151,13 +151,15 @@ class RFReservationSlot implements IReservationSlot
 
 	public function isOwnedBy(JUser $user)
 	{
-		return $this->_reservation->user_id == $user->get('id;');
+		return $this->_reservation->userId == $user->get('id;');
 	}
 
-	public function IsParticipating(JUser $user)
+	public function isParticipating(JUser $user)
 	{
-		$uid = JFactory::getUser();
-		return $this->_reservation->isUserParticipating($uid) || $this->_reservation->isUserInvited($uid);
+		if (empty($user)) {
+			$user = JFactory::getUser();
+		}
+		return $this->_reservation->isUserParticipating($uid) || $this->_reservation->isUserInvited($user->get('id'));
 	}
 
 	public function __toString()

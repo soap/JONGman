@@ -51,7 +51,7 @@ class RFReservationListItem
 	 */
 	public function resourceId()
 	{
-		return $this->item->retResourceId();
+		return $this->item->getResourceId();
 	}
 
 	/**

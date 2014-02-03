@@ -32,5 +32,5 @@ interface IReservedItem
 	 * @param Date $date
 	 * @return bool
 	 */
-	public function occursOn(JMDate $date);
+	public function occursOn(RFDate $date);
 }
