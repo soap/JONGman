@@ -39,6 +39,7 @@ $dailyDateFormat = $this->state->get('params')->get('daily_date_format', 'Y-m-d'
 			foreach ($slots as $slot) :
 				$slotRef = $slot->beginDate()->format('YmdHis').$resource->id;
 				$href = "{$baseRef}&rid={$resource->id}&sid={$this->schedule->id}&rd={$date->format('Y-m-d')}";
+				/* @todo valida action permission of current user on this slot */
 				echo RFDisplaySlotFactory::display($slot, $slotRef, $href, true, $this);
 			endforeach;
 		?>

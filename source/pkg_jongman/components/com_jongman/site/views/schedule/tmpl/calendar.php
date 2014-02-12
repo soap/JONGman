@@ -41,8 +41,8 @@ echo $this->loadTemplate('footer');
 
 	window.addEvent('domready', function() {
 		var scheduleOpts = {
-			reservationUrlTemplate: "index.php?option=com_jongman&task=reservation.edit&alias=[referenceNumber]",
-			summaryPopupUrl: "index.php?option=com_jongman&format=json&task=reservation.view",
+			reservationUrlTemplate: "index.php?option=com_jongman&task=reservation.edit&cid[]=[RESERVATIONID]",
+			summaryPopupUrl: "index.php?option=com_jongman&tmpl=component&view=reservationitem",
 			cookieName: "schedule-direction-1",
 			cookieValue: "horizontal"
 		};
