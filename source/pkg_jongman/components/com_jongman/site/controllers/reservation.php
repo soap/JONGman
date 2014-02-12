@@ -113,7 +113,20 @@ class JongmanControllerReservation extends JControllerForm
 		}
 		return true;
 	} 
-
+	
+	/**
+	 * Check if user is allowed to reserve for a resource
+	 * @see JControllerForm::allowAdd()
+	 */
+	protected function allowAdd($data=array())
+	{
+		$allowed = parent::allowAdd($data);
+		if (!$allowed) return $allowed;
+		// Check for more 
+		
+		return true;
+	}
+	
 	protected function allowEdit($data=array(), $key = 'id')
 	{
 		return ReservationHelper::canEdit($data, $key);
