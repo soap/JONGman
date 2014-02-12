@@ -144,14 +144,33 @@ class RFReservationSlot implements IReservationSlot
 			$this->date(), $this->periodSpan(), $this->_reservation);
 	}
 
-	public function id()
+	/**
+	 * 
+	 * get reservation Id
+	 */
+	public function getReservationId() 
 	{
-		return $this->_reservation->ReferenceNumber;
+		return $this->_reservation->reservationId;	
+	}
+	
+	/**
+	 * 
+	 * get reservation id (reference number)
+	 * @deprecated 2.5
+	 */	
+	public function id() 
+	{
+		return $this->_reservation->referenceNumber;	
+	}
+	
+	public function getReferenceNumber()
+	{
+		return $this->_reservation->referenceNumber;
 	}
 
 	public function isOwnedBy(JUser $user)
 	{
-		return $this->_reservation->userId == $user->get('id;');
+		return $this->_reservation->userId == $user->get('id');
 	}
 
 	public function isParticipating(JUser $user)
@@ -159,7 +178,8 @@ class RFReservationSlot implements IReservationSlot
 		if (empty($user)) {
 			$user = JFactory::getUser();
 		}
-		return $this->_reservation->isUserParticipating($uid) || $this->_reservation->isUserInvited($user->get('id'));
+		$uid = $user->get('id');
+		return $this->_reservation->isUserParticipating($uid) || $this->_reservation->isUserInvited($uid);
 	}
 
 	public function __toString()
