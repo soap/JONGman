@@ -23,9 +23,7 @@ class RFDisplaySlotFactory
 		}else{
 			$class = '';
 		}
-		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"reserved {$class} mine clickres slot\" resid=\"{$slot->getReferenceNumber()}\">";
-		$html[] = "<input type=\"hidden\" class=\"href\" value=\"{$href}\" />";
-		$html[] = "<input type=\"hidden\" class=\"resid\" value=\"\" />";		
+		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"reserved {$class} mine clickres slot\" resid=\"{$slot->getInstanceId()}\">";
 		$html[] = "</td>";
 		
 		return implode("", $html);			
@@ -39,9 +37,9 @@ class RFDisplaySlotFactory
 		}else{
 			$class = '';
 		}
-		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"reserved {$class} clickres slot\" resid=\"{$slot->getReferenceNumber()}\">";
-		$html[] = "<input type=\"hidden\" class=\"href\" value=\"{$href}\" />";
-		$html[] = "<input type=\"hidden\" class=\"resid\" value=\"\" />";
+		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"reserved {$class} clickres slot\" resid=\"{$slot->getInstanceId()}\">";
+		//$html[] = "<input type=\"hidden\" class=\"href\" value=\"{$href}\" />";
+		//$html[] = "<input type=\"hidden\" class=\"resid\" value=\"\" />";
 		$html[] = "</td>";
 		
 		return implode("", $html);		

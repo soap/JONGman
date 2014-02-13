@@ -163,6 +163,12 @@ class RFReservationSlot implements IReservationSlot
 		return $this->_reservation->referenceNumber;	
 	}
 	
+	
+	public function getInstanceId()
+	{
+		return $this->_reservation->instanceId;	
+	}
+	
 	public function getReferenceNumber()
 	{
 		return $this->_reservation->referenceNumber;

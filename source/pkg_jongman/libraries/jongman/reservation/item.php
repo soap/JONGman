@@ -5,6 +5,10 @@ defined('_JEXEC') or die;
 class RFReservationItem implements IReservedItem
 {
 	/**
+	 * @var int
+	 */
+	public $instanceId;
+	/**
 	 * @var string
 	 */
 	public $referenceNumber;
@@ -159,6 +163,7 @@ class RFReservationItem implements IReservedItem
 	public $inviteeIds = array();
 
 	/**
+	 * @param $instanceId int
 	 * @param $referenceNumber string
 	 * @param $startDate Date
 	 * @param $endDate Date
@@ -180,6 +185,7 @@ class RFReservationItem implements IReservedItem
 	 * @param $invitee_list string
 	 */
 	public function __construct(
+		$instanceId = null,
 		$referenceNumber = null,
 		$startDate = null,
 		$endDate = null,
@@ -201,7 +207,7 @@ class RFReservationItem implements IReservedItem
 		$invitee_list = null
 	)
 	{
-
+		$this->instanceId = $instanceId;
 		$this->referenceNumber = $referenceNumber;
 		$this->startDate = $startDate;
 		$this->endDate = $endDate;
@@ -246,6 +252,7 @@ class RFReservationItem implements IReservedItem
 	public static function populate($row)
 	{
 		$view = new RFReservationItem (
+			$row->instance_id,
 			$row->reference_number,
 			RFDate::fromDatabase($row->start_date),
 			RFDate::fromDatabase($row->end_date),
