@@ -26,7 +26,7 @@ class JongmanModelReservation extends JModelAdmin
 	protected $_resources = null;
 
 	protected $_schedules = null;
-	
+		
 	/**
      * Method to auto-populate the model state.
      * Note. Calling getState in this method will result in recursion.
@@ -78,18 +78,40 @@ class JongmanModelReservation extends JModelAdmin
 	public function getItem($pk = null)
 	{
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState($this->getName() . '.id');
-		$result = parent::getItem($pk);
-		$user 	= JFactory::getUser();
-		$config = JFactory::getConfig();
-		
-		if (empty($pk)){
+		$user = JFactory::getUser();
+		if ($pk) {
+			$table = $this->getTable();
+			$return = $table->loadByInstanceId($pk);	
+			// Check for a table object error.
+			if ($return === false && $table->getError())
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+			// Convert to the JObject before adding other data.
+			
+			$instance = $table->getReservationInstance();
+			$resource_id = $table->getResourceId();
+			$properties = $table->getProperties(1);			
+			$result = JArrayHelper::toObject($properties, 'JObject');
+			
+			$result->resource_id = $resource_id;
+			$result->start_date = $instance->start_date;
+			$result->end_date = $instance->end_date;
+			$result->reference_number = $instance->reference_number;
+		}else{
+			$result = parent::getItem($pk);
+			
 			$result->schedule_id = JRequest::getInt('schedule_id');
 			$result->resource_id = JRequest::getInt('resource_id');
 			$result->start_date = JRequest::getString('start');
 			$result->end_date = JRequest::getString('end');
 			$result->owner_id = $user->id;
-			$result->created_by = $user->id;
-		} 			
+			$result->created_by = $user->id;	
+		}
+
+		$user 	= JFactory::getUser();
+		$config = JFactory::getConfig();			
 
 		$tz = $user->getParam('offset');
 		$start_date = new RFDate($result->start_date, $tz);

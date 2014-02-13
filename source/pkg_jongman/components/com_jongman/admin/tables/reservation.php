@@ -22,9 +22,19 @@ jimport('joomla.database.table');
  */
 class JongmanTableReservation extends JTable
 {
+	/**
+	 * Each instance contains start_date, end_date, reservation_id, reference_number
+	 */
+	private $_instances = array();  
+
+	private $_current_instance_id = null; // current instance id
+
+	/**
+	 * array of all reserved resource id
+	 */
+	private $_resources = array();
 	
-	private $_instances = array();  // start_date, end_date, reservation_id, reference_number
-	
+	private $_resource_id = null;
 	/**
 	 * Constructor.
 	 *
@@ -81,6 +91,10 @@ class JongmanTableReservation extends JTable
 		if (isset($array['instances'])) {
 			$this->_instances = $array['instances'];
 		}
+		
+		if (isset($array['resource_id'])) {
+			$this->_resource_id = (int)$array['resource_id'];
+		}
 
 		return true;
 	}
@@ -115,7 +129,26 @@ class JongmanTableReservation extends JTable
 			$table->load($keys);
 			$table->bind($src);	
 
-			$table->store();
+			if (!$table->store()) {
+				continue;					
+			}
+			
+			if (!empty($this->_resource_id)) {
+				$query = $this->_db->getQuery(true);
+				$query->select('COUNT(*)')
+						->from('#__jongman_reservation_resources')
+						->where('resource_id ='.(int)$this->_resource_id)
+						->where('reservation_id ='.(int)$this->id);
+						
+				$this->_db->setQuery($query);
+				if ($this->_db->loadResult() == 0) {
+					$obj = new StdClass();
+					$obj->reservation_id = $this->id;
+					$obj->resource_id = $this->_resource_id;
+					$obj->resource_level = 0;
+					$this->_db->insertObject('#__jongman_reservation_resources', $obj);		
+				} 
+			}	
 		}
 		
 		return true;
@@ -123,27 +156,62 @@ class JongmanTableReservation extends JTable
 	}
 	
 	function load($keys = null, $reset = true) {
-		if ($ret = parent::load($keys, $reset)) {
-			$user 	= JFactory::getUser();
-			$config = JFactory::getConfig();
-			$tz = new DateTimeZone($user->getParam('timezone', $config->get('offset')));
-			if ($this->start_date){
-				$date = new JDate(date("Y-m-d", $this->start_date), "UTC");
-				$date->setTimeZone($tz);
-				$this->start_date = $date->format("Y-m-d", true, false);
-			}
-			
-			if ($this->end_date){
-				$date = new JDate(date("Y-m-d", $this->end_date), "UTC");
-				$date->setTimeZone($tz);
-				$this->end_date = $date->format("Y-m-d", true, false);
-			}
-		}
-		return $ret;
-	}
-
-	function setDateRange($date)
-	{
+		$result = parent::load($keys, $reset);
+		if ($result == false) return false;
 		
+		$this->loadReservationInstances();
+		$this->loadReservationResources();
+		return $result;
 	}
+	
+	public function loadByInstanceId($instanceId) 
+	{
+		if (empty($instanceId)) return false;
+		$instance = JTable::getInstance('Instance', 'JongmanTable');
+		$instance->load($instanceId);
+
+		if ((int)$instance->reservation_id > 0) {
+			$result = $this->load($instance->reservation_id);
+			$this->_current_instance_id = $instance->id;
+			
+			return $result;
+		}
+		
+		return false;			
+	}
+	
+	public function getReservationInstance($instanceId=null)
+	{
+		if (empty($instanceId)) $instanceId = $this->_current_instance_id;
+	
+		return $this->_instances[$instanceId];	
+	}
+	
+	public function getResourceId() 
+	{
+		return $this->_resource_id;	
+	}
+	
+	private function loadReservationInstances()
+	{
+		$query = $this->_db->getQuery(true);
+		$query->select('*')->from('#__jongman_reservation_instances')
+			->where('reservation_id ='.(int)$this->id);
+		$this->_db->setQuery($query);
+		$this->_instances = $this->_db->loadObjectList('id', 'JObject');
+		
+		return true;		
+	}
+	
+	private function loadReservationResources()
+	{
+		$query = $this->_db->getQuery(true);
+		$query->select('resource_id')
+			->from('#__jongman_reservation_resources')
+			->where('reservation_id='.(int)$this->id);
+		$this->_db->setQuery($query);
+		$this->_resources = $this->_db->loadColumn();
+		$this->_resource_id = $this->_resources[0];	
+	}
+	
 }
