@@ -14,16 +14,26 @@ class ReservationHelper
 	 */
 	public static function canEdit($record)
 	{
+		var_dump($record); jexit();
 		$user = JFactory::getUser();
-		$asset = 'com_jongman.resource.'.$record->resource_id; 
-		
-		if ($record->id == 0){
-			return $user->authorise('core.edit', $asset);
-		}else{
-			if ($user->authorise('core.edit', $asset)) {
-				return true;	
-			}
+		if (is_array($record) && isset($record['id'])) {
 			
+			
+		}else if (($record instanceof JObject) && isset($record->resource_id)) {
+			$resource_id = (int)$record->resource_id;
+		}else{
+			$resource_id = 0;
+		}
+		if ($resource_id > 0) {
+			$asset = 'com_jongman.resource.'.$record->resource_id;
+		}else{
+			$asset = 'com_jongman';
+			return $user->authorise('core.edit', $asset);
+		} 
+		
+		if ($user->authorise('core.edit', $asset)) {
+			return true;	
+		}else{
 			if (($record->reserved_for == $user->id) || ($record->created_by == $user->id)) {
 				return $user->auhorise('core.edit.own', $asset);	
 			} 	
