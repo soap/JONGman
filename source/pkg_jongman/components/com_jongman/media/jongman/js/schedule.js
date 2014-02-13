@@ -99,8 +99,15 @@ function Schedule(opts)
 
 			jQuery(this).click(function ()
 			{
-				var reservationUrl = options.reservationUrlTemplate.replace("[referenceNumber]", resid);
-				window.location = reservationUrl;
+				var form = document.getElementById('reservation-form');
+				for(i=0; i<form.elements.length; i++) {
+					if (form.elements[i].name = 'cid[]') {
+						form.elements[i].value = resid;
+						break;
+					}
+				}
+				
+				Joomla.submitform('reservation.edit', form); 
 			});
 
 			jQuery(this).qtip({

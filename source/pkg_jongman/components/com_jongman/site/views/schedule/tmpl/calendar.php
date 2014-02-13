@@ -5,6 +5,9 @@ JHtml::_('behavior.modal');
 jimport('jongman.date.date');
 jimport('jongman.application.displayslotfactory');
 
+$return = base64_encode(JFactory::getURI()->toString());
+$Itemid = JFactory::getApplication()->input->getInt('Itemid', null);
+$reservationUrl = "index.php?option=com_jongman&task=reservation.edit&cid[]=[REFERENCENUMBER]&Itemid=".$Itemid.'&return='.$return;
 
 $first_date = date("Y-m-d H:i:s", $this->datevars['firstDayTs']);
 $last_date = date("Y-m-d H:i:s", $this->datevars['lastDayTs']);
@@ -35,13 +38,18 @@ endif;
 echo $this->loadTemplate('main');
 echo $this->loadTemplate('footer');
 ?>
+<form name="reservationForm" id="reservation-form" method="POST" action="<?php JFactory::getURI()->toString()?>">
+	<input type="hidden" name="cid[]" value="" />
+	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="return" value="<?php echo base64_encode(JFactory::getURI()->toString());?>" />
+</form>
 <script type="text/javascript">
 	var forceReload = false;
 	window.location.hash = 'sc-top';
 
 	window.addEvent('domready', function() {
 		var scheduleOpts = {
-			reservationUrlTemplate: "index.php?option=com_jongman&task=reservation.edit&cid[]=[RESERVATIONID]",
+			reservationUrlTemplate: '<?php echo $reservationUrl?>',
 			summaryPopupUrl: "index.php?option=com_jongman&tmpl=component&view=reservationitem",
 			cookieName: "schedule-direction-1",
 			cookieValue: "horizontal"

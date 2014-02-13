@@ -6,7 +6,7 @@ $return = base64_encode(JFactory::getURI()->toString());
 
 $today = RFDate::now(); 
 $displayDates = $this->scheduledates->dates();
-$baseRef = 'index.php?option=com_jongman&task=reservation.add&return='.$return.'&Itemid='.JRequest::getInt('Itemid');
+$baseRef = 'index.php?option=com_jongman&Itemid='.JRequest::getInt('Itemid').'&task=reservation.add&return='.$return;
 
 $dailyDateFormat = $this->state->get('params')->get('daily_date_format', 'Y-m-d');
 ?>
