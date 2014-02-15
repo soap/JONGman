@@ -39,6 +39,7 @@ JLoader::registerPrefix('RF', JPATH_PLATFORM . '/jongman');
 JLoader::discover('RF', JPATH_PLATFORM . '/jongman/utils');
 JLoader::discover('RF', JPATH_PLATFORM . '/jongman/reservation');
 
+JLoader::register('RFReservationStartTimeContraint', JPATH_PLATFORM.'/jongman/reservation/starttimeconstraint.php');
 // Add include paths
 JHtml::addIncludePath(JPATH_PLATFORM . '/jongman/html');
 JForm::addFieldPath(JPATH_PLATFORM . '/jongman/form/fields');
