@@ -116,23 +116,24 @@ class JongmanTableReservation extends JTable
 		$table = JTable::getInstance('Instance', 'JongmanTable');
 		
 		foreach($this->_instances as $key => $instance ) {
-			$keys = array('reference_number' => $key);
-			if ( !$instance->isNew() ) {
-				$keys['reservation_id'] = $instance->reservationId();
-			} 
-			$src = array();
+			
+			$src = array();		
+
 			$src['start_date'] = $instance->startDate()->toDatabase();
 			$src['end_date'] = $instance->endDate()->toDatabase();
 			$src['reference_number'] = $key;
 			$src['reservation_id'] = $this->id;
 
-			$table->load($keys);
+			$table->reset();
+			$table->id = null;
 			$table->bind($src);	
-
+			
 			if (!$table->store()) {
+				JFactory::getApplication()->enqueueMessage('Error insert instance, '.$key);
 				continue;					
 			}
-			
+			var_dump($table);
+		}	
 			if (!empty($this->_resource_id)) {
 				$query = $this->_db->getQuery(true);
 				$query->select('COUNT(*)')
@@ -149,8 +150,7 @@ class JongmanTableReservation extends JTable
 					$this->_db->insertObject('#__jongman_reservation_resources', $obj);		
 				} 
 			}	
-		}
-		
+		jexit();
 		return true;
 		
 	}
