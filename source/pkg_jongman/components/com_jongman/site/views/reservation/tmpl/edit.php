@@ -45,7 +45,7 @@ JHtml::_('behavior.keepalive');
 			</div>
 			<div class="pull-left">
 				<legend>
-				<?php echo JText::_('COM_JONGMAN_RESERVATION_TITLE')?>
+				<?php echo $this->title?>
 				</legend>
 			</div>
 		</div>
