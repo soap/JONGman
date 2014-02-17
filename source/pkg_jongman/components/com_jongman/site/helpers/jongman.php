@@ -7,7 +7,11 @@ defined('_JEXEC') or die;
 
 class JongmanHelper 
 {
-	
+	/**
+	 * 
+	 * Get user timezone first from user parameter otherwise global configuration offset
+	 * @param int $uid
+	 */
 	public static function getUserTimezone($uid = null) 
 	{
 		if ($uid === null) {
@@ -15,8 +19,7 @@ class JongmanHelper
 		}else{
 			$user = JFactory::getUser($uid);
 		}
-		$timezone = $user->getParam('timezone', null);
-		if ($timezone === null) $timezone = JFactory::getConfig()->get('offset', 'UTC');
+		$timezone = $user->getParam('timezone', JFactory::getConfig()->get('offset', 'UTC'));
 		
 		return $timezone;
 	}
