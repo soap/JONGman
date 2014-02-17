@@ -95,6 +95,7 @@ class JongmanModelReservation extends JModelAdmin
 			$properties = $table->getProperties(1);			
 			$result = JArrayHelper::toObject($properties, 'JObject');
 			
+			$result->instance_id = $instance->id;
 			$result->resource_id = $resource_id;
 			$result->start_date = $instance->start_date;
 			$result->end_date = $instance->end_date;
@@ -102,6 +103,7 @@ class JongmanModelReservation extends JModelAdmin
 		}else{
 			$result = parent::getItem($pk);
 			
+			$result->instance_id = null;
 			$result->schedule_id = JRequest::getInt('schedule_id');
 			$result->resource_id = JRequest::getInt('resource_id');
 			$result->start_date = JRequest::getString('start');
@@ -179,6 +181,98 @@ class JongmanModelReservation extends JModelAdmin
 		return true;
 	}
 	
+	
+	/**
+	 * Method to save the new reservation data.
+	 * @param   array  $data  The form data.
+	 * @return  boolean  True on success, False on error.
+	 */
+	public function save($data)
+	{
+		// Initialise variables;
+		$dispatcher = JDispatcher::getInstance();
+		$table = $this->getTable();
+		$key = $table->getKeyName();
+		$pk = (!empty($data[$key])) ? $data[$key] : (int) $this->getState($this->getName() . '.id');
+		$isNew = true;
+
+		// Include the content plugins for the on save events.
+		JPluginHelper::importPlugin('content');
+
+		// Allow an exception to be thrown.
+		try
+		{
+			// Load the row if saving an existing record.
+			if ($pk > 0)
+			{
+				$table->load($pk);
+				$isNew = false;
+			}
+
+			// Bind the data.
+			if (!$table->bind($data))
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+
+			// Prepare the row for saving
+			$this->prepareTable($table);
+
+			// Check the data.
+			if (!$table->check())
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+
+			// Trigger the onContentBeforeSave event.
+			$result = $dispatcher->trigger($this->event_before_save, array($this->option . '.' . $this->name, &$table, $isNew));
+			if (in_array(false, $result, true))
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+
+			// Store the data.
+			if (!$table->store())
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+
+			// Clean the cache.
+			$this->cleanCache();
+
+			// Trigger the onContentAfterSave event.
+			$dispatcher->trigger($this->event_after_save, array($this->option . '.' . $this->name, &$table, $isNew));
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e->getMessage());
+
+			return false;
+		}
+
+		$pkName = $table->getKeyName();
+
+		if (isset($table->$pkName))
+		{
+			$this->setState($this->getName() . '.id', $table->$pkName);
+		}
+		$this->setState($this->getName() . '.new', $isNew);
+
+		return true;
+	}	
+	
+	/**
+	 * Method to update existing reservation instance(s)
+	 */
+	public function update($data, $updateScope='this')
+	{
+		
+	}
+	
 	/**
 	 * override to add resource reservation validation 
 	 * @see JModelForm::validate()
@@ -187,43 +281,37 @@ class JongmanModelReservation extends JModelAdmin
 	{
 		$validData = parent::validate($form, $data, $group);
 		if ($validData === false) return false;
-		$t = '';
-		list ($validData['start_date'], $t) = explode(' ', $validData['start_date']);
-		list ($validData['end_date'], $t) = explode(' ', $validData['end_date']);
 		
 		$validData['start_date'] = $validData['start_date'].' '.$validData['start_time'];
 		$validData['end_date'] = $validData['end_date'].' '.$validData['end_time'];
 		
 		$input = $validData;
 		$tz = JongmanHelper::getUserTimezone();
-		if (empty($input['id'])) {
-			
+
+		if (isset($input['repeat_terminated'])) {
+			$terminated = RFDate::parse($input['repeat_terminated'], $tz);
+			$terminated->setTime(new RFTime(0, 0, 0, $tz));
 		}
 		switch ((string) $input['repeat_type']) {
 			case 'daily': 
 					$repeatOption = new RFReservationRepeatDaily(
-												$input['repeat_interval'],
-												RFDate::parse($input['repeat_terminated'], $tz)
-											);
+												$input['repeat_interval'], $terminated);
 				break;
 			case 'weekly' :
 					$repeatOption = new RFReservationRepeatWeekly(
-												$input['repeat_interval'],
-												RFDate::parse($input['repeat_terminated'], $tz),
+												$input['repeat_interval'], $terminated,
 												$input['repeat_days']
 											);
 				break;
 			case 'monthly' :
 					$class = 'RFReservationRepeat'.ucfirst($input['repeat_monthly_type']);
 					$repeatOption = new $class(
-												$input['repeat_interval'],
-												RFDate::parse($input['repeat_terminated'], $tz)					
+												$input['repeat_interval'], $terminated				
 											);
 				break;
 			case 'yearly' :
 					$repeatOption = new RFReservationRepeatYearly(
-												$input['repeat_interval'],
-												RFDate::parse($input['repeat_terminated'], $tz)					
+												$input['repeat_interval'], $terminated					
 										);
 				break;
 			default:
@@ -231,7 +319,7 @@ class JongmanModelReservation extends JModelAdmin
 				break;
 				
 		}
-		
+
 		$input['repeatOptions'] = $repeatOption;
 		$reservationSeries = new RFReservationSeries();
 		$reservationSeries->bind($input);
