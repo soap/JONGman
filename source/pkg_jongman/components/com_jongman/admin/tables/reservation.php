@@ -127,30 +127,29 @@ class JongmanTableReservation extends JTable
 			$table->reset();
 			$table->id = null;
 			$table->bind($src);	
-			
+				
 			if (!$table->store()) {
 				JFactory::getApplication()->enqueueMessage('Error insert instance, '.$key);
-				continue;					
+				continue;
 			}
-			var_dump($table);
-		}	
-			if (!empty($this->_resource_id)) {
-				$query = $this->_db->getQuery(true);
-				$query->select('COUNT(*)')
-						->from('#__jongman_reservation_resources')
-						->where('resource_id ='.(int)$this->_resource_id)
-						->where('reservation_id ='.(int)$this->id);
-						
-				$this->_db->setQuery($query);
-				if ($this->_db->loadResult() == 0) {
-					$obj = new StdClass();
-					$obj->reservation_id = $this->id;
+				
+		}
+		if (!empty($this->_resource_id)) {
+			$query = $this->_db->getQuery(true);
+			$query->select('COUNT(*)')
+			->from('#__jongman_reservation_resources')
+			->where('resource_id ='.(int)$this->_resource_id)
+			->where('reservation_id ='.(int)$this->id);
+
+			$this->_db->setQuery($query);
+			if ($this->_db->loadResult() == 0) {
+				$obj = new StdClass();
+				$obj->reservation_id = $this->id;
 					$obj->resource_id = $this->_resource_id;
 					$obj->resource_level = 0;
 					$this->_db->insertObject('#__jongman_reservation_resources', $obj);		
 				} 
-			}	
-		jexit();
+		}	
 		return true;
 		
 	}
