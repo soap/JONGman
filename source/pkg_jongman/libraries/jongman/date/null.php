@@ -1,7 +1,6 @@
 <?php
 defined('_JEXEC') or die;
 
-
 class RFDateNull extends RFDate
 {
 	/**
@@ -18,7 +17,7 @@ class RFDateNull extends RFDate
 	{
 		if (self::$ndate == null)
 		{
-			self::$ndate = new NullDate();
+			self::$ndate = new RFDateNull();
 		}
 
 		return self::$ndate;

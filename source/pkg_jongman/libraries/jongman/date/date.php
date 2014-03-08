@@ -73,7 +73,7 @@ class RFDate
 	{
 		if (empty($dateString))
 		{
-			return RFDateNull::Instance();
+			return RFDateNull::getInstance();
 		}
 		return new RFDate($dateString, $timezone);
 	}
