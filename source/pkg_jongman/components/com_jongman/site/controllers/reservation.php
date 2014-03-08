@@ -38,14 +38,80 @@ class JongmanControllerReservation extends JControllerForm
 	}
 	
 	/**
-	 * Override to add support to redirect page with parameter
-	 * @see JControllerForm::cancel()
+	 * Method to cancel an edit.
+	 * @param   string  $key  The name of the primary key of the URL variable.
+	 * @return  boolean  True if access level checks pass, false otherwise.
 	 */
 	public function cancel($key = null)
 	{
-		parent::cancel($key);
-		
-		$this->setRedirect($this->getReturnPage());
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+
+		// Initialise variables.
+		$app = JFactory::getApplication();
+		$model = $this->getModel();
+		$table = $model->getTable();
+		$checkin = property_exists($table, 'checked_out');
+		$context = "$this->option.edit.$this->context";
+
+		if (empty($key))
+		{
+			$key = $table->getKeyName();
+		}
+
+		$recordId = JRequest::getInt($key);
+
+		// Attempt to check-in the current record.
+		if ($recordId)
+		{
+			// Check we are holding the id in the edit list.
+			if (!$this->checkEditId($context, $recordId))
+			{
+				// Somehow the person just went to the form - we don't allow that.
+				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $recordId));
+				$this->setMessage($this->getError(), 'error');
+
+				$this->setRedirect(
+					JRoute::_(
+						'index.php?option=' . $this->option . '&view=' . $this->view_list
+						. $this->getRedirectToListAppend(), false
+					)
+				);
+
+				return false;
+			}
+
+			if ($checkin)
+			{
+				if ($model->checkin($recordId) === false)
+				{
+					// Check-in failed, go back to the record and display a notice.
+					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError()));
+					$this->setMessage($this->getError(), 'error');
+
+					$this->setRedirect(
+						JRoute::_(
+							'index.php?option=' . $this->option . '&view=' . $this->view_item
+							. $this->getRedirectToItemAppend($recordId, $key), false
+						)
+					);
+
+					return false;
+				}
+			}
+		}
+
+		// Clean the session data and redirect.
+		$this->releaseEditId($context, $recordId);
+		$app->setUserState($context . '.data', null);
+
+		$this->setRedirect(
+			JRoute::_(
+				'index.php?option=' . $this->option . '&view=' . $this->view_list
+				. $this->getRedirectToListAppend(), false
+			)
+		);
+
+		return true;
 	}
 	
 	public function save($key = null, $urlVar = null)
@@ -329,13 +395,13 @@ class JongmanControllerReservation extends JControllerForm
 	{
 		$append = parent::getRedirectToListAppend();
 		
-		$app = JFactory::getApplication();	
-		$schedule_id = $app->input->getInt('sid', null);
-		if (empty($schedule_id)) {
-			$schedule_id = $app->input->getInt('schedule_id', null);
+		$app = JFactory::getApplication();
+		$schedule_id = $app->input->getInt('schedule_id', null);
+		if (!empty($schedule_id)) {
+			$append .= '&layout=calendar&id='.$schedule_id;	
 		}
 		
-		return $append.'&layout=calendar&id='.$schedule_id;
+		return $append;
 		
 	}
 	
