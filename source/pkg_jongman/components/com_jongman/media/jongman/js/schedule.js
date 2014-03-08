@@ -107,7 +107,7 @@ function Schedule(opts)
 					}
 				}
 				
-				Joomla.submitform('reservation.edit', form); 
+				Joomla.submitform('instance.edit', form); 
 			});
 
 			jQuery(this).qtip({
