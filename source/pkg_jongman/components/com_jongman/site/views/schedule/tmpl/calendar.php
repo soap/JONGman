@@ -7,7 +7,7 @@ jimport('jongman.application.displayslotfactory');
 
 $return = base64_encode(JFactory::getURI()->toString());
 $Itemid = JFactory::getApplication()->input->getInt('Itemid', null);
-$reservationUrl = "index.php?option=com_jongman&task=reservation.edit&cid[]=[REFERENCENUMBER]&Itemid=".$Itemid.'&return='.$return;
+$reservationUrl = "index.php?option=com_jongman&task=instance.edit&cid[]=[REFERENCENUMBER]&Itemid=".$Itemid;
 
 $first_date = date("Y-m-d H:i:s", $this->datevars['firstDayTs']);
 $last_date = date("Y-m-d H:i:s", $this->datevars['lastDayTs']);
@@ -50,7 +50,7 @@ echo $this->loadTemplate('footer');
 	window.addEvent('domready', function() {
 		var scheduleOpts = {
 			reservationUrlTemplate: '<?php echo $reservationUrl?>',
-			summaryPopupUrl: "index.php?option=com_jongman&tmpl=component&view=reservationitem",
+			summaryPopupUrl: "index.php?option=com_jongman&tmpl=component&view=instanceitem",
 			cookieName: "schedule-direction-1",
 			cookieValue: "horizontal"
 		};

@@ -34,14 +34,7 @@ JHtml::_('behavior.keepalive');
 	<div class="row-fluid">
 		<div class="span-12">
 			<div class="formelm-buttons btn-toolbar pull-right">
-				<button type="button" class="btn btn-info"
-					onclick="Joomla.submitbutton('reservation.save')">
-					<?php echo JText::_('JSAVE') ?>
-				</button>
-				<button type="button" class="btn btn-info"
-					onclick="Joomla.submitbutton('reservation.cancel')">
-					<?php echo JText::_('JCANCEL') ?>
-				</button>
+				<?php echo $this->toolbar?>
 			</div>
 			<div class="pull-left">
 				<legend>
@@ -120,7 +113,7 @@ JHtml::_('behavior.keepalive');
 
 	<?php echo $this->form->getInput('schedule_id')?>
 	
+	<input type="hidden" name="schedule_id" value="<?php echo $this->item->schedule_id?>" />
 	<input type="hidden" name="task" value="" />
-	<input type="hidden" name="return" value="<?php echo base64_encode($this->state->get('return_page')); ?>" />
 	<?php echo JHtml::_('form.token'); ?>
 </form>

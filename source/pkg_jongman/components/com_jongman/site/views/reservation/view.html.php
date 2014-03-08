@@ -44,6 +44,7 @@ class JongmanViewReservation extends JView
 		$this->item		= $this->get('Item');
 		$this->form		= $this->get('Form');
 		$this->state	= $this->get('State');
+		$this->toolbar	= $this->getToolbar();
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
@@ -64,5 +65,64 @@ class JongmanViewReservation extends JView
 			
 		$this->canDelete = false;
 		parent::display();
+	}
+	
+	public function getToolbar()
+	{
+        $access  = JongmanHelper::getActions();
+        $state   = $this->get('State');
+        $item 	 = $this->get("Item");
+        $isNew	 = $item->id == 0;
+        $options = array();
+		if ($isNew) {
+        	RFToolbar::button(
+            	'COM_JONGMAN_ACTION_SAVE',
+            	'reservation.save',
+            	false, //no need to select item first
+           	 	array('access' => $access->get('core.edit'))
+        	);
+        	RFToolbar::button(
+            	'JCANCEL',
+            	'reservation.cancel',
+             	false, //no need to select item first
+           	 	array('acces' => true, 'icon'=>'icon-chevron-left')
+        	);
+		}else{
+        
+        	RFToolbar::button(
+            	'COM_JONGMAN_ACTION_UPDATE_INSTANCE',
+            	'instance.updateinstance',
+           		false,
+            	array('access' => $access->get('core.edit'),
+            		'icon'=>'icon-ok')
+        	);
+        	
+        	RFToolbar::button(
+            	'COM_JONGMAN_ACTION_UPDATE_FULL',
+            	'instance.updatefull',
+           		false,
+            	array('access' => $access->get('core.edit'),
+            	'icon'=>'icon-ok')
+        	);
+        	
+        	RFToolbar::button(
+            	'COM_JONGMAN_ACTION_UPDATE_FUTURE',
+            	'instance.updatefuture',
+           		false,
+            	array('access' => $access->get('core.edit'),
+            	'icon'=>'icon-ok')
+        	);
+        	
+        	RFToolbar::button(
+            	'JCANCEL',
+            	'instance.cancel',
+             	false, //no need to select item first
+           	 	array('acces' => true, 'icon'=>'icon-chevron-left')
+        	);        	
+		}
+
+
+
+        return RFToolbar::render();	
 	}
 }

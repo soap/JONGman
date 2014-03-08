@@ -35,14 +35,20 @@ class JongmanModelSchedule extends JModelItem {
         }else{
         	$this->_scheduleId = JRequest::getInt('id');
         }
+        
+        $this->context = JFactory::getApplication()->input->get('option').'.'.$this->getName();  
+        
     }
 	
     function populateState(){
     	// Load state from the request.
-		
+		$app = JFactory::getApplication();
+
+		$value = $app->getUserStateFromRequest($this->context.'.filter.start_date', 'sd');
+		$this->setState('filter.start_date', $value);
+    	
     	$pk = JRequest::getInt('id');
 		$this->setState('schedule.id', $pk);
-		
     	$params = JComponentHelper::getParams('com_jongman');
 		
 		$menuitemid = JRequest::getInt( 'Itemid' );
@@ -221,7 +227,7 @@ class JongmanModelSchedule extends JModelItem {
 		$user = JFactory::getUser();
 		$userTimezone = $user->getParam('timezone', null);
 		$tz = empty($userTimezone) ? JFactory::getConfig()->get('offset') : $userTimezone;
-		$providedDate = JRequest::getCmd('sd', null);
+		$providedDate = $this->getState('filter.start_date', null);
 		
 		$date = empty($providedDate) ? RFDate::now() : new RFDate(preg_replace("/[a-zA-Z#]+/","",$providedDate), $tz);
 
