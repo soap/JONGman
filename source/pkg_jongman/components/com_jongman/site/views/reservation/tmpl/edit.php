@@ -9,7 +9,7 @@ JHtml::_('behavior.keepalive');
 	Joomla.submitbutton = function(task)
 	{
 		var form = document.id('reservation-form');
-		if (task == 'reservation.cancel' || document.formvalidator.isValid(form)) {
+		if (task == 'reservation.cancel' || task == 'instance.cancel' || document.formvalidator.isValid(form)) {
 			Joomla.submitform(task, form);
 		}
 		else {
@@ -29,7 +29,7 @@ JHtml::_('behavior.keepalive');
 		}
 	}
 </script>
-<form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=edit&id='.(int) $this->item->id); ?>"
+<form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=edit&id='.(int) $this->item->instance_id); ?>"
 	method="post" name="adminForm" id="reservation-form" class="form-validate form-inline">
 	<div class="row-fluid">
 		<div class="span-12">
