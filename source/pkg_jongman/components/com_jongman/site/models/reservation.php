@@ -78,44 +78,35 @@ class JongmanModelReservation extends JModelAdmin
 	public function getItem($pk = null)
 	{
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState($this->getName() . '.id');
+		
+		$app = JFactory::getApplication();
 		$user = JFactory::getUser();
-		if ($pk) {
-			$table = $this->getTable();
-			$return = $table->loadByInstanceId($pk);	
-			// Check for a table object error.
-			if ($return === false && $table->getError())
-			{
-				$this->setError($table->getError());
-				return false;
-			}
-			// Convert to the JObject before adding other data.
-			
-			$instance = $table->getReservationInstance();
-			$resource_id = $table->getResourceId();
-			$properties = $table->getProperties(1);			
-			$result = JArrayHelper::toObject($properties, 'JObject');
-			
-			$result->instance_id = $instance->id;
-			$result->resource_id = $resource_id;
-			$result->start_date = $instance->start_date;
-			$result->end_date = $instance->end_date;
-			$result->reference_number = $instance->reference_number;
-		}else{
+		$config = JFactory::getConfig();
+		$tz = $user->getParam('timezone', $config->get('offset'));
+		
+		if (empty($pk)){
 			$result = parent::getItem($pk);
 			
 			$result->instance_id = null;
-			$result->schedule_id = JRequest::getInt('schedule_id');
-			$result->resource_id = JRequest::getInt('resource_id');
-			$result->start_date = JRequest::getString('start');
-			$result->end_date = JRequest::getString('end');
+			$result->schedule_id = $app->input->getInt('schedule_id');
+			$result->resource_id = $app->input->getInt('resource_id');
+
+			// it will be conveted to user time zone in form (by field)
+			$date = JFactory::getDate($app->input->getString('start'), $tz);
+			$date->setTimezone(new DateTimeZone('UTC'));
+			$result->start_date = $date->format('Y-m-d');
+			$result->start_time = $date->format('H:i:s');
+			
+			// it will be conveted to user time zone in form (by field) 
+			$date = JFactory::getDate($app->input->getString('end'), $tz);
+			$date->setTimezone(new DateTimeZone('UTC'));
+			$result->end_date = $date->format('Y-m-d');
+			$result->end_time = $date->format('H:i:s');
+			
 			$result->owner_id = $user->id;
 			$result->created_by = $user->id;	
 		}
-
-		$user 	= JFactory::getUser();
-		$config = JFactory::getConfig();			
-
-		$tz = $user->getParam('offset');
+		/*
 		$start_date = new RFDate($result->start_date, $tz);
 		$end_date = new RFDate($result->end_date, $tz);
 		
@@ -123,7 +114,7 @@ class JongmanModelReservation extends JModelAdmin
 		$result->start_time = $start_date->format('H:i:s');
 		$result->end_date = $end_date->format('Y-m-d');
 		$result->end_time = $end_date->format('H:i:s');
-		
+		*/
 		return $result;
 	}
 

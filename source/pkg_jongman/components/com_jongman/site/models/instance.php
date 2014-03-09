@@ -38,7 +38,34 @@ class JongmanModelInstance extends JModelAdmin
 
 		return $form;
 	}	
-	
+
+	public function getItem($pk = null)
+	{
+		$pk = (!empty($pk)) ? $pk : (int) $this->getState($this->getName() . '.id');
+		$table = $this->getTable('Reservation', 'JongmanTable');
+		
+		$return = $table->loadByInstanceId($pk);	
+		// Check for a table object error.
+		if ($return === false && $table->getError())
+		{
+			$this->setError($table->getError());
+			return false;
+		}
+		
+		$instance = $table->getReservationInstance();
+		$resource_id = $table->getResourceId();
+		$properties = $table->getProperties(1);
+		$result = JArrayHelper::toObject($properties, 'JObject');
+			
+		$result->instance_id = $instance->id; 
+		$result->resource_id = $resource_id;
+		$result->start_date = $instance->start_date;
+		$result->end_date = $instance->end_date;
+		$result->reference_number = $instance->reference_number;
+		
+		return $result;
+		
+	}	
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *

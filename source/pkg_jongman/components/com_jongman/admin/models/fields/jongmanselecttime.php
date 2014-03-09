@@ -41,6 +41,15 @@ class JFormFieldJongmanSelectTime extends JFormField {
 		// Get the field options.
 		$options = (array) $this->getOptions();
 
+		// Get a date object based on the correct timezone.
+		$user = JFactory::getUser();
+		$config = JFactory::getConfig();
+		$date = JFactory::getDate($this->value, 'UTC');
+		$date->setTimezone(new DateTimeZone($user->getParam('timezone', $config->get('offset'))));
+
+		// Transform the date string.
+		$this->value = $date->format('H:i:s', true, false);
+		
 		// Create a read-only list (no name) with a hidden input to store the value.
 		if ((string) $this->element['readonly'] == 'true') {
 			$html[] = JHtml::_('select.genericlist', $options, '', trim($attr), 'value', 'text', $this->value, $this->id);
@@ -56,10 +65,9 @@ class JFormFieldJongmanSelectTime extends JFormField {
     
     protected function getOptions() 
     {
-        $options = array();
         $scheduleId = $this->scheduleId;
         $resourceId = $this->resourceId;
-        
+
         $user = JFactory::getUser();
         $userTz = $user->getParam('timezone', 'UTC');
         
@@ -71,7 +79,6 @@ class JFormFieldJongmanSelectTime extends JFormField {
         		$options[] = JHtml::_('select.option', $period->end(), $period->labelEnd());
 			}
 		}
-
 
         return $options;
     }
