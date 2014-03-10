@@ -149,6 +149,8 @@ class JongmanTableReservation extends JTable
 					$obj->resource_level = 0;
 					$this->_db->insertObject('#__jongman_reservation_resources', $obj);		
 				} 
+		}else{
+			JFactory::getApplication()->enqueueMessage('Resource ID empty', 'warning');	
 		}	
 		return true;
 		
@@ -209,6 +211,7 @@ class JongmanTableReservation extends JTable
 			->from('#__jongman_reservation_resources')
 			->where('reservation_id='.(int)$this->id);
 		$this->_db->setQuery($query);
+		
 		$this->_resources = $this->_db->loadColumn();
 		$this->_resource_id = $this->_resources[0];	
 	}
