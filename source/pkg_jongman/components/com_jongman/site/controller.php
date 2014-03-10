@@ -30,8 +30,6 @@ class JongmanController extends JControllerLegacy
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{	
-		
-		
 		$jquery_site = JComponentHelper::getParams('com_jongman')->get('jquery_site');
 		
 		if ($jquery_site == 1) {
@@ -72,7 +70,12 @@ class JongmanController extends JControllerLegacy
 			$name = 'users';
 			$prefix = 'UsersModel';		
 		} 
-
+		
+		$id = JFactory::getApplication()->input->getInt('id', null);
+		if ($name == 'reservation' && $id > 0) {
+			$name = 'instance';	
+		}
+		
 		return parent::getModel($name, $prefix, $config);
 	}
 }
