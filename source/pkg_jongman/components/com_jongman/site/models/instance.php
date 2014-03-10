@@ -59,13 +59,31 @@ class JongmanModelInstance extends JModelAdmin
 			
 		$result->instance_id = $instance->id; 
 		$result->resource_id = $resource_id;
-		$result->start_date = $instance->start_date;
-		$result->end_date = $instance->end_date;
+		
+		$date = new JDate($instance->start_date);
+		$result->start_date = $date->format('Y-m-d');
+		$result->start_time = $date->format('H:i:s');
+		
+		$date = new JDate($instance->end_date);
+		$result->end_date = $date->format('Y-m-d');
+		$result->end_time = $date->format('H:i:s');
 		$result->reference_number = $instance->reference_number;
 		
 		return $result;
 		
 	}	
+	
+	protected function loadFormData()
+	{
+		// Check the session for previously entered form data.
+		$data = JFactory::getApplication()->getUserState($this->option.'.edit.'.$this->getName().'.data', array());
+		if (empty($data)) {
+			$data = $this->getItem();
+			
+		}
+		
+		return $data;
+	}
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
