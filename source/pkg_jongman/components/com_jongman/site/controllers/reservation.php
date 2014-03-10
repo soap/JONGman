@@ -188,7 +188,7 @@ class JongmanControllerReservation extends JControllerForm
 
 			return false;
 		}
-
+		/*
 		switch ($this->getTask()) {
 			case 'updateinstance':
 				$updatescope = 'this';
@@ -206,6 +206,7 @@ class JongmanControllerReservation extends JControllerForm
 		
 		// pass for validate usage 
 		$data['updatescope'] = $updatescope;
+		*/
 		// Test whether the data is valid.
 		$validData = $model->validate($form, $data);
 
@@ -242,7 +243,7 @@ class JongmanControllerReservation extends JControllerForm
 			return false;
 		}
 
-		if ($updatescope === 'none'){
+		//if ($updatescope === 'none'){
 			// Attempt to save the data.
 			if (!$model->save($validData))
 			{
@@ -262,8 +263,8 @@ class JongmanControllerReservation extends JControllerForm
 
 				return false;
 			}
-		}
-		else{
+		//}
+		/*else{
 			if (!$model->update($validData, $updatescope))
 			{
 				// Save the data in the session.
@@ -282,6 +283,8 @@ class JongmanControllerReservation extends JControllerForm
 				return false;
 			}
 		}
+		*/
+			
 		// Save succeeded, so check-in the record.
 		if ($checkin && $model->checkin($validData[$key]) === false)
 		{
