@@ -1,6 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 jimport('jongman.base.ireservationslot');
+jimport('jongman.utils.slotlabelfactory');
 
 class RFReservationSlot implements IReservationSlot
 {
@@ -111,7 +112,7 @@ class RFReservationSlot implements IReservationSlot
 	{
 		if (empty($factory))
 		{
-			return SlotLabelFactory::Create($this->_reservation);
+			return SlotLabelFactory::create($this->_reservation);
 		}
 		return $factory->format($this->_reservation);
 	}

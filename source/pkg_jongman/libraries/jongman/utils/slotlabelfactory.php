@@ -8,28 +8,27 @@ class SlotLabelFactory
 	 * @param ReservationItemView $reservation
 	 * @return string
 	 */
-	public static function Create(ReservationItemView $reservation)
+	public static function create(RFReservationItem $reservation)
 	{
 		$f = new SlotLabelFactory();
-		return $f->Format($reservation);
+		return $f->format($reservation);
 	}
 
 	/**
 	 * @param ReservationItemView $reservation
 	 * @return string
 	 */
-	public function Format(ReservationItemView $reservation)
+	public function format(RFReservationItem $reservation)
 	{
-		$property = Configuration::Instance()->GetSectionKey(ConfigSection::SCHEDULE,
-															 ConfigKeys::SCHEDULE_RESERVATION_LABEL);
+		$property = JComponentHelper::getParams('com_jongman')->get('reservationBarDisplay');
 
-		$name = $this->GetFullName($reservation);
+		$name = $this->getFullName($reservation);
 
 		if ($property == 'titleORuser')
 		{
-			if (strlen($reservation->Title))
+			if (strlen($reservation->title))
 			{
-				return $reservation->Title;
+				return $reservation->title;
 			}
 			else
 			{
@@ -38,7 +37,7 @@ class SlotLabelFactory
 		}
 		if ($property == 'title')
 		{
-			return $reservation->Title;
+			return $reservation->title;
 		}
 		if ($property == 'none' || empty($property))
 		{
@@ -51,35 +50,29 @@ class SlotLabelFactory
 
 		$label = $property;
 		$label = str_replace('{name}', $name, $label);
-		$label = str_replace('{title}', $reservation->Title, $label);
-		$label = str_replace('{description}', $reservation->Description, $label);
-		$label = str_replace('{email}', $reservation->OwnerEmailAddress, $label);
-		$label = str_replace('{organization}', $reservation->OwnerOrganization, $label);
-		$label = str_replace('{phone}', $reservation->OwnerPhone, $label);
-		$label = str_replace('{position}', $reservation->OwnerPosition, $label);
+		$label = str_replace('{title}', $reservation->title, $label);
+		$label = str_replace('{description}', $reservation->description, $label);
 
 		return $label;
 	}
 
-	protected function GetFullName(ReservationItemView $reservation)
+	protected function getFullName(RFReservationItem $reservation)
 	{
-		$shouldHide = Configuration::Instance()->GetSectionKey(ConfigSection::PRIVACY,
-															   ConfigKeys::PRIVACY_HIDE_USER_DETAILS,
-															   new BooleanConverter());
+		$shouldHide = JComponentHelper::getParams('com_jongman')->get('hideOwnerDetail', true);
 		if ($shouldHide)
 		{
-			return Resources::GetInstance()->GetString('Private');
+			return JText::_('COM_JONGMAN_PRIVATE');
 		}
 
-		$name = new FullName($reservation->FirstName, $reservation->LastName);
-		return $name->__toString();
+		$name = $reservation->fullName;
+		return $name;
 
 	}
 }
 
 class NullSlotLabelFactory extends SlotLabelFactory
 {
-	public function Format(ReservationItemView $reservation)
+	public function format(ReservationItemView $reservation)
 	{
 		return '';
 	}
@@ -87,7 +80,7 @@ class NullSlotLabelFactory extends SlotLabelFactory
 
 class AdminSlotLabelFactory extends SlotLabelFactory
 {
-	protected function GetFullName(ReservationItemView $reservation)
+	protected function getFullName(ReservationItemView $reservation)
 	{
 		$name = new FullName($reservation->FirstName, $reservation->LastName);
 		return $name->__toString();

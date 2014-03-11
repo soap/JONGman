@@ -24,6 +24,7 @@ class RFDisplaySlotFactory
 			$class = '';
 		}
 		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"reserved {$class} mine clickres slot\" resid=\"{$slot->getInstanceId()}\">";
+		$html[] = $slot->label();
 		$html[] = "</td>";
 		
 		return implode("", $html);			
@@ -38,8 +39,6 @@ class RFDisplaySlotFactory
 			$class = '';
 		}
 		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"reserved {$class} clickres slot\" resid=\"{$slot->getInstanceId()}\">";
-		//$html[] = "<input type=\"hidden\" class=\"href\" value=\"{$href}\" />";
-		//$html[] = "<input type=\"hidden\" class=\"resid\" value=\"\" />";
 		$html[] = "</td>";
 		
 		return implode("", $html);		
