@@ -134,7 +134,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	 * @param $statusId int|ReservationStatus
 	 * @return void
 	 */
-	public function WithStatus($statusId)
+	public function withStatus($statusId)
 	{
 		$this->statusId = $statusId;
 	}
@@ -143,7 +143,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	 * @param ReservationAccessory $accessory
 	 * @return void
 	 */
-	public function WithAccessory(ReservationAccessory $accessory)
+	public function withAccessory(ReservationAccessory $accessory)
 	{
 		$this->_accessories[] = $accessory;
 	}
@@ -151,16 +151,16 @@ class RFReservationExistingseries extends RFReservationSeries
 	/**
 	 * @param AttributeValue $attributeValue
 	 */
-	public function WithAttribute(AttributeValue $attributeValue)
+	public function withAttribute(AttributeValue $attributeValue)
 	{
-		$this->AddAttributeValue($attributeValue);
+		$this->addAttributeValue($attributeValue);
 	}
 
 	/**
 	 * @param $fileId int
 	 * @param $extension string
 	 */
-	public function WithAttachment($fileId, $extension)
+	public function withAttachment($fileId, $extension)
 	{
 		$this->attachmentIds[$fileId] = $extension;
 	}
@@ -168,21 +168,21 @@ class RFReservationExistingseries extends RFReservationSeries
 	/**
 	 * @internal
 	 */
-	public function RemoveInstance(Reservation $reservation)
+	public function removeInstance(Reservation $reservation)
 	{
-		if ($reservation == $this->CurrentInstance())
+		if ($reservation == $this->currentInstance())
 		{
 			return; // never remove the current instance
 		}
 
-		$instanceKey = $this->GetNewKey($reservation);
+		$instanceKey = $this->getNewKey($reservation);
 		unset($this->instances[$instanceKey]);
 
-		$this->AddEvent(new InstanceRemovedEvent($reservation, $this));
-		$this->_deleteRequestIds[] = $reservation->ReservationId();
+		$this->addEvent(new InstanceRemovedEvent($reservation, $this));
+		$this->_deleteRequestIds[] = $reservation->reservationId();
 	}
 
-	public function RequiresNewSeries()
+	public function requiresNewSeries()
 	{
 		return $this->seriesUpdateStrategy->RequiresNewSeries();
 	}
@@ -190,7 +190,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	/**
 	 * @return int|ReservationStatus
 	 */
-	public function StatusId()
+	public function statusId()
 	{
 		return $this->statusId;
 	}
@@ -202,17 +202,17 @@ class RFReservationExistingseries extends RFReservationSeries
 	 * @param string $description
 	 * @param UserSession $updatedBy
 	 */
-	public function Update($userId, BookableResource $resource, $title, $description, UserSession $updatedBy)
+	public function update($userId, BookableResource $resource, $title, $description, UserSession $updatedBy)
 	{
 		if ($this->_resource->GetId() != $resource->GetId())
 		{
-			$this->AddEvent(new ResourceRemovedEvent($this->_resource, $this));
-			$this->AddEvent(new ResourceAddedEvent($resource, ResourceLevel::Primary, $this));
+			$this->addEvent(new ResourceRemovedEvent($this->_resource, $this));
+			$this->addEvent(new ResourceAddedEvent($resource, ResourceLevel::Primary, $this));
 		}
 
-		if ($this->UserId() != $userId)
+		if ($this->userId() != $userId)
 		{
-			$this->AddEvent(new OwnerChangedEvent($this, $this->UserId(), $userId));
+			$this->addEvent(new OwnerChangedEvent($this, $this->UserId(), $userId));
 		}
 
 		$this->_userId = $userId;
@@ -225,54 +225,54 @@ class RFReservationExistingseries extends RFReservationSeries
 	/**
 	 * @param DateRange $reservationDate
 	 */
-	public function UpdateDuration(DateRange $reservationDate)
+	public function updateDuration(RFDateRange $reservationDate)
 	{
-		$currentDuration = $this->CurrentInstance()->Duration();
+		$currentDuration = $this->currentInstance()->duration();
 
-		if ($currentDuration->Equals($reservationDate))
+		if ($currentDuration->equals($reservationDate))
 		{
 			return;
 		}
 
-		$currentBegin = $currentDuration->GetBegin();
-		$currentEnd = $currentDuration->GetEnd();
+		$currentBegin = $currentDuration->getBegin();
+		$currentEnd = $currentDuration->getEnd();
 
-		$startTimeAdjustment = $currentBegin->GetDifference($reservationDate->GetBegin());
-		$endTimeAdjustment = $currentEnd->GetDifference($reservationDate->GetEnd());
+		$startTimeAdjustment = $currentBegin->getDifference($reservationDate->getBegin());
+		$endTimeAdjustment = $currentEnd->getDifference($reservationDate->getEnd());
 
-		Log::Debug('Updating duration for series %s', $this->SeriesId());
+		//Log::Debug('Updating duration for series %s', $this->SeriesId());
 
 		foreach ($this->Instances() as $instance)
 		{
-			$newStart = $instance->StartDate()->ApplyDifference($startTimeAdjustment);
-			$newEnd = $instance->EndDate()->ApplyDifference($endTimeAdjustment);
+			$newStart = $instance->startDate()->applyDifference($startTimeAdjustment);
+			$newEnd = $instance->endDate()->applyDifference($endTimeAdjustment);
 
-			$this->UpdateInstance($instance, new DateRange($newStart, $newEnd));
+			$this->updateInstance($instance, new RFDateRange($newStart, $newEnd));
 		}
 	}
 
 	/**
 	 * @param SeriesUpdateScope|string $seriesUpdateScope
 	 */
-	public function ApplyChangesTo($seriesUpdateScope)
+	public function applyChangesTo($seriesUpdateScope)
 	{
-		$this->seriesUpdateStrategy = SeriesUpdateScope::CreateStrategy($seriesUpdateScope);
+		$this->seriesUpdateStrategy = SeriesUpdateScope::createStrategy($seriesUpdateScope);
 
-		if ($this->seriesUpdateStrategy->RequiresNewSeries())
+		if ($this->seriesUpdateStrategy->requiresNewSeries())
 		{
 			$this->AddEvent(new SeriesBranchedEvent($this));
-			$this->Repeats($this->seriesUpdateStrategy->GetRepeatOptions($this));
+			$this->repeats($this->seriesUpdateStrategy->getRepeatOptions($this));
 		}
 	}
 
 	/**
 	 * @param IRepeatOptions $repeatOptions
 	 */
-	public function Repeats(IRepeatOptions $repeatOptions)
+	public function repeats(IRepeatOptions $repeatOptions)
 	{
-		if ($this->seriesUpdateStrategy->CanChangeRepeatTo($this, $repeatOptions))
+		if ($this->seriesUpdateStrategy->canChangeRepeatTo($this, $repeatOptions))
 		{
-			Log::Debug('Updating recurrence for series %s', $this->SeriesId());
+			//Log::Debug('Updating recurrence for series %s', $this->SeriesId());
 
 			$this->_repeatOptions = $repeatOptions;
 
@@ -281,12 +281,12 @@ class RFReservationExistingseries extends RFReservationSeries
 				// delete all reservation instances which will be replaced
 				if ($this->seriesUpdateStrategy->ShouldInstanceBeRemoved($this, $instance))
 				{
-					$this->RemoveInstance($instance);
+					$this->removeInstance($instance);
 				}
 			}
 
 			// create all future instances
-			parent::Repeats($repeatOptions);
+			parent::repeats($repeatOptions);
 		}
 	}
 
@@ -294,23 +294,23 @@ class RFReservationExistingseries extends RFReservationSeries
 	 * @param $resources array|BookableResource([]
 	 * @return void
 	 */
-	public function ChangeResources($resources)
+	public function changeResources($resources)
 	{
 		$diff = new ArrayDiff($this->_additionalResources, $resources);
 
-		$added = $diff->GetAddedToArray1();
-		$removed = $diff->GetRemovedFromArray1();
+		$added = $diff->getAddedToArray1();
+		$removed = $diff->getRemovedFromArray1();
 
 		/** @var $resource BookableResource */
 		foreach ($added as $resource)
 		{
-			$this->AddEvent(new ResourceAddedEvent($resource, ResourceLevel::Additional, $this));
+			//$this->addEvent(new ResourceAddedEvent($resource, ResourceLevel::Additional, $this));
 		}
 
 		/** @var $resource BookableResource */
 		foreach ($removed as $resource)
 		{
-			$this->AddEvent(new ResourceRemovedEvent($resource, $this));
+			//$this->AddEvent(new ResourceRemovedEvent($resource, $this));
 		}
 
 		$this->_additionalResources = $resources;
@@ -320,27 +320,27 @@ class RFReservationExistingseries extends RFReservationSeries
 	 * @param UserSession $deletedBy
 	 * @return void
 	 */
-	public function Delete(UserSession $deletedBy)
+	public function delete(UserSession $deletedBy)
 	{
 		$this->_bookedBy = $deletedBy;
 
-		if (!$this->AppliesToAllInstances())
+		if (!$this->appliesToAllInstances())
 		{
-			$instances = $this->Instances();
-			Log::Debug('Removing %s instances of series %s', count($instances), $this->SeriesId());
+			$instances = $this->instances();
+			//Log::Debug('Removing %s instances of series %s', count($instances), $this->SeriesId());
 
 			foreach ($instances as $instance)
 			{
-				Log::Debug("Removing instance %s from series %s", $instance->ReferenceNumber(), $this->SeriesId());
+				//Log::Debug("Removing instance %s from series %s", $instance->ReferenceNumber(), $this->SeriesId());
 
-				$this->AddEvent(new InstanceRemovedEvent($instance, $this));
+				//$this->AddEvent(new InstanceRemovedEvent($instance, $this));
 			}
 		}
 		else
 		{
-			Log::Debug("Removing series %s", $this->SeriesId());
+			//Log::Debug("Removing series %s", $this->SeriesId());
 
-			$this->AddEvent(new SeriesDeletedEvent($this));
+			//$this->addEvent(new SeriesDeletedEvent($this));
 		}
 	}
 
@@ -348,7 +348,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	 * @param UserSession $approvedBy
 	 * @return void
 	 */
-	public function Approve(UserSession $approvedBy)
+	public function approve(UserSession $approvedBy)
 	{
 		$this->_bookedBy = $approvedBy;
 
@@ -356,18 +356,18 @@ class RFReservationExistingseries extends RFReservationSeries
 
 		Log::Debug("Approving series %s", $this->SeriesId());
 
-		$this->AddEvent(new SeriesApprovedEvent($this));
+		$this->addEvent(new SeriesApprovedEvent($this));
 	}
 
 	/**
 	 * @return bool
 	 */
-	private function AppliesToAllInstances()
+	private function appliesToAllInstances()
 	{
-		return count($this->instances) == count($this->Instances());
+		return count($this->instances) == count($this->instances());
 	}
 
-	protected function AddNewInstance(DateRange $reservationDate)
+	protected function addNewInstance(DateRange $reservationDate)
 	{
 		if (!$this->InstanceStartsOnDate($reservationDate))
 		{
@@ -595,34 +595,34 @@ class RFReservationExistingseries extends RFReservationSeries
 	/**
 	 * @param $fileId int
 	 */
-	public function RemoveAttachment($fileId)
+	public function removeAttachment($fileId)
 	{
-		$this->AddEvent(new AttachmentRemovedEvent($this, $fileId, $this->attachmentIds[$fileId]));
+		$this->addEvent(new AttachmentRemovedEvent($this, $fileId, $this->attachmentIds[$fileId]));
 		$this->_removedAttachmentIds[] = $fileId;
 	}
 
 	/**
 	 * @return array|int[]
 	 */
-	public function RemovedAttachmentIds()
+	public function removedAttachmentIds()
 	{
 		return $this->_removedAttachmentIds;
 	}
 
-	public function AddStartReminder(ReservationReminder $reminder)
+	public function addStartReminder(ReservationReminder $reminder)
 	{
-		if ($reminder->MinutesPrior() != $this->startReminder->MinutesPrior())
+		if ($reminder->minutesPrior() != $this->startReminder->minutesPrior())
 		{
-			$this->AddEvent(new ReminderAddedEvent($this, $reminder->MinutesPrior(), ReservationReminderType::Start));
+			$this->addEvent(new ReminderAddedEvent($this, $reminder->minutesPrior(), ReservationReminderType::Start));
 			parent::AddStartReminder($reminder);
 		}
 	}
 
-	public function AddEndReminder(ReservationReminder $reminder)
+	public function addEndReminder(ReservationReminder $reminder)
 	{
-		if ($reminder->MinutesPrior() != $this->endReminder->MinutesPrior())
+		if ($reminder->minutesPrior() != $this->endReminder->MinutesPrior())
 		{
-			$this->AddEvent(new ReminderAddedEvent($this, $reminder->MinutesPrior(), ReservationReminderType::End));
+			$this->addEvent(new ReminderAddedEvent($this, $reminder->MinutesPrior(), ReservationReminderType::End));
 			parent::AddEndReminder($reminder);
 		}
 	}
