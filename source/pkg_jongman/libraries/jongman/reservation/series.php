@@ -8,19 +8,41 @@ defined('_JEXEC') or die;
  */
 class RFReservationSeries 
 {
-	private $userId;
-	private $resource;
-	private $bookedBy;
+	protected $seriesId; //reservation series id
+	protected $title;
+	protected $description; 
+	protected $userId;
+	/**
+	 * @var RFResourceBookable
+	 */
+	protected $resource;
+	protected $bookedBy;
+	protected $instances = array();
 	
-	private $_instances = array();
 	private $_repeatOptions;
 	private $_currentInstanceKey;
+	private $_additionalResources = array();
 	
 	public function __construct()
 	{
 		$this->_repeatOptions = new RFReservationRepeatNone();
 	}
 	
+	/**
+	 * @return int
+	 */
+	public function seriesId()
+	{
+		return $this->seriesId;
+	}
+	
+	/**
+	 * @param int $seriesId
+	 */
+	public function setSeriesId($seriesId)
+	{
+		$this->seriesId = $seriesId;
+	}
 	/**
 	 * 
 	 * bind data (from model 's form
@@ -29,7 +51,7 @@ class RFReservationSeries
 	public function bind($data)
 	{
 		$this->userId = JFactory::getUser()->get('id');
-		$this->resource = $data['resource_id'];
+		$this->resource = $data['resource'];
 		$this->bookedBy = JFactory::getUser((int)$data['owner_id']);
 		$userTz = JFactory::getUser($this->userId)->getParam('timezone'); 
 		$this->setDuration( 
@@ -51,12 +73,12 @@ class RFReservationSeries
 	
 	public function getInstances()
 	{
-		return $this->_instances;	
+		return $this->instances;	
 	}
 	
 	public function getInstance($referenceNumber)
 	{
-		return $this->_instances[$referenceNumber];
+		return $this->instances[$referenceNumber];
 	}
 	
 	protected function setDuration(RFDateRange $reservationDate)
@@ -91,7 +113,7 @@ class RFReservationSeries
 	protected function instanceStartsOnDate(RFDateRange $reservationDate)
 	{
 		/** @var $instance Reservation */
-		foreach ($this->_instances as $instance)
+		foreach ($this->instances as $instance)
 		{
 			if ($instance->startDate()->dateEquals($reservationDate->getBegin()))
 			{
@@ -123,7 +145,7 @@ class RFReservationSeries
 	protected function addInstance(RFReservation $reservation)
 	{
 		$key = $this->createInstanceKey($reservation);
-		$this->_instances[$key] = $reservation;
+		$this->instances[$key] = $reservation;
 	}
 
 	protected function createInstanceKey(RFReservation $reservation)
@@ -144,5 +166,18 @@ class RFReservationSeries
 	protected function getNewKey(RFReservation $reservation)
 	{
 		return $reservation->referenceNumber();
+	}
+	
+	/**
+	 * @param BookableResource $resource
+	 */
+	public function addResource(RFResourceBookable $resource)
+	{
+		$this->_additionalResources[] = $resource;
+	}
+	
+	public function userId()
+	{
+		return $this->userId;
 	}
 }

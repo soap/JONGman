@@ -255,14 +255,7 @@ class JongmanModelReservation extends JModelAdmin
 
 		return true;
 	}	
-	
-	/**
-	 * Method to update existing reservation instance(s)
-	 */
-	public function update($data, $updateScope='this')
-	{
-		
-	}
+
 	
 	/**
 	 * override to add resource reservation validation 
@@ -312,6 +305,11 @@ class JongmanModelReservation extends JModelAdmin
 		}
 
 		$input['repeatOptions'] = $repeatOption;
+		if (isset($input['resource_id']) && ($input['resource_id'] > 0)) {
+			$row = JTable::getInstance('Resource', 'JongmanTable');
+			$row->load($data['resource_id']);
+			$input['resource'] = RFResourceBookable::create($row); 
+		}
 		$reservationSeries = new RFReservationSeries();
 		$reservationSeries->bind($input);
 		//start reservation validation here

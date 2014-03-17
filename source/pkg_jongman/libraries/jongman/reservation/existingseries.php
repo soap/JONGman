@@ -42,7 +42,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	public function __construct()
 	{
 		parent::__construct();
-		$this->applyChangesTo(RFReservationSeriesUpdateScope::FULLSERIES);
+		$this->applyChangesTo(RFReservationSeriesUpdatescope::FULLSERIES);
 	}
 
 	public function seriesUpdateScope()
@@ -63,15 +63,15 @@ class RFReservationExistingseries extends RFReservationSeries
 	 */
 	public function withOwner($userId)
 	{
-		$this->_userId = $userId;
+		$this->userId = $userId;
 	}
 
 	/**
 	 * @internal
 	 */
-	public function withPrimaryResource(BookableResource $resource)
+	public function withPrimaryResource(RFResourceBookable $resource)
 	{
-		$this->_resource = $resource;
+		$this->resource = $resource;
 	}
 
 	/**
@@ -79,7 +79,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	 */
 	public function withTitle($title)
 	{
-		$this->_title = $title;
+		$this->title = $title;
 	}
 
 	/**
@@ -87,13 +87,13 @@ class RFReservationExistingseries extends RFReservationSeries
 	 */
 	public function withDescription($description)
 	{
-		$this->_description = $description;
+		$this->description = $description;
 	}
 
 	/**
 	 * @internal
 	 */
-	public function withResource(BookableResource $resource)
+	public function withResource(RFResourceBookable $resource)
 	{
 		$this->addResource($resource);
 	}
@@ -116,7 +116,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	/**
 	 * @internal
 	 */
-	public function withCurrentInstance(Reservation $reservation)
+	public function withCurrentInstance(RFReservation $reservation)
 	{
 		$this->addInstance($reservation);
 		$this->setCurrentInstance($reservation);
@@ -125,9 +125,9 @@ class RFReservationExistingseries extends RFReservationSeries
 	/**
 	 * @internal
 	 */
-	public function withInstance(Reservation $reservation)
+	public function withInstance(RFReservation $reservation)
 	{
-		$this->AddInstance($reservation);
+		$this->addInstance($reservation);
 	}
 
 	/**
@@ -168,7 +168,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	/**
 	 * @internal
 	 */
-	public function removeInstance(Reservation $reservation)
+	public function removeInstance(RFReservation $reservation)
 	{
 		if ($reservation == $this->currentInstance())
 		{
@@ -178,7 +178,7 @@ class RFReservationExistingseries extends RFReservationSeries
 		$instanceKey = $this->getNewKey($reservation);
 		unset($this->instances[$instanceKey]);
 
-		$this->addEvent(new InstanceRemovedEvent($reservation, $this));
+		$this->addEvent(new RFEventInstanceRemoved($reservation, $this));
 		$this->_deleteRequestIds[] = $reservation->reservationId();
 	}
 
@@ -197,29 +197,29 @@ class RFReservationExistingseries extends RFReservationSeries
 
 	/**
 	 * @param int $userId
-	 * @param BookableResource $resource
+	 * @param RFResourceBookable $resource
 	 * @param string $title
 	 * @param string $description
-	 * @param UserSession $updatedBy
+	 * @param JUser $updatedBy
 	 */
-	public function update($userId, BookableResource $resource, $title, $description, UserSession $updatedBy)
+	public function update($userId, $resource, $title, $description, JUser $updatedBy)
 	{
-		if ($this->_resource->GetId() != $resource->GetId())
+		if ($this->resource->getId() != $resource->getId())
 		{
-			$this->addEvent(new ResourceRemovedEvent($this->_resource, $this));
-			$this->addEvent(new ResourceAddedEvent($resource, ResourceLevel::Primary, $this));
+			$this->addEvent(new RFEventResourceRemoved($this->resource, $this));
+			$this->addEvent(new RFEventResourceAdded($resource, RFResourceLevel::Primary, $this));
 		}
 
 		if ($this->userId() != $userId)
 		{
-			$this->addEvent(new OwnerChangedEvent($this, $this->UserId(), $userId));
+			$this->addEvent(new RFEventOwnerChanged($this, $this->userId(), $userId));
 		}
 
-		$this->_userId = $userId;
-		$this->_resource = $resource;
-		$this->_title = $title;
-		$this->_description = $description;
-		$this->_bookedBy = $updatedBy;
+		$this->userId = $userId;
+		$this->resource = $resource;
+		$this->title = $title;
+		$this->description = $description;
+		$this->bookedBy = $updatedBy;
 	}
 
 	/**
@@ -256,11 +256,11 @@ class RFReservationExistingseries extends RFReservationSeries
 	 */
 	public function applyChangesTo($seriesUpdateScope)
 	{
-		$this->seriesUpdateStrategy = SeriesUpdateScope::createStrategy($seriesUpdateScope);
+		$this->seriesUpdateStrategy = RFReservationSeriesUpdateScope::createStrategy($seriesUpdateScope);
 
 		if ($this->seriesUpdateStrategy->requiresNewSeries())
 		{
-			$this->AddEvent(new SeriesBranchedEvent($this));
+			//$this->AddEvent(new SeriesBranchedEvent($this));
 			$this->repeats($this->seriesUpdateStrategy->getRepeatOptions($this));
 		}
 	}
@@ -279,7 +279,7 @@ class RFReservationExistingseries extends RFReservationSeries
 			foreach ($this->instances as $instance)
 			{
 				// delete all reservation instances which will be replaced
-				if ($this->seriesUpdateStrategy->ShouldInstanceBeRemoved($this, $instance))
+				if ($this->seriesUpdateStrategy->shouldInstanceBeRemoved($this, $instance))
 				{
 					$this->removeInstance($instance);
 				}
@@ -320,7 +320,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	 * @param UserSession $deletedBy
 	 * @return void
 	 */
-	public function delete(UserSession $deletedBy)
+	public function delete(JUser $deletedBy)
 	{
 		$this->_bookedBy = $deletedBy;
 
@@ -333,30 +333,30 @@ class RFReservationExistingseries extends RFReservationSeries
 			{
 				//Log::Debug("Removing instance %s from series %s", $instance->ReferenceNumber(), $this->SeriesId());
 
-				//$this->AddEvent(new InstanceRemovedEvent($instance, $this));
+				$this->AddEvent(new RFEventInstanceRemoved($instance, $this));
 			}
 		}
 		else
 		{
 			//Log::Debug("Removing series %s", $this->SeriesId());
 
-			//$this->addEvent(new SeriesDeletedEvent($this));
+			$this->addEvent(new RFEventSeriesDeleted($this));
 		}
 	}
 
 	/**
-	 * @param UserSession $approvedBy
+	 * @param JUser $approvedBy
 	 * @return void
 	 */
-	public function approve(UserSession $approvedBy)
+	public function approve(JUser $approvedBy)
 	{
 		$this->_bookedBy = $approvedBy;
 
 		$this->statusId = ReservationStatus::Created;
 
-		Log::Debug("Approving series %s", $this->SeriesId());
+		//Log::Debug("Approving series %s", $this->SeriesId());
 
-		$this->addEvent(new SeriesApprovedEvent($this));
+		$this->addEvent(new RFEventSeriesApproved($this));
 	}
 
 	/**
@@ -367,21 +367,21 @@ class RFReservationExistingseries extends RFReservationSeries
 		return count($this->instances) == count($this->instances());
 	}
 
-	protected function addNewInstance(DateRange $reservationDate)
+	protected function addNewInstance(RFDateRange $reservationDate)
 	{
-		if (!$this->InstanceStartsOnDate($reservationDate))
+		if (!$this->instanceStartsOnDate($reservationDate))
 		{
-			Log::Debug('Adding instance for series %s on %s', $this->SeriesId(), $reservationDate);
+			//Log::Debug('Adding instance for series %s on %s', $this->seriesId(), $reservationDate);
 
-			$newInstance = parent::AddNewInstance($reservationDate);
-			$this->AddEvent(new InstanceAddedEvent($newInstance, $this));
+			$newInstance = parent::addNewInstance($reservationDate);
+			$this->AddEvent(new RFEventInstanceAdded($newInstance, $this));
 		}
 	}
 
 	/**
 	 * @internal
 	 */
-	public function updateInstance(Reservation $instance, RFDateRange $newDate)
+	public function updateInstance(RFReservation $instance, RFDateRange $newDate)
 	{
 		unset($this->instances[$this->createInstanceKey($instance)]);
 
@@ -392,12 +392,12 @@ class RFReservationExistingseries extends RFReservationSeries
 
 	}
 
-	private function raiseInstanceUpdatedEvent(Reservation $instance)
+	private function raiseInstanceUpdatedEvent(RFReservation $instance)
 	{
-		if (!$instance->IsNew())
+		if (!$instance->isNew())
 		{
-			$this->AddEvent(new InstanceUpdatedEvent($instance, $this));
-			$this->_updateRequestIds[] = $instance->ReservationId();
+			$this->AddEvent(new RFEventInstanceUpdated($instance, $this));
+			$this->_updateRequestIds[] = $instance->reservationId();
 		}
 	}
 
@@ -407,7 +407,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	public function getEvents()
 	{
 		$uniqueEvents = array_unique($this->events);
-		usort($uniqueEvents, array('SeriesEvent', 'Compare'));
+		usort($uniqueEvents, array('RFSeriesEvent', 'compare'));
 
 		return $uniqueEvents;
 	}
@@ -425,7 +425,7 @@ class RFReservationExistingseries extends RFReservationSeries
 		return $this->instances;
 	}
 
-	protected function addEvent(SeriesEvent $event)
+	protected function addEvent(RFSeriesEvent $event)
 	{
 		$this->events[] = $event;
 	}
@@ -444,15 +444,15 @@ class RFReservationExistingseries extends RFReservationSeries
 	 * @param int[] $participantIds
 	 * @return void
 	 */
-	public function ChangeParticipants($participantIds)
+	public function changeParticipants($participantIds)
 	{
 		/** @var Reservation $instance */
-		foreach ($this->Instances() as $instance)
+		foreach ($this->instances() as $instance)
 		{
-			$numberChanged = $instance->ChangeParticipants($participantIds);
+			$numberChanged = $instance->changeParticipants($participantIds);
 			if ($numberChanged != 0)
 			{
-				$this->RaiseInstanceUpdatedEvent($instance);
+				$this->raiseInstanceUpdatedEvent($instance);
 			}
 		}
 	}
@@ -464,12 +464,12 @@ class RFReservationExistingseries extends RFReservationSeries
 	public function changeInvitees($inviteeIds)
 	{
 		/** @var Reservation $instance */
-		foreach ($this->Instances() as $instance)
+		foreach ($this->instances() as $instance)
 		{
-			$numberChanged = $instance->ChangeInvitees($inviteeIds);
+			$numberChanged = $instance->changeInvitees($inviteeIds);
 			if ($numberChanged != 0)
 			{
-				$this->RaiseInstanceUpdatedEvent($instance);
+				$this->raiseInstanceUpdatedEvent($instance);
 			}
 		}
 	}
@@ -481,12 +481,12 @@ class RFReservationExistingseries extends RFReservationSeries
 	public function acceptInvitation($inviteeId)
 	{
 		/** @var Reservation $instance */
-		foreach ($this->Instances() as $instance)
+		foreach ($this->instances() as $instance)
 		{
-			$wasAccepted = $instance->AcceptInvitation($inviteeId);
+			$wasAccepted = $instance->acceptInvitation($inviteeId);
 			if ($wasAccepted)
 			{
-				$this->RaiseInstanceUpdatedEvent($instance);
+				$this->raiseInstanceUpdatedEvent($instance);
 			}
 		}
 	}
@@ -498,9 +498,9 @@ class RFReservationExistingseries extends RFReservationSeries
 	public function declineInvitation($inviteeId)
 	{
 		/** @var Reservation $instance */
-		foreach ($this->Instances() as $instance)
+		foreach ($this->instances() as $instance)
 		{
-			$wasAccepted = $instance->DeclineInvitation($inviteeId);
+			$wasAccepted = $instance->declineInvitation($inviteeId);
 			if ($wasAccepted)
 			{
 				$this->RaiseInstanceUpdatedEvent($instance);
@@ -515,12 +515,12 @@ class RFReservationExistingseries extends RFReservationSeries
 	public function cancelAllParticipation($participantId)
 	{
 		/** @var Reservation $instance */
-		foreach ($this->Instances() as $instance)
+		foreach ($this->instances() as $instance)
 		{
-			$wasCancelled = $instance->CancelParticipation($participantId);
+			$wasCancelled = $instance->cancelParticipation($participantId);
 			if ($wasCancelled)
 			{
-				$this->RaiseInstanceUpdatedEvent($instance);
+				$this->raiseInstanceUpdatedEvent($instance);
 			}
 		}
 	}
@@ -531,9 +531,9 @@ class RFReservationExistingseries extends RFReservationSeries
 	 */
 	public function cancelInstanceParticipation($participantId)
 	{
-		if ($this->CurrentInstance()->CancelParticipation($participantId))
+		if ($this->currentInstance()->cancelParticipation($participantId))
 		{
-			$this->RaiseInstanceUpdatedEvent($this->CurrentInstance());
+			$this->raiseInstanceUpdatedEvent($this->currentInstance());
 		}
 	}
 
@@ -541,23 +541,23 @@ class RFReservationExistingseries extends RFReservationSeries
 	 * @param array|ReservationAccessory[] $accessories
 	 * @return void
 	 */
-	public function ChangeAccessories($accessories)
+	public function changeAccessories($accessories)
 	{
 		$diff = new ArrayDiff($this->_accessories, $accessories);
 
-		$added = $diff->GetAddedToArray1();
-		$removed = $diff->GetRemovedFromArray1();
+		$added = $diff->getAddedToArray1();
+		$removed = $diff->getRemovedFromArray1();
 
 		/** @var $accessory ReservationAccessory */
 		foreach ($added as $accessory)
 		{
-			$this->AddEvent(new AccessoryAddedEvent($accessory, $this));
+			$this->addEvent(new RFEventAccessoryAdded($accessory, $this));
 		}
 
 		/** @var $accessory ReservationAccessory */
 		foreach ($removed as $accessory)
 		{
-			$this->AddEvent(new AccessoryRemovedEvent($accessory, $this));
+			$this->addEvent(new RFEventAccessoryRemoved($accessory, $this));
 		}
 
 		$this->_accessories = $accessories;
@@ -566,29 +566,29 @@ class RFReservationExistingseries extends RFReservationSeries
 	/**
 	 * @param $attributes AttributeValue[]|array
 	 */
-	public function ChangeAttributes($attributes)
+	public function changeAttributes($attributes)
 	{
 		$diff = new ArrayDiff($this->_attributeValues, $attributes);
 
-		$added = $diff->GetAddedToArray1();
-		$removed = $diff->GetRemovedFromArray1();
+		$added = $diff->getAddedToArray1();
+		$removed = $diff->getRemovedFromArray1();
 
 		/** @var $attribute AttributeValue */
 		foreach ($added as $attribute)
 		{
-			$this->AddEvent(new AttributeAddedEvent($attribute, $this));
+			$this->addEvent(new RFEventAttributeAdded($attribute, $this));
 		}
 
 		/** @var $accessory ReservationAccessory */
 		foreach ($removed as $attribute)
 		{
-			$this->AddEvent(new AttributeRemovedEvent($attribute, $this));
+			$this->addEvent(new RFEventAttributeRemoved($attribute, $this));
 		}
 
 		$this->_attributeValues = array();
 		foreach ($attributes as $attribute)
 		{
-			$this->AddAttributeValue($attribute);
+			$this->addAttributeValue($attribute);
 		}
 	}
 
@@ -597,7 +597,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	 */
 	public function removeAttachment($fileId)
 	{
-		$this->addEvent(new AttachmentRemovedEvent($this, $fileId, $this->attachmentIds[$fileId]));
+		$this->addEvent(new RFEventAttachmentRemoved($this, $fileId, $this->attachmentIds[$fileId]));
 		$this->_removedAttachmentIds[] = $fileId;
 	}
 
@@ -613,8 +613,8 @@ class RFReservationExistingseries extends RFReservationSeries
 	{
 		if ($reminder->minutesPrior() != $this->startReminder->minutesPrior())
 		{
-			$this->addEvent(new ReminderAddedEvent($this, $reminder->minutesPrior(), ReservationReminderType::Start));
-			parent::AddStartReminder($reminder);
+			$this->addEvent(new RFEventReminderAdded($this, $reminder->minutesPrior(), ReservationReminderType::Start));
+			parent::addStartReminder($reminder);
 		}
 	}
 
@@ -629,16 +629,16 @@ class RFReservationExistingseries extends RFReservationSeries
 
 	public function removeStartReminder()
 	{
-		if ($this->startReminder->Enabled())
+		if ($this->startReminder->enabled())
 		{
 			$this->startReminder = ReservationReminder::None();
-			$this->AddEvent(new ReminderRemovedEvent($this, ReservationReminderType::Start));
+			$this->AddEvent(new RFEventReminderRemoved($this, ReservationReminderType::Start));
 		}
 	}
 
 	public function removeEndReminder()
 	{
-		if ($this->endReminder->Enabled())
+		if ($this->endReminder->enabled())
 		{
 			$this->endReminder = ReservationReminder::None();
 			$this->AddEvent(new ReminderRemovedEvent($this, ReservationReminderType::End));

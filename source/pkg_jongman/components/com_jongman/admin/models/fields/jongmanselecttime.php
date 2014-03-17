@@ -73,7 +73,8 @@ class JFormFieldJongmanSelectTime extends JFormField {
         
         $model = JModelLegacy::getInstance('Schedule', 'JongmanModel');
         $layout = $model->getScheduleLayout($scheduleId, $userTz);
-		$periods = $layout->getLayout(new RFDate());        
+		$periods = $layout->getLayout(new RFDate());
+  
 		foreach($periods as $period) {
 			if ($period->isReservable()) {
         		$options[] = JHtml::_('select.option', $period->end(), $period->labelEnd());

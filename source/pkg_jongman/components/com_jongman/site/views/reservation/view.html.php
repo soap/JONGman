@@ -65,6 +65,9 @@ class JongmanViewReservation extends JView
 			
 		$this->canDelete = false;
 		parent::display();
+		
+		var_dump($this->item);
+		
 	}
 	
 	public function getToolbar()

@@ -30,7 +30,7 @@ class RFReservationSeriesUpdatescopeInstance extends RFReservationSeriesUpdatesc
 
 	public function getRepeatOptions($series)
 	{
-		return new RepeatNone();
+		return new RFReservationRepeatNone();
 	}
 
 	public function canChangeRepeatTo($series, $targetRepeatOptions)

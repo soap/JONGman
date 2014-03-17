@@ -74,9 +74,10 @@
 			label="COM_JONGMAN_CONFIG_RESERVATION_BAR_DISPLAY_LABEL"
 			description="COM_JONGMAN_CONFIG_RESERVATION_BAR_DISPLAY_DESC"			
 			>
-			<option value="userOnly">User Name</option>
-			<option value="titleOnly">Reservation Title</option>	
-			<option value="userAndTitle">User Name@Reseravtion Title</option>
+			<option value="user">User Name</option>
+			<option value="title">Reservation Title</option>	
+			<option value="userANDTitle">User Name@Reseravtion Title</option>
+			<option value="titleORuser">Title or User Name</option>
 			<option value="none">Disabled</option>	
 		</field>
 		<field
@@ -99,6 +100,16 @@
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>	
 		</field>
+		<field
+			name="hideOwnerDetail"
+			type="list"
+			default="0"
+			label="COM_JONGMAN_CONFIG_HIDE_RESERVATION_OWNER_DETAIL_LABEL"
+			description="COM_JONGMAN_CONFIG_HIDE_RESERVATION_OWNER_DETAIL_DESC"
+			>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>	
 	</fieldset>
 	
 	<fieldset

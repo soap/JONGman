@@ -1,7 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 
-class ReservationRepeatMonthlytype
+class RFReservationRepeatMonthlytype
 {
 	const DayOfMonth = 'dayOfMonth';
 	const DayOfWeek = 'dayOfWeek';

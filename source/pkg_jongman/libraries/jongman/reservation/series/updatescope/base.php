@@ -1,7 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 
-class RFReservationSeriesUpdatescopeBase implements ISeriesUpdateScope
+abstract class RFReservationSeriesUpdatescopeBase implements ISeriesUpdateScope
 {
 	/**
 	 * @var ISeriesDistinction
@@ -46,7 +46,7 @@ class RFReservationSeriesUpdatescopeBase implements ISeriesUpdateScope
 		return !$targetRepeatOptions->equals($series->repeatOptions());
 	}
 
-	public function ShouldInstanceBeRemoved($series, $instance)
+	public function shouldInstanceBeRemoved($series, $instance)
 	{
 		return $instance->startDate()->greaterThan($this->earliestDateToKeep($series));
 	}
