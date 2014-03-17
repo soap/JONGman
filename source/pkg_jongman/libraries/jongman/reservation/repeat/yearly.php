@@ -45,6 +45,6 @@ class RFReservationRepeatYearly extends RFReservationRepeatAbtract
 
 	public function repeatType()
 	{
-		return RFRepeatType::YEARLY;
+		return RFReservationRepeatType::YEARLY;
 	}	
 }

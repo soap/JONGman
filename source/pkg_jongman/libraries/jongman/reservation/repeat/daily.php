@@ -30,6 +30,6 @@ class RFReservationRepeatDaily extends RFReservationRepeatAbstract
 
 	public function repeatType()
 	{
-		return FRReservationRepeatType::DAILY;
+		return RFReservationRepeatType::DAILY;
 	}	
 }

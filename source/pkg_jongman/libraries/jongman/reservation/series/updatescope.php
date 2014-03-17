@@ -1,7 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 
-class RFReservationUpdatescope 
+class RFReservationSeriesUpdatescope 
 {
 	private function __construct()
 	{
@@ -15,17 +15,17 @@ class RFReservationUpdatescope
 	{
 		switch ($seriesUpdateScope)
 		{
-			case seriesUpdateScope::THISINSTANCE :
+			case self::THISINSTANCE :
 				return new RFReservationSeriesUpdatescopeInstance();
 				break;
-			case seriesUpdateScope::FULLSERIES :
+			case self::FULLSERIES :
 				return new RFReservationSeriesUpdatescopeFull();
 				break;
-			case seriesUpdateScope::FUTUREINSTANCES :
+			case self::FUTUREINSTANCES :
 				return new RFReservationSeriesUpdatescopeFuture();
 				break;
 			default :
-				throw new Exception('Unknown seriesUpdateScope requested');
+				throw new Exception('Unknown seriesUpdateScope requested; '.$seriesUpdateScope);
 		}
 	}
 
