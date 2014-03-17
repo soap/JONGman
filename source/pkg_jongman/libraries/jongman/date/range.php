@@ -80,7 +80,7 @@ class RFDateRange
 	 * @param DateRange $dateRange
 	 * @return bool
 	 */
-	public function containsRange(DateRange $dateRange)
+	public function containsRange(RFDateRange $dateRange)
 	{
 		return $this->_begin->compare($dateRange->_begin) <= 0 && $this->_end->compare($dateRange->_end) >= 0;
 	}
@@ -90,7 +90,7 @@ class RFDateRange
 	 * @param DateRange $dateRange
 	 * @return bool
 	 */
-	public function overlaps(DateRange $dateRange)
+	public function overlaps(RFDateRange $dateRange)
 	{
 		return (	$this->contains($dateRange->getBegin()) 
 					|| $this->contains($dateRange->getEnd()) 
@@ -172,7 +172,7 @@ class RFDateRange
 	 * @param DateRange $otherRange
 	 * @return bool
 	 */
-	public function equals(DateRange $otherRange)
+	public function equals(RFDateRange $otherRange)
 	{
 		return $this->_begin->equals($otherRange->getBegin()) && $this->_end->equals($otherRange->getEnd());
 	}
