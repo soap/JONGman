@@ -150,7 +150,7 @@ class JongmanControllerInstance extends JControllerForm
 			return false;
 		}
 
-		if (!$model->update($validData, $updatescope))
+		if (!$model->update($validData))
 		{
 			// Save the data in the session.
 			$app->setUserState($context . '.data', $validData);

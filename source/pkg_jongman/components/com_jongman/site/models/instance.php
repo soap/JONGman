@@ -14,6 +14,9 @@ JForm::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR . '/models/fields');
  */
 class JongmanModelInstance extends JModelAdmin
 {
+	
+	protected static $series;
+	 
 	/**
 	 * Method to get the Reservation form.
 	 *
@@ -103,6 +106,7 @@ class JongmanModelInstance extends JModelAdmin
 			$terminated = RFDate::parse($input['repeat_terminated'], $tz);
 			$terminated->setTime(new RFTime(0, 0, 0, $tz));
 		}
+		
 		$existingSeries = $this->buildSeries($input);
 		
 		switch ((string) $input['repeat_type']) {
@@ -137,12 +141,12 @@ class JongmanModelInstance extends JModelAdmin
 		$row = JTable::getInstance('Resource', 'JongmanTable');
 		$row->load($input['resource_id']);
 		$resource = RFResourceBookable::create($row);
-		
+
 		$existingSeries->applyChangesTo($updateScope);
 		$existingSeries->update(
-				$input['owner_id'], $resource,  $input['title'], $input['description'],
-				JFactory::getUser()
-			);
+		$input['owner_id'], $resource,  $input['title'], $input['description'],
+		JFactory::getUser()
+		);
 
 		$tz = JongmanHelper::getUserTimezone();
 		$input['start_date'] = $input['start_date'].' '.$input['start_time'];
@@ -150,34 +154,117 @@ class JongmanModelInstance extends JModelAdmin
 		$duration = new RFDateRange(RFDate::parse($input['start_date'], $tz), RFDate::parse($input['end_date'], $tz));
 		$existingSeries->updateDuration($duration);
 		$existingSeries->repeats($repeatOption);
-		
-		//start reservation validation here
-		
-		//if success then add instances
-		$validData['instances'] = $existingSeries->getInstances();
 
-		$validData['repeat_options'] = $repeatOption->configurationString();
+		$this->series = $existingSeries;
+
+		//start reservation validation here
+
+		//if success then add instances
+
 		// now we do our validation process
 		return $validData;
 	}
-	
+
 	/**
 	 * Method to update existing reservation instance(s)
 	 */
-	public function update($data, $updateScope='this')
+	public function update($data)
+	{
+		if ($this->series->requiresNewSeries())
+		{
+			$currentId = $this->series->seriesId();
+			//insert new reservation
+
+				
+		}else{
+			
+		}
+	
+		return true;		
+	}
+	
+	/**
+	 * Returns a reference to the a Table object, always creating it.
+	 *
+	 * @param   type    $type    The table type to instantiate
+	 * @param   string  $prefix  A prefix for the table class name.
+	 * @param   array   $config  Configuration array for model.
+	 *
+	 * @return  JTable  A database object
+	 * @since   1.0
+	 */
+	public function getTable($type = 'Instance', $prefix = 'JongmanTable', $config = array())
+	{
+		return JTable::getInstance($type, $prefix, $config);
+	}
+
+	/**
+	 * 
+	 * Build existing reservation series from database
+	 */
+	protected function buildSeries($data) 
+	{
+		if (!empty($this->series)) return $this->series;
+		
+		$existingSeries = new RFReservationExistingseries();
+		$keys = array('reference_number'=>$data['reference_number']);
+		
+		$instance = $this->getTable();
+		$instance->load($keys);
+		
+		$reservation = $this->getTable('Reservation', 'JongmanTable');
+			
+		$reservation->load($instance->reservation_id);
+		
+		$row = JTable::getInstance('Resource', 'JongmanTable');
+		$row->load($reservation->getResourceId());
+
+		$resource = RFResourceBookable::create($row);
+		$factory = new RFReservationRepeatOptionsFactory();
+		$repeatConfig = new JRegistry($reservation->repeat_options);
+		$repeatTerminated = RFDate::fromDatabase($reservation->get('repeat_terminated'));
+		$repeatOptions = $factory->create($reservation->repeat_type, 
+							$repeatConfig->get('repeat_interval'), $repeatTerminated,
+							$repeatConfig->get('repeat_days', array()),  
+							$repeatConfig->get('repeat_monthly_type'));
+		
+		$existingSeries->withRepeatOptions($repeatOptions);
+		$existingSeries->withId($instance->reservation_id);
+		$existingSeries->withTitle($reservation->title);
+		$existingSeries->withDescription($reservation->description);
+		$existingSeries->withOwner($reservation->owner_id);
+		$existingSeries->withStatus($reservation->state);
+		$existingSeries->withPrimaryResource($resource);
+		
+		$startDate = RFDate::fromDatabase($instance->start_date);
+		$endDate = RFDate::fromDatabase($instance->end_date);
+		$duration = new RFDateRange($startDate, $endDate);
+		$currentInstance = new RFReservation($existingSeries, $duration, $instance->reservation_id, $instance->reference_number);
+		$existingSeries->withCurrentInstance($currentInstance);
+		
+		$this->series = $existingSeries;
+		
+		return $this->series;
+	}
+	
+	protected function executeEvents($existsingSeries = null)
+	{
+		if ($existsingSeries == null) {
+			$existingSeries = $this->series;
+		}
+
+		
+	}
+
+	protected function insertSeries($data)
 	{
 		// Initialise variables;
 		$dispatcher = JDispatcher::getInstance();
 		$table = $this->getTable();
 		$key = $table->getKeyName();
-		$pk = (!empty($data[$key])) ? $data[$key] : (int) $this->getState($this->getName() . '.id');
-		$isNew = true;
-		$instances = $data['instances'];
-		var_dump($instances); jexit();
+			
 		// Include the content plugins for the on save events.
 		JPluginHelper::importPlugin('content');
-
-		// Allow an exception to be thrown.
 		try
 		{
 			// Load the row if saving an existing record.
@@ -224,14 +311,14 @@ class JongmanModelInstance extends JModelAdmin
 
 			// Trigger the onContentAfterSave event.
 			$dispatcher->trigger($this->event_after_save, array($this->option . '.' . $this->name, &$table, $isNew));
-		}
-		catch (Exception $e)
+
+		}catch (Exception $e)
 		{
 			$this->setError($e->getMessage());
 
 			return false;
 		}
-
+			
 		$pkName = $table->getKeyName();
 
 		if (isset($table->$pkName))
@@ -240,66 +327,6 @@ class JongmanModelInstance extends JModelAdmin
 		}
 		$this->setState($this->getName() . '.new', $isNew);
 
-		return true;		
-	}
-	
-	/**
-	 * Returns a reference to the a Table object, always creating it.
-	 *
-	 * @param   type    $type    The table type to instantiate
-	 * @param   string  $prefix  A prefix for the table class name.
-	 * @param   array   $config  Configuration array for model.
-	 *
-	 * @return  JTable  A database object
-	 * @since   1.0
-	 */
-	public function getTable($type = 'Instance', $prefix = 'JongmanTable', $config = array())
-	{
-		return JTable::getInstance($type, $prefix, $config);
-	}
-
-	/**
-	 * 
-	 * Build reservation series from database
-	 */
-	protected function buildSeries($data) 
-	{
-		$existingSeries = new RFReservationExistingseries();
-		$keys = array('reference_number'=>$data['reference_number']);
-		
-		$instance = $this->getTable();
-		$instance->load($keys);
-		
-		$reservation = $this->getTable('Reservation', 'JongmanTable');
-			
-		$reservation->load($instance->reservation_id);
-		
-		$row = JTable::getInstance('Resource', 'JongmanTable');
-		$row->load($reservation->getResourceId());
-
-		$resource = RFResourceBookable::create($row);
-		$factory = new RFReservationRepeatOptionsFactory();
-		$repeatConfig = new JRegistry($reservation->repeat_options);
-		$repeatTerminated = RFDate::fromDatabase($reservation->get('repeat_terminated'));
-		$repeatOptions = $factory->create($reservation->repeat_type, 
-							$repeatConfig->get('repeat_interval'), $repeatTerminated,
-							$repeatConfig->get('repeat_days', array()),  
-							$repeatConfig->get('repeat_monthly_type'));
-		
-		$existingSeries->withRepeatOptions($repeatOptions);
-		$existingSeries->withId($instance->reservation_id);
-		$existingSeries->withTitle($reservation->title);
-		$existingSeries->withDescription($reservation->description);
-		$existingSeries->withOwner($reservation->owner_id);
-		$existingSeries->withStatus($reservation->state);
-		$existingSeries->withPrimaryResource($resource);
-		
-		$startDate = RFDate::fromDatabase($instance->start_date);
-		$endDate = RFDate::fromDatabase($instance->end_date);
-		$duration = new RFDateRange($startDate, $endDate);
-		$currentInstance = new RFReservation($existingSeries, $duration, $instance->reservation_id, $instance->reference_number);
-		$existingSeries->withCurrentInstance($currentInstance);
-		
-		return $existingSeries;
+		return true;
 	}
 }
