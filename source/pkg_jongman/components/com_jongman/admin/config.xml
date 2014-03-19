@@ -56,12 +56,12 @@
 			label="COM_JONGMAN_CONFIG_HEADER_DATEFORMAT_LABEL"
 			description="COM_JONGMAN_CONFIG_HEADER_DATEFORMAT_DESC" />
 		<field
-			name="topNavigation" 
+			name="bottomNavigation" 
 			type="list"
 			class="inputbox"
 			default="0"
-			label="COM_JONGMAN_CONFIG_TOP_NAVIGATION_LABEL"
-			description="COM_JONGMAN_CONFIG_TOP_NAVIGATION_DESC"
+			label="COM_JONGMAN_CONFIG_BOTTOM_NAVIGATION_LABEL"
+			description="COM_JONGMAN_CONFIG_BOTTOM_NAVIGATION_DESC"
 			>
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>	

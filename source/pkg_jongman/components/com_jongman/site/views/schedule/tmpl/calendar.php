@@ -13,7 +13,7 @@ $first_date = date("Y-m-d H:i:s", $this->datevars['firstDayTs']);
 $last_date = date("Y-m-d H:i:s", $this->datevars['lastDayTs']);
 
 $headerDateFormat = JComponentHelper::getParams('com_jongman')->get('headerDateFormat');
-$topNavigation = JComponentHelper::getParams('com_jongman')->get('topNavigation');
+$bottomNavigation = JComponentHelper::getParams('com_jongman')->get('bottomNavigation', false);
 $calLink = JURI::root().'media/com_jongman/jongman/images/calendar.png';
 
 $firstDate = $this->scheduledates->getBegin();
@@ -32,11 +32,10 @@ $lastDate = $this->scheduledates->getEnd();
 </div>
 <?php 
 echo $this->loadTemplate('legend');
-if ($topNavigation) :
-	echo $this->loadTemplate('footer');
-endif;
 echo $this->loadTemplate('main');
-echo $this->loadTemplate('footer');
+if ($bottomNavigation) {
+	echo $this->loadTemplate('footer');
+}
 ?>
 <form name="reservationForm" id="reservation-form" method="POST" action="<?php JFactory::getURI()->toString()?>">
 	<input type="hidden" name="cid[]" value="" />
