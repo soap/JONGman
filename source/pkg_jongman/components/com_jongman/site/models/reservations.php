@@ -43,6 +43,9 @@ class JongmanModelReservations extends JModelList
 			);
 		}
 		
+		if (isset($config['context'])) {
+			$this->context = $config['context'];
+		}
 		parent::__construct($config);
 	}
 
@@ -74,7 +77,7 @@ class JongmanModelReservations extends JModelList
 		$value = $app->getUserStateFromRequest($this->context.'.filter.start_date', 'filter_start_date', '');
 		$this->setState('filter.start_date', $value);
 		
-		$value = $app->getUserStateFromRequest($this->context.'.filter.start_date', 'filter_end_date', '');
+		$value = $app->getUserStateFromRequest($this->context.'.filter.end_date', 'filter_end_date', '');
 		$this->setState('filter.end_date', $value);		
 		
 		$value = $app->getUserStateFromRequest($this->context.'.filter.schedule_id', 'filter_schedule_id', 0, 'int');
@@ -194,11 +197,11 @@ class JongmanModelReservations extends JModelList
 		$endDate = $this->getState('filter.end_date');
 		
 		if (!empty($startDate) && !empty($endDate)) {
-			$start_date = JDate::getInstance($startDate, $userTz)->toSql();
-			$end_date = JDate::getInstance($endDate, $userTz)->toSql();
+			$start_date = $db->quote(JDate::getInstance($startDate, $userTz)->toSql());
+			$end_date = $db->quote(JDate::getInstance($endDate, $userTz)->toSql());
 			
 			$query->where(
-				'(a.start_date >='.start_date.' AND a.start_date <='.$end_date.') OR ' .
+				'(a.start_date >='.$start_date.' AND a.start_date <='.$end_date.') OR ' .
 				'(a.end_date >= '.$start_date.' AND a.end_date <='.$end_date.') OR ' .
 				'(a.start_date <= '.$start_date.' AND a.end_date >='.$end_date.')'
 				);	
@@ -208,6 +211,7 @@ class JongmanModelReservations extends JModelList
 		$orderDirn	= $this->state->get('list.direction');
 
 		$query->order($db->getEscaped($orderCol.' '.$orderDirn));
+
 		return $query;
 	}
 	
