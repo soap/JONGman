@@ -35,6 +35,7 @@ class JongmanTableReservation extends JTable
 	private $_resources = array();
 	
 	private $_resource_id = null;
+	private $_resource_ids = array();
 	/**
 	 * Constructor.
 	 *
@@ -88,13 +89,11 @@ class JongmanTableReservation extends JTable
 			}
 		} 
 		
-		if (isset($array['instances'])) {
-			$this->_instances = $array['instances'];
+		if (isset($array['series'])) {
+			$this->_instances = $array['series']->getInstances();
+			$this->_resource_ids = $array['series']->allResourceIds();
 		}
 		
-		if (isset($array['resource_id'])) {
-			$this->_resource_id = (int)$array['resource_id'];
-		}
 
 		return true;
 	}
@@ -134,21 +133,14 @@ class JongmanTableReservation extends JTable
 			}
 				
 		}
-		if (!empty($this->_resource_id)) {
-			$query = $this->_db->getQuery(true);
-			$query->select('COUNT(*)')
-			->from('#__jongman_reservation_resources')
-			->where('resource_id ='.(int)$this->_resource_id)
-			->where('reservation_id ='.(int)$this->id);
-
-			$this->_db->setQuery($query);
-			if ($this->_db->loadResult() == 0) {
+		if (!empty($this->_resource_ids)) {
+			foreach($this->_resource_ids as $x => $rid) {
 				$obj = new StdClass();
 				$obj->reservation_id = $this->id;
-					$obj->resource_id = $this->_resource_id;
-					$obj->resource_level = 0;
-					$this->_db->insertObject('#__jongman_reservation_resources', $obj);		
-				} 
+				$obj->resource_id = $rid;
+				$obj->resource_level = ($x == 0 ? 0 : 1);
+				$this->_db->insertObject('#__jongman_reservation_resources', $obj);
+			}		
 		}else{
 			JFactory::getApplication()->enqueueMessage('Resource ID empty', 'warning');	
 		}	
@@ -212,8 +204,8 @@ class JongmanTableReservation extends JTable
 			->where('reservation_id='.(int)$this->id);
 		$this->_db->setQuery($query);
 		
-		$this->_resources = $this->_db->loadColumn();
-		$this->_resource_id = $this->_resources[0];	
+		$this->_resource_ids = $this->_db->loadColumn();
+		$this->_resource_id = $this->_resource_ids[0];	
 	}
 	
 }
