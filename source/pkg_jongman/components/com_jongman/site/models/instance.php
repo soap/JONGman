@@ -174,6 +174,12 @@ class JongmanModelInstance extends JModelAdmin
 		{
 			$currentId = $this->series->seriesId();
 			//insert new reservation
+			$data = array();
+			if (!$this->insertSeries($data)) {
+				
+			}
+			$table = $this->getTable();
+			$newId = $this->getState($this->getName() . '.id');
 
 				
 		}else{
@@ -262,7 +268,8 @@ class JongmanModelInstance extends JModelAdmin
 		$dispatcher = JDispatcher::getInstance();
 		$table = $this->getTable();
 		$key = $table->getKeyName();
-			
+		
+		$isNew = true;		
 		// Include the content plugins for the on save events.
 		JPluginHelper::importPlugin('content');
 		try

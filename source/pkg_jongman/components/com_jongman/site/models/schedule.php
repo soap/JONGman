@@ -219,11 +219,11 @@ class JongmanModelSchedule extends JModelItem {
 	{
 		jimport('jongman.date.date');
 		jimport('jongman.date.daterange');
-		
+
 		if (!empty($this->_dates)) return $this->_dates;
 		
 		$schedule = $this->getItem();
-		
+
 		$user = JFactory::getUser();
 		$userTimezone = $user->getParam('timezone', null);
 		$tz = empty($userTimezone) ? JFactory::getConfig()->get('offset') : $userTimezone;
@@ -328,7 +328,7 @@ class JongmanModelSchedule extends JModelItem {
 		$config = array('context'=>$context);
 		$rModel = JModel::getInstance('Reservations', 'JongmanModel', $config);
 		$resItems = $rModel->getItems();
-		
+
 		if (empty($tz)) {
 			$tz = JongmanHelper::getUserTimezone();
 		}
@@ -538,7 +538,7 @@ class JongmanModelSchedule extends JModelItem {
 			$prevAdjustment = 7 * floor($adjustment / 7); // ie, if 10, we only want to go back 7 days so there is overlap
 		}
 
-		$navigator = new RFNavigator($startDate->AddDays(-$prevAdjustment), $startDate->AddDays($adjustment), $schedule->view_days);
+		$navigator = new RFNavigator($startDate->addDays(-$prevAdjustment), $startDate->addDays($adjustment), $schedule->view_days);
 		
 		return $navigator;
 			

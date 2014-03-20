@@ -26,6 +26,8 @@ class JongmanModelReservation extends JModelAdmin
 	protected $_resources = null;
 
 	protected $_schedules = null;
+	
+	protected $_series = null; 
 		
 	/**
      * Method to auto-populate the model state.
@@ -315,8 +317,9 @@ class JongmanModelReservation extends JModelAdmin
 		//start reservation validation here
 		
 		//if success then add instances
-		$validData['instances'] = $reservationSeries->getInstances();
-
+		$this->_series = $reservationSeries;
+		$validData['series'] = $reservationSeries;
+		
 		$validData['repeat_options'] = $repeatOption->configurationString();
 		// now we do our validation process
 		return $validData;
