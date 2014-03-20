@@ -66,6 +66,12 @@ class RFReservationSeries extends JObject
 		$this->repeats($data['repeatOptions']);
 	}
 	
+	/**
+	 * 
+	 * Get current reservation instance
+	 * @throws Exception if cannot get current instance
+	 * @return RFReservation
+	 */
 	public function currentInstance()
 	{
 		$instance = $this->getInstance($this->getCurrentKey());

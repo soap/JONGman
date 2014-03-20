@@ -1,12 +1,29 @@
 <?php
 defined('_JEXEC') or die;
 
+/**
+ * 
+ * Reservation instance
+ * @author Prasit Gebsaap
+ *
+ */
 class RFReservation
 {
 	/**
 	 * @var string
 	 */
 	protected $referenceNumber;
+	
+	/**
+	 * @var RFDate
+	 */
+	protected $startDate;
+
+	/**
+	 * @var RFDate
+	 */
+	protected $endDate;
+	
 
 	/**
 	 * @return string
@@ -17,12 +34,7 @@ class RFReservation
 	}
 
 	/**
-	 * @var Date
-	 */
-	protected $startDate;
-
-	/**
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function startDate()
 	{
@@ -30,12 +42,7 @@ class RFReservation
 	}
 
 	/**
-	 * @var Date
-	 */
-	protected $endDate;
-
-	/**
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function endDate()
 	{
@@ -43,7 +50,7 @@ class RFReservation
 	}
 
 	/**
-	 * @return DateRange
+	 * @return RFDateRange
 	 */
 	public function duration()
 	{
