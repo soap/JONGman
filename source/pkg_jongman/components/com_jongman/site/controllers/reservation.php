@@ -188,25 +188,6 @@ class JongmanControllerReservation extends JControllerForm
 
 			return false;
 		}
-		/*
-		switch ($this->getTask()) {
-			case 'updateinstance':
-				$updatescope = 'this';
-				break;
-			case 'updatefull':
-				$updatescope = 'full';
-				break;
-			case 'updatefuture':
-				$updatescope = 'future';
-				break;
-			default:
-				$updatescope = 'none';
-				break;
-		}
-		
-		// pass for validate usage 
-		$data['updatescope'] = $updatescope;
-		*/
 		// Test whether the data is valid.
 		$validData = $model->validate($form, $data);
 
@@ -243,8 +224,6 @@ class JongmanControllerReservation extends JControllerForm
 			return false;
 		}
 
-		//if ($updatescope === 'none'){
-			// Attempt to save the data.
 			if (!$model->save($validData))
 			{
 				// Save the data in the session.
@@ -263,47 +242,6 @@ class JongmanControllerReservation extends JControllerForm
 
 				return false;
 			}
-		//}
-		/*else{
-			if (!$model->update($validData, $updatescope))
-			{
-				// Save the data in the session.
-				$app->setUserState($context . '.data', $validData);
-
-				// Redirect back to the edit screen.
-				$this->setError(JText::sprintf('COM_JONGMAN_RESERVATION_ERROR_UPDATE_FAILED', $model->getError()));
-				$this->setMessage($this->getError(), 'error');
-
-				$this->setRedirect(
-					JRoute::_(
-						'index.php?option=' . $this->option . '&view=' . $this->view_item
-					. $this->getRedirectToItemAppend($recordId, $urlVar), false
-					)
-				);
-				return false;
-			}
-		}
-		*/
-			
-		// Save succeeded, so check-in the record.
-		if ($checkin && $model->checkin($validData[$key]) === false)
-		{
-			// Save the data in the session.
-			$app->setUserState($context . '.data', $validData);
-
-			// Check-in failed, so go back to the record and display a notice.
-			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError()));
-			$this->setMessage($this->getError(), 'error');
-
-			$this->setRedirect(
-				JRoute::_(
-					'index.php?option=' . $this->option . '&view=' . $this->view_item
-					. $this->getRedirectToItemAppend($recordId, $urlVar), false
-				)
-			);
-
-			return false;
-		}
 
 		$this->setMessage(
 			JText::_(
@@ -318,7 +256,12 @@ class JongmanControllerReservation extends JControllerForm
 		$app->setUserState($context . '.data', null);
 
 		// Redirect to the list screen.
-		$this->setRedirect($this->getReturnPage());
+		$this->setRedirect(
+			JRoute::_(
+				'index.php?option=' . $this->option . '&view=' . $this->view_list
+				. $this->getRedirectToListAppend(), false
+			)
+		);
 
 		// Invoke the postSave method to allow for the child class to access the model.
 		$this->postSaveHook($model, $validData);

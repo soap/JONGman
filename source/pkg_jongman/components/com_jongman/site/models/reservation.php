@@ -28,6 +28,7 @@ class JongmanModelReservation extends JModelAdmin
 	protected $_schedules = null;
 	
 	protected $_series = null; 
+	
 		
 	/**
      * Method to auto-populate the model state.
@@ -39,10 +40,7 @@ class JongmanModelReservation extends JModelAdmin
     {
         // Load state from the request.
         $pk = JRequest::getInt('id');
-        $this->setState($this->getName() . '.id', $pk);
-
-        $return = JRequest::getVar('return', null, 'default', 'base64');
-        $this->setState('return_page', base64_decode($return));
+        $this->setState($this->option .'.' .$this->getName() . '.id', $pk);
     }
 	/**
 	 * Method to get the Reservation form.
@@ -83,8 +81,7 @@ class JongmanModelReservation extends JModelAdmin
 		
 		$app = JFactory::getApplication();
 		$user = JFactory::getUser();
-		$config = JFactory::getConfig();
-		$tz = $user->getParam('timezone', $config->get('offset'));
+		$tz = JongmanHelper::getUserTimezone();
 		
 		if (empty($pk)){
 			$result = parent::getItem($pk);
@@ -108,15 +105,6 @@ class JongmanModelReservation extends JModelAdmin
 			$result->owner_id = $user->id;
 			$result->created_by = $user->id;	
 		}
-		/*
-		$start_date = new RFDate($result->start_date, $tz);
-		$end_date = new RFDate($result->end_date, $tz);
-		
-		$result->start_date = $start_date->format('Y-m-d');
-		$result->start_time = $start_date->format('H:i:s');
-		$result->end_date = $end_date->format('Y-m-d');
-		$result->end_time = $end_date->format('H:i:s');
-		*/
 		return $result;
 	}
 
@@ -251,9 +239,9 @@ class JongmanModelReservation extends JModelAdmin
 
 		if (isset($table->$pkName))
 		{
-			$this->setState($this->getName() . '.id', $table->$pkName);
+			$this->setState($this->option . '.' .$this->getName() . '.id', $table->$pkName);
 		}
-		$this->setState($this->getName() . '.new', $isNew);
+		$this->setState($this->option . '.' . $this->getName() . '.new', $isNew);
 
 		return true;
 	}	
@@ -323,6 +311,35 @@ class JongmanModelReservation extends JModelAdmin
 		$validData['repeat_options'] = $repeatOption->configurationString();
 		// now we do our validation process
 		return $validData;
+	}
+	
+	public function populateResources($pk = null)
+	{
+		if (empty($pk)) {
+			$pk = (int) $this->getState($this->option . '.' .$this->getName() . '.id');
+		}
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('*')
+			->from('#__jongman_reservation_resources')
+			->where('reservation_id = '.$pk);
+		$db->setQuery($query);
+		return $db->loadObjectList();	
+	}
+	
+	public function populateInstances($pk = null)
+	{
+		if (empty($pk)) {
+			$pk = (int) $this->getState($this->option . '.' .$this->getName() . '.id');
+		}
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);	
+		$query->select('*')
+				->from('#__jongman_reservation_instances')
+				->where('reservation_id = '.$pk);
+				
+		$db->setQuery($query);
+		return $db->loadObjectList();	
 	}
 	
 }
