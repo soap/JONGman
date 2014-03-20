@@ -47,6 +47,10 @@ class SlotLabelFactory
 		{
 			return $name;
 		}
+		
+		if ($property == 'userANDtitle') {
+			$property = '{name}@{title}';			
+		}
 
 		$label = $property;
 		$label = str_replace('{name}', $name, $label);
