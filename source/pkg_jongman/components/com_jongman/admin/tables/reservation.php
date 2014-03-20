@@ -153,7 +153,7 @@ class JongmanTableReservation extends JTable
 		if ($result == false) return false;
 		
 		$this->loadReservationInstances();
-		$this->loadReservationResources();
+		//$this->loadReservationResources();
 		return $result;
 	}
 	
@@ -198,13 +198,18 @@ class JongmanTableReservation extends JTable
 	
 	private function loadReservationResources()
 	{
+		if (empty($this->_tbl_key)) {
+			JFactory::getApplication()->enqueueMessage('Reservation primary key is empty, cannot load resource', 'warning');
+			return;
+		}
 		$query = $this->_db->getQuery(true);
 		$query->select('resource_id')
 			->from('#__jongman_reservation_resources')
-			->where('reservation_id='.(int)$this->id);
+			->where('reservation_id='.(int)$this->$this->_tbl_key);
 		$this->_db->setQuery($query);
 		
 		$this->_resource_ids = $this->_db->loadColumn();
+
 		$this->_resource_id = $this->_resource_ids[0];	
 	}
 	
