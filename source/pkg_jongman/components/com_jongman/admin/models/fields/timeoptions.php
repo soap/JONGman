@@ -10,9 +10,9 @@ defined('_JEXEC') or die;
 
 jimport('joomla.form.helper');
 
-class JFormFieldJongmanSelectTime extends JFormField {
+class JFormFieldTimeoptions extends JFormField {
 
-    protected $type = 'JongmanSelectTime';
+    protected $type = 'Timeoptions';
     
     private $scheduleId;
     private $resourceId;
@@ -74,10 +74,9 @@ class JFormFieldJongmanSelectTime extends JFormField {
         $model = JModelLegacy::getInstance('Schedule', 'JongmanModel');
         $layout = $model->getScheduleLayout($scheduleId, $userTz);
 		$periods = $layout->getLayout(new RFDate());
-  
 		foreach($periods as $period) {
 			if ($period->isReservable()) {
-        		$options[] = JHtml::_('select.option', $period->end(), $period->labelEnd());
+        		$options[] = JHtml::_('select.option', $period->begin(), $period->label());
 			}
 		}
 

@@ -87,12 +87,12 @@
 			label="COM_JONGMAN_FIELD_RESERVATION_END_DATE_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_END_DATE_DESC" />
 			
-		<field name="start_time" type="jongmanselecttime"
+		<field name="start_time" type="timeoptions"
 			class="span3"
 			label="COM_JONGMAN_FIELD_RESERVATION_START_TIME_LABEL" 
 			description="COM_JONGMAN_FIELD_RESERVATION_START_TIME_DESC" />
 			
-		<field name="end_time" type="jongmanselecttime"
+		<field name="end_time" type="timeoptions"
 			class="validate-endtimeverify span3"
 			label="COM_JONGMAN_FIELD_RESERVATION_END_TIME_LABEL" 
 			description="COM_JONGMAN_FIELD_RESERVATION_END_TIME_DESC" />
