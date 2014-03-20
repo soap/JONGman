@@ -6,20 +6,25 @@ defined('_JEXEC') or die;
  * @author Prasit Gebsaap
  *
  */
-class RFReservationSeries 
+class RFReservationSeries extends JObject
 {
 	protected $seriesId; //reservation series id
 	protected $title;
 	protected $description; 
 	protected $userId;
+	
 	/**
 	 * @var RFResourceBookable
 	 */
 	protected $resource;
+	
+	/**
+	 * @var JUser
+	 */
 	protected $bookedBy;
 	protected $instances = array();
 	
-	private $_repeatOptions;
+	protected $_repeatOptions;
 	private $_currentInstanceKey;
 	private $_additionalResources = array();
 	
@@ -107,6 +112,14 @@ class RFReservationSeries
 	}
 	
 	/**
+	 * @return IRepeatOptions
+	 */
+	public function getRepeatOptions()
+	{
+		return $this->_repeatOptions;
+	}
+	
+	/**
 	 * @param DateRange $reservationDate
 	 * @return bool
 	 */
@@ -176,6 +189,36 @@ class RFReservationSeries
 		$this->_additionalResources[] = $resource;
 	}
 	
+	public function getResource()
+	{
+		return $this->resource;
+	}
+	
+	public function resourceId()
+	{
+		return $this->resource->getResourceId();
+	}
+	/**
+	 * @return int[]
+	 */
+	public function allResourceIds()
+	{
+		$ids = array($this->resourceId());
+		foreach ($this->_additionalResources as $resource)
+		{
+			$ids[] = $resource->getResourceId();
+		}
+		return $ids;
+	}
+
+	/**
+	 * @return array|BookableResource[]
+	 */
+	public function allResources()
+	{
+		return array_merge(array($this->resource()), $this->_additionalResources());
+	}
+		
 	public function userId()
 	{
 		return $this->userId;
