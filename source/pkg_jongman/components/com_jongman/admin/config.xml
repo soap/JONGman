@@ -76,7 +76,7 @@
 			>
 			<option value="user">User Name</option>
 			<option value="title">Reservation Title</option>	
-			<option value="userANDTitle">User Name@Reseravtion Title</option>
+			<option value="userANDtitle">User Name@Reseravtion Title</option>
 			<option value="titleORuser">Title or User Name</option>
 			<option value="none">Disabled</option>	
 		</field>
