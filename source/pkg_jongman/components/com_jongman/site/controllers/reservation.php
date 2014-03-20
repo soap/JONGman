@@ -224,31 +224,29 @@ class JongmanControllerReservation extends JControllerForm
 			return false;
 		}
 
-			if (!$model->save($validData))
-			{
-				// Save the data in the session.
-				$app->setUserState($context . '.data', $validData);
+		if (!$model->save($validData))
+		{
+			// Save the data in the session.
+			$app->setUserState($context . '.data', $validData);
 
-				// Redirect back to the edit screen.
-				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_SAVE_FAILED', $model->getError()));
-				$this->setMessage($this->getError(), 'error');
+			// Redirect back to the edit screen.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_SAVE_FAILED', $model->getError()));
+			$this->setMessage($this->getError(), 'error');
 
-				$this->setRedirect(
-					JRoute::_(
-						'index.php?option=' . $this->option . '&view=' . $this->view_item
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . '&view=' . $this->view_item
 					. $this->getRedirectToItemAppend($recordId, $urlVar), false
-					)
-				);
+				)
+			);
 
-				return false;
-			}
-
+			return false;
+		}
+		
+		$referenceNumber = $validData['series']->currentInstance()->referenceNumber();
+		// Report success with reference number
 		$this->setMessage(
-			JText::_(
-				($lang->hasKey($this->text_prefix . ($recordId == 0 && $app->isSite() ? '_SUBMIT' : '') . '_SAVE_SUCCESS')
-					? $this->text_prefix
-					: 'JLIB_APPLICATION') . ($recordId == 0 && $app->isSite() ? '_SUBMIT' : '') . '_SAVE_SUCCESS'
-			)
+			JText::sprintf('COM_JONGMAN_RESERVATION_SUCCESSFULLY_MADE', $referenceNumber)
 		);
 
 		// Clear the record id and data from the session.
