@@ -54,8 +54,8 @@ class RFNavigator extends JObject
 	public function getListFooter()
 	{
 		$list = array();
-		$list['prevWeekLink']	= $this->getPreviousWeekLink();
-		$list['thisWeekLink'] 	= $this->getThisWeekLink();
+		$list['prevWeekLink'] = $this->getPreviousWeekLink();
+		$list['thisWeekLink'] = $this->getThisWeekLink();
 		$list['nextWeekLink'] = $this->getNextWeekLink();
 		
 		$app = JFactory::getApplication();	
