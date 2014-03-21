@@ -16,11 +16,17 @@ class JFormFieldTimeoptions extends JFormField {
     
     private $scheduleId;
     private $resourceId;
-
+	private $periodType;
+	
     public function getInput() 
     {	
     	$this->scheduleId = (int) $this->form->getValue('schedule_id');
     	$this->resourceId = (int) $this->form->getValue('resource_id');
+    	$this->periodType = $this->element['periodtype'] ? $this->element['periodtype'] : '';
+    	if ($this->periodType === '') {
+    		
+    		return false;
+    	} 
         // Initialize variables.
 		$html = array();
 		$attr = '';
@@ -75,8 +81,17 @@ class JFormFieldTimeoptions extends JFormField {
         $layout = $model->getScheduleLayout($scheduleId, $userTz);
 		$periods = $layout->getLayout(new RFDate());
 		foreach($periods as $period) {
-			if ($period->isReservable()) {
-        		$options[] = JHtml::_('select.option', $period->begin(), $period->label());
+			if ($this->periodType == 'begin') {
+				if ($period->isReservable()) {
+        			$options[] = JHtml::_('select.option', $period->begin(), $period->label());
+				}
+			}else if ($this->periodType == 'end'){
+				/*if ($period->beginDate()->isMidnight()) {
+					$options[] = JHtml::_('select.option', $period->begin(), $period->label());
+				}*/	
+				if ($period->isReservable()) {
+					$options[] = JHtml::_('select.option', $period->end(), $period->labelEnd());
+				}
 			}
 		}
 
