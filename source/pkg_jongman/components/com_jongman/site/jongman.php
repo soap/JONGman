@@ -1,7 +1,6 @@
 <?php
 defined('_JEXEC') or die;
 
-require_once(JPATH_COMPONENT.'/libraries/jongman.defines.php');
 // JONgman class bootstrap 
 jimport('jongman.framework');
 JLoader::register('JFormFieldUser', JPATH_COMPONENT.'/models/fields/user.php');
