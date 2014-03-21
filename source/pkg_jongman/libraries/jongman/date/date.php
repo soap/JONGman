@@ -173,7 +173,6 @@ class RFDate
 
 	/**
 	 * Formats the Date into a format that is accepted by the database
-	 *
 	 * @return string
 	 */
 	public function toDatabase()

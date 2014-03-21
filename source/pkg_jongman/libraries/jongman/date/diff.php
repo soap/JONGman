@@ -53,7 +53,7 @@ class RFDateDiff
 	{
 		if ($date1->equals($date2))
 		{
-			return DateDiff::null();
+			return RFDateDiff::null();
 		}
 
 		$compareDate = $date2;
@@ -135,7 +135,7 @@ class RFDateDiff
 	 */
 	public static function null()
 	{
-		return new DateDiff(0);
+		return new RFDateDiff(0);
 	}
 
 	/**
@@ -150,16 +150,16 @@ class RFDateDiff
 	 * @param DateDiff $diff
 	 * @return DateDiff
 	 */
-	public function add(Datediff $diff)
+	public function add(RFDatediff $diff)
 	{
-		return new DateDiff($this->seconds + $diff->seconds);
+		return new RFDateDiff($this->seconds + $diff->seconds);
 	}
 
 	/**
 	 * @param DateDiff $diff
 	 * @return bool
 	 */
-	public function greaterThan(DateDiff $diff)
+	public function greaterThan(RFDateDiff $diff)
 	{
 		return $this->seconds > $diff->seconds;
 	}
@@ -171,17 +171,17 @@ class RFDateDiff
 	{
 		$str = '';
 
-		if ($this->Days() > 0)
+		if ($this->days() > 0)
 		{
-			$str .= $this->Days() . ' days ';
+			$str .= $this->days() . ' days ';
 		}
-		if ($this->Hours() > 0)
+		if ($this->hours() > 0)
 		{
-			$str .= $this->Hours() . ' hours ';
+			$str .= $this->hours() . ' hours ';
 		}
-		if ($this->Minutes() > 0)
+		if ($this->minutes() > 0)
 		{
-			$str .= $this->Minutes() . ' minutes';
+			$str .= $this->minutes() . ' minutes';
 		}
 
 		return $str;
