@@ -13,7 +13,7 @@ class RFReservationSeriesUpdatescopeInstance extends RFReservationSeriesUpdatesc
 		return RFReservationSeriesUpdatescope::THISINSTANCE;
 	}
 
-	public function instances($series)
+	public function getInstances($series)
 	{
 		return array($series->currentInstance());
 	}

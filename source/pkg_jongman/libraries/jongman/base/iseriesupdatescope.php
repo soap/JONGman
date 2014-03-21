@@ -7,7 +7,7 @@ interface ISeriesUpdateScope
 	 * @param ExistingReservationSeries $series
 	 * @return Reservation[]
 	 */
-	function instances($series);
+	function getInstances($series);
 
 	/**
 	 * @return bool

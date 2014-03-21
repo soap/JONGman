@@ -18,7 +18,7 @@ class RFReservationSeriesUpdatescopeFuture extends RFReservationSeriesUpdatescop
 		return RFReservationSeriesUpdatescope::FUTUREINSTANCES;
 	}
 
-	public function instances($series)
+	public function getInstances($series)
 	{
 		return $this->allInstancesGreaterThan($series, $this->earliestDateToKeep($series));
 	}

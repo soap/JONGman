@@ -19,7 +19,7 @@ class RFReservationSeriesUpdatescopeFull extends RFReservationSeriesUpdatescopeB
 	 * @param ExistingReservationSeries $series
 	 * @return array
 	 */
-	public function instances($series)
+	public function getInstances($series)
 	{
 		$bookedBy = $series->bookedBy();
 		if (!is_null($bookedBy) && $bookedBy->isAdmin)
