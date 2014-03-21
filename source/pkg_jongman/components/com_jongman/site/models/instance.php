@@ -173,42 +173,46 @@ class JongmanModelInstance extends JModelAdmin
 	 */
 	public function update($data)
 	{
-		
 		if ($this->series->requiresNewSeries())
 		{
 			$currentId = $this->series->seriesId();
 			//insert new reservation
 			$data = array();
-			if (!$this->insertSeries($data, $this->series)) {
+			$newId = $this->insertSeries($data);
+			
+			if ($newId === false) {
 				$this->setError('COM_JONGMAN_ERROR_UPDATE_RESERVATION');
 				return false;		
 			}
-		}else{
-			$instances = $this->series->getInstances();
-			$reservationId = $this->series->seriesId();
 			
-			$dispatcher = JDispatcher::getInstance();
-			$table = $this->getTables();
-			foreach($instances as $instance) {
-				if ($instance->isNew()) {
-					$instance->setReservationId($reservationId);	
-				}
-				$table->load(array('reference_number'=>$instance->referenceNumber() ));
-				$data = array('reference_number'=>$instance->referenceNumber(),
-						'reservation_id' => $instance->reservationId(),
-						'start_date' => $instance->startDate()->toDatabase(),
-						'end_date'=>$instance->endDate()->toDatabase()
+			$resourceIds = $this->series->allResourceIds();
+			$dbo = $this->getDbo();
+			foreach($resourceIds as $i => $resourceId) {
+				$resource_level = ($i == 0 ? 0 : 1);
+				$obj = new StdClass();
+				$obj->reservation_id = (int) $newId;
+				$obj->resource_id = $resourceId;
+				$obj->resource_level = $resource_level;
+				$dbo->insertObject('#__jongman_reservation_resources', $obj, 'id');
+			}
+			
+			$this->series->setSeriesId($newId);
+			$table = $this->getTable();
+			foreach ($this->series->getInstances() as $instance ) {
+				//update instance
+				$table->load(array('reference_number'=>$instance->referenceNumber()));
+				$table->bind(array('reservation_id' => $newId,
+						'reference_number' => $instance->referenceNumber(),
+						'start_date'=> $instance->startDate()->toDatabase(),
+						'end_date'=> $instance->endDate()->toDatabase()) 
 					);
-					
-				$table->bind($data);
-				if (!$table->check()) {
-					return false;
-				}
-
-				if (!$table->store()) {
-					return false;
-				}
-			}			
+				$table->check();
+				$table->store();
+			}
+		}else{
+			// update new reservation series, no instances update
+			
+				
 		}
 	
 		$this->executeEvents($this->series);
@@ -248,8 +252,9 @@ class JongmanModelInstance extends JModelAdmin
 			
 		$reservation->load($instance->reservation_id);
 		
+		$resources = $this->populateResources($instance->reservation_id);
 		$row = JTable::getInstance('Resource', 'JongmanTable');
-		$row->load($reservation->getResourceId());
+		$row->load($resources[0]->resource_id);
 
 		$resource = RFResourceBookable::create($row);
 		$factory = new RFReservationRepeatOptionsFactory();
@@ -279,26 +284,25 @@ class JongmanModelInstance extends JModelAdmin
 		return $this->series;
 	}
 	
-	protected function executeEvents($existsingSeries = null)
+	protected function executeEvents($existingSeries = null)
 	{
 		if ($existsingSeries == null) {
 			$existingSeries = $this->series;
 		}
+		
+		$events = $existingSeries->getEvents();
 
 		
 	}
 
-	protected function insertSeries($data, $series)
+	protected function insertSeries($data)
 	{
 		// Initialise variables;
 		$dispatcher = JDispatcher::getInstance();
 		$table = $this->getTable('Reservation', 'JongmanTable');
 		$key = $table->getKeyName();
-		$pk = $series->seriesId();
+		$pk = null;
 
-		if (!isset($data['instances'])) {
-			$data['instances'] = $series->getInstances();	
-		}
 		$isNew = true;		
 		// Include the content plugins for the on save events.
 		JPluginHelper::importPlugin('content');
@@ -364,9 +368,11 @@ class JongmanModelInstance extends JModelAdmin
 			$this->setState($this->getName() . '.id', $table->$pkName);
 		}
 		$this->setState($this->getName() . '.new', $isNew);
-		$series->setSeriesId($table->$pkName);
-
-		return true;
+		
+		// insert reservation resources
+		
+		
+		return $table->$pkName;
 	}
 	
 	public function populateResources($reservationId)
