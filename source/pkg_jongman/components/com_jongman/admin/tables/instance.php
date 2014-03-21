@@ -58,4 +58,9 @@ class JongmanTableInstance extends JTable
 		}	
 		return true;
 	}
+	
+	public function setDuration(RFDateRange $daterange)
+	{
+			
+	}
 }

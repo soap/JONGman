@@ -161,92 +161,7 @@ class JongmanModelReservation extends JModelAdmin
 	{	
 		return true;
 	}
-	
-	
-	/**
-	 * Method to save the new reservation data.
-	 * @param   array  $data  The form data.
-	 * @return  boolean  True on success, False on error.
-	 */
-	public function save($data)
-	{
-		// Initialise variables;
-		$dispatcher = JDispatcher::getInstance();
-		$table = $this->getTable();
-		$key = $table->getKeyName();
-		$pk = (!empty($data[$key])) ? $data[$key] : (int) $this->getState($this->getName() . '.id');
-		$isNew = true;
-
-		// Include the content plugins for the on save events.
-		JPluginHelper::importPlugin('content');
-
-		// Allow an exception to be thrown.
-		try
-		{
-			// Load the row if saving an existing record.
-			if ($pk > 0)
-			{
-				$table->load($pk);
-				$isNew = false;
-			}
-
-			// Bind the data.
-			if (!$table->bind($data))
-			{
-				$this->setError($table->getError());
-				return false;
-			}
-
-			// Prepare the row for saving
-			$this->prepareTable($table);
-
-			// Check the data.
-			if (!$table->check())
-			{
-				$this->setError($table->getError());
-				return false;
-			}
-
-			// Trigger the onContentBeforeSave event.
-			$result = $dispatcher->trigger($this->event_before_save, array($this->option . '.' . $this->name, &$table, $isNew));
-			if (in_array(false, $result, true))
-			{
-				$this->setError($table->getError());
-				return false;
-			}
-
-			// Store the data.
-			if (!$table->store())
-			{
-				$this->setError($table->getError());
-				return false;
-			}
-
-			// Clean the cache.
-			$this->cleanCache();
-
-			// Trigger the onContentAfterSave event.
-			$dispatcher->trigger($this->event_after_save, array($this->option . '.' . $this->name, &$table, $isNew));
-		}
-		catch (Exception $e)
-		{
-			$this->setError($e->getMessage());
-
-			return false;
-		}
-
-		$pkName = $table->getKeyName();
-
-		if (isset($table->$pkName))
-		{
-			$this->setState($this->option . '.' .$this->getName() . '.id', $table->$pkName);
-		}
-		$this->setState($this->option . '.' . $this->getName() . '.new', $isNew);
-
-		return true;
-	}	
-
-	
+		
 	/**
 	 * override to add resource reservation validation 
 	 * @see JModelForm::validate()
@@ -311,6 +226,128 @@ class JongmanModelReservation extends JModelAdmin
 		$validData['repeat_options'] = $repeatOption->configurationString();
 		// now we do our validation process
 		return $validData;
+	}
+	
+	/**
+	 * Method to save the new reservation data.
+	 * @param   array  $data  The form data.
+	 * @return  boolean  True on success, False on error.
+	 */
+	public function save($data)
+	{
+		$result = $this->insertSeries($data);
+		if ($result == false) {
+			return false;
+		}
+		
+		$resTable = JTable::getInstance('Instance', 'JongmanTable');
+		foreach ($instances = $this->_series->getInstances() as $instance) {
+			$instance->setReservationId( $result );
+			$src = array('reference_number' => $instance->referenceNumber(),
+					'start_date' => $instance->startDate()->toDatabase(),
+					'end_date'=> $instance->endDate()->toDatabase(),
+					'reservation_id' => (int) $result
+				);
+			$resTable->bind($src);
+			if ($resTable->check() === false) {
+				return false;
+			}
+			if (!$resTable->store()) {
+				return false;
+			}
+	
+		}
+		
+		$resourceIds = $this->_series->allResourceIds();
+		$dbo = $this->getDbo();
+		foreach($resourceIds as $i => $resourceId) {
+			$resource_level = ($i == 0 ? 0 : 1);
+			$obj = new StdClass();
+			$obj->reservation_id = (int) $result;
+			$obj->resource_id = $resourceId;
+			$obj->resource_level = $resource_level;
+			$dbo->insertObject('#__jongman_reservation_resources', $obj, 'id'); 
+		}
+		
+		return true;
+	}
+	
+	protected function insertSeries($data)
+	{
+		// Initialise variables;
+		$dispatcher = JDispatcher::getInstance();
+		$table = $this->getTable();
+		$key = $table->getKeyName();
+		$pk = (!empty($data[$key])) ? $data[$key] : (int) $this->getState($this->getName() . '.id');
+		$isNew = true;
+		
+		// Include the content plugins for the on save events.
+		JPluginHelper::importPlugin('content');
+		
+		// Allow an exception to be thrown.
+		try
+		{
+			// Load the row if saving an existing record.
+			if ($pk > 0)
+			{
+				$table->load($pk);
+				$isNew = false;
+			}
+		
+			// Bind the data.
+			if (!$table->bind($data))
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+		
+			// Prepare the row for saving
+			$this->prepareTable($table);
+		
+			// Check the data.
+			if (!$table->check())
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+		
+			// Trigger the onContentBeforeSave event.
+			$result = $dispatcher->trigger($this->event_before_save, array($this->option . '.' . $this->name, &$table, $isNew));
+			if (in_array(false, $result, true))
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+		
+			// Store the data.
+			if (!$table->store())
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+		
+			// Clean the cache.
+			$this->cleanCache();
+		
+			// Trigger the onContentAfterSave event.
+			$dispatcher->trigger($this->event_after_save, array($this->option . '.' . $this->name, &$table, $isNew));
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e->getMessage());
+		
+			return false;
+		}
+		
+		$pkName = $table->getKeyName();
+		
+		if (isset($table->$pkName))
+		{
+			$this->setState($this->option . '.' .$this->getName() . '.id', $table->$pkName);
+		}
+		$this->setState($this->option . '.' . $this->getName() . '.new', $isNew);
+
+		return $table->$pkName;
 	}
 	
 	public function populateResources($pk = null)

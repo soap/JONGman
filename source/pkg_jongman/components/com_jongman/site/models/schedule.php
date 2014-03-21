@@ -16,28 +16,7 @@ class JongmanModelSchedule extends JModelItem {
     {
         parent::__construct($config);
         
-        if (array_key_exists('type', $config)) 
-        {
-            $this->setState('scheduleType', $config['type']);
-        }else{
-        	// user is not login
-        	if (JFactory::getUser()->get('id')) 
-        	{
-        		$this->setState('scheduleType', ALL);
-        	}else{
-        		$this->setState('scheduleType', READ_ONLY);
-        	}
-        }
-             
-        if (array_key_exists('id', $config)) 
-        {
-            $this->_scheduleId = $config['id'];
-        }else{
-        	$this->_scheduleId = JRequest::getInt('id');
-        }
-        
         $this->context = JFactory::getApplication()->input->get('option').'.'.$this->getName();  
-        
     }
 	
     function populateState(){
