@@ -19,41 +19,41 @@ class ResourceAddedEvent extends SeriesEvent
 	 * @param int|ResourceLevel $resourceLevel
 	 * @param ExistingReservationSeries $series
 	 */
-	public function __construct(BookableResource $resource, $resourceLevel, ExistingReservationSeries $series)
+	public function __construct(RFResourceBookable $resource, $resourceLevel, RFReservationExistingseries $series)
 	{
 		$this->resource = $resource;
 		$this->resourceLevel = $resourceLevel;
 
-		parent::__construct($series, SeriesEventPriority::Low);
+		parent::__construct($series, RFEventPriority::Low);
 	}
 
 	/**
 	 * @return BookableResource
 	 */
-	public function Resource()
+	public function resource()
 	{
 		return $this->resource;
 	}
 
-	public function ResourceId()
+	public function resourceId()
 	{
-		return $this->resource->GetResourceId();
+		return $this->resource->getResourceId();
 	}
 
 	/**
 	 * @return ExistingReservationSeries
 	 */
-	public function Series()
+	public function series()
 	{
 		return $this->series;
 	}
 
 	public function __toString()
 	{
-		return sprintf("%s%s%s", get_class($this), $this->ResourceId(), $this->series->SeriesId());
+		return sprintf("%s%s%s", get_class($this), $this->resourceId(), $this->series->seriesId());
 	}
 
-	public function ResourceLevel()
+	public function resourceLevel()
 	{
 		return $this->resourceLevel;
 	}

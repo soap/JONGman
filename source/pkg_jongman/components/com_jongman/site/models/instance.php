@@ -291,8 +291,15 @@ class JongmanModelInstance extends JModelAdmin
 		}
 		
 		$events = $existingSeries->getEvents();
-
+		$db = $this->getDbo();
 		
+		foreach ($events as $event) {
+			$command = $this->getReservationCommand($event, $series);
+			if ($query != null) {
+				$db->setQuery($command);
+				$db->execute();
+			}		
+		}
 	}
 
 	protected function insertSeries($data)
@@ -385,4 +392,9 @@ class JongmanModelInstance extends JModelAdmin
 		$db->setQuery($query);
 		return $db->loadObjectList();
 	}	
+	
+	protected function getReservationCommand()
+	{
+		
+	}
 }

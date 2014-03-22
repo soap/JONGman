@@ -11,19 +11,19 @@ class RFEventInstanceRemoved extends RFSeriesEvent
 	/**
 	 * @return Reservation
 	 */
-	public function Instance()
+	public function getInstance()
 	{
 		return $this->instance;
 	}
 
-	public function __construct(Reservation $reservationInstance, ExistingReservationSeries $series)
+	public function __construct(RFReservation $reservationInstance, RFReservationExistingseries $series)
 	{
 		$this->instance = $reservationInstance;
-		parent::__construct($series, SeriesEventPriority::Highest);
+		parent::__construct($series, RFEventPriority::Highest);
 	}
 
 	public function __toString()
 	{
-		return sprintf("%s%s", get_class($this), $this->instance->ReferenceNumber());
+		return sprintf("%s%s", get_class($this), $this->instance->referenceNumber());
 	}
 }

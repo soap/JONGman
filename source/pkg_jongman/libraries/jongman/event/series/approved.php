@@ -10,6 +10,6 @@ class RFEventSeriesApproved extends RFSeriesEvent
 
 	public function __toString()
 	{
-		return sprintf("%s%s", get_class($this), $this->series->SeriesId());
+		return sprintf("%s%s", get_class($this), $this->series->seriesId());
 	}
 }

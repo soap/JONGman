@@ -16,7 +16,7 @@ class RFEventInstanceAdded extends RFSeriesEvent
 		return $this->instance;
 	}
 
-	public function __construct(RFReservation $reservationInstance, RFReservationExistingSeries $series)
+	public function __construct(RFReservation $reservationInstance, RFReservationExistingseries $series)
 	{
 		$this->instance = $reservationInstance;
 		parent::__construct($series, RFEventPriority::Lowest);

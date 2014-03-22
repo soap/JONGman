@@ -1,15 +1,15 @@
 <?php
 defined('_JEXEC') or die;
 
-class SeriesBranchedEvent extends RFSeriesEvent
+class RFEventSeriesBranched extends RFSeriesEvent
 {
-	public function __construct(ReservationSeries $series)
+	public function __construct(RFReservationSeries $series)
 	{
 		parent::__construct($series);
 	}
 
 	public function __toString()
 	{
-		return sprintf("%s%s", get_class($this), $this->series->SeriesId());
+		return sprintf("%s%s", get_class($this), $this->series->seriesId());
 	}
 }

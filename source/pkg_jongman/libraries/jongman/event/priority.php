@@ -8,5 +8,4 @@ class RFEventPriority
 	const Normal = 5;
 	const Low = 3;
 	const Lowest = 1;
-
 }
