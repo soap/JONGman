@@ -55,24 +55,29 @@ class JongmanTableReservation extends JTable
 	 * @since   1.0
 	 */
 	public function bind($array, $ignore = '')
+	{	
+		if (isset($array['params']) && is_array($array['params'])) {
+			$registry = new JRegistry();
+			$registry->loadArray($array['params']);
+			$array['params'] = (string) $registry;
+		}
+		return parent::bind($array, $ignore);
+	}
+	
+	
+	public function store($updateNulls = false)
 	{
 		$user = JFactory::getUser();
 		$date = JFactory::getDate();
-	
-		if (empty($this->id)) {
-			if (isset($this->created_by) && empty($this->created_by)) {
-				$this->created_by = $user->get('id');
-			}	
-		}else{
-			if (isset($this->modified_by)) {
-				$this->modified_by = $user->get('id');
-			}
-			if (isset($this->modified)) {
-				$this->modified = $date->toSql();
-			}
-		} 
 		
-		return parent::bind($array, $ignore);;
+		if (empty($this->id)) {
+				$this->created_by 	= $user->get('id');
+				$this->created 		= $date->toSql();
+		}else{
+				$this->modified_by 	= $user->get('id');
+				$this->modified 	= $date->toSql();
+		}		
+		return parent::store($updateNulls);
 	}
 	
 	public function loadByInstanceId($instanceId) 
