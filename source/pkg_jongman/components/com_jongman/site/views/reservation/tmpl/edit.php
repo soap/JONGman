@@ -115,5 +115,6 @@ JHtml::_('behavior.keepalive');
 	
 	<input type="hidden" name="schedule_id" value="<?php echo $this->item->schedule_id?>" />
 	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="cid[]" value="<?php echo $this->item->instance_id?>" />
 	<?php echo JHtml::_('form.token'); ?>
 </form>

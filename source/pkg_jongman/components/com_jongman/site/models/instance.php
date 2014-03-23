@@ -92,6 +92,92 @@ class JongmanModelInstance extends JModelAdmin
 	}
 	
 	/**
+	 * Delete reservation instance, delete reservation series if no instance exists
+	 * @see JModelAdmin::delete()
+	 */
+	public function delete($pks)
+	{
+		// Initialise variables.
+		$dispatcher = JDispatcher::getInstance();
+		$pks = (array) $pks;
+		$table = $this->getTable();
+		$dbo = $this->getDbo();
+		// Include the content plugins for the on delete events.
+		JPluginHelper::importPlugin('content');
+
+		// Iterate the items to delete each one.
+		foreach ($pks as $i => $pk) {
+			if ($table->load($pk)){
+				
+				if ($this->canDelete($table)){
+					$reservationId = $table->reservation_id;
+					$context = $this->option . '.' . $this->name;
+
+					// Trigger the onContentBeforeDelete event.
+					$result = $dispatcher->trigger($this->event_before_delete, array($context, $table));
+					if (in_array(false, $result, true))
+					{
+						$this->setError($table->getError());
+						return false;
+					}
+
+					if (!$table->delete($pk))
+					{
+						$this->setError($table->getError());
+						return false;
+					}
+					
+					$query = $dbo->getQuery(true);
+					$query->select(count('*'))
+						->from('#__jongman_reservation_instances')
+						->where('reservation_id = '.$reservationId);
+					$dbo->setQuery($query);
+					$count = $dbo->loadResult();
+					if ($count == 0) {
+						$reservationModel = JModel::getInstance('Reservation', 'JongmanModel', array('ignore_request'=>true));
+						$config = array($reservationId);
+						if (!$reservationModel->delete($config)) {
+							return false;	
+						}
+					}
+					
+					
+					// Trigger the onContentAfterDelete event.
+					$dispatcher->trigger($this->event_after_delete, array($context, $table));
+
+				}
+				else
+				{
+
+					// Prune items that you can't change.
+					unset($pks[$i]);
+					$error = $this->getError();
+					if ($error)
+					{
+						JError::raiseWarning(500, $error);
+						return false;
+					}
+					else
+					{
+						JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_DELETE_NOT_PERMITTED'));
+						return false;
+					}
+				}
+
+			}
+			else
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+		}
+
+		// Clear the component's cache
+		$this->cleanCache();
+
+		return true;	
+	}
+	/**
 	 * override to add resource reservation validation 
 	 * @see JModelForm::validate()
 	 */

@@ -63,7 +63,7 @@ class JongmanViewReservation extends JView
 					: ($isNew ? 'ADD_RESERVATION' : 'EDIT_RESERVATION')).'_TITLE'
 			);
 			
-		$this->canDelete = false;
+		$this->canDelete = (!$isNew);
 		parent::display();
 		
 	}
@@ -89,7 +89,6 @@ class JongmanViewReservation extends JView
            	 	array('acces' => true, 'icon'=>'icon-chevron-left')
         	);
 		}else{
-        
         	RFToolbar::button(
             	'COM_JONGMAN_ACTION_UPDATE_INSTANCE',
             	'instance.updateinstance',
@@ -114,6 +113,12 @@ class JongmanViewReservation extends JView
             	'icon'=>'icon-ok')
         	);
         	
+        	RFToolbar::button(
+        		'COM_JONGMAN_ACTION_DELETE',
+        		'instances.delete',
+        		false,
+        		array('access' => $access->get('core.delete'), 'icon' => 'icon-minus')
+        	);
         	RFToolbar::button(
             	'JCANCEL',
             	'instance.cancel',
