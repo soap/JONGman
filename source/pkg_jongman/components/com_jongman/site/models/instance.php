@@ -295,9 +295,8 @@ class JongmanModelInstance extends JModelAdmin
 		
 		foreach ($events as $event) {
 			$command = $this->getReservationCommand($event, $series);
-			if ($query != null) {
-				$db->setQuery($command);
-				$db->execute();
+			if ($command != null) {
+				$command->execute($dbo);
 			}		
 		}
 	}
@@ -393,8 +392,15 @@ class JongmanModelInstance extends JModelAdmin
 		return $db->loadObjectList();
 	}	
 	
-	protected function getReservationCommand()
+	/**
+	 * 
+	 * Get JDatabaseQuery to be executed
+	 * @param unknown $event
+	 * @param unknown $series
+	 * @return Ambigous <RFEventCommand, NULL>
+	 */
+	protected function getReservationCommand($event, $series)
 	{
-		
+		return RFReservationEventMapper::getInstance()->map($event, $series);	
 	}
 }

@@ -62,6 +62,7 @@ class JongmanViewSchedule extends JViewLegacy
 		 */
 		$this->layout			= $this->get("DailyLayout");
 		$this->scheduledates	= $this->get("ScheduleDates");
+		$this->navLinks  		= $this->get("NavigationLinks");
 		//-------------------------------------------------------
 		$this->navigation	= $this->get('Navigation');
 		$this->state		= $this->get('State');

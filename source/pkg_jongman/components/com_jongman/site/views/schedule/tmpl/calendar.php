@@ -5,7 +5,6 @@ JHtml::_('behavior.modal');
 jimport('jongman.date.date');
 jimport('jongman.application.displayslotfactory');
 
-$return = base64_encode(JFactory::getURI()->toString());
 $Itemid = JFactory::getApplication()->input->getInt('Itemid', null);
 $reservationUrl = "index.php?option=com_jongman&task=instance.edit&cid[]=[REFERENCENUMBER]&Itemid=".$Itemid;
 
@@ -18,7 +17,7 @@ $calLink = JURI::root().'media/com_jongman/jongman/images/calendar.png';
 
 $firstDate = $this->scheduledates->getBegin();
 $lastDate = $this->scheduledates->getEnd();
-
+$url = JSite::getMenu()->getActive()->link.'&Itemid='.JSite::getMenu()->getActive()->id;
 ?>
 <div>
 	<div class="schedule_title">
@@ -26,7 +25,13 @@ $lastDate = $this->scheduledates->getEnd();
 		<a href="#" id="calendar_toggle"><img src="<?php echo $calLink?>" alt="<?php echo JText::_('COM_JONGMAN_SHOWHIDE_CALENDAR')?>"/></a>
 	</div>
 	<div class="schedule_dates">
-		<?php echo $firstDate->format($headerDateFormat)?> - <?php echo $lastDate->format($headerDateFormat)?>	
+		<a href="<?php echo $this->navLinks->previousLink;?>">
+		<?php echo JHtml::image('com_jongman/arrow_large_left.png', 'Back', array(), true);?>
+		</a>
+		<?php echo $firstDate->format($headerDateFormat)?> - <?php echo $lastDate->format($headerDateFormat)?>
+		<a href="<?php echo $this->navLinks->nextLink;?>">	
+		<?php echo JHtml::image('com_jongman/arrow_large_right.png', 'Forward', array(), true);?>
+		</a>	
 	</div>
 	<div type="text" id="datepicker" style="display:none"></div>
 </div>

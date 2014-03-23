@@ -489,6 +489,31 @@ class JongmanModelSchedule extends JModelItem {
         return $timeHash;
     }
     
+    public function getNavigationLinks()
+    {
+    	$schedule = $this->getItem();
+    	$dates = $this->getScheduleDates();
+    	
+    	$startDate = $dates->getBegin();
+    	$startDay = $schedule->weekday_start;
+    	$scheduleLength = $schedule->view_days;
+    	if ($startDay == 7)
+    	{
+    		$adjustment = $scheduleLength;
+    		$prevAdjustment = $scheduleLength;
+    	}
+    	else
+    	{
+    		$adjustment = max($scheduleLength, 7);
+    		$prevAdjustment = 7 * floor($adjustment / 7); // ie, if 10, we only want to go back 7 days so there is overlap
+    	}
+    	$url = JSite::getMenu()->getActive()->link.'&Itemid='.JSite::getMenu()->getActive()->id;
+    	$obj = new stdClass();
+    	$obj->previousLink = $url.'&sd='.$startDate->addDays(-$prevAdjustment)->getDate()->format('Y-m-d');
+    	$obj->nextLink =  $url.'&sd='.$startDate->addDays($adjustment)->getDate()->format('Y-m-d');
+    	    
+    	return $obj;
+    }
     /**
      * 
      * get Navigation object ...
