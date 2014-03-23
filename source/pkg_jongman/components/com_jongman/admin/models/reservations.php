@@ -75,6 +75,9 @@ class JongmanModelReservations extends JModelList
 		);
 		$query->from('#__jongman_reservations AS a');
 
+		$query->select('i.start_date, i.end_date, i.reference_number');
+		$query->join('LEFT', '#__jongman_reservation_instances as i on i.reservation_id=a.id');
+		
 		// Join over the users for the checked out user.
 		$query->select('uc.name AS editor');
 		$query->join('LEFT', '#__users AS uc ON uc.id=a.checked_out');
@@ -115,4 +118,13 @@ class JongmanModelReservations extends JModelList
 
 		return $query;
 	}
+	
+	public function getItems()
+	{
+		$items = parent::getItems();
+		if ($items === false) return false;
+		
+		return $items;
+	}
+	
 }
