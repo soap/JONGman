@@ -7,7 +7,6 @@
  */
 // no direct access
 defined('_JEXEC') or die;
-require_once(JPATH_COMPONENT_SITE.'/libraries/dateutil.class.php');
 
 $user		= JFactory::getUser();
 $userId = $user->get('id');

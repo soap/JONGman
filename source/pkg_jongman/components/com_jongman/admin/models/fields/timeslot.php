@@ -12,7 +12,7 @@ class JFormFieldTimeslot extends JFormField {
     
     public function getInput()
     {
-    	        // Load the modal behavior script
+    	// Load the modal behavior script
         JHtml::_('behavior.modal', 'a.modal_' . $this->id);
     	$html = array();
     	$layout_id = (int) $this->form->getValue('id');
@@ -58,14 +58,14 @@ class JFormFieldTimeslot extends JFormField {
     protected function getLayout($layout_id)
     {
     	$timezone = $this->form->getValue('timezone');
-    	$layout = new ScheduleLayout($timezone);
+    	$layout = new RFLayoutSchedule($timezone);
     	$slots = $this->getTimeSlots($layout_id);
 
     	foreach ($slots as $slot) {
-    	    if ($slot->availability_code == PeriodTypes::RESERVABLE) {
-    			$layout->appendPeriod(Time::parse($slot->start_time), Time::parse($slot->end_time), $slot->label, $slot->day_of_week);
+    	    if ($slot->availability_code == RFSchedulePeriodTypes::RESERVABLE) {
+    			$layout->appendPeriod(RFTime::parse($slot->start_time), RFTime::parse($slot->end_time), $slot->label, $slot->day_of_week);
     		}else{
-    			$layout->appendBlockedPeriod(Time::parse($slot->start_time), Time::parse($slot->end_time), $slot->label, $slot->day_of_week);	
+    			$layout->appendBlockedPeriod(RFTime::parse($slot->start_time), RFTime::parse($slot->end_time), $slot->label, $slot->day_of_week);	
     		}	
     	}
     	

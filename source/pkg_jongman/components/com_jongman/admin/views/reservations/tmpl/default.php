@@ -148,10 +148,10 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 					<?php //echo $this->escape($item->resource_title)?>
 				</td>
 				<td>
-					<?php //echo JDate::getInstance($item->start_date)->format("Y-m-d");?>
+					<?php echo JHtml::date($item->start_date, 'Y-m-d H:i', true) ;?>
 				</td>
 				<td>
-					<?php //echo JDate::getInstance($item->end_date)->format("Y-m-d");?>
+					<?php echo JHtml::date($item->end_date, 'Y-m-d H:i', true) ;?>
 				</td>				
 				<td>
 					<?php echo $this->escape($item->owner); ?>
