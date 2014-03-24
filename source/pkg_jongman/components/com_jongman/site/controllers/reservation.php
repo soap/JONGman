@@ -340,7 +340,12 @@ class JongmanControllerReservation extends JControllerForm
 		$append = parent::getRedirectToListAppend();
 		
 		$app = JFactory::getApplication();
+		// from reservation view
 		$schedule_id = $app->input->getInt('schedule_id', null);
+		if ($schedule_id === null) {
+			// from schedule view
+			$schedule_id = $app->input->getInt('sid', null);
+		}
 		if (!empty($schedule_id)) {
 			$append .= '&layout=calendar&id='.$schedule_id;	
 		}

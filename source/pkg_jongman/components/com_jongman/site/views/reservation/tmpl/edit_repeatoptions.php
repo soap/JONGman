@@ -47,9 +47,13 @@ defined('_JEXEC') or die;
 	</div>
 </div>
 
-<<script type="text/javascript">
-<!--
+<script type="text/javascript">
 	jQuery('.repeatoption').hide();
-//-->
+	var recurOpts = {
+        repeatType:'{$this->item->repeat_type}',
+        repeatInterval:'{$this->item->repeat_interval}',
+        repeatMonthlyType:'{$this->item->repeat_monthly_type}',
+        repeatWeekdays:[{$this->item->repeat_days}]
+    };
 </script>
 
