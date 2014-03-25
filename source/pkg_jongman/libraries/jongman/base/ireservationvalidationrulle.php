@@ -13,6 +13,6 @@ interface IReservationValidationRule
 	 * 
 	 * Get error message if validate failed, return empty string if not
 	 */
-	public function getMessage();
+	public function getError();
 	
 }

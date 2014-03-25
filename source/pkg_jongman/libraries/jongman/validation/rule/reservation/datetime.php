@@ -15,7 +15,7 @@ class RFValidationRuleReservationDatetime implements IReservationValidationRule
 		return $startBeforeEnd;
 	}
 	
-	public function getMessage()
+	public function getError()
 	{
 		return $this->message();
 	}
