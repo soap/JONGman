@@ -163,7 +163,7 @@ class RFResourceBookable
 		return $this->_resourceId;
 	}
 
-	public function SetResourceId($value)
+	public function setResourceId($value)
 	{
 		$this->_resourceId = $value;
 	}
@@ -173,7 +173,7 @@ class RFResourceBookable
 		return $this->_name;
 	}
 
-	public function SetName($value)
+	public function setName($value)
 	{
 		$this->_name = $value;
 	}
@@ -183,12 +183,12 @@ class RFResourceBookable
 		return $this->_location;
 	}
 
-	public function SetLocation($value)
+	public function setLocation($value)
 	{
 		$this->_location = $value;
 	}
 
-	public function HasLocation()
+	public function hasLocation()
 	{
 		return !empty($this->_location);
 	}
@@ -203,7 +203,7 @@ class RFResourceBookable
 		$this->_contact = $value;
 	}
 
-	public function HasContact()
+	public function hasContact()
 	{
 		return !empty($this->_contact);
 	}
@@ -213,12 +213,12 @@ class RFResourceBookable
 		return $this->_notes;
 	}
 
-	public function SetNotes($value)
+	public function setNotes($value)
 	{
 		$this->_notes = $value;
 	}
 
-	public function HasNotes()
+	public function hasNotes()
 	{
 		return !empty($this->_notes);
 	}
@@ -228,12 +228,12 @@ class RFResourceBookable
 		return $this->_description;
 	}
 
-	public function SetDescription($value)
+	public function setDescription($value)
 	{
 		$this->_description = $value;
 	}
 
-	public function HasDescription()
+	public function hasDescription()
 	{
 		return !empty($this->_description);
 	}
@@ -249,7 +249,7 @@ class RFResourceBookable
 	/**
 	 * @param string|int $value
 	 */
-	public function SetMinLength($value)
+	public function setMinLength($value)
 	{
 		$this->_minLength = $value;
 	}
@@ -257,7 +257,7 @@ class RFResourceBookable
 	/**
 	 * @return bool
 	 */
-	public function HasMinLength()
+	public function hasMinLength()
 	{
 		return !empty($this->_minLength);
 	}
@@ -273,7 +273,7 @@ class RFResourceBookable
 	/**
 	 * @param string|int $value
 	 */
-	public function SetMaxLength($value)
+	public function setMaxLength($value)
 	{
 		$this->_maxLength = $value;
 	}
@@ -281,7 +281,7 @@ class RFResourceBookable
 	/**
 	 * @return bool
 	 */
-	public function HasMaxLength()
+	public function hasMaxLength()
 	{
 		return !empty($this->_maxLength);
 	}
@@ -298,7 +298,7 @@ class RFResourceBookable
 	 * @param bool $value
 	 * @return void
 	 */
-	public function SetAutoAssign($value)
+	public function setAutoAssign($value)
 	{
 		$this->_autoAssign = $value;
 	}
@@ -315,7 +315,7 @@ class RFResourceBookable
 	 * @param bool $value
 	 * @return void
 	 */
-	public function SetRequiresApproval($value)
+	public function setRequiresApproval($value)
 	{
 		$this->_requiresApproval = $value;
 	}
@@ -332,7 +332,7 @@ class RFResourceBookable
 	 * @param bool $value
 	 * @return void
 	 */
-	public function SetAllowMultiday($value)
+	public function setAllowMultiday($value)
 	{
 		$this->_allowMultiday = $value;
 	}
@@ -348,7 +348,7 @@ class RFResourceBookable
 	/**
 	 * @param int $value
 	 */
-	public function SetMaxParticipants($value)
+	public function setMaxParticipants($value)
 	{
 		$this->_maxParticipants = $value;
 		if (empty($value))
@@ -360,7 +360,7 @@ class RFResourceBookable
 	/**
 	 * @return bool
 	 */
-	public function HasMaxParticipants()
+	public function hasMaxParticipants()
 	{
 		return !empty($this->_maxParticipants);
 	}
@@ -376,7 +376,7 @@ class RFResourceBookable
 	/**
 	 * @param string|int $value
 	 */
-	public function SetMinNotice($value)
+	public function setMinNotice($value)
 	{
 		$this->_minNotice = $value;
 	}
@@ -384,7 +384,7 @@ class RFResourceBookable
 	/**
 	 * @return bool
 	 */
-	public function HasMinNotice()
+	public function hasMinNotice()
 	{
 		return !empty($this->_minNotice);
 	}
@@ -400,7 +400,7 @@ class RFResourceBookable
 	/**
 	 * @param string|int $value
 	 */
-	public function SetMaxNotice($value)
+	public function setMaxNotice($value)
 	{
 		$this->_maxNotice = $value;
 	}
@@ -408,7 +408,7 @@ class RFResourceBookable
 	/**
 	 * @return bool
 	 */
-	public function HasMaxNotice()
+	public function hasMaxNotice()
 	{
 		return !empty($this->_maxNotice);
 	}
@@ -425,7 +425,7 @@ class RFResourceBookable
 	 * @param int $value
 	 * @return void
 	 */
-	public function SetScheduleId($value)
+	public function setScheduleId($value)
 	{
 		$this->_scheduleId = $value;
 	}
@@ -441,7 +441,7 @@ class RFResourceBookable
 	/**
 	 * @param int $adminGroupId
 	 */
-	public function SetAdminGroupId($adminGroupId)
+	public function setAdminGroupId($adminGroupId)
 	{
 		$this->_adminGroupId = $adminGroupId;
 		if (empty($adminGroupId))
@@ -453,7 +453,7 @@ class RFResourceBookable
 	/**
 	 * @return bool
 	 */
-	public function HasAdminGroup()
+	public function hasAdminGroup()
 	{
 		return !empty($this->_adminGroupId);
 	}
@@ -478,7 +478,7 @@ class RFResourceBookable
 	/**
 	 * @return bool
 	 */
-	public function HasImage()
+	public function hasImage()
 	{
 		return !empty($this->_imageName);
 	}
@@ -486,7 +486,7 @@ class RFResourceBookable
 	/**
 	 * @return bool
 	 */
-	public function IsOnline()
+	public function isOnline()
 	{
 		return $this->_isActive;
 	}
@@ -494,12 +494,12 @@ class RFResourceBookable
 	/**
 	 * @return void
 	 */
-	public function TakeOffline()
+	public function takeOffline()
 	{
 		$this->_isActive = false;
 	}
 
-	public function BringOnline()
+	public function bringOnline()
 	{
 		$this->_isActive = true;
 	}
@@ -507,7 +507,7 @@ class RFResourceBookable
 	/**
 	 * @param bool $isAllowed
 	 */
-	protected function SetIsCalendarSubscriptionAllowed($isAllowed)
+	protected function setIsCalendarSubscriptionAllowed($isAllowed)
 	{
 		$this->_isCalendarSubscriptionAllowed = $isAllowed;
 	}
@@ -523,7 +523,7 @@ class RFResourceBookable
 	/**
 	 * @param string $publicId
 	 */
-	protected function SetPublicId($publicId)
+	protected function setPublicId($publicId)
 	{
 		$this->_publicId = $publicId;
 	}
@@ -536,7 +536,7 @@ class RFResourceBookable
 		return $this->_publicId;
 	}
 
-	public function EnableSubscription()
+	public function enableSubscription()
 	{
 		$this->setIsCalendarSubscriptionAllowed(true);
 		if (empty($this->_publicId))
@@ -550,7 +550,7 @@ class RFResourceBookable
 		$this->setIsCalendarSubscriptionAllowed(false);
 	}
 
-	public function WithAttribute(AttributeValue $attribute)
+	public function withAttribute(AttributeValue $attribute)
 	{
 		$this->_attributeValues[$attribute->AttributeId] = $attribute;
 	}
@@ -568,7 +568,7 @@ class RFResourceBookable
 	/**
 	 * @param $attributes AttributeValue[]|array
 	 */
-	public function ChangeAttributes($attributes)
+	public function changeAttributes($attributes)
 	{
 		$diff = new ArrayDiff($this->_attributeValues, $attributes);
 
@@ -596,7 +596,7 @@ class RFResourceBookable
 	/**
 	 * @param $attributeValue AttributeValue
 	 */
-	public function AddAttributeValue($attributeValue)
+	public function addAttributeValue($attributeValue)
 	{
 		$this->_attributeValues[$attributeValue->AttributeId] = $attributeValue;
 	}
@@ -645,15 +645,15 @@ class RFResourceBookable
 	 */
 	public static function Null()
 	{
-		return new BookableResource(null, null, null, null, null, null, null, false, false, false, null, null, null);
+		return new RFResourceBookable(null, null, null, null, null, null, null, false, false, false, null, null, null);
 	}
 
-	protected function WithPublicId($publicId)
+	protected function withPublicId($publicId)
 	{
 		$this->setPublicId($publicId);
 	}
 
-	protected function WithSubscription($isAllowed)
+	protected function withSubscription($isAllowed)
 	{
 		$this->setIsCalendarSubscriptionAllowed($isAllowed);
 	}
@@ -661,7 +661,7 @@ class RFResourceBookable
 	/**
 	 * @param $scheduleAdminGroupId int
 	 */
-	protected function WithScheduleAdminGroupId($scheduleAdminGroupId)
+	protected function withScheduleAdminGroupId($scheduleAdminGroupId)
 	{
 		$this->_scheduleAdminGroupId = $scheduleAdminGroupId;
 	}
@@ -677,7 +677,7 @@ class RFResourceBookable
 	/**
 	 * @param int $sortOrder
 	 */
-	public function SetSortOrder($sortOrder)
+	public function setSortOrder($sortOrder)
 	{
 		$this->_sortOrder = intval($sortOrder);
 	}
