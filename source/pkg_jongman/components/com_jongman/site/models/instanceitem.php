@@ -26,9 +26,10 @@ class JongmanModelInstanceitem extends JModelItem
 		$query->select('a.id, a.start_date, a.end_date, a.reference_number, a.reservation_id')
 			->from('#__jongman_reservation_instances AS a');
 						
-		$query->select('r.title, r.description, r.owner_id, r.schedule_id')
+		$query->select('r.title, r.description, r.schedule_id')
 			->join('INNER', '#__jongman_reservations AS r ON r.id=a.reservation_id');
-		$query->select('u.user_id')
+		
+		$query->select('u.user_id as owner_id')
 			->join('INNER', '#__jongman_reservation_users AS u ON u.reservation_id=a.reservation_id');
 			
 		$query->select('own.name as owner_name, own.email as owner_email')
@@ -40,7 +41,7 @@ class JongmanModelInstanceitem extends JModelItem
 		$this->_db->setQuery($query);
 		
 		$this->_item[$pk] = $this->_db->loadObject();
-		
+
 		return $this->_item[$pk];			
 	}
 	
