@@ -21,8 +21,8 @@ class RFReservationSeriesUpdatescopeFull extends RFReservationSeriesUpdatescopeB
 	 */
 	public function getInstances($series)
 	{
-		$bookedBy = $series->bookedBy();
-		if (!is_null($bookedBy) && $bookedBy->isAdmin)
+		$bookedBy = $series->bookedBy(); 
+		if (!is_null($bookedBy) && $bookedBy->authorise('core.admin', 'com_jongman'))
 		{
 			return $series->_instances();
 		}
@@ -38,12 +38,12 @@ class RFReservationSeriesUpdatescopeFull extends RFReservationSeriesUpdatescopeB
 	{
 		$startTimeConstraint = true;
 
-		if (RRFeservationStartTimeConstraint::isCurrent($startTimeConstraint))
+		if (RFReservationStarttimeConstraint::isCurrent($startTimeConstraint))
 		{
-			return $series->CurrentInstance()->startDate();
+			return $series->currentInstance()->startDate();
 		}
 
-		if (RFReservationStartTimeConstraint::isNone($startTimeConstraint))
+		if (RFReservationStarttimeConstraint::isNone($startTimeConstraint))
 		{
 			return RFDate::min();
 		}
@@ -58,7 +58,7 @@ class RFReservationSeriesUpdatescopeFull extends RFReservationSeriesUpdatescopeB
 	 */
 	public function canChangeRepeatTo($series, $targetRepeatOptions)
 	{
-		$this->hasSameConfiguration = $targetRepeatOptions->hasSameConfigurationAs($series->repeatOptions());
+		$this->hasSameConfiguration = $targetRepeatOptions->hasSameConfigurationAs($series->getRepeatOptions());
 
 		return parent::CanChangeRepeatTo($series, $targetRepeatOptions);
 	}

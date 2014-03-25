@@ -9,26 +9,26 @@ class RFReservationEventMapper
 
 	private function __construct()
 	{
-		$this->buildMethods['SeriesDeletedEvent'] = 'buildDeleteSeriesCommand';
-		$this->buildMethods['OwnerChangedEvent'] = 'ownerChangedCommand';
+		$this->buildMethods['RFEventSeriesDeleted'] = 'buildDeleteSeriesCommand';
+		$this->buildMethods['RFEventOwnerChanged'] = 'ownerChangedCommand';
 
-		$this->buildMethods['InstanceAddedEvent'] = 'buildAddReservationCommand';
-		$this->buildMethods['InstanceRemovedEvent'] = 'buildRemoveReservationCommand';
-		$this->buildMethods['InstanceUpdatedEvent'] = 'buildUpdateReservationCommand';
+		$this->buildMethods['RFEventInstanceAdded'] = 'buildAddReservationCommand';
+		$this->buildMethods['RFEventInstanceRemoved'] = 'buildRemoveReservationCommand';
+		$this->buildMethods['RFEventInstanceUpdated'] = 'buildUpdateReservationCommand';
 
-		$this->buildMethods['ResourceRemovedEvent'] = 'buildRemoveResourceCommand';
-		$this->buildMethods['ResourceAddedEvent'] = 'buildAddResourceCommand';
+		$this->buildMethods['RFEventResourceRemoved'] = 'buildRemoveResourceCommand';
+		$this->buildMethods['RFEventResourceAdded'] = 'buildAddResourceCommand';
 
-		$this->buildMethods['AccessoryAddedEvent'] = 'buildAddAccessoryCommand';
-		$this->buildMethods['AccessoryRemovedEvent'] = 'buildRemoveAccessoryCommand';
+		$this->buildMethods['RFEventAccessoryAdded'] = 'buildAddAccessoryCommand';
+		$this->buildMethods['RFEventAccessoryRemoved'] = 'buildRemoveAccessoryCommand';
 
-		$this->buildMethods['AttributeAddedEvent'] = 'buildAddAttributeCommand';
-		$this->buildMethods['AttributeRemovedEvent'] = 'buildRemoveAttributeCommand';
+		$this->buildMethods['RFEventAttributeAdded'] = 'buildAddAttributeCommand';
+		$this->buildMethods['RFEventAttributeRemoved'] = 'buildRemoveAttributeCommand';
 
-		$this->buildMethods['AttachmentRemovedEvent'] = 'buildAttachmentRemovedEvent';
+		$this->buildMethods['RFEventAttachmentRemoved'] = 'buildAttachmentRemovedEvent';
 
-		$this->buildMethods['ReminderAddedEvent'] = 'buildReminderAddedEvent';
-		$this->buildMethods['ReminderRemovedEvent'] = 'buildReminderRemovedEvent';
+		$this->buildMethods['RFEventReminderAdded'] = 'buildReminderAddedEvent';
+		$this->buildMethods['RFEventReminderRemoved'] = 'buildReminderRemovedEvent';
 	}
 
 	/**
@@ -55,7 +55,7 @@ class RFReservationEventMapper
 		$eventType = get_class($event);
 		if (!isset($this->buildMethods[$eventType]))
 		{
-			Log::Debug("No command event mapper found for event $eventType");
+			JFactory::getApplication()->enqueueMessage("No command event mapper found for event $eventType");
 			return null;
 		}
 
@@ -73,62 +73,62 @@ class RFReservationEventMapper
 		return new RFEeventCommandInstanceadded($event->getInstance(), $series);
 	}
 
-	private function buildRemoveReservationCommand(InstanceRemovedEvent $event, RFReservationExistingseries $series)
+	private function buildRemoveReservationCommand(RFEventInstanceRemoved $event, RFReservationExistingseries $series)
 	{
 		return new RFEventCommandInstanceremoved($event->getInstance(), $series);
 	}
 
-	private function buildUpdateReservationCommand(InstanceUpdatedEvent $event, RFReservationExistingseries $series)
+	private function buildUpdateReservationCommand(RFEventInstanceUpdated $event, RFReservationExistingseries $series)
 	{
 		return new RFEventCommandInstanceupdated($event->getInstance(), $series);
 	}
 
-	private function ownerChangedCommand(OwnerChangedEvent $event, RFReservationExistingseries $series)
+	private function ownerChangedCommand(RFEventOwnerChanged $event, RFReservationExistingseries $series)
 	{
 		return new RFEventCommandOwnerchanged($event);
 	}
 	
-	private function buildRemoveResourceCommand(ResourceRemovedEvent $event, RFReservationExistingseries $series)
+	private function buildRemoveResourceCommand(RFEventResourceRemoved $event, RFReservationExistingseries $series)
 	{
 		return new RFEventCommand(new RemoveReservationResourceCommand($series->seriesId(), $event->resourceId()), $series);
 	}
 
-	private function buildAddResourceCommand(ResourceAddedEvent $event, RFReservationExistingseries $series)
+	private function buildAddResourceCommand(RFEventResourceAdded $event, RFReservationExistingseries $series)
 	{
 		return new RFEventCommand(new AddReservationResourceCommand($series->seriesId(), $event->resourceId(), $event->resourceLevel()), $series);
 	}
 
-	private function buildAddAccessoryCommand(AccessoryAddedEvent $event, RFReservationExistingseries $series)
+	private function buildAddAccessoryCommand(RFEventAccessoryAdded $event, RFReservationExistingseries $series)
 	{
 		return new RFEventCommand(new AddReservationAccessoryCommand($event->AccessoryId(), $event->Quantity(), $series->SeriesId()), $series);
 	}
 
-	private function buildRemoveAccessoryCommand(AccessoryRemovedEvent $event, RFReservationExistingseries $series)
+	private function buildRemoveAccessoryCommand(RFEventAccessoryRemoved $event, RFReservationExistingseries $series)
 	{
 		return new RFEventCommand(new RemoveReservationAccessoryCommand($series->SeriesId(), $event->AccessoryId()), $series);
 	}
 
-	private function buildAddAttributeCommand(AttributeAddedEvent $event, RFReservationExistingseries $series)
+	private function buildAddAttributeCommand(RFEventAttributeAdded $event, RFReservationExistingseries $series)
 	{
 		return new RFEventCommand(new AddAttributeValueCommand($event->AttributeId(), $event->Value(), $series->SeriesId(), CustomAttributeCategory::RESERVATION), $series);
 	}
 
-	private function buildRemoveAttributeCommand(AttributeRemovedEvent $event, RFReservationExistingseries $series)
+	private function buildRemoveAttributeCommand(RFEventAttributeRemoved $event, RFReservationExistingseries $series)
 	{
 		return new RFEventCommand(new RemoveAttributeValueCommand($event->AttributeId(), $series->SeriesId()), $series);
 	}
 
-	private function buildAttachmentRemovedEvent(AttachmentRemovedEvent $event, RFReservationExistingseries $series)
+	private function buildAttachmentRemovedEvent(RFEventAttachmentRemoved $event, RFReservationExistingseries $series)
 	{
-		return new AttachmentRemovedCommand($event);
+		return new RFAttachmentRemovedCommand($event);
 	}
 
-	private function buildReminderAddedEvent(ReminderAddedEvent $event, RFReservationExistingseries $series)
+	private function buildReminderAddedEvent(RFEventReminderAdded $event, RFReservationExistingseries $series)
 	{
-		return new ReminderAddedCommand($event);
+		return new RFReminderAddedCommand($event);
 	}
 
-	private function buildReminderRemovedEvent(ReminderRemovedEvent $event, RFReservationExistingseries $series)
+	private function buildReminderRemovedEvent(RFEventReminderRemoved $event, RFReservationExistingseries $series)
 	{
 		return new RFEventCommand(new RemoveReservationReminderCommand($series->SeriesId(), $event->ReminderType()), $series);
 	}

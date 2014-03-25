@@ -301,7 +301,7 @@ class RFReservationItem implements IReservedItem
 
 		if (isset($row->state))
 		{
-			$view->requiresApproval = $row->state == 1;
+			$view->requiresApproval = $row->state == -1;
 		}
 
 		if (isset($row->owner_email))

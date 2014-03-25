@@ -222,11 +222,20 @@ class RFReservationSeries extends JObject
 	 */
 	public function allResources()
 	{
-		return array_merge(array($this->resource()), $this->_additionalResources());
+		return array_merge(array($this->resource), $this->_additionalResources);
 	}
 		
 	public function userId()
 	{
 		return $this->userId;
+	}
+	
+	/**
+	 * Return user object who made a reservation record (may be not owner)
+	 * @return JUser bookedBy
+	 */
+	public function bookedBy()
+	{
+		return $this->bookedBy;
 	}
 }

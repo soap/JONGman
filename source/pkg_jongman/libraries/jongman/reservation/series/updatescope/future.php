@@ -25,7 +25,7 @@ class RFReservationSeriesUpdatescopeFuture extends RFReservationSeriesUpdatescop
 
 	public function earliestDateToKeep($series)
 	{
-		return $series->currentInstance()->StartDate();
+		return $series->currentInstance()->startDate();
 	}
 
 	/**

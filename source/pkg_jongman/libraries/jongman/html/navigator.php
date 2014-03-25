@@ -26,7 +26,7 @@ class RFNavigator extends JObject
 		return $url;    	
 	}
 	
-	protected function getPreviousWeekLink()
+	public function getPreviousWeekLink()
 	{
 		$url = $this->getUrl().'&sd='.$this->start_date->getDate()->format('Y-m-d').'&Itemid='.JSite::getMenu()->getActive()->id;
 		$html = "<a href=\"{$url}\">".JText::_('COM_JONGMAN_PREV_WEEK')."</a>";
@@ -34,7 +34,7 @@ class RFNavigator extends JObject
 		return $html;
 	}
 	
-	protected function getThisWeekLink() 
+	public function getThisWeekLink() 
 	{
 		$url = $this->getUrl().'&Itemid='.JSite::getMenu()->getActive()->id;
 		$html = "<a href=\"{$url}\">".JText::_('COM_JONGMAN_THIS_WEEK')."</a>";
@@ -42,7 +42,7 @@ class RFNavigator extends JObject
 		return $html;
 	}
 	
-	protected function getNextWeekLink() 
+	public function getNextWeekLink() 
 	{
 		$url = $this->getUrl().'&sd='.$this->end_date->getDate()->format('Y-m-d').'&Itemid='.JSite::getMenu()->getActive()->id;
 		$html = "<a href=\"{$url}\">".JText::_('COM_JONGMAN_NEXT_WEEK')."</a>";

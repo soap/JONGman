@@ -33,7 +33,7 @@ abstract class RFReservationSeriesUpdatescopeBase implements ISeriesUpdateScope
 
 	public function getRepeatOptions($series)
 	{
-		return $series->repeatOptions();
+		return $series->getRepeatOptions();
 	}
 
 	/**
@@ -43,7 +43,7 @@ abstract class RFReservationSeriesUpdatescopeBase implements ISeriesUpdateScope
 	 */
 	public function canChangeRepeatTo($series, $targetRepeatOptions)
 	{
-		return !$targetRepeatOptions->equals($series->repeatOptions());
+		return !$targetRepeatOptions->equals($series->getRepeatOptions());
 	}
 
 	public function shouldInstanceBeRemoved($series, $instance)
