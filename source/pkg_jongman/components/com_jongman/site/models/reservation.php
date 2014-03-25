@@ -181,7 +181,7 @@ class JongmanModelReservation extends JModelAdmin
 
 		if (isset($input['repeat_terminated'])) {
 			$terminated = RFDate::parse($input['repeat_terminated'], $tz);
-			$terminated->setTime(new RFTime(0, 0, 0, $tz));
+			//$terminated->setTime(new RFTime(0, 0, 0, $tz));
 		}
 		switch ((string) $input['repeat_type']) {
 			case 'daily': 
@@ -226,6 +226,7 @@ class JongmanModelReservation extends JModelAdmin
 		$validData['series'] = $reservationSeries;
 		$validData['repeat_options'] = $repeatOption->configurationString();
 		// now we do our validation process
+
 		return $validData;
 	}
 	
@@ -241,19 +242,21 @@ class JongmanModelReservation extends JModelAdmin
 			return false;
 		}
 		
-		$resTable = JTable::getInstance('Instance', 'JongmanTable');
-		foreach ($instances = $this->_series->getInstances() as $instance) {
+		$instances = $this->_series->getInstances();
+		foreach ($instances as $instance) {
+			$instanceTable = JTable::getInstance('Instance', 'JongmanTable');
 			$instance->setReservationId( $result );
 			$src = array('reference_number' => $instance->referenceNumber(),
 					'start_date' => $instance->startDate()->toDatabase(),
 					'end_date'=> $instance->endDate()->toDatabase(),
 					'reservation_id' => (int) $result
 				);
-			$resTable->bind($src);
-			if ($resTable->check() === false) {
+			
+			$instanceTable->bind($src);
+			if ($instanceTable->check() === false) {
 				return false;
 			}
-			if (!$resTable->store()) {
+			if (!$instanceTable->store()) {
 				return false;
 			}
 	
@@ -398,6 +401,30 @@ class JongmanModelReservation extends JModelAdmin
 				
 		$db->setQuery($query);
 		return $db->loadObjectList();	
+	}
+	
+	public function delete($pks) 
+	{
+		if (parent::delete($pks)) {
+			$dbo = $this->getDbo();
+			$query = $dbo->getQuery(true);
+			
+			$query->delete("#__jongman_reservation_resources")
+				->where("reservation_id IN (".implode(',', $pks).")");	
+
+			$dbo->setQuery($query);
+			$dbo->execute();
+			
+			$query->clear();
+			$query->delete("#__jongman_reservation_users")
+				->where("reservation_id IN (".implode(',', $pks).")");
+			
+			$dbo->setQuery($query);
+			$dbo->execute();
+			
+			return true;
+		}
+		return false;
 	}
 	
 }
