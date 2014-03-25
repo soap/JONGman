@@ -80,7 +80,15 @@ class JongmanModelInstance extends JModelAdmin
 		$result->reference_number = $instance->reference_number;
 		if ($result->repeat_type !== 'none') {
 			$result->repeat_terminated = $result->repeat_options->get('termination');
+			$result->repeat_interval = $result->repeat_options->get('interval');
 		}
+		if ($result->repeat_type == 'weekly') {
+			$result->repeat_days = $result->repeat_options->get('days');
+		}
+		if ($result->repeat_type == 'monthly') {
+			$result->repeat_days = $result->repeat_options->get('days');
+		}
+		
 		
 		return $result;
 		

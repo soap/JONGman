@@ -146,8 +146,8 @@
 			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_MONTHLY_TYPE_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_MONTHLY_TYPE_DESC"
 			>
-			<option value="dayofweek">COM_JONGMAN_RESERVATION_REPEAT_DAYOFWEEK</option>
 			<option value="dayofmonth">COM_JONGMAN_RESERVATION_REPEAT_DAYOFMONTH</option>
+			<option value="weekdayofmonth">COM_JONGMAN_RESERVATION_REPEAT_WEEKDAYOFMONTH</option>
 		</field>
 	
 		<field
