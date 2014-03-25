@@ -16,6 +16,7 @@ class JongmanModelInstance extends JModelAdmin
 {
 	
 	protected static $series;
+	protected $users = array();
 	 
 	/**
 	 * Method to get the Reservation form.
@@ -65,6 +66,7 @@ class JongmanModelInstance extends JModelAdmin
 		$properties = $table->getProperties(1);
 		$result = JArrayHelper::toObject($properties, 'JObject');
 			
+		$result->owner_id = $this->getOwnerId($instance->reservation_id);
 		$result->instance_id = $instance->id; 
 		$result->resource_id = $resources[0]->resource_id;
 		
@@ -471,6 +473,29 @@ class JongmanModelInstance extends JModelAdmin
 		
 		return $table->$pkName;
 	}
+	
+	/**
+	 * 
+	 * Enter description here ...
+	 * @param int $reservationId
+	 * @return int owner id
+	 */
+	protected function getOwnerId($reservationId)
+	{
+		if (!empty($this->users)) {
+			return $this->users[1]->user_id;
+		}
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
+		$query->select('user_id, user_level')
+			->from('#__jongman_reservation_users')
+			->where('reservation_id = '.(int)$reservationId);
+		$db->setQuery($query);
+		
+		$this->users = $db->loadObjectList('user_level');
+
+		return $this->users[1]->user_id;
+	} 
 	
 	public function populateResources($reservationId)
 	{
