@@ -38,7 +38,14 @@
 			size="1"
 			label="COM_JONGMAN_FIELD_RESERVATION_RESOURCE_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_RESOURCE_DESC" />
-		
+			
+		<field name="reservation_length"
+			type="duration"
+			label="COM_JONGMAN_FIELD_RESERVATION_LENGTH_LABEL"
+			description="COM_JONGMAN_FIELD_RESERVATION_LENGTH_DESC" 
+			readonly="true" class="readonly" 
+			/>
+			
 		<field name="schedule_id" type="hidden" filter="intval" />
 			
 		<field name="checked_out" type="hidden" filter="unset" />
@@ -78,7 +85,7 @@
 	<fieldset name="period">
 		<field name="start_date"
 			type="calendar" format="%Y-%m-%d"
-			required="true" onchange="startDateChange(this);"
+			required="true"
 			label="COM_JONGMAN_FIELD_RESERVATION_START_DATE_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_START_DATE_DESC" />
 				
@@ -101,17 +108,17 @@
 	</fieldset>
 	<fieldset name="repeat_options">
 		<field
-			name="repeat_type"
+			name="repeat_type" 
+			id="repeatOptions"
 			type="list"
-			onchange="JMrepeatoptions.toggle(this,'repeat_interval,repeat_days,repeat_terminated');"
 			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_DESC"
 			>
 			<option value="none">COM_JONGMAN_NONE</option>
-            <option value="daily">COM_JONGMAN_DAILY</option>
-            <option value="weekly">COM_JONGMAN_WEEKLY</option>
-            <option value="monthly">COM_JONGMAN_MONTHLY</option>
-            <option value="yearly">COM_JONGMAN_YEARLY</option> 
+            <option class="days" value="daily">COM_JONGMAN_DAILY</option>
+            <option class="weeks" value="weekly">COM_JONGMAN_WEEKLY</option>
+            <option class="months" value="monthly">COM_JONGMAN_MONTHLY</option>
+            <option class="years" value="yearly">COM_JONGMAN_YEARLY</option> 
 		</field>		
 	
 		<field 

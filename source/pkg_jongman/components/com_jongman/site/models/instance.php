@@ -54,7 +54,9 @@ class JongmanModelInstance extends JModelAdmin
 			$this->setError($table->getError());
 			return false;
 		}
-		
+		if ($table->repeat_type !== '') {
+			$table->repeat_options = new JRegistry($table->repeat_options);
+		}
 		$instance = $this->getTable();
 		$instance->load($pk);
 		
@@ -74,6 +76,9 @@ class JongmanModelInstance extends JModelAdmin
 		$result->end_date = $date->format('Y-m-d');
 		$result->end_time = $date->format('H:i:s');
 		$result->reference_number = $instance->reference_number;
+		if ($result->repeat_type !== 'none') {
+			$result->repeat_terminated = $result->repeat_options->get('termination');
+		}
 		
 		return $result;
 		
@@ -372,7 +377,7 @@ class JongmanModelInstance extends JModelAdmin
 	
 	protected function executeEvents($existingSeries = null)
 	{
-		if ($existsingSeries == null) {
+		if ($existingSeries == null) {
 			$existingSeries = $this->series;
 		}
 		
@@ -380,9 +385,9 @@ class JongmanModelInstance extends JModelAdmin
 		$db = $this->getDbo();
 		
 		foreach ($events as $event) {
-			$command = $this->getReservationCommand($event, $series);
+			$command = $this->getReservationCommand($event, $existingSeries);
 			if ($command != null) {
-				$command->execute($dbo);
+				$command->execute($db);
 			}		
 		}
 	}

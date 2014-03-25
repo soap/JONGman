@@ -95,6 +95,8 @@ class JongmanModelReservation extends JModelAdmin
 			$date->setTimezone(new DateTimeZone('UTC'));
 			$result->start_date = $date->format('Y-m-d');
 			$result->start_time = $date->format('H:i:s');
+			$result->repeat_type = 'none';
+			$result->repeat_options = new JRegistry();
 			
 			// it will be conveted to user time zone in form (by field) 
 			$date = JFactory::getDate($app->input->getString('end'), $tz);
@@ -222,7 +224,6 @@ class JongmanModelReservation extends JModelAdmin
 		//if success then add instances
 		$this->_series = $reservationSeries;
 		$validData['series'] = $reservationSeries;
-		
 		$validData['repeat_options'] = $repeatOption->configurationString();
 		// now we do our validation process
 		return $validData;
@@ -293,7 +294,16 @@ class JongmanModelReservation extends JModelAdmin
 				$table->load($pk);
 				$isNew = false;
 			}
-		
+			
+			$resources = $this->_series->allResources();
+			$state = 1; //not pending
+			foreach($resources as $resource) {
+				if ($resource->getRequiresApproval()) {
+					$state = -1; //pending for approval
+					break;
+				}		
+			}
+			$data['state'] = $state;
 			// Bind the data.
 			if (!$table->bind($data))
 			{

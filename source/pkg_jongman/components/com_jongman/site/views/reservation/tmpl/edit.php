@@ -97,6 +97,14 @@ JHtml::_('behavior.keepalive');
 					<?php echo $this->form->getInput('end_time'); ?>
 				</div>
 			</div>
+			<div class="control-group">
+				<div class="control-label">
+					<?php echo $this->form->getLabel('reservation_length')?>
+				</div>
+				<div class="controls">
+					<?php echo $this->form->getInput('reservation_length')?>
+				</div>
+			</div>
 			<div class="control-grouop">
 				<div class="control-label">
 					<?php echo $this->form->getLabel('description'); ?>

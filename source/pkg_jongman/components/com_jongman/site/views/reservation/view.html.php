@@ -65,6 +65,7 @@ class JongmanViewReservation extends JView
 			
 		$this->canDelete = (!$isNew);
 		parent::display();
+		var_dump($this->item);
 		
 	}
 	
