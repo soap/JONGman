@@ -362,7 +362,7 @@ class JongmanModelInstance extends JModelAdmin
 		$existingSeries->withId($instance->reservation_id);
 		$existingSeries->withTitle($reservation->title);
 		$existingSeries->withDescription($reservation->description);
-		$existingSeries->withOwner($reservation->owner_id);
+		$existingSeries->withOwner($this->getOwnerId($instance->reservation_id));
 		$existingSeries->withStatus($reservation->state);
 		$existingSeries->withPrimaryResource($resource);
 		
@@ -485,17 +485,25 @@ class JongmanModelInstance extends JModelAdmin
 		if (!empty($this->users)) {
 			return $this->users[1]->user_id;
 		}
-		$db = $this->getDbo();
-		$query = $db->getQuery(true);
-		$query->select('user_id, user_level')
-			->from('#__jongman_reservation_users')
-			->where('reservation_id = '.(int)$reservationId);
-		$db->setQuery($query);
-		
-		$this->users = $db->loadObjectList('user_level');
+		$this->populateUsers($reservationId);
 
 		return $this->users[1]->user_id;
 	} 
+	
+	protected function populateUsers($reservationId)
+	{
+		$db = $this->getDbo();
+		
+		$query = $db->getQuery(true);
+		$query->select('user_id, user_level')
+		->from('#__jongman_reservation_users')
+		->where('reservation_id = '.(int)$reservationId);
+		$db->setQuery($query);
+		
+		$this->users = $db->loadObjectList('user_level');
+		
+		return $this->users;		
+	}
 	
 	public function populateResources($reservationId)
 	{
