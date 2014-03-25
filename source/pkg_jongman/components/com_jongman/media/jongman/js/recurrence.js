@@ -200,7 +200,10 @@ function Recurrence(recurOptions, recurElements) {
 			newEndDate = currentEnd;
 		}
 		
-		var dateString  = newEndDate.getFullYear()+'-'+newEndDate.getMonth()+'-'+newEndDate.getDate();
+		var d = newEndDate.getDate();
+		var m = newEndDate.getMonth() + 1;
+		var y = newEndDate.getFullYear();
+		var dateString = y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
 		elements.repeatTerminationTextbox.val(dateString);
 	};	
 }
