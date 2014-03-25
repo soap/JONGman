@@ -1,7 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 
-class RFValidationRuleDatetime implements IReservationValidationRule
+class RFValidationRuleReservationDatetime implements IReservationValidationRule
 {
 	private $message = '';
 	
