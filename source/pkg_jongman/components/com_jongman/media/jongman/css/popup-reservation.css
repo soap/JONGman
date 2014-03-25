@@ -472,7 +472,7 @@ label#batch-client-lbl {
 }
 form#reservation-form .inputbox {
 	width: 150px;
-	margin-left: 0px;
+	margin-left: 10px;
 	margin-bottom: 5px;
 	line-height: 1.5em;
 }

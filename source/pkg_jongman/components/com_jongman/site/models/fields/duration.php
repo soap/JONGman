@@ -16,8 +16,8 @@ class JFormFieldDuration extends JFormField
 		$html = array();
 		$html[] = '<div class="durationText">';
 		if ($this->element['readonly'] == 'true') {
-			$html[] = '<span id="durationDays">'.$this->days.'</span>'.JText::plural('COM_JONGMAN_DAYS', $this->days);
-			$html[] = '<span id="durationHours">'.$this->hours.'</span>'.JText::plural('COM_JONGMAN_HOURS', $this->hours);
+			$html[] = '<span id="durationDays"  class="input-mini uneditable-input"></span>';
+			$html[] = '<span id="durationHours" class="input-mini uneditable-input"></span>';
 		}else{
 			$html[] = '<input id="durationDays" type="text" />';
 			$html[] = '<input id="durationHours" type="text"/>'; 	

@@ -1,5 +1,7 @@
 <?php
 defined('_JEXEC') or die;
+JText::script("COM_JONGMAN_HOURS_1");
+JText::script("COM_JONGMAN_HOURS_MORE");
 JText::script("COM_JONGMAN_DAYS_1");
 JText::script("COM_JONGMAN_DAYS_MORE");
 JText::script("COM_JONGMAN_WEEKS_1");
@@ -57,6 +59,12 @@ JText::script("COM_JONGMAN_YEARS_MORE");
 </div>
 <script type="text/javascript">
 jQuery(document).ready(function() {
+	var resOpts = {
+		layoutUrl: '<?php echo JRoute::_('index.php?option=com_jongman&task=schedule.layout&format=json')?>',
+	};
+	var reservation = new Reservation(resOpts);
+	reservation.init();
+	
 	var recurOpts = {
         repeatType:'<?php echo $this->item->repeat_type?>',
         repeatInterval:'<?php echo $this->item->repeat_options->get('repeat_interval');?>',

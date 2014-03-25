@@ -262,3 +262,10 @@ ul.reservation-option-list fieldset {
 	padding-left: 0;
 	padding-right: 0;
 }
+
+.durationText {
+	font-size: 13px;
+	font-weight: bold;
+	display: inline;
+	color: #000;
+}
