@@ -55,9 +55,9 @@ class RFReservationSeries extends JObject
 	 */
 	public function bind($data)
 	{
-		$this->userId = JFactory::getUser()->get('id');
+		$this->userId = (int) $data['owner_id'];
 		$this->resource = $data['resource'];
-		$this->bookedBy = JFactory::getUser((int)$data['owner_id']);
+		$this->bookedBy = JFactory::getUser();
 		$userTz = JFactory::getUser($this->userId)->getParam('timezone'); 
 		$this->setDuration( 
 			new RFDateRange(RFDate::parse($data['start_date'], $userTz), RFDate::parse($data['end_date'], $userTz))
@@ -105,7 +105,6 @@ class RFReservationSeries extends JObject
 		$this->_repeatOptions = $repeatOptions;
 
 		$dates = $repeatOptions->getDates($this->currentInstance()->duration());
-
 		if (empty($dates))
 		{
 			return;

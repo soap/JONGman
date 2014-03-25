@@ -33,6 +33,7 @@ function Reservation(opts) {
 			DisplayDuration();
 
 			elements.beginDate.data['previousVal'] = elements.beginDate.val();
+			alert(elements.beginDate.data['previousVal'] );
 		});
 
 		elements.endDate.change(function() {

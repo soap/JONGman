@@ -139,13 +139,13 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 						<?php echo $this->escape(JString::substr($item->title, 0, 50)); ?>
 					<?php endif; ?>
 					<p class="smallsub">
-						<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias));?></p>
+						<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->reference_number));?></p>
 				</td>
 				<td>
 					<?php echo $this->escape($item->schedule_title)?>
 				</td>
 				<td>
-					<?php //echo $this->escape($item->resource_title)?>
+					<?php echo $this->escape($item->resources)?>
 				</td>
 				<td>
 					<?php echo JHtml::date($item->start_date, 'Y-m-d H:i', true) ;?>

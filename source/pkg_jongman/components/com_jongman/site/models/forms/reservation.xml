@@ -130,6 +130,7 @@
 			
 		<field
 			name="repeat_days" type="checkboxes"
+			class="unstyle"
 			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_DAYS_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_DAYS_DESC">
 			<option value="0" class="checkbox">SUNDAY</option>
