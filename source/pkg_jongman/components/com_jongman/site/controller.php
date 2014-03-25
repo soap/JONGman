@@ -53,7 +53,9 @@ class JongmanController extends JControllerLegacy
 		}
 		if ($view == 'reservation') {
 			JHtml::_('stylesheet', 'com_jongman/jongman/popup-reservation.css', false, true, false, false, false);
-			JHtml::_('script', 'com_jongman/jongman/reservation.js', false, true);	
+			//JHtml::_('script', 'com_jongman/jongman/reservation.js', false, true);	]
+			JHtml::_('script', 'com_jongman/jongman/date-helper.js', false, true);
+			JHtml::_('script', 'com_jongman/jongman/recurrence.js', false, true);
 		}
 
 		JHtml::_('stylesheet', 'com_jongman/jongman/jongman.css', false, true, false, false, false);
