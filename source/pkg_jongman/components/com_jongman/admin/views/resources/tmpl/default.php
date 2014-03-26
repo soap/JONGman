@@ -134,25 +134,25 @@ $saveOrder	= $listOrder=='ordering';
                     <?php echo $item->schedule_name?>
                 </td>
                 <td class="center">
-                    <?php echo $item->min_reservation?>
+                    <?php echo $item->params->get('min_reservation_duration')?>
                 </td>
                 <td class="center">
-                    <?php echo $item->max_reservation?>
+                    <?php echo $item->params->get('max_reservation_duration')?>
                 </td>
                 <td class="center">
-                    <?php echo $item->min_notice_duration?>
+                    <?php echo $item->params->get('min_notice_duration')?>
                 </td>
                 <td class="center">
-                    <?php echo $item->max_notice_duration?>
+                    <?php echo $item->params->get('max_notice_duration')?>
                 </td>                
                 <td class="center">           
                     <?php echo JHtml::_('jgrid.state', 
                         array(
                                 //task, text, active title, inactive title, tip, active class, inactive class
-                            1=> array('resetapproval',	'JPUBLISHED',	'COM_JONGMAN_RESOURCE_RESET_APPROVAL',	'JPUBLISHED',	false,	'publish',		'publish'),
-                            0=> array('setapproval',	'JUNPUBLISHED',	'COM_JONGMAN_RESOURCE_SET_APPROVAL',	'JUNPUBLISHED',	false,	'unpublish',	'unpublish')      
+                            1=> array('resetapproval',	'JPUBLISHED',	'COM_JONGMAN_RESOURCE_RESET_APPROVAL',	'JPUBLISHED',	false,	'publish',		'unpublish'),
+                            0=> array('setapproval',	'JUNPUBLISHED',	'COM_JONGMAN_RESOURCE_SET_APPROVAL',	'JUNPUBLISHED',	false,	'unpublish',	'publish')      
                             ),
-                        $item->need_approval, $i, 
+                        $item->params->get('need_approval'), $i, 
                         'resources.',         
                         $canChange); ?>
                 </td>

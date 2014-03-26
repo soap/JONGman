@@ -96,13 +96,13 @@ class JongmanModelResources extends JModelList
 		// Select the required fields from the table.
 		$query->select(
 				'r.id AS id, r.title AS title, r.alias AS alias,'.
-                'r.min_reservation as min_reservation, r.max_reservation as max_reservation,'.
-                'r.min_notice_duration as min_notice_duration,'.
-                'r.max_notice_duration as max_notice_duration,'.
-                'r.need_approval as need_approval,'.
+                //'r.min_reservation as min_reservation, r.max_reservation as max_reservation,'.
+                //'r.min_notice_duration as min_notice_duration,'.
+                //'r.max_notice_duration as max_notice_duration,'.
+                //'r.need_approval as need_approval,'.
 				'r.checked_out AS checked_out,'.
 				'r.checked_out_time AS checked_out_time,'.
-				'r.ordering AS ordering, r.published as published'
+				'r.ordering AS ordering, r.published as published, r.params'
 		);
 		$query->from('`#__jongman_resources` AS r');
         
@@ -197,4 +197,15 @@ class JongmanModelResources extends JModelList
 		return JTable::getInstance($type, $prefix, $config);
 	}
 
+	public function getItems()
+	{
+		$items = parent::getItems();
+		if ($items === false) return false;
+		
+		foreach($items as $i => $item) {
+			$items[$i]->params = new JRegistry($item->params);
+		}
+		
+		return $items;
+	}
 }
