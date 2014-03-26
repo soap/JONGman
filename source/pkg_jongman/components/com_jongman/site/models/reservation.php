@@ -151,18 +151,7 @@ class JongmanModelReservation extends JModelAdmin
 		parent::preprocessForm($form, $data, $group);
 
 	}
-	/**
-	 * Prepare and sanitise the table prior to saving.
-	 *
-	 * @param   JTable  $table  The table object for the record.
-	 *
-	 * @return  boolean  True if successful, otherwise false and the error is set.
-	 * @since   1.0
-	 */
-	protected function prepareTable($table)
-	{	
-		return true;
-	}
+
 		
 	/**
 	 * override to add resource reservation validation 
@@ -173,10 +162,9 @@ class JongmanModelReservation extends JModelAdmin
 		$validData = parent::validate($form, $data, $group);
 		if ($validData === false) return false;
 		
-		$validData['start_date'] = $validData['start_date'].' '.$validData['start_time'];
-		$validData['end_date'] = $validData['end_date'].' '.$validData['end_time'];
-		
 		$input = $validData;
+		$input['start_date'] = $input['start_date'].' '.$input['start_time'];
+		$input['end_date'] = $input['end_date'].' '.$input['end_time'];
 		$tz = JongmanHelper::getUserTimezone();
 
 		if (isset($input['repeat_terminated'])) {
@@ -219,13 +207,31 @@ class JongmanModelReservation extends JModelAdmin
 		}
 		$reservationSeries = new RFReservationSeries();
 		$reservationSeries->bind($input);
-		//start reservation validation here
+		// calculate reseravtion status 
+		$status = 1; //created
+		foreach ($reservationSeries->allResources() as $resource) {
+			if ($resource->getRequiresApproval()) {
+				if (!JongmanHelper::canApproveForResource($reservationSeries->bookedBy(), $resource ))
+				{
+					$status = -1; //pending
+					break;
+				}	
+			}	
+		}
+		$reservationSeries->setStatusId($status);
 		
-		//if success then add instances
+		//start reservation validation here
+		$ruleProcessor = JongmanHelper::getRuleProcessor();
+		// Add rules for new reservation checking
+		$ruleProcessor->addRule(
+					new RFValidationRuleAdminexcluded(new RFValidationRuleResourceAvailable(), $reservationSeries->bookedBy()));
+		if (!$ruleProcessor->validate($reservationSeries)) {
+				
+		}
+		
 		$this->_series = $reservationSeries;
 		$validData['series'] = $reservationSeries;
 		$validData['repeat_options'] = $repeatOption->configurationString();
-		// now we do our validation process
 
 		return $validData;
 	}
@@ -309,15 +315,7 @@ class JongmanModelReservation extends JModelAdmin
 				$isNew = false;
 			}
 			
-			$resources = $this->_series->allResources();
-			$state = 1; //not pending
-			foreach($resources as $resource) {
-				if ($resource->getRequiresApproval()) {
-					$state = -1; //pending for approval
-					break;
-				}		
-			}
-			$data['state'] = $state;
+			$data['state'] = $data['series']->getStatusId();
 			// Bind the data.
 			if (!$table->bind($data))
 			{
