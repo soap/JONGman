@@ -87,12 +87,14 @@ class JongmanViewQuotas extends JView
 			JToolBarHelper::checkin('quotas.checkin');
 			JToolBarHelper::publishList('quotas.publish', 'JTOOLBAR_PUBLISH');
 			JToolBarHelper::unpublishList('quotas.unpublish', 'JTOOLBAR_UNPUBLISH');
+			JToolBarHelper::archiveList('quotas.archive', 'JTOOLBAR_ARCHIVE');
 		}
 
-		if ($canDo->get('core.delete')) {
+		if ($state->get('filter.published') == -2 && $canDo->get('core.delete') ) {
 			JToolBarHelper::divider();
 			JToolBarHelper::deleteList('', 'quotas.delete','JTOOLBAR_DELETE');
+		}elseif ($canDo->get('core.edit.state')) {
+			JToolBarHelper::trash('quotas.trash','JTOOLBAR_TRASH');	
 		} 
-
 	}
 }
