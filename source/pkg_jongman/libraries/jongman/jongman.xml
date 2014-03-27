@@ -15,16 +15,20 @@
         <folder>blackout</folder><!-- shall be grouped to reservation -->
         <folder>controller</folder>
         <folder>date</folder>
+        <folder>event</folder>
         <folder>factory</folder>
         <folder>form</folder>
         <folder>html</folder>
         <folder>layout</folder>
         <folder>menu</folder>
+        <folder>quota</folder>
         <folder>reservation</folder>
+        <folder>resource</folder>
         <folder>schedule</folder>
         <folder>toolbar</folder>
         <folder>utils</folder>
         <folder>version</folder>
+        <folder>validation</folder>
         <file>framework.php</file>
         <file>library.php</file>
     </files>
