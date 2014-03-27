@@ -16,7 +16,7 @@
     <scriptfile>pkg_jongman.script.php</scriptfile>
     <files>
         <!-- It is important that the library and com_projectfork are installed first -->
-        <file type="library" id="jongman">libraries/jomgman</file>
+        <file type="library" id="jongman">libraries/jongman</file>
         <file type="component" id="com_jongman">components/com_jongman</file>
     </files>
 </extension>
