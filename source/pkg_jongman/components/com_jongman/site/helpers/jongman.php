@@ -85,7 +85,7 @@ class JongmanHelper
     	$user = JFactory::getUser();
     	$rules = array();
     	$rules[] = new RFValidationRuleReservationDatetime();
-    	$rules[] = new RFValidationRuleAdminExcluded(new RFValidationRuleReservationStartTimeRule($this->scheduleRepository), $user);
+    	$rules[] = new RFValidationRuleAdminexcluded(new RFValidationRuleReservationStarttime(), $user);
     	//$rules[] = new RFValidationRuleAdminExcluded(new RFValidationRulePermissionValidationRule(new PermissionServiceFactory()), $user);
     	//$rules[] = new RFValidationRuleAdminExcluded(new RFValidationRuleResourceMinimumNoticeRule(), $user);
     	//$rules[] = new RFValidationRuleAdminExcluded(new RFValidationRuleResourceMaximumNoticeRule(), $user);

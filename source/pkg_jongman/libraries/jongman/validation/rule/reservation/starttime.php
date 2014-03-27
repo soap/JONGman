@@ -1,11 +1,11 @@
 <?php
 defined('_JEXEC') or die;
 
-class RFValidationRuleReservationStarttme implements IReservationValidationRule
+class RFValidationRuleReservationStarttime implements IReservationValidationRule
 {
 	protected $message;
 	
-	public function __construct(IScheduleRepository $scheduleRepository)
+	public function __construct(/*IScheduleRepository $scheduleRepository*/)
 	{
 		$this->scheduleRepository = $scheduleRepository;
 	}

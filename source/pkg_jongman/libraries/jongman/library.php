@@ -28,10 +28,12 @@ jimport('jongman.base.ilayout');
 jimport('jongman.base.irepeats');
 jimport('jongman.base.ireservationlisting');
 jimport('jongman.base.ireservationslot');
-jimport('jongman.base.irservationvalidationrule');
+jimport('jongman.base.ireservationvalidationrulle');
 jimport('jongman.base.ireserveditem');
 jimport('jongman.base.iseriesupdatescope');
 jimport('jongman.base.seriesevent');
+jimport('jongman.base.ireservationvalidationresult');
+
 
 
 // I want to user JM prefix, but JLoader cannot support it, as Joomla 's J matched first

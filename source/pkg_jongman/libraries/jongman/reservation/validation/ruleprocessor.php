@@ -2,7 +2,7 @@
 defined('_JEXEC') or die;
 
 
-class RFReservationValidationRuleprocessor implements IReservationValidationService
+class RFReservationValidationRuleprocessor //implements IReservationValidationService
 {
 	/**
 	 * @var array|IReservationValidationRule[]

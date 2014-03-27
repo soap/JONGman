@@ -21,16 +21,21 @@ class RFValidationRuleAdminexcluded implements IReservationValidationRule
 	public function __construct(IReservationValidationRule $baseRule, JUser $user)
 	{
 		$this->rule = $baseRule;
-		$this->userSession = $user;
+		$this->user = $user;
 	}
 
 	public function validate($reservationSeries)
 	{
-		if ($this->user->authorise('core.admin', 'com_jongman')
+		if ($this->user->authorise('core.admin', 'com_jongman'))
 		{
 			return true;
 		}
 
 		return $this->rule->validate($reservationSeries);
+	}
+	
+	public function getError()
+	{
+		return '';
 	}
 }
