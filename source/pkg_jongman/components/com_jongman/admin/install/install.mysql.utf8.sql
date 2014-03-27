@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_layouts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(200) NOT NULL,
   `alias` varchar(200) NOT NULL,
+  `default` tinyint(4) NOT NULL DEFAULT '0',  
   `timezone` varchar(100) NOT NULL,
   `published` tinyint(4) NOT NULL DEFAULT '1',
   `note` varchar(200) NOT NULL,
@@ -167,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_resources` (
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `rs_scheduleid` (`schedule_id`),
-  KEY `rs_name` (`title`),
+  KEY `rs_name` (`title`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
