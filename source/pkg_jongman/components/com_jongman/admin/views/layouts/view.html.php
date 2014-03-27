@@ -80,7 +80,6 @@ class JongmanViewLayouts extends JViewLegacy
 		if ($canDo->get('core.edit.state')) {
 			JToolBarHelper::publishList('layouts.publish', 'JTOOLBAR_PUBLISH');
 			JToolBarHelper::unpublishList('layouts.unpublish', 'JTOOLBAR_UNPUBLISH');
-			JToolBarHelper::archiveList('layouts.archive','JTOOLBAR_ARCHIVE');
 		}
 
 		if ($state->get('filter.published') == -2 && $canDo->get('core.delete')) {

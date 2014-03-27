@@ -19,7 +19,7 @@ class JongmanControllerPostinstall extends JControllerLegacy
 		$model = $this->getModel();
 		if (!$model) {
 			$data['success'] = false;
-			$data['message'] = JText::_('COM_JONGMAN_ERROR_LOADING_SAMPLEDATA_MODEL');	
+			$data['message'] = JText::_('COM_JONGMAN_ERROR_LOADING_POSTINSTALL_MODEL');	
 		}else {
 			if ($model->install()) {
 				$data['success'] = true;

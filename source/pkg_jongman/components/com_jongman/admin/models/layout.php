@@ -23,6 +23,15 @@ class JongmanModelLayout extends JModelAdmin
 		return JFactory::getUser()->authorise('core.edit', $this->option);
 	}
 		
+	protected function canEditState($record)
+	{
+		if (($record->default == '1') && ($record->published == '1')) {
+			JError::raiseWarning(403, JText::_('COM_JONGMAN_ERROR_CANNOT_DEFAULT_LAYOUT_CHANE_STATE_NOT_ALLOWED'));
+			return false;
+		}
+		$user = JFactory::getUser();
+		return $user->authorise('core.edit.state', $this->option);
+	}
 	/**
 	 * Method to get the Layout form.
 	 *
