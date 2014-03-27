@@ -116,7 +116,7 @@ class JongmanModelSchedule extends JModelItem {
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 		
-		$query->select("id, title, status, ordering, published, params")
+		$query->select("id, title, ordering, published, params")
 			->from("#__jongman_resources")
 			->where("schedule_id = ".$pk)
 			->order("ordering ASC");
