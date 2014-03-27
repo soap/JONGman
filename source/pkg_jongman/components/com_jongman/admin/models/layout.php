@@ -12,6 +12,18 @@ jimport('joomla.application.component.modeladmin');
 class JongmanModelLayout extends JModelAdmin
 {
 	/**
+	 * 
+	 * Check if user can save a record
+	 * @param unknown $data
+	 * @param string $key
+	 * @return boolean
+	 */
+	protected function canSave($data = array(), $key = 'id')
+	{
+		return JFactory::getUser()->authorise('core.edit', $this->option);
+	}
+		
+	/**
 	 * Method to get the Layout form.
 	 *
 	 * @param   array    $data      An optional array of data for the form to interogate.
@@ -217,4 +229,52 @@ class JongmanModelLayout extends JModelAdmin
  			$this->metakey = implode(', ', $newKeys);
 		}
 	}
+	
+	function setDefault(&$pks, $value = 1)
+	{
+		// Initialise variables.
+		$table		= $this->getTable();
+		$pks		= (array) $pks;
+		$user		= JFactory::getUser();
+	
+		// Remember that we can set a home page for different languages,
+		// so we need to loop through the primary key array.
+		foreach ($pks as $i => $pk)
+		{
+			if ($table->load($pk)) {
+				if ($table->default == $value) {
+					unset($pks[$i]);
+					JError::raiseNotice(403, JText::_('COM_JONGMAN_ERROR_LAYOUT_ALREADY_DEFAULT'));
+				}
+				else{
+					$table->default = $value;
+					if (!$this->canSave($table)) {
+						// Prune items that you can't change.
+						unset($pks[$i]);
+						JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_SAVE_NOT_PERMITTED'));
+					}
+					elseif (!$table->check()) {
+						// Prune the items that failed pre-save checks.
+						unset($pks[$i]);
+						JError::raiseWarning(403, $table->getError());
+					}
+					elseif (!$table->store()) {
+						// Prune the items that could not be stored.
+						unset($pks[$i]);
+						JError::raiseWarning(403, $table->getError());
+					}	
+				}
+				
+			}
+			else{
+				unset($pks[$i]);
+				JError::raiseWarning(403, $table->getError());
+			}
+		}
+	
+		// Clean the cache
+		$this->cleanCache();
+	
+		return true;
+	}	
 }

@@ -44,7 +44,8 @@ class JongmanModelLayouts extends JModelList
 		$query->select(
 			$this->getState(
 				'list.select',
-				'a.id, a.title, a.alias, a.timezone, a.checked_out, a.checked_out_time, ' .
+				'a.id, a.title, a.alias, a.timezone, a.default,' . 
+				'a.checked_out, a.checked_out_time, ' .
 				'a.published, a.access, a.created, a.language'
 			)
 		);

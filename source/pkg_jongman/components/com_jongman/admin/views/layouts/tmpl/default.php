@@ -19,6 +19,9 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 					<?php echo JHtml::_('grid.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
 				</th>
 				<th width="5%">
+					<?php echo JText::_('COM_JONGMAN_DEFAULT_LAYOUT')?>
+				</th>
+				<th width="5%">
 					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_TIMEZONE', 'a.timezone', $listDirn, $listOrder); ?>
 				</th>		
                 <th width="35%">
@@ -80,6 +83,9 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 						<?php else : ?>
 							<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS_NOTE', $this->escape($item->alias), $this->escape($item->note));?>
 						<?php endif; ?></p>
+				</td>
+				<td class="center">
+					<?php echo JHtml::_('jgrid.isdefault', $item->default, $i, 'layouts.', $canChange)?> 
 				</td>
 				<td class="center">
 					<?php echo $this->escape($item->timezone); ?>
