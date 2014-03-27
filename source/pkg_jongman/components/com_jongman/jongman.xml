@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="1.7.0" method="upgrade">
+<extension type="component" version="2.5.0" method="upgrade">
     <name>COM_JONGMAN</name>
     <!-- The following elements are optional and free of formatting constraints -->
-    <creationDate>August 2010</creationDate>
+    <creationDate>March 2014</creationDate>
     <author>Prasit Gebsaap</author>
     <authorEmail>prasit.gebsaap@gmail.com</authorEmail>
-    <authorUrl>http://www.joomlant.com</authorUrl>
+    <authorUrl>http://www.joomlant.org</authorUrl>
     <copyright>GPLv3</copyright>
     <license></license>
     <!--  The version string is recorded in the components table -->
-    <version>2.0.0 Alpha8</version>
+    <version>2.0.0-beta.1pre</version>
     <!-- The description is optional and defaults to the name -->
     <description>COM_JONGMAN_XML_DESCRIPTION</description>
-
     <install folder="admin"> <!-- Runs on install -->
         <sql>
             <file driver="mysql" charset="utf8">install/install.mysql.utf8.sql</file>
@@ -23,16 +22,19 @@
             <file driver="mysql" charset="utf8">install/uninstall.mysql.utf8.sql</file>
         </sql>
     </uninstall>
-    <update folder="admin"> <!-- Runs on update/main version id in #__schemas table -->
+    <update folder="admin"> 
+    	<!-- Runs on update/main version id in #__schemas table -->
     	<!-- we have to provide files in this folder like 0.0.1.sql,0.0.2.sql -->
         <schemas>
             <schemapath type="mysql">install/schemas/mysql</schemapath>
         </schemas>
     </update>
     <media destination="com_jongman" folder="media">
-    	<folder>css</folder>
     	<folder>images</folder>
-    	<folder>js</folder>
+    	<folder>jongman</folder>
+    	<folder>jquery</folder>
+    	<folder>bootstrap</folder>
+    	<folder>mooGrowl</folder>
     	<filename>index.html</filename>
     </media>
     <!-- Site Main File Copy Section -->
@@ -42,12 +44,13 @@
         <filename>controller.php</filename>
         <filename>router.php</filename>
         <folder>controllers</folder>
+        <folder>helpers</folder>        
         <folder>language</folder>
         <folder>libraries</folder>
         <folder>models</folder>
         <folder>views</folder>
-        <folder>helpers</folder>
     </files>
+    <scriptfile>script.php</scriptfile>
     <administration>
         <!-- Administration Menu Section -->
         <menu>COM_JONGMAN</menu>
@@ -62,23 +65,20 @@
             to copy FROM in the package to install therefore files copied
             in this section are copied from /admin/ in the package -->
         <files folder="admin">
-            <!-- Site Main File Copy Section -->
  			<filename>access.xml</filename>
-            <filename>jongman.php</filename>
-            <fllename>access.xml</fllename>
-            <filename>index.html</filename>
             <filename>config.xml</filename>
-            <!-- Default controller -->
-            <filename>controller.php</filename>
+            <filename>controller.php</filename>       
+            <filename>index.html</filename>                  			
+            <filename>jongman.php</filename>
             <folder>assets</folder>
             <folder>controllers</folder>
+            <folder>help</folder>
             <folder>helpers</folder>
+            <folder>install</folder>            
             <folder>language</folder>
             <folder>models</folder>
-            <folder>install</folder>
             <folder>tables</folder>
             <folder>views</folder>
-            <folder>help</folder>
         </files>              
     </administration>
 </extension>

@@ -140,6 +140,17 @@
 			<option value="1">JYES</option>
 		</field>
 		<field
+			name="startTimeContraint"
+			type="list"
+			class="inputbox"
+			defualt="none"
+			label="COM_JONGMAN_CONFIG_PASTTIME_RESERVATION_LABEL"
+			description="COM_JONGMAN_CONFIG_PASTTIME_RESERVATION_DESC">
+			<option value="none">COM_JONGMAN_NONE</option>
+			<option value="current">COM_JONGMAN_CURRENT</option>
+			<option value="future">COM_JONGMAN_FUTURE</option>
+		</field>
+		<field
 			name="referenceLength"
 			type="integer"
 			first="6"

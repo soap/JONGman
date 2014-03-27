@@ -10,8 +10,9 @@ class RFReservationSeries extends JObject
 {
 	protected $seriesId; //reservation series id
 	protected $title;
-	protected $description; 
-	protected $userId;
+	protected $description;
+	protected $statusId; 
+	protected $userId; // reservation owner 's user id
 	
 	/**
 	 * @var RFResourceBookable
@@ -21,7 +22,7 @@ class RFReservationSeries extends JObject
 	/**
 	 * @var JUser
 	 */
-	protected $bookedBy;
+	protected $bookedBy; // person who place a reservation
 	protected $instances = array();
 	
 	protected $_repeatOptions;
@@ -236,5 +237,20 @@ class RFReservationSeries extends JObject
 	public function bookedBy()
 	{
 		return $this->bookedBy;
+	}
+	
+	/**
+	 * 
+	 * set reservation status, calculate from resource property and user right
+	 * @param unknown $newStatus
+	 */
+	public function setStatusId($newStatus)
+	{
+		$this->statusId = $newStatus;	
+	}
+	
+	public function getStatusId()
+	{
+		return $this->statusId;
 	}
 }

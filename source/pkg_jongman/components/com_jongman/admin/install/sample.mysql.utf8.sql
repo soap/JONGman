@@ -1,5 +1,7 @@
+INSERT INTO `kx1qj_jongman_layouts` (`id`, `title`, `alias`, `default`, `timezone`, `published`, `note`, `created`, `created_by`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `access`, `language`) VALUES
+(1, 'Default', 'default', 1, 'Asia/Bangkok', 1, '', '2013-11-03 11:00:00', 42, '2014-03-27 06:32:01', 42, 0, '0000-00-00 00:00:00', 1, '*');
+
 --
--- Dumping data for table `#__jongman_time_blocks`
 --
 
 INSERT INTO `#__jongman_time_blocks` (`label`, `end_label`, `availability_code`, `layout_id`, `start_time`, `end_time`, `day_of_week`) VALUES
