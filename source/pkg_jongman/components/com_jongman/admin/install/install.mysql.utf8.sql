@@ -168,7 +168,6 @@ CREATE TABLE IF NOT EXISTS `#__jongman_resources` (
   PRIMARY KEY (`id`),
   KEY `rs_scheduleid` (`schedule_id`),
   KEY `rs_name` (`title`),
-  KEY `rs_status` (`status`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
