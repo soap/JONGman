@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 	<!-- $Id$ -->
 <form>
+	<filedset>
+		<field name="layout_id" type="hidden" />
+		<field name="timezone" 
+			type="text" readonly="true"
+			label="COM_JONGMAIN_TIMEZONE" />
+	</filedset>
 	<fieldset name="static">
 		<field name="reservable_slots" 
-			type="textarea" rows="20" required="true"
+			type="textarea" rows="20" required="true" class="reservableEdit"
 			label="COM_JONGMAN_SLOTS_RESERVABLE_LABEL"
 			description="COM_JONGMAN_SLOTS_RESERVABLE_DESC"
 		/>
 		<field name="blocked_slots" 
-			type="textarea" rows="20" required="false"
+			type="textarea" rows="20" required="false" class="blockedEdit"
 			label="COM_JONGMAN_SLOTS_BLOCKED_LABEL" 
 			description="COM_JONGMAN_SLOTS_BLOCKED_DESC"
 		/>

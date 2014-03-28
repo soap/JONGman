@@ -39,6 +39,7 @@ JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, f
 		<fieldset class="adminform">
 			<ul class="adminformlist">
 				<li>
+					<?php echo $this->form->getLabel('id')?>
 					<?php echo $this->form->getInput('id')?>
 				</li>
 				<li>
@@ -95,10 +96,21 @@ JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, f
 				<?php echo JHtml::_('sliders.panel',JText::_('COM_JONGMAN_TIMESLOT_FIELDSET_TIMESLOTS'), 'layout-timeslots'); ?>
 				<fieldset class="panelform">
 					<?php echo $this->form->getLabel('timeslots'); ?>
-					<?php echo $this->form->getInput('timeslots'); ?>
+					<div id="jform_timeslots_element">
+                        <div id="jform_timeslots_reload"> 
+							<?php echo $this->form->getInput('timeslots'); ?>
+						</div>
+					</div>
 				</fieldset>
 			<?php echo JHtml::_('sliders.end'); ?>
 		</div>
+	<?php echo $this->form->getInput('elements'); ?>
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>
 </form>
+<script>
+		function reloadTimeSlot() {
+			JMform.reload('timeslots', 'layout-form', 'adminForm');	
+			SqueezeBox.close();	
+		}
+</script>

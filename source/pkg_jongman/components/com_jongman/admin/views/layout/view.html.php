@@ -50,6 +50,13 @@ class JongmanViewLayout extends JViewLegacy
 		}
 
 		$this->addToolbar();
+		
+		$doc = JFactory::getDocument();
+		$doc->addScript(JURI::root().'media/com_jongman/jquery/js/jquery-1.8.2.min.js');
+		$doc->addScript(JURI::root().'media/com_jongman/jquery/js/jquery.noconflict.js');
+		$doc->addScript(JURI::root().'media/com_jongman/jongman/js/jongman.js');
+		$doc->addScript(JURI::root().'media/com_jongman/jongman/js/form.js');
+		
 		parent::display($tpl);
 	}
 

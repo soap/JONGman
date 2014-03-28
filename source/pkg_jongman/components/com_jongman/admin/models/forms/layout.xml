@@ -146,6 +146,7 @@
 			size="20"
 			readonly="true"
 			filter="unset" />
+		<field name="elements" type="hidden" />
 	</fieldset>
 
 	<fields name="params">

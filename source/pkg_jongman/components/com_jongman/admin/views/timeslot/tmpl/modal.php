@@ -38,7 +38,17 @@ JHtml::_('behavior.keepalive');
 		<button type="submit" class="button2 right" onclick="Joomla.submitbutton('timeslot.save');"><?php echo JText::_('JTOOLBAR_SAVE')?></button>
 	</div>
 	<div class="clr"></div>
-	<div class="width-40 fltlft" id="layoutDialog-left">
+	<div class="width-100 fltlft">
+		<fieldset>
+			<ul>
+				<li>
+					<?php echo $this->form->getLabel('timezone')?>
+					<?php echo $this->form->getInput('timezone')?>
+				</li>
+			</ul>
+		</fieldset>
+	</div>
+	<div class="width-40 layoutDialog fltlft" id="layoutDialog-left">
 		<fieldset name="static-reservable">
 		<ul>
 			<li>
@@ -50,7 +60,7 @@ JHtml::_('behavior.keepalive');
 		</ul>
 		</fieldset>
 	</div>
-	<div class="width-50 fltrt" id="layoutDialog-right">
+	<div class="width-50 layoutDialog fltrt" id="layoutDialog-right">
 		<fieldset name="static-blocked">
 		<ul>
 			<li>
@@ -65,20 +75,21 @@ JHtml::_('behavior.keepalive');
 	<div class="clr"></div>
 
 	<?php echo JText::_('COM_JONGMAN_CREATE_TIMESLOT_EVEREY')?>
-	<input type="text" name="interval" id="interval" value="30" size="4" maxlength="4" />
+	<input type="text" name="interval" id="quickLayoutInterval" value="30" size="4" maxlength="4" />
 	<?php echo JText::_('COM_JONGMAN_MINUTES')?>
 	<?php echo JText::_('COM_JONGMAN_FROM')?>
-	<input type="text" name="start_time" id="start_time" value="08:00" size="5"/>
+	<input type="text" name="start_time" id="quickLayoutStart" value="08:00" size="5"/>
 	<?php echo JText::_('COM_JONGMAN_UNTIL')?>
-	<input type="text" name="enf_time" id="end_time" value="17:00" size="5"/>
+	<input type="text" name="enf_time" id="quickLayoutEnd" value="17:00" size="5"/>
 	
-	<button type="submit" class="button2 right" onclick="javascript:genTimeSlot();"><?php echo JText::_('COM_JONGMAN_CREATE')?></button>
-	<input type="hidden" name="task" value="" />
+	<button type="button" class="button2 right" id="createQuickLayout"><?php echo JText::_('COM_JONGMAN_CREATE')?></button>
+	<input type="hidden" name="layout_id" value="<?php echo $this->item->layout_id?>" />
+	<input type="hidden" name="task" value="" />	
 	<?php echo JHtml::_('form.token'); ?>
 </form>
 <script type="text/javascript">
-	function genTimeSlot() {
-		alert('aaaa');
-		
-	}	
+	jQuery(document).ready(function() {
+		var scheduleManager = new ScheduleManagement();
+		scheduleManager.init();	
+	});
 </script>

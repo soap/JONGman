@@ -47,7 +47,7 @@ class RFLayoutPeriod
 	/**
 	 * @return bool
 	 */
-	public function isLabelled()
+	public function isLabeled()
 	{
 		return !empty($this->label);
 	}

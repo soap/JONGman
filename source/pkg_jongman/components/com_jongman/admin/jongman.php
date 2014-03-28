@@ -16,7 +16,7 @@ jimport('jongman.framework');
 // Get an instance of the controller prefixed by Jongman, assign default view 's name in case of no view or task
 $controller = JController::getInstance('Jongman', array('default_view'=>'cpanel'));
 // Perform the Request task, default task performed if none specified
-$controller->execute(JRequest::getCmd('task'));
+$controller->execute(JFactory::getApplication()->input->getCmd('task'));
 // Redirect if set by the controller
 $controller->redirect();
 

@@ -19,7 +19,7 @@ class JongmanModelTimeslot extends JModelAdmin
 	protected function populateState()
 	{
 		// Get the pk of the record from the request.
-		$pk = JRequest::getInt('layout_id');
+		$pk = JFactory::getApplication()->input->getInt('layout_id');
 		$this->setState($this->getName() . '.id', $pk);
 	
 		// Load the parameters.
@@ -70,7 +70,7 @@ class JongmanModelTimeslot extends JModelAdmin
 		$result->use_daily_layout = false;
 		$result->blocked_slot ='';
 		$result->reservable_slots = '';
-		
+		$result->timezone = $layout->timezone;
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 		$query->select('day_of_week, label, end_label, start_time, end_time, availability_code')
@@ -178,6 +178,59 @@ class JongmanModelTimeslot extends JModelAdmin
 	protected function preprocessForm(JForm $form, $data, $group='content')
 	{	
 		parent::preprocessForm($form, $data, $group);
+	}
+
+	/**
+	 * (non-PHPdoc)
+	 * @see JModelAdmin::save()
+	 */
+	public function save($data)
+	{
+		// Initialise variables;
+		$key = 'layout_id';
+		$pk = (!empty($data[$key])) ? $data[$key] : (int) $this->getState($this->getName() . '.id');
+		$isNew = true;
+
+		$db = $this->getDbo();
+		// Allow an exception to be thrown.
+		try
+		{
+			$data['single_layout'] = '1';
+			$timezone = $data['timezone'];
+			if ($data['single_layout'] == '1') {
+				$reservableSlots = $data['reservable_slots'];
+				$blockedSlots = $data['blocked_slots'];
+				$layout = RFLayoutSchedule::parse($timezone, $reservableSlots, $blockedSlots);
+				$slots = $layout->getSlots();
+
+				$query = $db->getQuery(true);
+				$query->delete()->from('#__jongman_time_blocks')
+					->where('layout_id ='.(int)$pk);
+				$db->setQuery($query);
+				$db->execute();
+				
+				foreach ($slots as $slot) {
+					$obj = new StdClass();
+					$obj->start_time 		= $slot->start->format('H:i:s');
+					$obj->end_time 			= $slot->end->format('H:i:s');
+					$obj->availability_code = $slot->periodType;
+					$obj->layout_id 		= $pk;
+					$db->insertObject('#__jongman_time_blocks', $obj, 'id'); 
+				}	
+			}else{
+				
+			}
+			
+			
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e->getMessage());
+	
+			return false;
+		}
+	
+		return true;
 	}
 	
 	/**

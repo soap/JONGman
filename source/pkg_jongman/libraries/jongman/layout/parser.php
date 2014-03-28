@@ -8,7 +8,7 @@ class RFLayoutParser
 
 	public function __construct($timezone)
 	{
-		$this->layout = new ScheduleLayout($timezone);
+		$this->layout = new RFLayoutSchedule($timezone);
 		$this->timezone = $timezone;
 	}
 
@@ -32,16 +32,16 @@ class RFLayoutParser
 
 	private function appendPeriod($start, $end, $label, $dayOfWeek = null)
 	{
-		$this->layout->AppendPeriod(Time::Parse($start, $this->timezone),
-									Time::Parse($end, $this->timezone),
+		$this->layout->appendPeriod(RFTime::parse($start, $this->timezone),
+									RFTime::parse($end, $this->timezone),
 									$label,
 									$dayOfWeek);
 	}
 
 	private function appendBlocked($start, $end, $label, $dayOfWeek = null)
 	{
-		$this->layout->AppendBlockedPeriod(Time::Parse($start, $this->timezone),
-										   Time::Parse($end, $this->timezone),
+		$this->layout->appendBlockedPeriod(RFTime::Parse($start, $this->timezone),
+										   RFTime::Parse($end, $this->timezone),
 										   $label,
 										   $dayOfWeek);
 	}
