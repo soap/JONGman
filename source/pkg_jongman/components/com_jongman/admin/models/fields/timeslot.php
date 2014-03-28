@@ -46,7 +46,7 @@ class JFormFieldTimeslot extends JFormField {
             $html[] = '<div class="button2-left">';
             $html[] = '    <div class="blank">';
             $html[] = '<a class="modal_' . $this->id . '" title="' . JText::_('COM_JONGMAN_CHANGE_TIMESLOT') . '"'
-                    . ' href="' . $link . '" rel="{handler: \'iframe\', size: {x: 600, y: 500}}">';
+                    . ' href="' . $link . '" rel="{handler: \'iframe\', size: {x: 800, y: 500}}">';
             $html[] = JText::_('COM_JONGMAN_CHANGE_TIMESLOT') . '</a>';
             $html[] = '    </div>';
             $html[] = '</div>';

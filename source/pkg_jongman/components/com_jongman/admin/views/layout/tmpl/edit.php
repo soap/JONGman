@@ -39,6 +39,9 @@ JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, f
 		<fieldset class="adminform">
 			<ul class="adminformlist">
 				<li>
+					<?php echo $this->form->getInput('id')?>
+				</li>
+				<li>
 					<?php echo $this->form->getLabel('title'); ?>
 					<?php echo $this->form->getInput('title'); ?>
 				</li>
@@ -96,7 +99,6 @@ JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, f
 				</fieldset>
 			<?php echo JHtml::_('sliders.end'); ?>
 		</div>
-
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>
 </form>

@@ -2,8 +2,31 @@
 	<!-- $Id$ -->
 <form>
 	<fieldset name="static">
+		<field name="reservable_slots" 
+			type="textarea" rows="20" required="true"
+			label="COM_JONGMAN_SLOTS_RESERVABLE_LABEL"
+			description="COM_JONGMAN_SLOTS_RESERVABLE_DESC"
+		/>
+		<field name="blocked_slots" 
+			type="textarea" rows="20" required="false"
+			label="COM_JONGMAN_SLOTS_BLOCKED_LABEL" 
+			description="COM_JONGMAN_SLOTS_BLOCKED_DESC"
+		/>
 	</fieldset>
-	<fieldset name="day_1">
+	<fieldset name="day0">
+		<field name="day0_reservable_slots" type="textarea"></field>
+		<field name="day0_blocked_slots" type="textarea"></field>
 	</fieldset>
-
+	<filedset name="day1">
+	</filedset>
+	<fieldset name="day2">
+	</fieldset>
+	<filedset name="day3">
+	</filedset>
+	<fieldset name="day4">
+	</fieldset>
+	<filedset name="day5">
+	</filedset>
+	<fieldset name="day6">
+	</fieldset>	
 </form>

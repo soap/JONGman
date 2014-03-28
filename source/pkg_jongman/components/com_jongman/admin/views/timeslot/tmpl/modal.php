@@ -32,17 +32,35 @@ JHtml::_('behavior.keepalive');
 	}
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=modal&tmpl=component&id='.(int) $this->item->id); ?>"
+<form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=modal&tmpl=component&layout_id='.(int) $this->item->layout_id); ?>"
 	method="post" name="adminForm" id="timeslot-form" class="form-validate">
+	<div>
+		<button type="submit" class="button2 right" onclick="Joomla.submitbutton('timeslot.save');"><?php echo JText::_('JTOOLBAR_SAVE')?></button>
+	</div>
+	<div class="clr"></div>
 	<div class="width-40 fltlft" id="layoutDialog-left">
-		<h5>Reservable Slots</h5>
-		<textarea name="reservableEdit" id="reservableEdit" rows="15" cols="20" style="margin: 0px; display: inline-block; text-indent: 0px; text-align: start;">
-		</textarea>
+		<fieldset name="static-reservable">
+		<ul>
+			<li>
+				<?php echo $this->form->getLabel('reservable_slots')?>
+			</li>
+			<li>
+				<?php echo $this->form->getInput('reservable_slots')?>
+			</li>
+		</ul>
+		</fieldset>
 	</div>
 	<div class="width-50 fltrt" id="layoutDialog-right">
-		<h5>Blocked Slots</h5>
-		<textarea name="blockedEdit" id="blockedEdit" rows="15" cols="20" style="margin: 0px; display: inline-block; text-indent: 0px; text-align: start;">
-		</textarea>
+		<fieldset name="static-blocked">
+		<ul>
+			<li>
+				<?php echo $this->form->getLabel('blocked_slots')?>
+			</li>
+			<li>
+				<?php echo $this->form->getInput('blocked_slots')?>
+			</li>
+		</ul>	
+		</fieldset>	
 	</div>
 	<div class="clr"></div>
 

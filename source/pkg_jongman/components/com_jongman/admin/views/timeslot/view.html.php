@@ -14,10 +14,9 @@ class JongmanViewTimeslot extends JViewLegacy
 {
 	public function display($tp=null)
 	{
-		$item = new JObject();
-		$item->id = JRequest::get('layout_id', 'int', '');
+		$this->item = $this->get("Item");
+		$this->form = $this->get("Form");
 		
-		$this->item = $item;
 		parent::display($tp);
 	}
 }
