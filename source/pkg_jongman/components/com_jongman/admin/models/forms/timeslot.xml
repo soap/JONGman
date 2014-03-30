@@ -3,6 +3,9 @@
 <form>
 	<filedset>
 		<field name="layout_id" type="hidden" />
+		<field name="dailylayout" 
+			type="checkbox" value="1" default="1"
+			label="COM_JONGMAN_USE_SINGLE_LAYOUT_LABEL" />
 		<field name="timezone" 
 			type="text" readonly="true"
 			label="COM_JONGMAIN_TIMEZONE" />

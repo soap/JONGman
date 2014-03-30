@@ -67,7 +67,7 @@ class JongmanModelTimeslot extends JModelAdmin
 		$result = new StdClass();
 		$result->layout = $layout;
 		$result->layout_id = $pk;
-		$result->use_daily_layout = false;
+		$result->dailylayout = 1;
 		$result->blocked_slot ='';
 		$result->reservable_slots = '';
 		$result->timezone = $layout->timezone;
@@ -179,7 +179,64 @@ class JongmanModelTimeslot extends JModelAdmin
 	{	
 		parent::preprocessForm($form, $data, $group);
 	}
+	
+	/**
+	 * Validate data
+	 * @see JModelForm::validate()
+	 */
+	public function validate($form, $data, $group = null)
+	{
+		$validData = parent::validate($form, $data, $group);
+		if ($validData == false) return false;
 
+		$valid = true;
+		$days = array(null);
+		
+		$validateSingle = isset($validData['dailylayout']);
+
+		if (!$validateSingle){
+			if (count($reservableSlots) != RFDayOfWeek::numberOfDays || count($blockedSlots) != RFDayOfWeek::numberOfDays) {
+				return false;
+			}
+			$layout = RFLayoutSchedule::parseDaily('UTC', $reservableSlots, $blockedSlots);
+			$days = RFDayOfWeek::Days();
+		}
+		else{
+			$reservableSlots = $data['reservable_slots'];
+			$blockedSlots = $data['blocked_slots'];
+			$layout = RFLayoutSchedule::parse('UTC', $reservableSlots, $blockedSlots);
+		}
+
+		foreach ($days as $day) {
+			if (is_null($day)) {
+				$day = 0;
+			}
+			$slots = $layout->getLayout(RFDate::now()->addDays($day)->toUtc());
+
+			/** @var $firstDate Date */
+			$firstDate = $slots[0]->beginDate();
+			/** @var $lastDate Date */
+			$lastDate = $slots[count($slots) - 1]->endDate();
+			if (!$firstDate->isMidnight() || !$lastDate->isMidnight()) {
+				//Log::Debug('Dates are not midnight');
+				$this->setError("COM_JONGMAN_ERROR_SLOTS_START_FROM_MIDNIGHT_TO_MIDNIGHT");
+				$valid = false;
+				return false;
+			}
+
+			for ($i = 0; $i < count($slots) - 1; $i++) {
+				if (!$slots[$i]->endDate()->equals($slots[$i + 1]->beginDate())) {
+					$this->setError("COM_JONGMAN_ERROR_SLOTS_FILL_ALL_DAY");
+					$valid = false;
+					return false;
+				}
+			}
+		}
+		
+		if ($valid === false) return false;
+		
+		return $validData;
+	}
 	/**
 	 * (non-PHPdoc)
 	 * @see JModelAdmin::save()
@@ -244,5 +301,23 @@ class JongmanModelTimeslot extends JModelAdmin
 		
 		$db->setQuery($query);
 		return $db->loadObject();		
+	}
+	
+	public function getTimeSlots($layoutId) 
+	{
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
+		$query->select('availability_code, start_time')
+			->from('#__jongman_time_blocks')->where('layout_id ='.(int)$layoutId)
+			->order('start_time ASC');
+		$db->setQuery($query);
+		$rows = $db->loadObjectList();
+		
+		foreach ($rows as $i => $row) {
+			$label = JDate::getInstance($row->start_time, 'UTC')->format('H:i');
+			$rows[$i]->label = $label; 
+		}
+		
+		return $rows;
 	}
 }

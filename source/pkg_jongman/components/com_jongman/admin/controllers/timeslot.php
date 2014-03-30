@@ -56,10 +56,10 @@ class JongmanControllerTimeslot extends JControllerForm
 	
 			return false;
 		}
-	
+
 		// Test whether the data is valid.
 		$validData = $model->validate($form, $data);
-	
+		
 		// Check for validation errors.
 		if ($validData === false)
 		{
@@ -158,7 +158,7 @@ class JongmanControllerTimeslot extends JControllerForm
 		return true;
 	}
 
-	protected function getRedirectToItemAppend($recordId=null, $urlVar='id') 
+	protected function getRedirectToItemAppend($recordId=null, $urlVar='layout_id') 
 	{
 		$success = JRequest::getInt('success', null);
 		if ($success) {
@@ -168,5 +168,10 @@ class JongmanControllerTimeslot extends JControllerForm
 		}
 		
 		return parent::getRedirectToItemAppend($recordId, $urlVar);	
+	}
+	
+	public function layout()
+	{
+		
 	}
 }

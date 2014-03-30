@@ -97,7 +97,7 @@ JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, f
 				<fieldset class="panelform">
 					<?php echo $this->form->getLabel('timeslots'); ?>
 					<div id="jform_timeslots_element">
-                        <div id="jform_timeslots_reload"> 
+                        <div id="jform_timeslots_reload" style="clear: both;"> 
 							<?php echo $this->form->getInput('timeslots'); ?>
 						</div>
 					</div>
@@ -105,12 +105,57 @@ JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, f
 			<?php echo JHtml::_('sliders.end'); ?>
 		</div>
 	<?php echo $this->form->getInput('elements'); ?>
+	<input type="hidden" name="view" value="layout" />
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>
 </form>
 <script>
 		function reloadTimeSlot() {
-			JMform.reload('timeslots', 'layout-form', 'adminForm');	
 			SqueezeBox.close();	
+			jQuery(function() {
+			    jQuery.ajaxSetup({
+			        error: function(jqXHR, exception) {
+			            if (jqXHR.status === 0) {
+			                alert('Not connect.\n Verify Network.');
+			            } else if (jqXHR.status == 404) {
+			                alert('Requested page not found. [404]');
+			            } else if (jqXHR.status == 500) {
+			                alert('Internal Server Error [500].');
+			            } else if (exception === 'parsererror') {
+			                alert('Requested JSON parse failed.');
+			            } else if (exception === 'timeout') {
+			                alert('Time out error.');
+			            } else if (exception === 'abort') {
+			                alert('Ajax request aborted.');
+			            } else {
+			                alert('Uncaught Error.\n' + jqXHR.responseText);
+			            }
+			        }
+			    });
+			});
+
+			jQuery.ajax({
+				url: 'index.php?option=com_jongman&task=timeslot.layout&format=json&tmpl=component&layout_id=<?php echo $this->item->id?>',
+				dataType:'json',
+				data:{},
+				success: function (data)
+				{
+					var items = [];
+					var row = jQuery('#slotLayout');
+					row.empty();
+					var items = [];
+					jQuery.map(data.periods, function (item)
+					{
+						if (item.availability_code=='2') {
+							items.push('<td class="unreservable clickres">' + item.label + '</td>');
+						}else{
+							items.push('<td class="reservable clickres">' + item.label + '</td>');
+						}
+					});
+					row.html(items.join(''));
+				
+				},
+				async: false
+			});
 		}
 </script>

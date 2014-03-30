@@ -24,7 +24,7 @@ class JFormFieldTimeslot extends JFormField {
     	$html[]='	<div class="legend reservable">'.JText::_('COM_JONGMAN_RESERVABLE').'</div>';
     	$html[]='</div><div style="height: 10px">&nbsp;</div>';
     	$html[]= '<table class="reservations">';
-    	$html[]= '	<tr>';
+    	$html[]= '	<tr id="slotLayout">';
     	foreach ($slots as $period) {
     		if ($period->isReservable()) {
     			$html[]='<td class="reservable clickres">';

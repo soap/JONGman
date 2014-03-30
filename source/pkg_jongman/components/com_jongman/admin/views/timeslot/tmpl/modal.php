@@ -45,6 +45,10 @@ JHtml::_('behavior.keepalive');
 					<?php echo $this->form->getLabel('timezone')?>
 					<?php echo $this->form->getInput('timezone')?>
 				</li>
+				<li>
+					<?php echo $this->form->getLabel('dailylayout')?>
+					<?php echo $this->form->getInput('dailylayout')?>
+				</li>				
 			</ul>
 		</fieldset>
 	</div>
@@ -83,6 +87,7 @@ JHtml::_('behavior.keepalive');
 	<input type="text" name="enf_time" id="quickLayoutEnd" value="17:00" size="5"/>
 	
 	<button type="button" class="button2 right" id="createQuickLayout"><?php echo JText::_('COM_JONGMAN_CREATE')?></button>
+	<?php echo $this->form->getInput('layout_id')?>
 	<input type="hidden" name="layout_id" value="<?php echo $this->item->layout_id?>" />
 	<input type="hidden" name="task" value="" />	
 	<?php echo JHtml::_('form.token'); ?>
