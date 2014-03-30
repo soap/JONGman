@@ -11,7 +11,7 @@ class RFDayOfWeek
 	const FRIDAY = 5;
 	const SATURDAY = 6;
 
-	const NumberOfDays = 7;
+	const numberOfDays = 7;
 
 	/**
 	 * @return array|int[]|DayOfWeek
