@@ -29,7 +29,7 @@
     <div class="cpanel-right">
 	   <div style="border:1px solid #ccc;background:#fff;margin:15px;padding:15px">
             <div style="float:right;margin:10px;">
-	           <?php echo JHTML::_('image', 'administrator/components/com_jongman/assets/images/logo-jongman.png', 'joomlant.org' );?>
+	           <?php echo JHtml::image(JURI::root().'media/com_jongman/images/logo-jongman.png', 'joomlant.org');?>
             </div>
 <?php
 		echo '<h3>'.  JText::_('COM_JONGMAN_VERSION').'</h3>'
@@ -49,5 +49,5 @@
 	   </div>
     </div>
 </div>
-<input type="hidden" name="<?php echo JUtility::getToken(); ?>" value="1" />
+<input type="hidden" name="<?php echo JFactory::getSession()->getToken(); ?>" value="1" />
 </form>

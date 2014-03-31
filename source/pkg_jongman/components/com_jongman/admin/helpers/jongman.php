@@ -140,12 +140,12 @@ class JongmanHelper {
     public static function quickIconButton( $link, $image, $text )
 	{
 		$lang		= JFactory::getLanguage();
-		$path = 'components/com_jongman/assets/images/';
+		$path = 'media/com_jongman/images/';
         
         $button = '<div style="float:'.($lang->isRTL() ? 'right' : 'left').'">'
                     .'<div class="icon">'
                     .'  <a href="'.$link.'">'
-                    .'    '.JHtml::_('image.administrator',  $image, $path, NULL, NULL, $text )
+                    .'    '.JHtml::image(JURI::root().'media/com_jongman/images/'.$image, $text )
                     .'    <span>'.$text.'</span>'
                     .'  </a>'
                     .'</div>'
