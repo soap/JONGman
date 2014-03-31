@@ -18,7 +18,7 @@ jimport('joomla.application.component.controller');
  * @subpackage	com_jongman
  * @since		2.0
  */
-class JongmanController extends JController
+class JongmanController extends JControllerLegacy
 {
 	protected $default_view = 'cpanel';
 	/**

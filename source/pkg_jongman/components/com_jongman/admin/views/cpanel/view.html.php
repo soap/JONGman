@@ -8,7 +8,7 @@ defined('_JEXEC') or die();
 jimport( 'joomla.application.component.view' );
 jimport( 'joomla.html.pane' );
 
-class JongmanViewCpanel extends JView
+class JongmanViewCpanel extends JViewLegacy
 {
 	function display($tpl = null) 
 	{

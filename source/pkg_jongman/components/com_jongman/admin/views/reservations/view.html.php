@@ -17,7 +17,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Administrator
  * @since       1.0
  */
-class JongmanViewReservations extends JView
+class JongmanViewReservations extends JViewLegacy
 {
 	/**
 	 * @var    array  The array of records to display in the list.

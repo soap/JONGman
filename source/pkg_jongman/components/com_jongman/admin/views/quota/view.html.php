@@ -9,7 +9,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Admin
  * @since       1.0
  */
-class JongmanViewQuota extends JView
+class JongmanViewQuota extends JViewLegacy
 {
 	/**
 	 * @var    JObject	The data for the record being displayed.

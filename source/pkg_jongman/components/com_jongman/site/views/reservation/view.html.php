@@ -11,7 +11,7 @@ require_once JPATH_COMPONENT.'/helpers/reservation.php';
  * @subpackage  Frontend
  * @since       1.0
  */
-class JongmanViewReservation extends JView
+class JongmanViewReservation extends JViewLegacy
 {
 	/**
 	 * @var    JObject	The data for the record being displayed.

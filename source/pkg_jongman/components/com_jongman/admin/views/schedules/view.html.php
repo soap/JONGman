@@ -1,12 +1,12 @@
 <?php
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
 // import Joomla view library
 jimport('joomla.application.component.view');
-/**
- *  View
- */
-class JongmanViewSchedules extends JView {
+
+class JongmanViewSchedules extends JViewLegacy 
+{
     /**
      * items to be displayed (this is a list view)
      */

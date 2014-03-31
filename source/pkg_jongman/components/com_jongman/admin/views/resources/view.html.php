@@ -10,7 +10,8 @@ defined('_JEXEC') or die;
 
 jimport ('joomla.application.component.view');
 
-class JongmanViewResources extends JView {
+class JongmanViewResources extends JViewLegacy 
+{
     /**
      * items to be displayed (this is a list view)
      */

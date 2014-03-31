@@ -10,7 +10,8 @@ defined('_JEXEC') or die;
 
 jimport ('joomla.application.component.view');
 
-class JongmanViewResource extends JView {
+class JongmanViewResource extends JViewLegacy 
+{
     protected $form;
 	protected $item;
 	protected $state;

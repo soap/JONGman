@@ -4,7 +4,7 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
 
-class JongmanViewClosepopup extends JView
+class JongmanViewClosepopup extends JViewLegacy
 {
 	/**
 	 * Display the view

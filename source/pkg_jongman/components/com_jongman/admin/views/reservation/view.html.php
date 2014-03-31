@@ -19,7 +19,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Admin
  * @since       2.0
  */
-class JongmanViewReservation extends JView
+class JongmanViewReservation extends JViewLegacy
 {
 	/**
 	 * @var    JObject	The data for the record being displayed.

@@ -16,7 +16,7 @@ jimport('joomla.application.component.view');
  * @package		JONGman
  * @since		1.5
  */
-class JongmanViewSchedule extends JView
+class JongmanViewSchedule extends JViewLegacy
 {
 	protected $form;
 	protected $item;

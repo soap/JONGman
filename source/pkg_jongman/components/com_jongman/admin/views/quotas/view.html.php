@@ -15,7 +15,7 @@ jimport('joomla.application.component.view');
  * @subpackage  JONGman
  * @since       1.0
  */
-class JongmanViewQuotas extends JView
+class JongmanViewQuotas extends JViewLegacy
 {
 	/**
 	 * @var    array  The array of records to display in the list.
