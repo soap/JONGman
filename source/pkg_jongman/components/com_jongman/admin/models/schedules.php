@@ -136,15 +136,15 @@ class JongmanModelSchedules extends JModelList
 		}
 
 		// Add the list ordering clause.
-		$orderCol	= $this->getState('list.ordering');
-		$orderDirn	= $this->getState('list.direction');
+		$orderCol	= $this->getState('list.ordering', 'name');
+		$orderDirn	= $this->getState('list.direction', 'asc');
 		if ($orderCol == 'ordering' || $orderCol == 'name') {
 			$orderCol = 'name '.$orderDirn.', ordering';
 		}
         if (empty($orderCol)) {
             $orderCol = 'name';
         }
-		$query->order($db->getEscaped($orderCol.' '.$orderDirn));
+		$query->order($db->escape($orderCol.' '.$orderDirn));
 			
 		return $query;
 	}

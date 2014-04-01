@@ -31,7 +31,7 @@ class JongmanModelQuotas extends JModelList
 				'alias', 'a.alias',
 				'checked_out', 'a.checked_out',
 				'checked_out_time', 'a.checked_out_time',
-				'catid', 'a.catid', 'category_title',
+				'quota_limit', 'a.quota_limit',
 				'published', 'a.published',
 				'access', 'a.access', 'access_level',
 				'ordering', 'a.ordering',
@@ -56,7 +56,7 @@ class JongmanModelQuotas extends JModelList
 	 * @return  void
 	 * @since   1.0
 	 */
-	protected function populateState($ordering = 'quota_limit', $direction = 'asc')
+	protected function populateState($ordering = 'a.quota_limit', $direction = 'asc')
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication();
@@ -156,10 +156,10 @@ class JongmanModelQuotas extends JModelList
 		$query->join('LEFT', '#__users AS ua ON ua.id = a.created_user_id');
 
 		// Add the list ordering clause.
-		$orderCol	= $this->state->get('list.ordering');
-		$orderDirn	= $this->state->get('list.direction');
+		$orderCol	= $this->state->get('list.ordering', 'a.quota_limit');
+		$orderDirn	= $this->state->get('list.direction', 'asc');
 
-		$query->order($db->getEscaped($orderCol.' '.$orderDirn));
+		$query->order($db->escape($orderCol.' '.$orderDirn));
 
 		return $query;
 	}

@@ -101,7 +101,7 @@ $saveOrder	= $listOrder=='ordering';
 			</tr>
 		</tfoot>
 		<tbody>
-        <?php if (count($this->items)==0) : ?>
+        <?php if (empty($this->items)) : ?>
             <tr>
                 <td colspan="11" class="center"><?php echo JText::_("COM_JONGMAN_NO_RECORD")?></td>
             </tr>
