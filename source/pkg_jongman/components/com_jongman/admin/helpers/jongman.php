@@ -5,63 +5,63 @@ defined('_JEXEC') or die;
 class JongmanHelper {
     
     /**
-	 * Configure the Linkbar.
+	 * Configure the Linkbar (J2.5) or Sidebar (J3.x).
 	 *
 	 * @param	string	The name of the active view.
-	 *
 	 * @return	void
-	 * @since	1.6
+	 * @since	1.0
 	 */
     public static function addSubmenu($vName)
     {
-  		JSubMenuHelper::addEntry(
-			JText::_('COM_JONGMAN_CPANEL'),
+    	$is_j3 = version_compare(JVERSION, '3.0.0', 'ge');
+    	$class      = ($is_j3 ? 'JHtmlSidebar' : 'JSubMenuHelper');
+    	
+    	call_user_func(
+    		array($class, 'addEntry'),
+    		JText::_('COM_JONGMAN_CPANEL'),
 			'index.php?option=com_jongman&view=cpanel',
 			$vName == 'cpanel'
-		);
-		  
-        JSubMenuHelper::addEntry(
+    	);
+
+		call_user_func(
+    		array($class, 'addEntry'),
 			JText::_('COM_JONGMAN_SUBMENU_LAYOUTS'),
 			'index.php?option=com_jongman&view=layouts',
-			$vName == 'layouts'
-		);
-		  
-        JSubMenuHelper::addEntry(
-			JText::_('COM_JONGMAN_SUBMENU_SCHEDULES'),
+			$vName == 'layouts'    		
+    	);
+
+		call_user_func(
+    		array($class, 'addEntry'),
+			JText::_('COM_JONGMAN_SUBMENU_LAYOUTS'),
+			'index.php?option=com_jongman&view=layouts',
+			$vName == 'layouts'    		
+    	);		  
+    	call_user_func(
+    		array($class, 'addEntry'),
+    		JText::_('COM_JONGMAN_SUBMENU_SCHEDULES'),
 			'index.php?option=com_jongman&view=schedules',
-			$vName == 'schedules'
-		);
-		
-        JSubMenuHelper::addEntry(
+			$vName == 'schedules'    		
+    	);	
+
+		call_user_func(
+    		array($class, 'addEntry'),
 			JText::_('COM_JONGMAN_SUBMENU_RESOURCES'),
 			'index.php?option=com_jongman&view=resources',
-			$vName == 'resources'
-		);
-        
-        JSubMenuHelper::addEntry(
+			$vName == 'resources'    		
+    	);		
+		call_user_func(
+    		array($class, 'addEntry'),
 			JText::_('COM_JONGMAN_SUBMENU_RESERVATIONS'),
 			'index.php?option=com_jongman&view=reservations',
-			$vName == 'reservations'
-		);
-		
-		JSubMenuHelper::addEntry(
-			JText::_('COM_JONGMAN_SUBMENU_QUOTAS'),
+			$vName == 'reservations'    		
+    	);        
+
+		call_user_func(
+    		array($class, 'addEntry'),
+    		JText::_('COM_JONGMAN_SUBMENU_QUOTAS'),
 			'index.php?option=com_jongman&view=quotas',
 			$vName == 'quotas'
-		);
-		/*        
-       
-        JSubMenuHelper::addEntry(
-			JText::_('COM_JONGMAN_USERS'),
-			'index.php?option=com_jongman&view=users',
-			$vName == 'users'
-		);
-        
-        JSubMenuHelper::addEntry(
-			JText::_('COM_JONGMAN_GROUPS'),
-			'index.php?option=com_jongman&view=groups',
-			$vName == 'groups'
-		);*/                  
+    	);		             
     }
     
    	/**
