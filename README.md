@@ -9,4 +9,5 @@ Requirements
 JONGman 2.0 requires 
 + Joomla! 2.5.x
 + PHP 5.2.x
-+ We also made JONGman 2.0 to be able to run on Joomla 3.5, when it becomes stable for Joomla 2.5.
+
+We also made JONGman 2.0 to be able to run on Joomla 3.5, when it becomes stable for Joomla 2.5.
