@@ -16,6 +16,8 @@ class JongmanViewSchedules extends JViewLegacy
      */
     protected $pagination;
     
+    protected $is_j25;
+    
     protected $state;
     /**
      * JongmanSchedules view display method
@@ -28,6 +30,7 @@ class JongmanViewSchedules extends JViewLegacy
         $this->items        = $this->get('Items');
         $this->pagination   = $this->get('Pagination');
         $this->state        = $this->get('State');
+        $this->is_j25     = version_compare(JVERSION, '3', 'lt');
         
         // Check for errors.
 		if (count($errors = $this->get('Errors'))) {

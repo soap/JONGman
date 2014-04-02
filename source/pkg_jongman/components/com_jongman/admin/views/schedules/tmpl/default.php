@@ -10,34 +10,30 @@ defined('_JEXEC') or die;
 
 $user		= JFactory::getUser();
 $userId = $user->get('id');
-
-$listOrder	= $this->state->get('list.ordering');
-$listDirn	= $this->state->get('list.direction');
+$listOrder = $this->escape($this->state->get('list.ordering'));
+$listDirn   = $this->escape($this->state->get('list.direction'));
 $saveOrder	= $listOrder=='ordering';
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&view=schedules'); ?>" method="post" name="adminForm" id="adminForm">
-	<fieldset id="filter-bar">
-		<div class="filter-search fltlft">
-			<label class="filter-search-lbl" for="filter_search"><?php echo JText::_('JSEARCH_FILTER_LABEL'); ?></label>
-			<input type="text" name="filter_search" id="filter_search" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" title="<?php echo JText::_('COM_JONGMAN_SEARCH_IN_NAME'); ?>" />
-			<button type="submit"><?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?></button>
-			<button type="button" onclick="document.id('filter_search').value='';this.form.submit();"><?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?></button>
-		</div>
-		<div class="filter-select fltrt">
+<?php
+if (!$this->is_j25) :
+	if (!empty($this->sidebar)) :
+?>
+	<div id="j-sidebar-container" class="span2">
+    	<?php echo $this->sidebar; ?>
+    </div>
+    <div id="j-main-container" class="span10">
+    <?php else : ?>
+    	<div id="j-main-container">
+    <?php
+    endif;
+endif;
 
-			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
-				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.state'), true);?>
-			</select>
-            <select name="filter_access" class="inputbox" onchange="this.form.submit()">
-				<option value=""><?php echo JText::_('JOPTION_SELECT_ACCESS');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'));?>
-			</select>
-		</div>
-	</fieldset>
+    echo $this->loadTemplate('filter_' . ($this->is_j25 ? 'j25' : 'j30'));
+    ?>	
 	<div class="clr"> </div>
     
-	<table class="adminlist">
+	<table class="adminlist table table-striped">
 		<thead>
 			<tr>
 				<th width="1%">
@@ -145,11 +141,13 @@ $saveOrder	= $listOrder=='ordering';
         ?>
 		</tbody>
 	</table>
-	<div>
-		<input type="hidden" name="task" value="" />
-		<input type="hidden" name="boxchecked" value="0" />
-		<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
-		<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
-		<?php echo JHtml::_('form.token'); ?>
 	</div>
+
+	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="boxchecked" value="0" />
+	<?php if ($this->is_j25) : ?>		
+	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
+	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
+	<?php endif; ?>
+	<?php echo JHtml::_('form.token'); ?>
 </form>
