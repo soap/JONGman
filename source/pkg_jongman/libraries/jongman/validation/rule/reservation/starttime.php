@@ -7,7 +7,7 @@ class RFValidationRuleReservationStarttime implements IReservationValidationRule
 	
 	public function __construct(/*IScheduleRepository $scheduleRepository*/)
 	{
-		$this->scheduleRepository = $scheduleRepository;
+		//$this->scheduleRepository = $scheduleRepository;
 	}
 
 	public function getError()
