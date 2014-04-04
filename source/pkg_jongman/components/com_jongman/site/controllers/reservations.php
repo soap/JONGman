@@ -16,6 +16,7 @@ jimport('joomla.application.component.controlleradmin');
  */
 class JongmanControllerReservations extends JControllerAdmin
 {
+	protected $text_prefix = "COM_JONGMAN_RESERVATIONS"; 
 	/**
 	 * Proxy for getModel.
 	 * 
