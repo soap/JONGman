@@ -12,9 +12,11 @@ class RFEventCommandDeleteseries extends RFEventCommand
 	{
 		if ($dbo == null) $dbo = JFactory::getDbo();
 		$query = $dbo->getQuery(true);
+		
 		$query->delete('#__jongman_reservations')
 			->where('id = '.$this->series->seriesId());
-		$db->setQuery($dbo);
+		$dbo->setQuery($query);
+		
 		return $dbo->execute();
 	}
 }
