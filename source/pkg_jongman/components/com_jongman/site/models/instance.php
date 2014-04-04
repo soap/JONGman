@@ -484,7 +484,7 @@ class JongmanModelInstance extends JModelAdmin
 	
 	/**
 	 * 
-	 * Enter description here ...
+	 * Get owner id 
 	 * @param int $reservationId
 	 * @return int owner id
 	 */
