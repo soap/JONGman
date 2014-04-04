@@ -82,31 +82,44 @@ class JongmanModelReservation extends JModelAdmin
 		$app = JFactory::getApplication();
 		$user = JFactory::getUser();
 		$tz = JongmanHelper::getUserTimezone();
-		
+		$data = JFactory::getApplication()->getUserState($this->option.'.edit.'.$this->getName().'.data', array());
 		if (empty($pk)){
-			$result = parent::getItem($pk);
+			if (empty($data)) {
+				$result = parent::getItem($pk);
 			
-			$result->instance_id = null;
-			$result->schedule_id = $app->input->getInt('schedule_id');
-			$result->resource_id = $app->input->getInt('resource_id');
+				$result->instance_id = null;
+				$result->schedule_id = $app->input->getInt('schedule_id');
+				$result->resource_id = $app->input->getInt('resource_id');
 
-			// it will be conveted to user time zone in form (by field)
-			$date = JFactory::getDate($app->input->getString('start'), $tz);
-			$date->setTimezone(new DateTimeZone('UTC'));
-			$result->start_date = $date->format('Y-m-d');
-			$result->start_time = $date->format('H:i:s');
-			$result->repeat_type = 'none';
-			$result->repeat_options = new JRegistry();
+				// it will be conveted to user time zone in form (by field)
+				$date = JFactory::getDate($app->input->getString('start'), $tz);
+				$date->setTimezone(new DateTimeZone('UTC'));
+				$result->start_date = $date->format('Y-m-d');
+				$result->start_time = $date->format('H:i:s');
+				$result->repeat_type = 'none';
+				$result->repeat_options = new JRegistry();
 			
-			// it will be conveted to user time zone in form (by field) 
-			$date = JFactory::getDate($app->input->getString('end'), $tz);
-			$date->setTimezone(new DateTimeZone('UTC'));
-			$result->end_date = $date->format('Y-m-d');
-			$result->end_time = $date->format('H:i:s');
+				// it will be conveted to user time zone in form (by field) 
+				$date = JFactory::getDate($app->input->getString('end'), $tz);
+				$date->setTimezone(new DateTimeZone('UTC'));
+				$result->end_date = $date->format('Y-m-d');
+				$result->end_time = $date->format('H:i:s');
 			
-			$result->owner_id = $user->id;
-			$result->created_by = $user->id;	
+				$result->owner_id = $user->id;
+				$result->created_by = $user->id;
+			}else{
+				$result = parent::getItem($pk);	
+				$result->instance_id = null;
+				$result->schedule_id = $data['schedule_id'];
+				$result->start_date = $data['start_date'];
+				$result->end_date = $data['end_date'];
+				$result->repeat_type = $data['repeat_type'];
+				$result->repeat_options  = new JRegistry();
+			}
+			return $result;	
 		}
+		// we are not process existing reservation in this model
+		$result = new StdClass();
 		return $result;
 	}
 
@@ -220,15 +233,20 @@ class JongmanModelReservation extends JModelAdmin
 		}
 		$reservationSeries->setStatusId($status);
 		
-		//start reservation validation here
+		//start reservation validation here, get commone rules
 		$ruleProcessor = JongmanHelper::getRuleProcessor();
-		// Add rules for new reservation checking
+		// Add specific rules for new reservation validation
 		$ruleProcessor->addRule(
-					new RFValidationRuleAdminexcluded(new RFValidationRuleResourceAvailable(), $reservationSeries->bookedBy()));
-		if (!$ruleProcessor->validate($reservationSeries)) {
-				
-		}
-		
+					new RFValidationRuleResourceAvailable(), $reservationSeries->bookedBy());
+		$result = $ruleProcessor->validate($reservationSeries);
+		if (!$result->canBeSaved()) {
+			$errors = $result->getErrors();
+			foreach($errors as $error) {
+				$this->setError($error);
+			}
+			return false;		
+		}			
+	
 		$this->_series = $reservationSeries;
 		$validData['series'] = $reservationSeries;
 		$validData['repeat_options'] = $repeatOption->configurationString();
