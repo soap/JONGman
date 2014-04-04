@@ -70,4 +70,9 @@ class JongmanViewSchedules extends JViewLegacy
 			JToolBarHelper::deleteList('', 'schedules.delete','JTOOLBAR_DELETE');
 		}         
     }
+    
+    public function getSortFields()
+    {
+    	
+    }
 }
