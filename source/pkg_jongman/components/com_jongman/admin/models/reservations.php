@@ -45,6 +45,12 @@ class JongmanModelReservations extends JModelList
 		$reservationType = $this->getUserStateFromRequest($this->context.'.filter.reservation_type', 'filter_reservation_type', null, 'int');
 		$this->setState('filter.reservation_type', $reservationType);
 		
+		$startDate = $this->getUserStateFromRequest($this->context.'.filter.start_date', 'filter_start_date', null);
+		$this->setState('filter.start_date', $startDate);
+		
+		$endDate = $this->getUserStateFromRequest($this->context.'.filter.end_date', 'filter_end_date', null);
+		$this->setState('filter.end_date', $endDate);
+		
 		// Load the parameters.
 		$params = JComponentHelper::getParams('com_jongman');
 		$this->setState('params', $params);		
@@ -62,7 +68,7 @@ class JongmanModelReservations extends JModelList
 	{
 		// Initialise variables.
 		$db		= $this->getDbo();
-		$query	= $db->getQuery(true);
+		$query	= $db->getQuery(true); 
 
 		// Select the required fields from the table.
 		$query->select(
@@ -108,7 +114,8 @@ class JongmanModelReservations extends JModelList
 			$query->where('r.schedule_id='.(int)$scheduleId);	
 		}
 		
-		$query->where('o.user_level=1');
+		$userLevel = $this->getState('filter.user_level', '1');
+		$query->where('o.user_level='.(int)$userLevel);
 		
 		if ($access = $this->getState('filter.access')) {
 			$query->where('r.access = '.$access);
@@ -117,6 +124,19 @@ class JongmanModelReservations extends JModelList
 		if ($resourceId = $this->getState('filter.resource_id')) {
 			$query->where('a.reservation_id IN 
 				(SELECT reservation_id FROM #__jongman_reservation_resources WHERE resource_id='.(int)$resourceId.')');
+		}
+		
+		$timezone = JongmanHelper::getUserTimezone();
+		$startDate = $this->getState('filter.start_date');
+		if (!empty($startDate)) {
+			$start_date = JDate::getInstance($startDate, $timezone)->toSql();
+			$query->where('a.start_date >='.$db->quote($start_date));	
+		}
+		
+		$endDate = $this->getState('filter.end_date');
+		if (!empty($endDate)) {
+			$end_date = JDate::getInstance($endDate, $timezone)->toSql();
+			$query->where('a.end_date <='.$db->quote($end_date));				
 		}
 		
 		// Add the list ordering clause.
@@ -131,7 +151,9 @@ class JongmanModelReservations extends JModelList
 	public function getItems()
 	{
 		$items = parent::getItems();
+		
 		if ($items === false) return false;
+		
 		$dbo = $this->getDbo();
 		$query = $dbo->getQuery(true);
 		foreach($items as $i => $item) {
