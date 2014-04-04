@@ -51,7 +51,8 @@ class JFormFieldTimeoptions extends JFormField {
 		$user = JFactory::getUser();
 		$config = JFactory::getConfig();
 		$date = JFactory::getDate($this->value, 'UTC');
-		$date->setTimezone(new DateTimeZone($user->getParam('timezone', $config->get('offset'))));
+		$timezone = $user->getParam('timezone', $config->get('offset'));
+		$date->setTimezone(new DateTimeZone($timezone));
 
 		// Transform the date string.
 		$this->value = $date->format('H:i:s', true, false);
@@ -76,7 +77,7 @@ class JFormFieldTimeoptions extends JFormField {
 
         $user = JFactory::getUser();
         $userTz = $user->getParam('timezone', 'UTC');
-        
+
         $model = JModelLegacy::getInstance('Schedule', 'JongmanModel');
         $layout = $model->getScheduleLayout($scheduleId, $userTz);
 		$periods = $layout->getLayout(new RFDate());
