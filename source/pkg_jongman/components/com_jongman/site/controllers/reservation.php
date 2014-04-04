@@ -188,6 +188,7 @@ class JongmanControllerReservation extends JControllerForm
 
 			return false;
 		}
+
 		// Test whether the data is valid.
 		$validData = $model->validate($form, $data);
 
@@ -209,7 +210,10 @@ class JongmanControllerReservation extends JControllerForm
 					$app->enqueueMessage($errors[$i], 'warning');
 				}
 			}
-
+			//revert time to UTC
+			$tz = JongmanHelper::getUserTimezone();
+			$data['start_time'] = JDate::getInstance($data['start_time'], $tz)->format('H:i:s', false);
+			$data['end_time'] = JDate::getInstance($data['end_time'], $tz)->format('H:i:s', false); 
 			// Save the data in the session.
 			$app->setUserState($context . '.data', $data);
 
