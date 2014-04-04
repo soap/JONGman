@@ -28,7 +28,7 @@ class RFValidationRuleAdminexcluded implements IReservationValidationRule
 	{
 		if ($this->user->authorise('core.admin', 'com_jongman'))
 		{
-			return true;
+			return new RFReservationValidationResult();
 		}
 
 		return $this->rule->validate($reservationSeries);
