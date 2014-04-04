@@ -8,10 +8,7 @@ jimport('jongman.application.displayslotfactory');
 $Itemid = JFactory::getApplication()->input->getInt('Itemid', null);
 $reservationUrl = "index.php?option=com_jongman&task=instance.edit&cid[]=[REFERENCENUMBER]&Itemid=".$Itemid;
 
-$first_date = date("Y-m-d H:i:s", $this->datevars['firstDayTs']);
-$last_date = date("Y-m-d H:i:s", $this->datevars['lastDayTs']);
-
-$headerDateFormat = JComponentHelper::getParams('com_jongman')->get('headerDateFormat');
+$headerDateFormat = JComponentHelper::getParams('com_jongman')->get('headerDateFormat','Y-m-d');
 $bottomNavigation = JComponentHelper::getParams('com_jongman')->get('bottomNavigation', false);
 $calLink = JURI::root().'media/com_jongman/jongman/images/calendar.png';
 
