@@ -20,11 +20,13 @@ class RFReservationValidationRuleprocessor //implements IReservationValidationSe
 		foreach ($this->_validationRules as $rule)
 		{
 			$passed = $rule->validate($reservationSeries);
-			//Log::Debug('Validating rule %s. Passed?: %s', get_class($rule), $passed . '');
+			JLog::add(JText::sprintf("COM_JONGMAN_LOG_VALIDATION_RULE_PASSED", get_class($rule), $passed->canBeSaved()), JLog::INFO);
 
-			if (!$passed)
+			if (!$passed->canBeSaved())
 			{
-				return new RFReservationValidationResult(false, array($rule->getError()));
+				$errors = $rule->getError();
+				if (!is_array($errors)) $errors = array($errors);
+				return new RFReservationValidationResult(false, $errors);
 			}
 		}
 
