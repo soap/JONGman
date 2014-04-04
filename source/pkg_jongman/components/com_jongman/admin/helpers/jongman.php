@@ -28,14 +28,8 @@ class JongmanHelper {
 			JText::_('COM_JONGMAN_SUBMENU_LAYOUTS'),
 			'index.php?option=com_jongman&view=layouts',
 			$vName == 'layouts'    		
-    	);
-
-		call_user_func(
-    		array($class, 'addEntry'),
-			JText::_('COM_JONGMAN_SUBMENU_LAYOUTS'),
-			'index.php?option=com_jongman&view=layouts',
-			$vName == 'layouts'    		
-    	);		  
+    	);	
+    	  
     	call_user_func(
     		array($class, 'addEntry'),
     		JText::_('COM_JONGMAN_SUBMENU_SCHEDULES'),
