@@ -296,16 +296,15 @@ class JongmanModelSchedule extends JModelItem {
 	 */
 	private function getReservationList($dateRange, $scheduleId = null, $resourceId=null, $userId = null, $tz = null)
 	{		
-		$context = $this->option.'.reservations.schedule'.$scheduleId;
-		$app = JFactory::getApplication();
-		$app->setUserState($context.'.filter.start_date', $dateRange->getBegin()->format('Y-m-d H:i:s'));
-		$app->setUserState($context.'.filter.end_date', $dateRange->getEnd()->format('Y-m-d H:i:s'));
-		$app->setUserState($context.'.filter.schedule_id', $scheduleId);
-		$app->setUserState($context.'.filter.resource_id', $resourceId);
-		$app->setUserState($context.'.filter.user_id', $userId);
-		
-		$config = array('context'=>$context);
+		$config = array('ignore_request'=>true);
 		$rModel = JModel::getInstance('Reservations', 'JongmanModel', $config);
+		$rModel->setState('filter.start_date', $dateRange->getBegin()->format('Y-m-d H:i:s'));
+		// add one day to include all reservations for the last date 
+		$rModel->setState('filter.end_date', $dateRange->getEnd()->addDays(1)->format('Y-m-d H:i:s'));
+		$rModel->setState('filter.schedule_id', $scheduleId);
+		$rModel->setState('filter.resource_id', $resourceId);
+		$rModel->setState('filter.user_id', $userId);
+
 		$resItems = $rModel->getItems();
 
 		if (empty($tz)) {
