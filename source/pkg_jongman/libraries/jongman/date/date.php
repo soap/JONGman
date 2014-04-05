@@ -47,8 +47,15 @@ class RFDate
 	}
 
 	/**
-	 * Creates a new Date object with the given year, month, day, and optional $hour, $minute, $secord and $timezone
-	 * @return Date
+	 * Create a new RFDate object with the given year, month, day, and optional hour, minute, second and timezone
+     * @param int $year
+     * @param int $month
+     * @param int $day
+     * @param int $hour
+     * @param int $minute
+     * @param int $second
+     * @param string $timezone
+	 * @return RFDate
 	 */
 	public static function create($year, $month, $day, $hour = 0, $minute = 0, $second = 0, $timezone = null)
 	{
@@ -64,10 +71,10 @@ class RFDate
 	}
 
 	/**
-	 * Creates a new Date object from the given string and $timezone
+	 * Create a new RFDate object from the given string and $timezone
 	 * @param string $dateString
 	 * @param string|null $timezone
-	 * @return Date
+	 * @return RFDate
 	 */
 	public static function parse($dateString, $timezone = null)
 	{
@@ -80,28 +87,28 @@ class RFDate
 
 	/**
 	 * @param string $dateString
-	 * @return Date
+	 * @return RFDate
 	 */
 	public static function parseExact($dateString)
 	{
 		if (empty($dateString))
 		{
-			return RFDateNull::Instance();
+			return RFDateNull::getInstance();
 		}
 
 		$date = new DateTime($dateString);
 		$timeOffsetString = $date->getTimezone()->getName();
 		$offsetParts = explode(':', $timeOffsetString);
 
-		$d = new RFDate($date->format(Date::SHORT_FORMAT), 'UTC');
+		$d = new RFDate($date->format(RFDate::SHORT_FORMAT), 'UTC');
 		$offsetMinutes = ($offsetParts[0] * -60) + $offsetParts[1];
-		return $d->AddMinutes($offsetMinutes);
+		return $d->addMinutes($offsetMinutes);
 	}
 
 	/**
 	 * Returns a Date object representing the current date/time in the server's timezone
 	 *
-	 * @return Date
+	 * @return RFDate
 	 */
 	public static function now()
 	{
@@ -128,7 +135,7 @@ class RFDate
 	 * Returns the Date adjusted into the provided timezone
 	 *
 	 * @param string $timezone
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function toTimezone($timezone)
 	{
@@ -146,7 +153,7 @@ class RFDate
 	}
 
 	/**
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function copy()
 	{
@@ -156,7 +163,7 @@ class RFDate
 	/**
 	 * Returns the Date adjusted into UTC
 	 *
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function toUtc()
 	{
@@ -182,7 +189,7 @@ class RFDate
 
 	/**
 	 * @param string $databaseValue
-	 * @return Date
+	 * @return RFDate
 	 */
 	public static function fromDatabase($databaseValue)
 	{
@@ -206,7 +213,7 @@ class RFDate
 	/**
 	 * Returns the Time part of the Date
 	 *
-	 * @return Time
+	 * @return RFTime
 	 */
 	public function getTime()
 	{
@@ -216,7 +223,7 @@ class RFDate
 	/**
 	 * Returns the Date only part of the date.  Hours, Minutes and Seconds will be 0
 	 *
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function getDate()
 	{
@@ -229,7 +236,7 @@ class RFDate
 	 * -1 if this date is less than the passed in date
 	 * 0 if the dates are equal
 	 * 1 if this date is greater than the passed in date
-	 * @param Date $date
+	 * @param RFDate $date
 	 * @return int comparison result
 	 */
 	public function compare(RFDate $date)
@@ -261,7 +268,7 @@ class RFDate
 	 * -1 if this time is less than the passed in time
 	 * 0 if the times are equal
 	 * 1 if this times is greater than the passed in times
-	 * @param Date $date
+	 * @param RFDate $date
 	 * @return int comparison result
 	 */
 	public function compareTime(RFDate $date)
@@ -293,7 +300,7 @@ class RFDate
 
 	/**
 	 * Compares this date to the one passed in
-	 * @param Date $end
+	 * @param RFDate $end
 	 * @return bool if the current object is greater than the one passed in
 	 */
 	public function greaterThan(RFDate $end)
@@ -303,7 +310,7 @@ class RFDate
 
 	/**
 	 * Compares this date to the one passed in
-	 * @param Date $end
+	 * @param RFDate $end
 	 * @return bool if the current object is less than the one passed in
 	 */
 	public function lessThan(RFDate $end)
@@ -314,7 +321,7 @@ class RFDate
 	/**
 	 * Compare the 2 dates
 	 *
-	 * @param Date $date
+	 * @param RFDate $date
 	 * @return bool
 	 */
 	public function equals(RFDate $date)
@@ -323,7 +330,7 @@ class RFDate
 	}
 
 	/**
-	 * @param Date $date
+	 * @param RFDate $date
 	 * @return bool
 	 */
 	public function dateEquals(RFDate $date)
@@ -369,7 +376,7 @@ class RFDate
 
 	/**
 	 * @param int $days
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function addDays($days)
 	{
@@ -379,7 +386,7 @@ class RFDate
 
 	/**
 	 * @param int $months
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function addMonths($months)
 	{
@@ -388,7 +395,7 @@ class RFDate
 
 	/**
 	 * @param int $minutes
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function addMinutes($minutes)
 	{
@@ -397,7 +404,7 @@ class RFDate
 
 	/**
 	 * @param int $minutes
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function removeMinutes($minutes)
 	{
@@ -405,9 +412,9 @@ class RFDate
 	}
 
 	/**
-	 * @param Time $time
+	 * @param RFTime $time
 	 * @param bool $isEndTime
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function setTime(RFTime $time, $isEndTime = false)
 	{
@@ -428,16 +435,16 @@ class RFDate
 	/**
 	 * @param string $time
 	 * @param bool $isEndTime
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function setTimeString($time, $isEndTime = false)
 	{
-		return $this->setTime(Time::parse($time, $this->timezone()), $isEndTime);
+		return $this->setTime(RFTime::parse($time, $this->timezone()), $isEndTime);
 	}
 
 	/**
-	 * @param Date $date
-	 * @return DateDiff
+	 * @param RFDate $date
+	 * @return RFDateDiff
 	 */
 	public function getDifference(RFDate $date)
 	{
@@ -445,8 +452,8 @@ class RFDate
 	}
 
 	/**
-	 * @param DateDiff $difference
-	 * @return Date
+	 * @param RFDateDiff $difference
+	 * @return RFDate
 	 */
 	public function applyDifference(RFDateDiff $difference)
 	{
@@ -541,7 +548,7 @@ class RFDate
 
 	/**
 	 * Only used for unit testing
-	 * @param Date $date
+	 * @param RFDate $date
 	 */
 	public static function _setNow(RFDate $date)
 	{
@@ -570,33 +577,33 @@ class RFDate
 
 	public function __toString()
 	{
-		return $this->ToString();
+		return $this->toString();
 	}
 
 	/**
 	 * @static
-	 * @return Date
+	 * @return RFDate
 	 */
 	public static function min()
 	{
-		return Date::Parse('0001-01-01', 'UTC');
+		return RFDate::parse('0001-01-01', 'UTC');
 	}
 
 	/**
 	 * @static
-	 * @return Date
+	 * @return RFDate
 	 */
 	public static function max()
 	{
-		return Date::Parse('9999-01-01', 'UTC');
+		return RFDate::parse('9999-01-01', 'UTC');
 	}
 
 	/**
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function toTheMinute()
 	{
-		$time = $this->GetTime();
-		return $this->setTime(new Time($time->hour(), $time->minute(), 0, $this->timezone()));
+		$time = $this->getTime();
+		return $this->setTime(new RFTime($time->hour(), $time->minute(), 0, $this->timezone()));
 	}
 }

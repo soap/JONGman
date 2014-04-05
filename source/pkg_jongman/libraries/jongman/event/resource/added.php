@@ -4,7 +4,7 @@ defined('_JEXEC') or die;
 class RFEventResourceAdded extends RFSeriesEvent
 {
 	/**
-	 * @var BookableResource
+	 * @var RFResourceBookable
 	 */
 	private $resource;
 
@@ -14,9 +14,9 @@ class RFEventResourceAdded extends RFSeriesEvent
 	private $resourceLevel;
 
 	/**
-	 * @param BookableResource $resource
+	 * @param RFResourceBookable $resource
 	 * @param int|ResourceLevel $resourceLevel
-	 * @param ExistingReservationSeries $series
+	 * @param RFReservationExistingseries $series
 	 */
 	public function __construct(RFResourceBookable $resource, $resourceLevel, RFReservationExistingseries $series)
 	{
@@ -27,7 +27,7 @@ class RFEventResourceAdded extends RFSeriesEvent
 	}
 
 	/**
-	 * @return BookableResource
+	 * @return RFResourceBookable
 	 */
 	public function resource()
 	{
@@ -40,7 +40,7 @@ class RFEventResourceAdded extends RFSeriesEvent
 	}
 
 	/**
-	 * @return ExistingReservationSeries
+	 * @return RFReservationExistingseries
 	 */
 	public function series()
 	{

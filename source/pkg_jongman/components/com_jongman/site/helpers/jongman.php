@@ -9,10 +9,9 @@ class JongmanHelper
 {
 	
 	/**
-	 *
 	 * Get allowed actions for current user
 	 * @param string $assetName
-	 * @return JObject each action is property with boolean atrribute
+	 * @return JObject each action is property with boolean attributes
 	 */
 	public static function getActions($assetName = 'com_jongman')
 	{
@@ -117,7 +116,10 @@ class JongmanHelper
     	
     	return false;
     }
-    
+
+    /**
+     * @return string
+     */
     function getVersion()
     {
     	$version = stdClass();

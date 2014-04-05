@@ -1,19 +1,5 @@
 <?php
 /**
-Copyright 2011-2013 Nick Korbel
-
-This file is part of phpScheduleIt.
-
-phpScheduleIt is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-phpScheduleIt is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
 You should have received a copy of the GNU General Public License
 along with phpScheduleIt.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -21,12 +7,12 @@ along with phpScheduleIt.  If not, see <http://www.gnu.org/licenses/>.
 class RFDateRange
 {
 	/**
-	 * @var Date
+	 * @var RFDate
 	 */
 	private $_begin;
 	
 	/**
-	 * @var Date
+	 * @var RFDate
 	 */
 	private $_end;
 
@@ -36,8 +22,8 @@ class RFDateRange
 	private $_timezone;
 
 	/**
-	 * @param Date $begin
-	 * @param Date $end
+	 * @param RFDate $begin
+	 * @param RFDate $end
 	 * @param string $timezone
 	 */
 	public function __construct(RFDate $begin, RFDate $end, $timezone = null)
@@ -59,16 +45,16 @@ class RFDateRange
 	 * @param string $beginString
 	 * @param string $endString
 	 * @param string $timezoneString
-	 * @return DateRange
+	 * @return RFDateRange
 	 */
 	public static function create($beginString, $endString, $timezoneString)
 	{
-		return new DateRange(RFDate::parse($beginString, $timezoneString), RFDate::parse($endString, $timezoneString), $timezoneString);
+		return new RFDateRange(RFDate::parse($beginString, $timezoneString), RFDate::parse($endString, $timezoneString), $timezoneString);
 	}
 
 	/**
 	 * Whether or not the $date is within the range.  Range boundaries are inclusive
-	 * @param Date $date
+	 * @param RFDate $date
 	 * @return bool
 	 */
 	public function contains(RFDate $date)
@@ -77,7 +63,7 @@ class RFDateRange
 	}
 
 	/**
-	 * @param DateRange $dateRange
+	 * @param RFDateRange $dateRange
 	 * @return bool
 	 */
 	public function containsRange(RFDateRange $dateRange)
@@ -87,7 +73,7 @@ class RFDateRange
 
 	/**
 	 * Whether or not the date ranges overlap.  Dates that start or end on boundaries are excluded
-	 * @param DateRange $dateRange
+	 * @param RFDateRange $dateRange
 	 * @return bool
 	 */
 	public function overlaps(RFDateRange $dateRange)
@@ -105,7 +91,7 @@ class RFDateRange
 
 	/**
 	 * Whether or not any date within this range occurs on the provided date
-	 * @param Date $date
+	 * @param RFDate $date
 	 * @return bool
 	 */
 	public function occursOn(RFDate $date)
@@ -134,7 +120,7 @@ class RFDateRange
 	}
 
 	/**
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function getBegin()
 	{
@@ -142,7 +128,7 @@ class RFDateRange
 	}
 
 	/**
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function getEnd()
 	{
@@ -169,7 +155,7 @@ class RFDateRange
 	}
 	
 	/**
-	 * @param DateRange $otherRange
+	 * @param RFDateRange $otherRange
 	 * @return bool
 	 */
 	public function equals(RFDateRange $otherRange)
@@ -179,28 +165,28 @@ class RFDateRange
 	
 	/**
 	 * @param string $timezone
-	 * @return DateRange
+	 * @return RFDateRange
 	 */
 	public function toTimezone($timezone)
 	{
-		return new DateRange($this->_begin->toTimezone($timezone), $this->_end->toTimezone($timezone));
+		return new RFDateRange($this->_begin->toTimezone($timezone), $this->_end->toTimezone($timezone));
 	}
 	
 	/**
-	 * @return DateRange
+	 * @return RFDateRange
 	 */
 	public function toUtc()
 	{
-		return new DateRange($this->_begin->toUtc(), $this->_end->toUtc());
+		return new RFDateRange($this->_begin->toUtc(), $this->_end->toUtc());
 	}
 	
 	/**
 	 * @param int $days
-	 * @return DateRange
+	 * @return RFDateRange
 	 */
 	public function addDays($days)
 	{
-		return new DateRange($this->_begin->addDays($days), $this->_end->addDays($days));
+		return new RFDateRange($this->_begin->addDays($days), $this->_end->addDays($days));
 	}
 	
 	/**
@@ -210,9 +196,12 @@ class RFDateRange
 	{
 		return "\nBegin: " . $this->_begin->toString() . " End: " . $this->_end->toString() . "\n";
 	}
-	
-	public function __toString()
+
+    /**
+     * @return string
+     */
+    public function __toString()
 	{
-		return $this->ToString();
+		return $this->toString();
 	}
 }
