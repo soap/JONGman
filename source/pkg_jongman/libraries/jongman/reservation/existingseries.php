@@ -301,23 +301,23 @@ class RFReservationExistingseries extends RFReservationSeries
 		$added = $diff->getAddedToArray1();
 		$removed = $diff->getRemovedFromArray1();
 
-		/** @var $resource BookableResource */
+		/** @var $resource RFResourceBookable */
 		foreach ($added as $resource)
 		{
-			//$this->addEvent(new ResourceAddedEvent($resource, ResourceLevel::Additional, $this));
+			//$this->addEvent(new RFEventResourceAdded($resource, ResourceLevel::Additional, $this));
 		}
 
 		/** @var $resource BookableResource */
 		foreach ($removed as $resource)
 		{
-			//$this->AddEvent(new ResourceRemovedEvent($resource, $this));
+			//$this->addEvent(new RFEventResourceRemoved($resource, $this));
 		}
 
 		$this->_additionalResources = $resources;
 	}
 
 	/**
-	 * @param UserSession $deletedBy
+	 * @param JUser $deletedBy
 	 * @return void
 	 */
 	public function delete(JUser $deletedBy)

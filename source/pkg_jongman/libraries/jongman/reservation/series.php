@@ -27,7 +27,10 @@ class RFReservationSeries extends JObject
 	
 	protected $_repeatOptions;
 	private $_currentInstanceKey;
-	private $_additionalResources = array();
+    /**
+     * @var RFResourceBookable[]
+     */
+    protected $_additionalResources = array();
 	
 	public function __construct()
 	{
@@ -52,7 +55,7 @@ class RFReservationSeries extends JObject
 	/**
 	 * 
 	 * bind data (from model 's form
-	 * @param unknown_type $data
+	 * @param array $data
 	 */
 	public function bind($data)
 	{
@@ -82,7 +85,12 @@ class RFReservationSeries extends JObject
 		}
 		return $instance;
 	}
-	
+
+    public function instances()
+    {
+        return $this->instances;
+    }
+
 	public function getInstances()
 	{
 		return $this->instances;	
@@ -126,12 +134,12 @@ class RFReservationSeries extends JObject
 	}
 	
 	/**
-	 * @param DateRange $reservationDate
+	 * @param RFDateRange $reservationDate
 	 * @return bool
 	 */
 	protected function instanceStartsOnDate(RFDateRange $reservationDate)
 	{
-		/** @var $instance Reservation */
+		/** @var $instance RFReservation */
 		foreach ($this->instances as $instance)
 		{
 			if ($instance->startDate()->dateEquals($reservationDate->getBegin()))
@@ -143,8 +151,8 @@ class RFReservationSeries extends JObject
 	}
 	
 	/**
-	 * @param DateRange $reservationDate
-	 * @return Reservation newly created instance
+	 * @param RFDateRange $reservationDate
+	 * @return RFReservation newly created instance
 	 */
 	protected function addNewInstance(RFDateRange $reservationDate)
 	{
@@ -176,8 +184,11 @@ class RFReservationSeries extends JObject
 	{
 		$this->_currentInstanceKey = $this->getNewKey($current);
 	}
-	
-	protected function getCurrentKey()
+
+    /**
+     * @return string
+     */
+    protected function getCurrentKey()
 	{
 		return $this->_currentInstanceKey;
 	}
@@ -188,7 +199,7 @@ class RFReservationSeries extends JObject
 	}
 	
 	/**
-	 * @param BookableResource $resource
+	 * @param RFResourceBookable $resource
 	 */
 	public function addResource(RFResourceBookable $resource)
 	{
@@ -212,13 +223,14 @@ class RFReservationSeries extends JObject
 		$ids = array($this->resourceId());
 		foreach ($this->_additionalResources as $resource)
 		{
+            // var RFResourceBookable
 			$ids[] = $resource->getResourceId();
 		}
 		return $ids;
 	}
 
 	/**
-	 * @return array|BookableResource[]
+	 * @return array|RFResourceBookable[]
 	 */
 	public function allResources()
 	{
@@ -242,7 +254,7 @@ class RFReservationSeries extends JObject
 	/**
 	 * 
 	 * set reservation status, calculate from resource property and user right
-	 * @param unknown $newStatus
+	 * @param int $newStatus
 	 */
 	public function setStatusId($newStatus)
 	{
