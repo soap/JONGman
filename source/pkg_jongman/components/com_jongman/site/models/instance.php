@@ -312,8 +312,26 @@ class JongmanModelInstance extends JModelAdmin
 			}
 		}else{
 			// update new reservation series, no instances update
-			
+			$table = $this->getTable('Reservation', 'JongmanTable');
+			$table->load($this->series->seriesId());
+			$data = array(
+				'title' => $this->series->get('title'),
+				'description' => $this->series->get('description'),	
+				'state'	=> $this->series->statusId(),
+				'repeat_type' => $this->series->getRepeatOptions()->repeatType(),
+				'repeat_option' => $this->series->getRepeatOptions()->configurationString()
+			);
+			if (!$table->bind($data)) {
 				
+			}
+			
+			if (!$table->check()) {
+				
+			}
+			
+			if (!$table->store()) {
+				
+			}	
 		}
 	
 		$this->executeEvents($this->series);
