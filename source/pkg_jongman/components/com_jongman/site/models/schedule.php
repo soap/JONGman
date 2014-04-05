@@ -221,7 +221,7 @@ class JongmanModelSchedule extends JModelItem {
 		else{
 			$adjustedDays = ($startDay - $selectedWeekday);
 			if ($selectedWeekday < $startDay) {
-				$adjustedDay = $adjustedDays - 7;
+				$adjustedDays = $adjustedDays - 7;
 			}
 			
 			$startDate = $selectedDate->addDays($adjustedDays);
@@ -235,8 +235,8 @@ class JongmanModelSchedule extends JModelItem {
 	/**
 	 * 
 	 * load schedule layout data stored in database 
-	 * @param unknown_type $pk
-	 * @param unknown_type $tz
+	 * @param int $pk
+	 * @param string $tz
 	 * @since 2.0
 	 */
 	protected function loadScheduleLayout($pk = null, $tz = null)
@@ -294,7 +294,7 @@ class JongmanModelSchedule extends JModelItem {
 	 * Get the reservation list 
 	 * @since 2.0
 	 */
-	private function getReservationList($dateRange, $scheduleId = null, $resourceId=null, $userId = null, $tz = null)
+	private function getReservationList(RFDateRange $dateRange, $scheduleId = null, $resourceId=null, $userId = null, $tz = null)
 	{		
 		$config = array('ignore_request'=>true);
 		$rModel = JModel::getInstance('Reservations', 'JongmanModel', $config);
@@ -314,19 +314,17 @@ class JongmanModelSchedule extends JModelItem {
 		$list = new RFReservationListing($tz);
 		
 		foreach($resItems as $item) {
+			//add reservation first
 			$reservationItem = RFReservationItem::populate($item);
 			$list->add($reservationItem);	
 		}
-		//add reservation first
 		
 		//then blackout later 
-		
 
 		return $list;
 	}
 	
 	/**
-	 * 
 	 * Get schedule layout object of the schedule reservation (layout + reservation)
 	 * @since 2.0
 	 */
@@ -348,8 +346,8 @@ class JongmanModelSchedule extends JModelItem {
 	 * 
 	 * get schedule layout without reservation data
 	 * We use this for display time select options in reservation form (via JFormField)
-	 * @param unknown_type $pk
-	 * @param unknown_type $tz
+	 * @param int $pk
+	 * @param string $tz
 	 */
 	public function getScheduleLayout($pk = null, $tz = null)
 	{
@@ -360,133 +358,6 @@ class JongmanModelSchedule extends JModelItem {
 		
 		return $scheduleLayout;
 	}
-	
-	/**
-	 * 
-	 * Get date variables used in building reservation in week calendar
-	 * We assume UTC date from user, so converted to GMT as we store all date in GMT
-	 * @return array date variables
-	 * @deprecated 2.5
-	 */
-	public function getDateVars() 
-	{
-		if (!empty($this->_date_vars)) return $this->_date_vars;
-		
-		$schedule = $this->getItem();
-		
-		$default = false;
-
-        $dv = array();
-
-        // For Back, Current, Next Week clicked links
-        // pull values into an array month,day,year
-        $date = JRequest::getVar('date', null);
-        $jump_date = JRequest::getVar('jump_date', null, 'post');
-        if (!empty($jump_date)) $date = $jump_date;
-        
-        if (!empty($date)) {
-        	list($year, $month, $day) = explode('-', $date);
-        }	
-
-        // Set date values if a date has been passed in (these will always be set to a valid date)
-        if ( !empty($date) ) 
-		{
-            $dv['month']  = date('m', mktime(0,0,0, $month, 1));
-            $dv['day']    = date('d', mktime(0,0,0, $dv['month'], $day));
-            $dv['year']   = date('Y', mktime(0,0,0, $dv['month'], $dv['day'], $year));
-        }
-        else {
-            // else set values to user defined starting day of week
-            $d = getdate();
-            $dv['month']  = $d['mon'];
-            $dv['day']    = $d['mday'];
-            $dv['year']   = $d['year'];
-            $default = true;
-        }
-
-        // Make timestamp for today's date
-        $dv['todayTs'] = mktime(0,0,0, $dv['month'], $dv['day'], $dv['year']);
-
-        // Get proper starting day, 0=Sunday, 1=Monday
-        $dayNo = date('w', $dv['todayTs']);
-
-        if ($default) {
-            // weekdayStart == 7 is current date
-            if ($schedule->weekday_start < 7)
-                $dv['day'] = $dv['day'] - ($dayNo - $schedule->weekday_start); // Make sure week starts on correct day
-        }
-        // If default view and first day has passed, move up one week
-        // if ($default && (date(mktime(0,0,0,$dv['month'], $dv['day'] + $this->view_days, $dv['year'])) <= mktime(0,0,0)))
-
-        $dv['firstDayTs'] = mktime(0,0,0, $dv['month'], $dv['day'], $dv['year']);
-		$date_parts = getdate();
-
-        // Make timestamp for last date
-        // by adding # of days to view minus the day of the week to $day
-        $dv['lastDayTs'] = mktime(0,0,0, $dv['month'], ($dv['day'] + $schedule->view_days - 1), $dv['year']);
-        $dv['current'] = $dv['firstDayTs'];
-        $dv['now'] = mktime(0,0,0);
-		$this->_date_vars = $dv;
-		
-        return $this->_date_vars;	
-	}
-	
-    /**
-    * Get associative array of available times and rowspans
-    * This function computes and returns an associative array
-    * containing a timezone adjusted time value and it's rowspan value as
-    * $array[time] => rowspan
-    * @param none
-    * @return array of time value and it's associated rowspan value
-    * @deprecated 2.5
-    */
-    public function getTimeArray() 
-    {
-		$schedule = $this->getItem();
-		
-        $startDay = $startingTime = $schedule->day_start;
-        $endDay   = $endingTime   = $schedule->day_end;
-        $interval = $schedule->time_span;
-        $timeHash = array();
-        
-        $user = JFactory::getUser();
-        $userTz = new DateTimeZone( $user->getParam('timezone', JFactory::getApplication()->getCfg('offset')) );
-		$scheduleTz = new DateTimeZone($schedule->timezone);
-		$userDate = JFactory::getDate('now', $userTz);
-		$scheduleDate = JFactory::getDate('now', $scheduleTz);
-       
-		$offset = $scheduleDate->getOffsetFromGMT(true) - $userDate->getOffsetFromGMT(true);
-		
-        // Compute the available times
-        $prevTime = $startDay;
-
-        if ( (($startDay % 60) != 0) && ($interval < 60) ) {
-        	// Adjust time in minute to current user time zone
-            $time = DateUtil::formatTime($startDay, true, $schedule->time_format, $offset);
-            
-            $timeHash[$time] = intval((60-($startDay%60))/$interval);
-            $prevTime += $interval*$timeHash[$time];
-        }
-
-        while ($prevTime < $endingTime) {
-            if ($interval < 60) {
-            	// Adjust time in minute to current user time zone
-            	$time = DateUtil::formatTime($prevTime, true, $schedule->time_format, $offset ); 
-
-                $timeHash[$time] = intval(60 / $interval);
-                $prevTime += 60;        // Always increment by 1 hour
-            }
-            else {
-                $colspan = 1;           // Colspan is always 1
-                // Adjust time in minute to current user time zone
-               	$time = DateUtil::formatTime( $prevTime, true, $schedule->time_format, $offset ); 
-                
-				$timeHash[$time] = $colspan;
-                $prevTime += $interval;
-            }
-        }
-        return $timeHash;
-    }
     
     public function getNavigationLinks()
     {
@@ -506,7 +377,8 @@ class JongmanModelSchedule extends JModelItem {
     		$adjustment = max($scheduleLength, 7);
     		$prevAdjustment = 7 * floor($adjustment / 7); // ie, if 10, we only want to go back 7 days so there is overlap
     	}
-    	$url = JSite::getMenu()->getActive()->link.'&Itemid='.JSite::getMenu()->getActive()->id;
+    	$menu = JSite::getMenu();
+    	$url = $menu->getActive()->link.'&Itemid='.$menu->getActive()->id;
     	$obj = new stdClass();
     	$obj->previousLink = $url.'&sd='.$startDate->addDays(-$prevAdjustment)->getDate()->format('Y-m-d');
     	$obj->nextLink =  $url.'&sd='.$startDate->addDays($adjustment)->getDate()->format('Y-m-d');
