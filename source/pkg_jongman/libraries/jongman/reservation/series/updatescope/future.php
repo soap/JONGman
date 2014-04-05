@@ -18,6 +18,10 @@ class RFReservationSeriesUpdatescopeFuture extends RFReservationSeriesUpdatescop
 		return RFReservationSeriesUpdatescope::FUTUREINSTANCES;
 	}
 
+	/**
+	 * get instances that we have to update
+	 * @see ISeriesUpdateScope::getInstances()
+	 */
 	public function getInstances($series)
 	{
 		return $this->allInstancesGreaterThan($series, $this->earliestDateToKeep($series));
