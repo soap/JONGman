@@ -34,8 +34,8 @@ abstract class RFReservationRepeatAbstract implements IRepeatOptions
 	public function configurationString()
 	{
 		$obj = new JRegistry();
-		$obj->set('interval', $this->_interval);
-		$obj->set('termination', $this->_terminationDate->toDatabase());
+		$obj->set('repeat_interval', $this->_interval);
+		$obj->set('repeat_terminated', $this->_terminationDate->toDatabase());
 		
 		return $obj->toString();
 	}

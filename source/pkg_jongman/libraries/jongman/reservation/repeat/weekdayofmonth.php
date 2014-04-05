@@ -71,8 +71,8 @@ class RFReservationRepeatWeekdayofmonth extends RFReservationRepeatAbstract
 	public function configurationString()
 	{
 		$obj = new JRegistry();
-		$obj->loadString(parent::ConfigurationString());		
-		$obj->set('type', RFReservationRepeatMonthlytype::DayOfWeek);
+		$obj->loadString(parent::configurationString());		
+		$obj->set('repeat_monthly_type', RFReservationRepeatMonthlytype::DayOfWeek);
 		return $obj->toString();
 	}
 
