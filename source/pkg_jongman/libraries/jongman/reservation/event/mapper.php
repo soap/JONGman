@@ -70,7 +70,7 @@ class RFReservationEventMapper
 
 	private function buildAddReservationCommand(RFEventInstanceAdded $event, RFReservationExistingseries $series)
 	{
-		return new RFEeventCommandInstanceadded($event->getInstance(), $series);
+		return new RFEventCommandInstanceadded($event->getInstance(), $series);
 	}
 
 	private function buildRemoveReservationCommand(RFEventInstanceRemoved $event, RFReservationExistingseries $series)
