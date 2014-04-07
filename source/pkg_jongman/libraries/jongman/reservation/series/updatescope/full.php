@@ -1,6 +1,11 @@
 <?php
 defined('_JEXEC') or die;
-
+/**
+ * 
+ * Update all instances in the series
+ * @author Prasit Gebsaap
+ *
+ */
 class RFReservationSeriesUpdatescopeFull extends RFReservationSeriesUpdatescopeBase
 {
 	private $hasSameConfiguration = false;
@@ -21,6 +26,7 @@ class RFReservationSeriesUpdatescopeFull extends RFReservationSeriesUpdatescopeB
 	 */
 	public function getInstances($series)
 	{
+		/** @var JUser */
 		$bookedBy = $series->bookedBy(); 
 		if (!is_null($bookedBy) && $bookedBy->authorise('core.admin', 'com_jongman'))
 		{
@@ -60,7 +66,7 @@ class RFReservationSeriesUpdatescopeFull extends RFReservationSeriesUpdatescopeB
 	{
 		$this->hasSameConfiguration = $targetRepeatOptions->hasSameConfigurationAs($series->getRepeatOptions());
 
-		return parent::CanChangeRepeatTo($series, $targetRepeatOptions);
+		return parent::canChangeRepeatTo($series, $targetRepeatOptions);
 	}
 
 	/**
