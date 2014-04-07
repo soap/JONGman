@@ -135,7 +135,10 @@ class JongmanControllerInstance extends JControllerForm
 					$app->enqueueMessage($errors[$i], 'warning');
 				}
 			}
-
+			$tz = JongmanHelper::getUserTimezone();
+			$data['start_time'] = JDate::getInstance($data['start_time'], $tz)->format('H:i:s', false);
+			$data['end_time'] = JDate::getInstance($data['end_time'], $tz)->format('H:i:s', false); 
+			
 			// Save the data in the session.
 			$app->setUserState($context . '.data', $data);
 
