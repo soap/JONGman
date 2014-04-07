@@ -156,7 +156,7 @@ class JongmanModelReservations extends JModelList
 			if (stripos($search, 'id:') === 0) {
 				$query->where('r.id = '.(int) substr($search, 3));
 			} else {
-				$search = $db->Quote('%'.$db->getEscaped($search, true).'%');
+				$search = $db->Quote('%'.$db->escape($search, true).'%');
 				$query->where('(r.title LIKE '.$search.' OR r.alias LIKE '.$search.')');
 			}
 		}
@@ -174,7 +174,7 @@ class JongmanModelReservations extends JModelList
 			$query->where('(r.state = 0 OR r.state = 1)');
 		}
 
-		// Filter by a single or group of categories.
+		// Filter by a type id (reservation or blackout)
 		$typeId = $this->getState('filter.type_id');
 		if (!empty($typeId)) {
 			$query->where('r.type_id = '.(int) $typeId);

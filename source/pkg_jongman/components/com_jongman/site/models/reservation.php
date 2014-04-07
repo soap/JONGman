@@ -236,8 +236,13 @@ class JongmanModelReservation extends JModelAdmin
 		//start reservation validation here, get commone rules
 		$ruleProcessor = JongmanHelper::getRuleProcessor();
 		// Add specific rules for new reservation validation
+		$config = array('ignore_request'=>true);
 		$ruleProcessor->addRule(
-					new RFValidationRuleResourceAvailable(), $reservationSeries->bookedBy());
+					new RFValidationRuleResourceAvailability(), $reservationSeries->bookedBy());
+		$ruleProcessor->addRule(
+					new RFValidationRuleSchedulePeriod(JModel::getInstance('Schedule', 'JongmanModel', $config), $reservationSeries->bookedBy()), 
+						$reservationSeries->bookedBy());
+					
 		$result = $ruleProcessor->validate($reservationSeries);
 		if (!$result->canBeSaved()) {
 			$errors = $result->getErrors();

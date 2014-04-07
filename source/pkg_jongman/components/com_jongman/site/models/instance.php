@@ -79,14 +79,14 @@ class JongmanModelInstance extends JModelAdmin
 		$result->end_time = $date->format('H:i:s');
 		$result->reference_number = $instance->reference_number;
 		if ($result->repeat_type !== 'none') {
-			$result->repeat_terminated = $result->repeat_options->get('termination');
-			$result->repeat_interval = $result->repeat_options->get('interval');
+			$result->repeat_terminated = $result->repeat_options->get('repeat_terminated');
+			$result->repeat_interval = $result->repeat_options->get('repeat_interval');
 		}
 		if ($result->repeat_type == 'weekly') {
-			$result->repeat_days = $result->repeat_options->get('days');
+			$result->repeat_days = $result->repeat_options->get('repest_days');
 		}
 		if ($result->repeat_type == 'monthly') {
-			$result->repeat_days = $result->repeat_options->get('days');
+			$result->repeat_days = $result->repeat_options->get('repeat_days');
 		}
 		
 		
@@ -261,9 +261,32 @@ class JongmanModelInstance extends JModelAdmin
 
 		$this->series = $existingSeries;
 
-		//start reservation validation here
-
-		//if success then add instances
+		//start reservation validation here, get commone rules
+		$ruleProcessor = JongmanHelper::getRuleProcessor();
+		// Add specific rules for existing reservation validation
+		$ruleProcessor->addRule(
+					new RFValidationRuleResourceAvailability(), $existingSeries->bookedBy()
+					);
+		$ruleProcessor->addRule(
+					new RFValidationRuleExistingResourceAvailability(new RFResourceReservationAvailability()), $existingSeries->bookedBy()
+					);
+		/*
+		$ruleProcessor->addRule(new ExistingResourceAvailabilityRule(new ResourceReservationAvailability($this->reservationRepository), $userSession->Timezone));
+		$ruleProcessor->addRule(new AccessoryAvailabilityRule($this->reservationRepository, new AccessoryRepository(), $userSession->Timezone));
+		$ruleProcessor->addRule(new ResourceAvailabilityRule(new ResourceBlackoutAvailability($this->reservationRepository), $userSession->Timezone));
+		$ruleProcessor->addRule(new AdminExcludedRule(new ResourceMinimumDurationRule($this->resourceRepository), $userSession));
+		$ruleProcessor->addRule(new AdminExcludedRule(new ResourceMaximumDurationRule($this->resourceRepository), $userSession));
+		$ruleProcessor->addRule(new AdminExcludedRule(new QuotaRule(new QuotaRepository(), $this->reservationRepository, $this->userRepository, $this->scheduleRepository), $userSession));
+		$ruleProcessor->addRule(new SchedulePeriodRule($this->scheduleRepository, $userSession));
+		*/		
+		$result = $ruleProcessor->validate($existingSeries);
+		if (!$result->canBeSaved()) {
+			$errors = $result->getErrors();
+			foreach($errors as $error) {
+				$this->setError($error);
+			}
+			return false;		
+		}	
 
 		// now we do our validation process
 		return $validData;
@@ -319,7 +342,7 @@ class JongmanModelInstance extends JModelAdmin
 				'description' => $this->series->get('description'),	
 				'state'	=> $this->series->statusId(),
 				'repeat_type' => $this->series->getRepeatOptions()->repeatType(),
-				'repeat_option' => $this->series->getRepeatOptions()->configurationString()
+				'repeat_options' => $this->series->getRepeatOptions()->configurationString()
 			);
 			if (!$table->bind($data)) {
 				
