@@ -1,9 +1,18 @@
 <?php
 defined('_JEXEC') or die;
+jimport('jongman.base.iresourceavailabilitystrategy');
 
-class RFValidationRuleResourceAvailable implements IReservationValidationRule
+class RFValidationRuleResourceAvailability implements IReservationValidationRule
 {
 	protected $message = array();
+	
+	protected $timezone;
+	
+	public function __construct(IResourceAvailabilityStrategy $strategy, $timezone)
+	{
+		$this->strategy = $strategy;
+		$this->timezone = $timezone;
+	}
 	
 	public function validate($reservationSeries)
 	{
@@ -11,7 +20,7 @@ class RFValidationRuleResourceAvailable implements IReservationValidationRule
 		$conflicts = array();
 		$reservations = $reservationSeries->getInstances();
 		foreach ($reservations as $reservation) {
-			$existingItems = $this->getItemsBetween($reservation->startDate(), $reservation->endDate());
+			$existingItems = $this->strategy->getItemsBetween($reservation->startDate(), $reservation->endDate());
 			foreach ($existingItems as $existingItem) {
 				if (
 					$existingItem->getStartDate()->equals($reservation->endDate()) ||
@@ -47,28 +56,6 @@ class RFValidationRuleResourceAvailable implements IReservationValidationRule
 			(false !== array_search($existingItem->getResourceId(), $series->allResourceIds()));
 	}
 
-	/**
-	 * 
-	 * get reservation items between dates
-	 * @param RFDate $startDate
-	 * @param RFDate_type $endDate
-	 * @return array of RFReservationItem
-	 */
-	protected function getItemsBetween(RFDate $startDate, RFDate $endDate)
-	{
-		$model = JModelLegacy::getInstance('Reservations', 'JongmanModel', array('ignore_request'=>true));
-		$tz = JongmanHelper::getUserTimezone();
-		$model->setState('filter.start_date', $startDate->toTimezone($tz)->format('Y-m-d H:i:s'));
-		$model->setState('filter.end_date', $endDate->toTimezone($tz)->format('Y-m-d H:i:s'));
-		$rows = $model->getItems();
-		$reservations = array();
-		foreach ($rows as $row) {
-			$reservations[] = RFReservationItem::populate($row);
-		}
-
-		return $reservations;
-					
-	}
 	/**
 	 * @param array|IReservedItemView[] $conflicts
 	 * @return string
