@@ -5,6 +5,7 @@ class RFValidationRuleExistingResourceAvailability extends RFValidationRuleResou
 {
 	public function validate($series)
 	{
+		//just want to change isInconflict method
 		return parent::validate($series);
 	}
 	

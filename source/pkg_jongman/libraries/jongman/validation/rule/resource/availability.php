@@ -16,12 +16,14 @@ class RFValidationRuleResourceAvailability implements IReservationValidationRule
 	
 	public function validate($reservationSeries)
 	{
-		JLog::add(JText::sprintf("COM_JONGMAN_LOG_START_VALIDATION", get_class($this)), JLog::INFO);
+		JLog::add(JText::sprintf("COM_JONGMAN_LOG_START_VALIDATION", get_class($this)), JLog::DEBUG, 'validation');
 		$conflicts = array();
 		$reservations = $reservationSeries->getInstances();
 		foreach ($reservations as $reservation) {
+			JLog::add('validate reservation reference number '.$reservation->referenceNumber(), JLog::DEBUG, 'validation');
 			$existingItems = $this->strategy->getItemsBetween($reservation->startDate(), $reservation->endDate());
 			foreach ($existingItems as $existingItem) {
+				JLog::add(' with existing item reference number '.$existingItem->getReferenceNumber(), JLog::DEBUG, 'validation');
 				if (
 					$existingItem->getStartDate()->equals($reservation->endDate()) ||
 					$existingItem->getEndDate()->equals($reservation->startDate())
@@ -29,11 +31,10 @@ class RFValidationRuleResourceAvailability implements IReservationValidationRule
 				{
 					continue;
 				}
-				
+				JLog::add('validate: reservation id: '.$reservation->reservationId().' with existing item id : '.$existingItem->getId(),JLog::DEBUG, 'validation');
 				if ($this->isInConflict($reservation, $reservationSeries, $existingItem))
 				{
-					JLog::add(JText::sprintf("COM_JONGMAN_LOG_RESERVATION_CONFLICT", $reservation->referenceNumber(), get_class($existingItem), $existingItem->getId()), 
-						JLog::DEBUG);
+					JLog::add(JText::sprintf("COM_JONGMAN_LOG_RESERVATION_CONFLICT", $reservation->referenceNumber(), get_class($existingItem), $existingItem->getId()));
 					array_push($conflicts, $existingItem);
 				}				
 			}
@@ -50,6 +51,14 @@ class RFValidationRuleResourceAvailability implements IReservationValidationRule
 		return new RFReservationValidationResult();
 
 	}
+	
+	/**
+	 * 
+	 * Check if the instance is conflict with the existing reservation item
+	 * @param RFReservation $instance
+	 * @param RFReservationSeries $series
+	 * @param IReservedItem $existingItem
+	 */
 	protected function isInConflict(RFReservation $instance, RFReservationSeries $series, IReservedItem $existingItem)
 	{
 		return ($existingItem->getResourceId() == $series->resourceId()) ||

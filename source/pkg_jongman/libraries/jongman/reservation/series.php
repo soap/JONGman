@@ -265,4 +265,16 @@ class RFReservationSeries extends JObject
 	{
 		return $this->statusId;
 	}
+	
+	public function isMarkedForDelete($reservationId)
+	{
+		// this is a new series
+		return false;
+	}
+
+	public function isMarkedForUpdate($reservationId)
+	{
+		// this is a new series
+		return false;
+	}	
 }

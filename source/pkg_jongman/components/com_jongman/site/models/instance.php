@@ -260,15 +260,17 @@ class JongmanModelInstance extends JModelAdmin
 		$existingSeries->repeats($repeatOption);
 
 		$this->series = $existingSeries;
-
+		
+		$config = array('ignore_request'=>true);
+		$scheduleRepository = JModel::getInstance('Schedule', 'JongmanModel', $config);
 		//start reservation validation here, get commone rules
 		$ruleProcessor = JongmanHelper::getRuleProcessor();
 		// Add specific rules for existing reservation validation
 		$ruleProcessor->addRule(
-					new RFValidationRuleResourceAvailability(), $existingSeries->bookedBy()
-					);
+					new RFValidationRuleExistingResourceAvailability(new RFResourceReservationAvailability($scheduleRepository), $tz), $existingSeries->bookedBy()
+					);		
 		$ruleProcessor->addRule(
-					new RFValidationRuleExistingResourceAvailability(new RFResourceReservationAvailability()), $existingSeries->bookedBy()
+					new RFValidationRuleResourceAvailability(new RFResourceBlackoutAvailability($scheduleRepository), $tz), $existingSeries->bookedBy()
 					);
 		/*
 		$ruleProcessor->addRule(new ExistingResourceAvailabilityRule(new ResourceReservationAvailability($this->reservationRepository), $userSession->Timezone));

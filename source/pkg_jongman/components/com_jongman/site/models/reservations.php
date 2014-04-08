@@ -204,9 +204,9 @@ class JongmanModelReservations extends JModelList
 			$end_date = $db->quote(JDate::getInstance($endDate, $userTz)->toSql());
 			
 			$query->where(
-				'(a.start_date >='.$start_date.' AND a.start_date <='.$end_date.') OR ' .
+				'((a.start_date >='.$start_date.' AND a.start_date <='.$end_date.') OR ' .
 				'(a.end_date >= '.$start_date.' AND a.end_date <='.$end_date.') OR ' .
-				'(a.start_date <= '.$start_date.' AND a.end_date >='.$end_date.')'
+				'(a.start_date <= '.$start_date.' AND a.end_date >='.$end_date.'))'
 				);	
 		}
 		// Add the list ordering clause.
@@ -214,7 +214,6 @@ class JongmanModelReservations extends JModelList
 		$orderDirn	= $this->state->get('list.direction', 'ASC');
 
 		$query->order($db->escape($orderCol.' '.$orderDirn));
-
 		return $query;
 	}
 	
