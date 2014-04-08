@@ -47,7 +47,7 @@ class RFValidationRuleSchedulePeriod implements IReservationValidationRule
 
 		$this->message = $errors;
 
-		return new RFReservationValidationResult(strlen($errorMessage) == 0, $this->getError());
+		return new RFReservationValidationResult(count($errors) == 0, $this->getError());
 	}
 
 	public function getError()
