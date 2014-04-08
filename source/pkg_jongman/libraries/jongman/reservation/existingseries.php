@@ -184,7 +184,7 @@ class RFReservationExistingseries extends RFReservationSeries
 
 	public function requiresNewSeries()
 	{
-		return $this->seriesUpdateStrategy->RequiresNewSeries();
+		return $this->seriesUpdateStrategy->requiresNewSeries();
 	}
 
 	/**
@@ -260,7 +260,7 @@ class RFReservationExistingseries extends RFReservationSeries
 
 		if ($this->seriesUpdateStrategy->requiresNewSeries())
 		{
-			//$this->AddEvent(new SeriesBranchedEvent($this));
+			$this->addEvent(new RFEventSeriesBranched($this));
 			$this->repeats($this->seriesUpdateStrategy->getRepeatOptions($this));
 		}
 	}
@@ -272,7 +272,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	{
 		if ($this->seriesUpdateStrategy->canChangeRepeatTo($this, $repeatOptions))
 		{
-			//Log::Debug('Updating recurrence for series %s', $this->SeriesId());
+			JLog::add('Updating recurrence for series ', $this->seriesId(), JLog::DEBUG, 'debugging');
 
 			$this->_repeatOptions = $repeatOptions;
 
@@ -327,18 +327,18 @@ class RFReservationExistingseries extends RFReservationSeries
 		if (!$this->appliesToAllInstances())
 		{
 			$instances = $this->getInstances();
-			//Log::Debug('Removing %s instances of series %s', count($instances), $this->SeriesId());
+			JLog::add("Removing {count($instances)} instances of series {$this->seriesId()}", JLog::DEBUG);
 
 			foreach ($instances as $instance)
 			{
-				//Log::Debug("Removing instance %s from series %s", $instance->ReferenceNumber(), $this->SeriesId());
+				JLog::add("Removing instance {$instance->ReferenceNumber()} from series $this->SeriesId()", JLog::DEBUG);
 
-				$this->AddEvent(new RFEventInstanceRemoved($instance, $this));
+				$this->addEvent(new RFEventInstanceRemoved($instance, $this));
 			}
 		}
 		else
 		{
-			//Log::Debug("Removing series %s", $this->SeriesId());
+			JLog::add("Removing series {$this->seriesId()}", JLog::DEBUG);
 
 			$this->addEvent(new RFEventSeriesDeleted($this));
 		}
