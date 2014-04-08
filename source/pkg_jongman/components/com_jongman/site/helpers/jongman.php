@@ -75,6 +75,39 @@ class JongmanHelper
 		return $html;   
     }
     
+    public static function getRepeatOptions(array $input, RFDate $terminated) 
+    {
+    	switch ((string) $input['repeat_type']) {
+			case 'daily': 
+					$repeatOption = new RFReservationRepeatDaily(
+												$input['repeat_interval'], $terminated);
+				break;
+			case 'weekly' :
+					$repeatOption = new RFReservationRepeatWeekly(
+												$input['repeat_interval'], $terminated,
+												$input['repeat_days']
+											);
+				break;
+			case 'monthly' :
+					$class = 'RFReservationRepeat'.ucfirst($input['repeat_monthly_type']);
+					$repeatOption = new $class(
+												$input['repeat_interval'], $terminated				
+											);
+				break;
+			case 'yearly' :
+					$repeatOption = new RFReservationRepeatYearly(
+												$input['repeat_interval'], $terminated					
+										);
+				break;
+			default:
+					$repeatOption = new RFReservationRepeatNone();
+				break;
+				
+		}
+		
+		return $repeatOption;    		
+    }
+    
     /**
      * return rule process with common rules for all actions
      * @return RFReservationValidationRuleprocessor 

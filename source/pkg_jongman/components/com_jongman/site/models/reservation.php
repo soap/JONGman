@@ -184,35 +184,8 @@ class JongmanModelReservation extends JModelAdmin
 			$terminated = RFDate::parse($input['repeat_terminated'], $tz);
 			//$terminated->setTime(new RFTime(0, 0, 0, $tz));
 		}
-		switch ((string) $input['repeat_type']) {
-			case 'daily': 
-					$repeatOption = new RFReservationRepeatDaily(
-												$input['repeat_interval'], $terminated);
-				break;
-			case 'weekly' :
-					$repeatOption = new RFReservationRepeatWeekly(
-												$input['repeat_interval'], $terminated,
-												$input['repeat_days']
-											);
-				break;
-			case 'monthly' :
-					$class = 'RFReservationRepeat'.ucfirst($input['repeat_monthly_type']);
-					$repeatOption = new $class(
-												$input['repeat_interval'], $terminated				
-											);
-				break;
-			case 'yearly' :
-					$repeatOption = new RFReservationRepeatYearly(
-												$input['repeat_interval'], $terminated					
-										);
-				break;
-			default:
-					$repeatOption = new RFReservationRepeatNone();
-				break;
-				
-		}
-
-		$input['repeatOptions'] = $repeatOption;
+		$input['repeatOptions'] = JongmanHelper::getRepeatOptions($input, $terminated);
+		
 		if (isset($input['resource_id']) && ($input['resource_id'] > 0)) {
 			$row = JTable::getInstance('Resource', 'JongmanTable');
 			$row->load($data['resource_id']);
@@ -262,7 +235,7 @@ class JongmanModelReservation extends JModelAdmin
 	
 		$this->_series = $reservationSeries;
 		$validData['series'] = $reservationSeries;
-		$validData['repeat_options'] = $repeatOption->configurationString();
+		$validData['repeat_options'] = $reservationSeries->getRepeatOptions()->configurationString();
 
 		return $validData;
 	}
