@@ -277,30 +277,12 @@ class JongmanControllerReservation extends JControllerForm
 	 */
 	protected function allowAdd($data=array())
 	{
-		$allowed = parent::allowAdd($data);
-		if (!$allowed) return $allowed;
-		// Check for more 
+		$user = JFactory::getUser();
+		$resourceId = JFactory::getApplication()->input->getInt('rid', null);
 		
-		return true;
-	}
-	
-	protected function allowEdit($data=array(), $key = 'id')
-	{
-		$owner_id = 0;
-		if (is_array($data) && isset($data['id'])) {
-			$model = $this->getModel();
-			$reservationInstance = $model->getItem($data['id']);
-			$owner_id = $reservationInstance->owner_id;	
-		}
-		$asset = 'com_jongman';
-		$actions = JongmanHelper::getActions($asset);
-		if ($actions->get('core.edit')) return true;
+		$asset = ($resourceId === null) ? 'com_jongman' : 'com_jongman.resource.'.$resourceId;
 		
-		if (($owner_id > 0) && $owner_id == JFactory::getUser()->id) {
-			if ($actions->get('core.edit.own')) return true;
-		}
-		
-		return false;
+		return $user->authorise('core.create', $asset);
 	} 
 	
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id') 
@@ -332,9 +314,10 @@ class JongmanControllerReservation extends JControllerForm
 			$append .= '&end='.$end_date;
 		}
 		
+		/*
 		if ($return !== null) {
 			$append .= '&return='.base64_encode($return);
-		}
+		}*/
 		
 		return $append;
 	}

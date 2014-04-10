@@ -17,6 +17,30 @@ class JongmanControllerInstance extends JControllerForm
 		JFactory::getApplication()->input->set('layout', null);
 	}
 	
+	public function allowEdit($data = array(), $key = 'id') 
+	{
+		$user = JFactory::getUser();
+		if (isset($data) && ($data[$key] > 0)) {
+			$actions = JongmanHelper::getActions('com_jongman.resource.'.$data[$key]);
+			if ($actions->get('core.edit')) {
+				return true;
+			}elseif ($actions->get('core.edit.own')) {
+				$model = $this->getModel();
+				$table = $model->getTable();
+				$table->load($data[$key]);
+				
+				$series = $model->buildSeries($table->reference_number);
+				if ($series->bookedBy()->id == $user->id) {
+					return true;
+				}elseif ($series->userId() == $user->id) {
+					return true;
+				}	
+			}
+			return false;	
+		}
+
+		return $user->authorise('core.edit', 'com_jongman') || $user->authorise('core.edit.own', 'com_jongman');
+	}
 	/**
 	 * save only existing reservation instance
 	 * @see JControllerForm::save()
@@ -95,7 +119,7 @@ class JongmanControllerInstance extends JControllerForm
 
 			return false;
 		}
-
+		
 		switch ($this->getTask()) {
 			case 'updateinstance':
 				$updatescope = 'this';
@@ -110,7 +134,7 @@ class JongmanControllerInstance extends JControllerForm
 				$updatescope = 'this';
 				break;
 		}
-		
+
 		// pass for validate usage 
 		$data['updateScope'] = $updatescope;
 		
@@ -226,6 +250,8 @@ class JongmanControllerInstance extends JControllerForm
 		$schedule_id = $app->input->getInt('schedule_id', null);
 		if (!empty($schedule_id)) {
 			$append .= '&layout=calendar&id='.$schedule_id;	
+		}else{
+			
 		}
 		
 		return $append;	
