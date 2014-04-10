@@ -12,7 +12,6 @@ jimport('joomla.application.component.modelitem');
 class JongmanModelInstanceitem extends JModelItem 
 {
 	
-	
 	public function getItem($pk=null)
 	{
 		if (empty($pk)) {
@@ -53,11 +52,16 @@ class JongmanModelInstanceitem extends JModelItem
 		}
 		
 		$query = $this->_db->getQuery(true);
-		$query->select('a.id as resource_id, a.title as resource_title')
-			->from('#__jongman_reservation_resources AS a');
+		$query->select('r.*, a.resource_level as resource_level')
+			->from('#__jongman_reservation_resources AS a')
+			->join('LEFT', '#__jongman_resources AS r ON r.id=a.resource_id');
 		
-		$query->where('a.reservation_id='.$reservationId);
+		$query->where('a.reservation_id='.(int)$reservationId);
+		$query->order('a.resource_level ASC, r.title ASC');
 		
+		$this->_db->setQuery($query);
+		$rows = $this->_db->loadObjectList();
 		
+		return $rows;
 	}	
 }
