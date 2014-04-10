@@ -94,27 +94,28 @@ class JongmanModelReservation extends JModelAdmin
 				// it will be conveted to user time zone in form (by field)
 				$date = JFactory::getDate($app->input->getString('start'), $tz);
 				$date->setTimezone(new DateTimeZone('UTC'));
-				$result->start_date = $date->format('Y-m-d');
-				$result->start_time = $date->format('H:i:s');
-				$result->repeat_type = 'none';
+				$result->start_date 	= $date->format('Y-m-d');
+				$result->start_time 	= $date->format('H:i:s');
+				$result->repeat_type 	= 'none';
 				$result->repeat_options = new JRegistry();
 			
 				// it will be conveted to user time zone in form (by field) 
 				$date = JFactory::getDate($app->input->getString('end'), $tz);
 				$date->setTimezone(new DateTimeZone('UTC'));
-				$result->end_date = $date->format('Y-m-d');
-				$result->end_time = $date->format('H:i:s');
+				$result->end_date 	= $date->format('Y-m-d');
+				$result->end_time 	= $date->format('H:i:s');
 			
-				$result->owner_id = $user->id;
+				$result->owner_id 	= $user->id;
 				$result->created_by = $user->id;
 			}else{
 				$result = parent::getItem($pk);	
-				$result->instance_id = null;
-				$result->schedule_id = $data['schedule_id'];
-				$result->start_date = $data['start_date'];
-				$result->end_date = $data['end_date'];
-				$result->repeat_type = $data['repeat_type'];
-				$result->repeat_options  = new JRegistry();
+				$result->instance_id	= null;
+				$result->schedule_id 	= $data['schedule_id'];
+				$result->owner_id 		= $user->id;
+				$result->start_date 	= $data['start_date'];
+				$result->end_date 		= $data['end_date'];
+				$result->repeat_type 	= $data['repeat_type'];
+				$result->repeat_options	= new JRegistry();
 			}
 			return $result;	
 		}
@@ -156,15 +157,20 @@ class JongmanModelReservation extends JModelAdmin
 		return $data;
 	}
 
+	/**
+	 * (non-PHPdoc)
+	 * @see JModelForm::preprocessForm()
+	 */
 	protected function preprocessForm(JForm $form, $data, $group = 'content')
 	{
-		if (isset($data)) {
-			
+		$params = JComponentHelper::getParams('com_jongman');
+		$proxyReservation = (bool)$params->get('proxyReservation', false);
+		if (!$proxyReservation) {
+			$form->setFieldAttribute('owner_id', 'disabled', 'true');	
+			$form->setFieldAttribute('owner_id', 'readonly', 'true');	
 		}
-		parent::preprocessForm($form, $data, $group);
-
+		parent::preprocessForm($form, $data, $group);		
 	}
-
 		
 	/**
 	 * override to add resource reservation validation 

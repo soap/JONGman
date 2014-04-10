@@ -106,7 +106,21 @@ class JongmanModelInstance extends JModelAdmin
 		
 		return $data;
 	}
-	
+
+	/**
+	 * (non-PHPdoc)
+	 * @see JModelForm::preprocessForm()
+	 */
+	protected function preprocessForm(JForm $form, $data, $group = 'content')
+	{
+		$params = JComponentHelper::getParams('com_jongman');
+		$proxyReservation = (bool)$params->get('proxyReservation', false);
+		if (!$proxyReservation) {
+			$form->setFieldAttribute('owner_id', 'disabled', 'true');	
+			$form->setFieldAttribute('owner_id', 'readonly', 'true');	
+		}
+		parent::preprocessForm($form, $data, $group);		
+	}
 	/**
 	 * Delete reservation instance, delete reservation series if no instance exists
 	 * @see JModelAdmin::delete()
