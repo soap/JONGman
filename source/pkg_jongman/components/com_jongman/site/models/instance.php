@@ -17,7 +17,7 @@ class JongmanModelInstance extends JModelAdmin
 	
 	protected static $series;
 	protected $users = array();
-	 
+	
 	/**
 	 * Method to get the Reservation form.
 	 *
@@ -46,40 +46,42 @@ class JongmanModelInstance extends JModelAdmin
 	public function getItem($pk = null)
 	{
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState($this->getName() . '.id');
-		$table = $this->getTable('Reservation', 'JongmanTable');
-		
-		$return = $table->loadByInstanceId($pk);	
+		$table = $this->getTable('Instance', 'JongmanTable');
+		$return = $table->load($pk);
+			
 		// Check for a table object error.
 		if ($return === false && $table->getError())
 		{
 			$this->setError($table->getError());
 			return false;
 		}
-		if ($table->repeat_type !== '') {
-			$table->repeat_options = new JRegistry($table->repeat_options);
-		}
-		$instance = $this->getTable();
-		$instance->load($pk);
 		
-		$resources = $this->populateResources($instance->reservation_id);
-
-		$properties = $table->getProperties(1);
-		$result = JArrayHelper::toObject($properties, 'JObject');
+		$series = $this->buildSeries($table->reference_number);
+		$resutl = new JObject();
+		$result->repeat_type = $series->getRepeatOptions()->repeatType();
+		$result->repeat_options = new JRegistry($series->getRepeatOptions()->configurationString());
 			
-		$result->owner_id = $this->getOwnerId($instance->reservation_id);
-		$result->instance_id = $instance->id; 
-		$result->resource_id = $resources[0]->resource_id;
+		$result->owner_id = $this->getOwnerId($table->reservation_id);
+		$result->id = $table->id;
+		$result->checked_out = 0;
+		$result->instance_id = $table->id;
+		$result->reference_number = $series->currentInstance()->referenceNumber(); 
+		$result->resource_id = $series->resourceId();
+		$result->schedule_id = $series->getResource()->getScheduleId();
+		$result->title = $series->get('title');
+		$result->description = $series->get('description');
 		
-		$date = new JDate($instance->start_date);
+		
+		$date = new JDate($table->start_date);
 		$result->start_date = $date->format('Y-m-d');
 		$result->start_time = $date->format('H:i:s');
 		
-		$date = new JDate($instance->end_date);
+		$date = new JDate($table->end_date);
 		$result->end_date = $date->format('Y-m-d');
 		$result->end_time = $date->format('H:i:s');
-		$result->reference_number = $instance->reference_number;
+		
 		if ($result->repeat_type !== 'none') {
-			$result->repeat_terminated = $result->repeat_options->get('repeat_terminated');
+			$result->repeat_terminated = $series->getRepeatOptions()->terminationDate()->toDatabase();
 			$result->repeat_interval = $result->repeat_options->get('repeat_interval');
 		}
 		if ($result->repeat_type == 'weekly') {
@@ -87,8 +89,7 @@ class JongmanModelInstance extends JModelAdmin
 		}
 		if ($result->repeat_type == 'monthly') {
 			$result->repeat_days = $result->repeat_options->get('repeat_days');
-		}
-		
+		}		
 		
 		return $result;
 		
@@ -206,24 +207,26 @@ class JongmanModelInstance extends JModelAdmin
 		$input = $validData;
 		$tz = JongmanHelper::getUserTimezone();
 
+		$repeatType = $input['repeat_type'];
+		$repeatInterval = $input['repeat_interval'];
+		$weekDays = isset($input['repeat_days'])? $input['repeat_days'] : array();
+		$monthyType = $input['repeat_monthly_type'];
+		
 		if (isset($input['repeat_terminated'])) {
 			$terminated = RFDate::parse($input['repeat_terminated'], $tz);
 			$terminated->setTime(new RFTime(0, 0, 0, $tz));
 		}
 		
-		$existingSeries = $this->buildSeries($input);
-		$input['repeatOptions'] = JongmanHelper::getRepeatOptions($input, $terminated);
+		$existingSeries = $this->buildSeries($input['reference_number']);
+		$input['repeatOptions'] = RFReservationRepeatOptionsFactory::create($repeatType, $repeatInterval, $terminated, $weekDays, $monthlyType);
 		
 		$row = JTable::getInstance('Resource', 'JongmanTable');
 		$row->load($input['resource_id']);
 		$resource = RFResourceBookable::create($row);
-
-		$existingSeries->applyChangesTo($updateScope);
-		$existingSeries->update(
-			$input['owner_id'], $resource,  $input['title'], $input['description'],
-			JFactory::getUser()
-		);
 		
+		$existingSeries->applyChangesTo($updateScope);
+		$existingSeries->update($input['owner_id'], $resource,  $input['title'], $input['description'], JFactory::getUser());
+						
 		// calculate reseravtion status
 		// @todo we should provide option to reset status if update reseravtion detai 
 		$status = 1; //created
@@ -237,15 +240,13 @@ class JongmanModelInstance extends JModelAdmin
 			}	
 		}
 		$existingSeries->setStatusId($status);
-		
-		$tz = JongmanHelper::getUserTimezone();
+
 		$input['start_date'] = $input['start_date'].' '.$input['start_time'];
 		$input['end_date'] = $input['end_date'].' '.$input['end_time'];
 		$duration = new RFDateRange(RFDate::parse($input['start_date'], $tz), RFDate::parse($input['end_date'], $tz));
-		$existingSeries->updateDuration($duration);
+				
+		$existingSeries->updateDuration($duration);			
 		$existingSeries->repeats($input['repeatOptions']);
-
-		$this->series = $existingSeries;
 		
 		$config = array('ignore_request'=>true);
 		$scheduleRepository = JModel::getInstance('Schedule', 'JongmanModel', $config);
@@ -268,6 +269,7 @@ class JongmanModelInstance extends JModelAdmin
 		$ruleProcessor->addRule(new SchedulePeriodRule($this->scheduleRepository, $userSession));
 		*/		
 		$result = $ruleProcessor->validate($existingSeries);
+
 		if (!$result->canBeSaved()) {
 			$errors = $result->getErrors();
 			foreach($errors as $error) {
@@ -275,9 +277,6 @@ class JongmanModelInstance extends JModelAdmin
 			}
 			return false;		
 		}	
-
-		// trigger event(s) for removing reservation series or instances
-		$existingSeries->delete(JFactory::getUser());
 		
 		// now we do our validation process
 		return $validData;
@@ -373,26 +372,22 @@ class JongmanModelInstance extends JModelAdmin
 	/**
 	 * 
 	 * Build existing reservation series from database
+	 * @param string $referenceNumber
+	 * @return RFReservationExistingseries object
 	 */
-	protected function buildSeries($data) 
+	public function buildSeries($referenceNumber) 
 	{
 		if (!empty($this->series)) return $this->series;
 		
 		$existingSeries = new RFReservationExistingseries();
-		$keys = array('reference_number'=>$data['reference_number']);
 		
+		$keys = array('reference_number'=>$referenceNumber);
 		$instance = $this->getTable();
 		$instance->load($keys);
 		
-		$reservation = $this->getTable('Reservation', 'JongmanTable');
-			
+		$reservation = $this->getTable('Reservation', 'JongmanTable');			
 		$reservation->load($instance->reservation_id);
-		
-		$resources = $this->populateResources($instance->reservation_id);
-		$row = JTable::getInstance('Resource', 'JongmanTable');
-		$row->load($resources[0]->resource_id);
 
-		$resource = RFResourceBookable::create($row);
 		$factory = new RFReservationRepeatOptionsFactory();
 		$repeatConfig = new JRegistry($reservation->repeat_options);
 		$repeatTerminated = RFDate::fromDatabase($reservation->get('repeat_terminated'));
@@ -407,7 +402,6 @@ class JongmanModelInstance extends JModelAdmin
 		$existingSeries->withDescription($reservation->description);
 		$existingSeries->withOwner($this->getOwnerId($instance->reservation_id));
 		$existingSeries->withStatus($reservation->state);
-		$existingSeries->withPrimaryResource($resource);
 		
 		$startDate = RFDate::fromDatabase($instance->start_date);
 		$endDate = RFDate::fromDatabase($instance->end_date);
@@ -415,9 +409,13 @@ class JongmanModelInstance extends JModelAdmin
 		$currentInstance = new RFReservation($existingSeries, $duration, $instance->reservation_id, $instance->reference_number);
 		$existingSeries->withCurrentInstance($currentInstance);
 		
+		$this->populateResources($existingSeries);
+		$this->populateInstances($existingSeries);
+		// populate participants
+		// populate accessories
 		$this->series = $existingSeries;
 		
-		return $this->series;
+		return $existingSeries;
 	}
 	
 	protected function executeEvents($existingSeries = null)
@@ -547,17 +545,66 @@ class JongmanModelInstance extends JModelAdmin
 		return $this->users;		
 	}
 	
-	public function populateResources($reservationId)
+	/**
+	 * 
+	 * Populate reservation resources into existing series
+	 * @param RFReservationExistingseries $series
+	 * @since 2.0
+	 */
+	private function populateResources(RFReservationExistingseries $series)
 	{
-		$db = JFactory::getDbo();
+		$db = $this->getDbo();
 		$query = $db->getQuery(true);
-		$query->select('*')
-		->from('#__jongman_reservation_resources')
-		->where('reservation_id = '.$reservationId);
+		$query->select('r.*, a.resource_level as resource_level')
+			->from('#__jongman_reservation_resources AS a')
+			->join('LEFT', '#__jongman_resources AS r ON r.id=a.resource_id')
+			->where('a.reservation_id = '.$series->seriesId())
+			->order('a.resource_level ASC, r.title ASC');
+		
 		$db->setQuery($query);
-		return $db->loadObjectList();
+		$rows = $db->loadObjectList();
+		
+		foreach($rows as $row) {
+			$repeatConfig = new JRegistry($row->params);
+			$resource = new RFResourceBookable(
+								$row->id, $row->title, $row->location, $row->contact_info, $row->note,
+								$repeatConfig->get('min_reservation_duration'), $repeatConfig->get('max_reservation_duration'),
+								$repeatConfig->get('auto_assign'), $repeatConfig->get('need_approval'), $repeatConfig->get('overlap_day_reservation'),
+								$repeatConfig->get('max_participants'), $repeatConfig->get('min_notice_time'), $repeatConfig->get('max_notice_time'),
+								$row->description, $row->schedule_id, null 
+							);
+			if ($row->resource_level == 1) {
+				$series->withPrimaryResource($resource);	
+			}else{
+				$series->withResource($resource);	
+			}	
+		}
+		
 	}	
 	
+	/**
+	 * 
+	 * Populate reservation instances into exisiting series
+	 * @param RFReservationExistingseries $series
+	 * @since 2.0
+	 */
+	private function populateInstances(RFReservationExistingseries $series)
+	{
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
+		$query->select('*')
+			->from('#__jongman_reservation_instances AS a')
+			->where('a.reservation_id = '.$series->seriesId())
+			->order('a.start_date ASC');
+		$db->setQuery($query);
+		$rows = $db->loadObjectList();
+
+		foreach ($rows as $row) {
+			$duration = new RFDateRange(RFDate::fromDatabase($row->start_date), RFDate::fromDatabase($row->end_date));
+			$instance = new RFReservation($series, $duration, $row->reservation_id, $row->reference_number);
+			$series->withInstance($instance);
+		}
+	}
 	/**
 	 * 
 	 * Get JDatabaseQuery to be executed
