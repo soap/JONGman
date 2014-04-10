@@ -62,7 +62,7 @@ class JongmanViewReservation extends JViewLegacy
 					? 'VIEW_RESERVATION'
 					: ($isNew ? 'ADD_RESERVATION' : 'EDIT_RESERVATION')).'_TITLE'
 			);
-			
+		
 		$this->canDelete = (!$isNew);
 		parent::display();
 		
@@ -74,6 +74,7 @@ class JongmanViewReservation extends JViewLegacy
         $state   = $this->get('State');
         $item 	 = $this->get("Item");
         $isNew	 = $item->id == 0;
+        $isRecurring = ($item->repeat_type !== 'none') || empty($item->repeat_type);
         $options = array();
 		if ($isNew) {
         	RFToolbar::button(
@@ -88,7 +89,7 @@ class JongmanViewReservation extends JViewLegacy
              	false, //no need to select item first
            	 	array('acces' => true, 'icon'=>'icon-chevron-left')
         	);
-		}else{
+		}elseif ($isRecurring){
         	RFToolbar::button(
             	'COM_JONGMAN_ACTION_UPDATE_INSTANCE',
             	'instance.updateinstance',
@@ -112,7 +113,17 @@ class JongmanViewReservation extends JViewLegacy
             	array('access' => $access->get('core.edit'),
             	'icon'=>'icon-ok')
         	);
-        	
+		}else{
+			RFToolbar::button(
+            	'COM_JONGMAN_ACTION_UPDATE',
+            	'instance.updatefull',
+           		false,
+            	array('access' => $access->get('core.edit'),
+            	'icon'=>'icon-ok')
+        	);	
+		}	
+		
+		if (!$isNew) {
         	RFToolbar::button(
         		'COM_JONGMAN_ACTION_DELETE',
         		'instances.delete',

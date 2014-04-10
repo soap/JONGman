@@ -26,7 +26,7 @@ class RFValidationRuleRequiresapproval implements IReservationValidationRule
 		{
 			if ($resource->GetRequiresApproval())
 			{
-				if (!$this->authorizationService->canApproveForResource($reservationSeries->BookedBy(), $resource))
+				if (!$this->authorizationService->canApproveForResource($reservationSeries->bookedBy(), $resource))
 				{
 					$status = -1; //pending
 					break;
@@ -36,6 +36,6 @@ class RFValidationRuleRequiresapproval implements IReservationValidationRule
 	
 		$reservationSeries->setStatusId($status);
 	
-		return new ReservationRuleResult();
+		return new RFReservationRuleResult();
 	}
 }

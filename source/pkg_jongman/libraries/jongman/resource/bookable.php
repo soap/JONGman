@@ -122,7 +122,7 @@ class RFResourceBookable
 			$row->params->get('max_reservation_duration'),
 			$row->params->get('auto_assign'),
 			$row->params->get('need_appoval'),
-			$row->params->get('allow_multi'),
+			$row->params->get('overlap_day_reservation'),
 			$row->params->get('max_participants'),
 			$row->params->get('min_notice_duration'),
 			$row->params->get('max_notice_duration'),

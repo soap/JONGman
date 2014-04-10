@@ -111,15 +111,15 @@ class JongmanHelper
     {
     	$user = JFactory::getUser();
     	$rules = array();
-    	$rules[] = new RFValidationRuleReservationDatetime();
-    	$rules[] = new RFValidationRuleAdminexcluded(new RFValidationRuleReservationStarttime(), $user);
-    	//$rules[] = new RFValidationRuleAdminExcluded(new RFValidationRulePermissionValidationRule(new PermissionServiceFactory()), $user);
-    	//$rules[] = new RFValidationRuleAdminExcluded(new RFValidationRuleResourceMinimumNoticeRule(), $user);
-    	//$rules[] = new RFValidationRuleAdminExcluded(new RFValidationRuleResourceMaximumNoticeRule(), $user);
-    	//$rules[] = new RFValidationRuleAdminExcluded(new RFValidationRuleResourceParticipationRule(), $user);
-    	//$rules[] = new CustomAttributeValidationRule(new RFValidationRuleAttributeRepository());
+    	$rules[] = new RFReservationRuleReservationDatetime();
+    	$rules[] = new RFReservationRuleAdminexcluded(new RFReservationRuleReservationStarttime(), $user);
+    	//$rules[] = new AdminExcluded(new RFReservationRulePermissionValidationRule(new PermissionServiceFactory()), $user);
+    	//$rules[] = new RFReservationRuleAdminExcluded(new RFReservationRuleResourceMinimumNoticeRule(), $user);
+    	//$rules[] = new RFReservationRuleAdminExcluded(new RFReservationRuleResourceMaximumNoticeRule(), $user);
+    	//$rules[] = new RFReservationRuleAdminExcluded(new RFReservationRuleResourceParticipationRule(), $user);
+    	//$rules[] = new CustomAttributeValidationRule(new RFReservationRuleAttributeRepository());
     	//$rules[] = new ReservationAttachmentRule();
-    	return new RFReservationValidationRuleprocessor($rules);
+    	return new RFReservationValidationRuleProcessor($rules);
     }
     /**
      * 

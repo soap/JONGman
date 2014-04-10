@@ -42,6 +42,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	public function __construct()
 	{
 		parent::__construct();
+		// let all instances available first
 		$this->applyChangesTo(RFReservationSeriesUpdatescope::FULLSERIES);
 	}
 
@@ -272,7 +273,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	{
 		if ($this->seriesUpdateStrategy->canChangeRepeatTo($this, $repeatOptions))
 		{
-			JLog::add('Updating recurrence for series ', $this->seriesId(), JLog::DEBUG, 'debugging');
+			JLog::add("Updating recurrence for series {$this->seriesId()}", JLog::DEBUG, 'debugging');
 
 			$this->_repeatOptions = $repeatOptions;
 
@@ -284,7 +285,7 @@ class RFReservationExistingseries extends RFReservationSeries
 					$this->removeInstance($instance);
 				}
 			}
-
+			
 			// create all future instances
 			parent::repeats($repeatOptions);
 		}
@@ -332,7 +333,6 @@ class RFReservationExistingseries extends RFReservationSeries
 			foreach ($instances as $instance)
 			{
 				JLog::add("Removing instance {$instance->ReferenceNumber()} from series $this->SeriesId()", JLog::DEBUG);
-
 				$this->addEvent(new RFEventInstanceRemoved($instance, $this));
 			}
 		}
@@ -364,6 +364,7 @@ class RFReservationExistingseries extends RFReservationSeries
 	 */
 	private function appliesToAllInstances()
 	{
+		// compare existing instances with those from update scope 
 		return count($this->instances) == count($this->getInstances());
 	}
 

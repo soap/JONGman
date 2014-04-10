@@ -6,7 +6,7 @@ defined('_JEXEC') or die;
  * @author Prasit Gebsaap
  *
  */
-class RFValidationRuleAdminexcluded implements IReservationValidationRule
+class RFReservationRuleAdminexcluded implements IReservationValidationRule
 {
 	/*
 	 * base rule to be excluded if user is administrator
@@ -28,7 +28,7 @@ class RFValidationRuleAdminexcluded implements IReservationValidationRule
 	{
 		if ($this->user->authorise('core.admin', 'com_jongman'))
 		{
-			return new RFReservationValidationResult();
+			return new RFReservationRuleResult(true);
 		}
 
 		return $this->rule->validate($reservationSeries);

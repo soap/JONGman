@@ -210,7 +210,7 @@ class JongmanModelInstance extends JModelAdmin
 		$repeatType = $input['repeat_type'];
 		$repeatInterval = $input['repeat_interval'];
 		$weekDays = isset($input['repeat_days'])? $input['repeat_days'] : array();
-		$monthyType = $input['repeat_monthly_type'];
+		$monthlyType = $input['repeat_monthly_type'];
 		
 		if (isset($input['repeat_terminated'])) {
 			$terminated = RFDate::parse($input['repeat_terminated'], $tz);
@@ -220,13 +220,16 @@ class JongmanModelInstance extends JModelAdmin
 		$existingSeries = $this->buildSeries($input['reference_number']);
 		$input['repeatOptions'] = RFReservationRepeatOptionsFactory::create($repeatType, $repeatInterval, $terminated, $weekDays, $monthlyType);
 		
+		//var_dump($existingSeries->getInstances());
 		$row = JTable::getInstance('Resource', 'JongmanTable');
 		$row->load($input['resource_id']);
 		$resource = RFResourceBookable::create($row);
 		
+		// apply update scope before any update
 		$existingSeries->applyChangesTo($updateScope);
 		$existingSeries->update($input['owner_id'], $resource,  $input['title'], $input['description'], JFactory::getUser());
-						
+		
+		//var_dump($existingSeries->getInstances()); //jexit();			
 		// calculate reseravtion status
 		// @todo we should provide option to reset status if update reseravtion detai 
 		$status = 1; //created
@@ -247,17 +250,17 @@ class JongmanModelInstance extends JModelAdmin
 				
 		$existingSeries->updateDuration($duration);			
 		$existingSeries->repeats($input['repeatOptions']);
-		
+
 		$config = array('ignore_request'=>true);
 		$scheduleRepository = JModel::getInstance('Schedule', 'JongmanModel', $config);
 		//start reservation validation here, get commone rules
 		$ruleProcessor = JongmanHelper::getRuleProcessor();
 		// Add specific rules for existing reservation validation
 		$ruleProcessor->addRule(
-					new RFValidationRuleExistingResourceAvailability(new RFResourceReservationAvailability($scheduleRepository), $tz), $existingSeries->bookedBy()
+					new RFReservationRuleExistingResourceAvailability(new RFResourceReservationAvailability($scheduleRepository), $tz), $existingSeries->bookedBy()
 					);		
 		$ruleProcessor->addRule(
-					new RFValidationRuleResourceAvailability(new RFResourceBlackoutAvailability($scheduleRepository), $tz), $existingSeries->bookedBy()
+					new RFReservationRuleResourceAvailability(new RFResourceBlackoutAvailability($scheduleRepository), $tz), $existingSeries->bookedBy()
 					);
 		/*
 		$ruleProcessor->addRule(new ExistingResourceAvailabilityRule(new ResourceReservationAvailability($this->reservationRepository), $userSession->Timezone));

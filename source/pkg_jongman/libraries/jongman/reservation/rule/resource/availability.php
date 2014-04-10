@@ -2,7 +2,7 @@
 defined('_JEXEC') or die;
 jimport('jongman.base.iresourceavailabilitystrategy');
 
-class RFValidationRuleResourceAvailability implements IReservationValidationRule
+class RFReservationRuleResourceAvailability implements IReservationValidationRule
 {
 	protected $message = array();
 	
@@ -45,10 +45,10 @@ class RFValidationRuleResourceAvailability implements IReservationValidationRule
 		if ($thereAreConflicts)
 		{
 			$this->setError($conflicts);
-			return new RFReservationValidationResult(false, $this->getError());
+			return new RFReservationRuleResult(false, $this->getError());
 		}
 		
-		return new RFReservationValidationResult();
+		return new RFReservationRuleResult();
 
 	}
 	

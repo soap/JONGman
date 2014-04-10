@@ -7,7 +7,7 @@ defined('_JEXEC') or die;
  * @author Prasit Gebsaap
  * @todo incomplete
  */
-class RFValidationRuleSchedulePeriod implements IReservationValidationRule
+class RFReservationRuleSchedulePeriod implements IReservationValidationRule
 {
 	private $repository;
 	private $user;
@@ -47,7 +47,7 @@ class RFValidationRuleSchedulePeriod implements IReservationValidationRule
 
 		$this->message = $errors;
 
-		return new RFReservationValidationResult(count($errors) == 0, $this->getError());
+		return new RFReservationRuleResult(count($errors) == 0, $this->getError());
 	}
 
 	public function getError()

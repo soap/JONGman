@@ -2,7 +2,7 @@
 defined('_JEXEC') or die;
 
 
-class ResourceAddedEvent extends SeriesEvent
+class RFEventResourceRemoved extends RFEventSeries
 {
 	/**
 	 * @var BookableResource
@@ -19,10 +19,9 @@ class ResourceAddedEvent extends SeriesEvent
 	 * @param int|ResourceLevel $resourceLevel
 	 * @param ExistingReservationSeries $series
 	 */
-	public function __construct(RFResourceBookable $resource, $resourceLevel, RFReservationExistingseries $series)
+	public function __construct(RFResourceBookable $resource, RFReservationExistingseries $series)
 	{
 		$this->resource = $resource;
-		$this->resourceLevel = $resourceLevel;
 
 		parent::__construct($series, RFEventPriority::Low);
 	}
@@ -53,8 +52,4 @@ class ResourceAddedEvent extends SeriesEvent
 		return sprintf("%s%s%s", get_class($this), $this->resourceId(), $this->series->seriesId());
 	}
 
-	public function resourceLevel()
-	{
-		return $this->resourceLevel;
-	}
 }

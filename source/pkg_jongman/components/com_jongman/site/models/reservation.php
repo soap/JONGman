@@ -180,17 +180,23 @@ class JongmanModelReservation extends JModelAdmin
 		$input['end_date'] = $input['end_date'].' '.$input['end_time'];
 		$tz = JongmanHelper::getUserTimezone();
 
+		$repeatType = $input['repeat_type'];
+		$repeatInterval = $input['repeat_interval'];
+		$weekDays = $input['repeat_days'];
+		$monthyType = $input['repeat_monthly_type'];
+		
 		if (isset($input['repeat_terminated'])) {
 			$terminated = RFDate::parse($input['repeat_terminated'], $tz);
-			//$terminated->setTime(new RFTime(0, 0, 0, $tz));
+			$terminated->setTime(new RFTime(0, 0, 0, $tz));
 		}
-		$input['repeatOptions'] = JongmanHelper::getRepeatOptions($input, $terminated);
 		
+		$input['repeatOptions'] = JongmanHelper::getRepeatOptions($repeatType, $repeatInterval, $terminated, $weekDays, $monthlyType);
 		if (isset($input['resource_id']) && ($input['resource_id'] > 0)) {
 			$row = JTable::getInstance('Resource', 'JongmanTable');
 			$row->load($data['resource_id']);
 			$input['resource'] = RFResourceBookable::create($row); 
 		}
+		
 		$reservationSeries = new RFReservationSeries();
 		$reservationSeries->bind($input);
 		// calculate reseravtion status 
@@ -275,7 +281,7 @@ class JongmanModelReservation extends JModelAdmin
 		$resourceIds = $this->_series->allResourceIds();
 		$dbo = $this->getDbo();
 		foreach($resourceIds as $i => $resourceId) {
-			$resource_level = ($i == 0 ? 0 : 1);
+			$resource_level = ($i == 0 ? 1 : 2);
 			$obj = new StdClass();
 			$obj->reservation_id = (int) $result;
 			$obj->resource_id = $resourceId;

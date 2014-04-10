@@ -1,7 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 
-class RFValidationRuleExistingResourceAvailability extends RFValidationRuleResourceAvailability //implements IUpdateReservationValidationRule
+class RFReservationRuleExistingResourceAvailability extends RFReservationRuleResourceAvailability //implements IUpdateReservationValidationRule
 {
 	public function validate($series)
 	{

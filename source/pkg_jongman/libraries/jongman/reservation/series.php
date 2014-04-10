@@ -121,6 +121,7 @@ class RFReservationSeries extends JObject
 
 		foreach ($dates as $date)
 		{
+			JLog::add("Add new instance for duration {$date->getBegin()}-{$date->getEnd()}", JLog::DEBUG);
 			$this->addNewInstance($date);
 		}
 	}

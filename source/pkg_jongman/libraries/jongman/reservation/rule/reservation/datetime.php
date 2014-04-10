@@ -1,7 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 
-class RFValidationRuleReservationDatetime implements IReservationValidationRule
+class RFReservationRuleReservationDatetime implements IReservationValidationRule
 {
 	private $message = '';
 	
@@ -11,9 +11,9 @@ class RFValidationRuleReservationDatetime implements IReservationValidationRule
 		$startBeforeEnd = $instance->startDate()->lessThan($instance->endDate());
 		if (!$startBeforeEnd) {
 			$this->message = JText::_('COM_JONGMAN_ERROR_STARTDATE_LESSTHAN_ENDDATE');
-			return new RFReservationValidationResult(false, $this->getError());
+			return new RFReservationReuleResult(false, $this->message);
 		}
-		return new RFReservationValidationResult();
+		return new RFReservationRuleResult();
 	}
 	
 	public function getError()

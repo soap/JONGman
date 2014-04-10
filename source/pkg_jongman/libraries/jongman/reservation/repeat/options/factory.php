@@ -12,7 +12,7 @@ class RFReservationRepeatOptionsFactory
 	 * @param string $monthlyType
 	 * @return IRepeatOptions
 	 */
-	public function Create($repeatType, $interval, $terminationDate, $weekdays, $monthlyType)
+	public static function create($repeatType, $interval, $terminationDate, $weekdays, $monthlyType)
 	{
 		switch ($repeatType)
 		{

@@ -42,7 +42,7 @@ class RFReservationSeriesUpdatescopeFull extends RFReservationSeriesUpdatescopeB
 	 */
 	public function earliestDateToKeep($series)
 	{
-		$startTimeConstraint = true;
+		$startTimeConstraint = 'none';
 
 		if (RFReservationStarttimeConstraint::isCurrent($startTimeConstraint))
 		{
@@ -84,13 +84,16 @@ class RFReservationSeriesUpdatescopeFull extends RFReservationSeriesUpdatescopeB
 	 */
 	public function shouldInstanceBeRemoved($series, $instance)
 	{
+		var_dump($this->hasSameConfiguration); jexit();
 		if ($this->hasSameConfiguration)
 		{
 			$newEndDate = $series->repeatOptions()->terminationDate();
 			// remove all instances past the new end date
 			return $instance->startDate()->greaterThan($newEndDate);
 		}
-
+		var_dump($this->startDate());
+		var_dump($this->earliestDateToKeep($series)); 
+		jexit();
 		// remove all current instances, which now have an incompatible configuration
 		return $instance->startDate()->greaterThan($this->earliestDateToKeep($series));
 	}	

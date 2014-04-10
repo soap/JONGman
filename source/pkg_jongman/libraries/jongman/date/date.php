@@ -28,7 +28,9 @@ class RFDate
 	public function __construct($timestring = null, $timezone = null)
 	{
 		$this->initTimezone($timezone);
-
+		if (empty($this->timezone)) {
+			
+		}
 		$this->date = new DateTime($timestring, new DateTimeZone($this->timezone));
 		$this->timestring = $this->date->format(self::SHORT_FORMAT);
 		$this->timestamp = $this->date->format('U');
@@ -40,8 +42,7 @@ class RFDate
 		$this->timezone = $timezone;
 		if (empty($timezone))
 		{
-			$user = JFactory::getUser();
-			$tz = $user->getParam('timezone', JFactory::getConfig()->get('offset'));
+			$tz = JongmanHelper::getUserTimezone();
 			$this->timezone = $tz ;
 		}
 	}

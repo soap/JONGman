@@ -1,7 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 
-class RFValidationRuleReservationStarttime implements IReservationValidationRule
+class RFReservationRuleReservationStarttime implements IReservationValidationRule
 {
 	protected $message;
 	
@@ -29,7 +29,8 @@ class RFValidationRuleReservationStarttime implements IReservationValidationRule
 
 		if ($constraint == RFReservationStarttimeConstraint::NONE)
 		{
-			return true;
+			// Ok
+			return new RFReservationValidationResult();
 		}
 
 		$currentInstance = $reservationSeries->currentInstance();
@@ -49,11 +50,15 @@ class RFValidationRuleReservationStarttime implements IReservationValidationRule
 			*/
 			$dateThatShouldBeLessThanNow = $currentPeriod->beginDate();
 		}
-		//Log::Debug("Start Time Rule: Comparing %s to %s", $dateThatShouldBeLessThanNow, Date::Now());
+		JLog::add("Start Time Rule: Comparing {$dateThatShouldBeLessThanNow} to Date::Now()", JLog::DEBUG, 'validation');
 
 		$startIsInFuture = $dateThatShouldBeLessThanNow->compare(RFDate::now()) >= 0;
-		$this->message = 'Start time is in the past';
-		return false;
+		if (!$startIsInFuture) {
+			$this->message = 'Start time is in the past';
+			return new RFReservationRuleResult(false, $this->getError());
+		}
+		
+		return new RFReservationRuleResult();
 	}
 	
 }

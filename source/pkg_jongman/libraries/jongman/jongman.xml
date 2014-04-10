@@ -8,7 +8,7 @@
     <license>GNU General Public License version 2 or later.</license>
     <authorEmail>support@joomlannt.org</authorEmail>
     <authorUrl>www.joomlant.org</authorUrl>
-    <version>2.1.1</version>
+    <version>2.1.2</version>
     <description>Shared classes and tools for JONGman related components. Do not remove!</description>
     <files>
         <folder>base</folder>
@@ -28,7 +28,6 @@
         <folder>toolbar</folder>
         <folder>utils</folder>
         <folder>version</folder>
-        <folder>validation</folder>
         <file>framework.php</file>
         <file>library.php</file>
     </files>
