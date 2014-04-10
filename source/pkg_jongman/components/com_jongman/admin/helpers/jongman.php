@@ -147,6 +147,23 @@ class JongmanHelper {
         return $button;
     }  
 
+	/**
+	 * 
+	 * Get user timezone first from user parameter otherwise global configuration offset
+	 * @param int $uid
+	 */
+	public static function getUserTimezone($uid = null) 
+	{
+		if ($uid === null) {
+			$user = JFactory::getUser();
+		}else{
+			$user = JFactory::getUser($uid);
+		}
+		$timezone = $user->getParam('timezone', JFactory::getConfig()->get('offset', 'UTC'));
+		
+		return $timezone;
+	}
+	
     public function getVersion() 
     {
     	$manifest = JFactory::getXML(JPATH_COMPONENT_ADMINISTRATOR.'/jongman.xml' ); 
