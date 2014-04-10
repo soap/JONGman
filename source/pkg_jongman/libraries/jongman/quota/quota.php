@@ -117,7 +117,7 @@ class RFQuota implements IQuota
 		{
 			$appliesToResource = false;
 
-			foreach ($reservationSeries->sallResourceIds() as $resourceId)
+			foreach ($reservationSeries->allResourceIds() as $resourceId)
 			{
 				if (!$appliesToResource && $this->appliesToResource($resourceId))
 				{
@@ -247,7 +247,7 @@ class RFQuota implements IQuota
 
 	private function addExisting(RFReservationItem/*View*/ $reservation, $timezone)
 	{
-		$this->_breakAndAdd($reservation->StartDate, $reservation->EndDate, $timezone);
+		$this->_breakAndAdd($reservation->startDate, $reservation->endDate, $timezone);
 	}
 
 	private function addInstance(RFReservation $reservation, $timezone)
@@ -330,7 +330,7 @@ class RFQuota implements IQuota
 		}
 	}
 
-	private function _add(DateRange $dateRange)
+	private function _add(RFDateRange $dateRange)
 	{
 		$durationKey = $this->duration->getDurationKey($dateRange->getBegin());
 

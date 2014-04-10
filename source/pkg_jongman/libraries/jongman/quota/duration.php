@@ -11,12 +11,12 @@ abstract class RFQuotaDuration
 	 * @param ReservationSeries $reservationSeries
 	 * @return array|Date[]
 	 */
-	protected function GetFirstAndLastReservationDates(ReservationSeries $reservationSeries)
+	protected function getFirstAndLastReservationDates(RFReservationSeries $reservationSeries)
 	{
 		/** @var $instances Reservation[] */
-		$instances = $reservationSeries->Instances();
-		usort($instances, array('Reservation', 'Compare'));
+		$instances = $reservationSeries->getInstances();
+		usort($instances, array('Reservation', 'compare'));
 
-		return array($instances[0]->StartDate(), $instances[count($instances) - 1]->EndDate());
+		return array($instances[0]->startDate(), $instances[count($instances) - 1]->endDate());
 	}
 }

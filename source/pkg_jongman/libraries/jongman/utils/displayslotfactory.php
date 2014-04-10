@@ -39,6 +39,7 @@ class RFDisplaySlotFactory
 			$class = '';
 		}
 		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"reserved {$class} clickres slot\" resid=\"{$slot->getInstanceId()}\">";
+		$html[] = $slot->label();
 		$html[] = "</td>";
 		
 		return implode("", $html);		

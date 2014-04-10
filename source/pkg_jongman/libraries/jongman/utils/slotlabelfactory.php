@@ -1,7 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 
-class SlotLabelFactory
+class RFSlotLabelFactory
 {
 	/**
 	 * @static
@@ -62,7 +62,7 @@ class SlotLabelFactory
 
 	protected function getFullName(RFReservationItem $reservation)
 	{
-		$shouldHide = JComponentHelper::getParams('com_jongman')->get('hideOwnerDetail', true);
+		$shouldHide = JComponentHelper::getParams('com_jongman')->get('privateReservation', true);
 		if ($shouldHide)
 		{
 			return JText::_('COM_JONGMAN_PRIVATE');
@@ -71,22 +71,5 @@ class SlotLabelFactory
 		$name = $reservation->fullName;
 		return $name;
 
-	}
-}
-
-class NullSlotLabelFactory extends SlotLabelFactory
-{
-	public function format(ReservationItemView $reservation)
-	{
-		return '';
-	}
-}
-
-class AdminSlotLabelFactory extends SlotLabelFactory
-{
-	protected function getFullName(ReservationItemView $reservation)
-	{
-		$name = new FullName($reservation->FirstName, $reservation->LastName);
-		return $name->__toString();
 	}
 }
