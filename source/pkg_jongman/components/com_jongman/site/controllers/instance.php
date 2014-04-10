@@ -19,17 +19,19 @@ class JongmanControllerInstance extends JControllerForm
 	
 	public function allowEdit($data = array(), $key = 'id') 
 	{
+		var_dump($_REQUEST);
 		$user = JFactory::getUser();
 		if (isset($data) && ($data[$key] > 0)) {
-			$actions = JongmanHelper::getActions('com_jongman.resource.'.$data[$key]);
+			$model = $this->getModel();
+			$table = $model->getTable();
+			$table->load($data[$key]);
+			$series = $model->buildSeries($table->reference_number);
+			$resourceId = $series->resourceId();						
+			$actions = JongmanHelper::getActions('com_jongman.resource.'.$resourceId);
+
 			if ($actions->get('core.edit')) {
 				return true;
 			}elseif ($actions->get('core.edit.own')) {
-				$model = $this->getModel();
-				$table = $model->getTable();
-				$table->load($data[$key]);
-				
-				$series = $model->buildSeries($table->reference_number);
 				if ($series->bookedBy()->id == $user->id) {
 					return true;
 				}elseif ($series->userId() == $user->id) {

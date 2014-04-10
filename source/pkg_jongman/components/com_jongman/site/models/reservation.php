@@ -219,15 +219,15 @@ class JongmanModelReservation extends JModelAdmin
 		$scheduleRepository = JModel::getInstance('Schedule', 'JongmanModel', $config);
 		
 		$ruleProcessor->addRule(
-					new RFValidationRuleExistingResourceAvailability( new RFResourceReservationAvailability($scheduleRepository), $tz ), 
+					new RFReservationRuleExistingResourceAvailability( new RFResourceReservationAvailability($scheduleRepository), $tz ), 
 					$reservationSeries->bookedBy()
 				);	
 		$ruleProcessor->addRule(
-					new RFValidationRuleResourceAvailability(new RFResourceBlackoutAvailability($scheduleRepository), $tz), 
+					new RFReservationRuleResourceAvailability(new RFResourceBlackoutAvailability($scheduleRepository), $tz), 
 					$reservationSeries->bookedBy()
 				);
 		$ruleProcessor->addRule(
-					new RFValidationRuleSchedulePeriod( $scheduleRepository, $reservationSeries->bookedBy() ) 
+					new RFReservationRuleSchedulePeriod( $scheduleRepository, $reservationSeries->bookedBy() ) 
 				);
 					
 		$result = $ruleProcessor->validate($reservationSeries);
