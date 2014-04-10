@@ -39,9 +39,14 @@ class JongmanController extends JControllerLegacy
 			JHtml::_('script', 'com_jongman/jquery/jquery.noconflict.js', false, true);	
 			JHtml::_('stylesheet', 'com_jongman/jongman/jquery.qtip.min.css', false, true, false, false, false);							
 		}
-		$view = JFactory::getApplication()->input->getCmd('view');
+		$view = JFactory::getApplication()->input->getCmd('view', null);
+		$layout = JFactory::getApplication()->input->getCmd('layout', null);
+		if (empty($layout) && $view == 'schedule') {
+			$layout = 'calendar';
+			JFactory::getApplication()->input->set('layout', 'calendar');
+		}
 		if ($view =='schedule') {
-			if (JRequest::getCmd('layout')=='calendar') {
+			if ($layout=='calendar') {
 				$file = JUri::root().'media/com_jongman/jongman/css/smoothness/jquery-ui-1.9.0.custom.min.css';
 				JHtml::_('stylesheet', $file, false, true, false, false, false);	
 				JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, false, false);

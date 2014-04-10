@@ -15,7 +15,18 @@ class JongmanViewInstanceitem extends JViewLegacy
 	public function display($tpl = null)
 	{
 		$this->item = $this->get("Item");
+		$this->resources = $this->get("Resources");
 		
 		parent::display($tpl);
+	}
+	
+	public function getDisplayResourceName($resources)
+	{
+		$names = array();
+		foreach($resources as $resource) {
+			$names[] = $resource->title;	
+		}
+		
+		return implode(',', $names);
 	}
 }

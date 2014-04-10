@@ -22,6 +22,7 @@ defined('_JEXEC') or die;
 			</div>
 			<div class="resources">
 				<label class="label"><?php echo JText::_('COM_JONGMAN_RESOURCE')?></label>
+				<?php echo $this->getDisplayResourceName($this->resources)?>
 			</div>
 		</ul>
 	</div>
