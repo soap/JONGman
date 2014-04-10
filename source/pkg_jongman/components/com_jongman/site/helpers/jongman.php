@@ -19,13 +19,12 @@ class JongmanHelper
 		$result	= new JObject;
 	
 		$actions = array(
-				'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.state', 'core.delete',
-				'com_jongman.reservation.create', 'com_jongman.reservation.edit', 'com_jongman.reservation.edit.state',
-				'com_jongman.reservation.edit.own', 'com_jongman.reservation.delete'
+				'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.state', 'core.delete', 
+				'core.edit.own', 'com_jongman.delete.own'
 		);
 	
 		foreach ($actions as $action) {
-			$result->set($action,	$user->authorise($action, $assetName));
+			$result->set($action, $user->authorise($action, $assetName));
 		}
 	
 		return $result;
@@ -75,37 +74,33 @@ class JongmanHelper
 		return $html;   
     }
     
-    public static function getRepeatOptions(array $input, RFDate $terminated) 
-    {
-    	switch ((string) $input['repeat_type']) {
+    /**
+	 * @param string $repeatType must be option in RepeatType enum
+	 * @param int $interval
+	 * @param RFDate $terminationDate
+	 * @param array $weekdays
+	 * @param string $monthlyType
+	 * @return IRepeatOptions
+	 */
+	public function getRepeatOptions($repeatType, $interval, $terminationDate, $weekdays, $monthlyType)
+	{ 
+    	switch ($repeatType) {
 			case 'daily': 
-					$repeatOption = new RFReservationRepeatDaily(
-												$input['repeat_interval'], $terminated);
+					return new RFReservationRepeatDaily($interval, $terminationDate);
 				break;
 			case 'weekly' :
-					$repeatOption = new RFReservationRepeatWeekly(
-												$input['repeat_interval'], $terminated,
-												$input['repeat_days']
-											);
+					return new RFReservationRepeatWeekly($interval, $terminationDate, $weekdays);
 				break;
 			case 'monthly' :
 					$class = 'RFReservationRepeat'.ucfirst($input['repeat_monthly_type']);
-					$repeatOption = new $class(
-												$input['repeat_interval'], $terminated				
-											);
+					return new $class($interval, $terminationDate);				
 				break;
 			case 'yearly' :
-					$repeatOption = new RFReservationRepeatYearly(
-												$input['repeat_interval'], $terminated					
-										);
-				break;
-			default:
-					$repeatOption = new RFReservationRepeatNone();
-				break;
-				
+					return new RFReservationRepeatYearly($interval, $terminationDate);					
+				break;			
 		}
 		
-		return $repeatOption;    		
+		return new RFReservationRepeatNone();  		
     }
     
     /**
