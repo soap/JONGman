@@ -1,12 +1,12 @@
 <?php
 defined('_JEXEC') or die;
 
-class RFReservationStarttimeConstraint
+class RFReservationStartTimeConstraint
 {
-	const _DEFAULT = 'future';
-	const FUTURE = 'future';
-	const CURRENT = 'current';
-	const NONE = 'none';
+    const _DEFAULT = 'future';
+    const FUTURE = 'future';
+    const CURRENT = 'current';
+    const NONE = 'none';
 
 	/**
 	 * @static
@@ -33,7 +33,7 @@ class RFReservationStarttimeConstraint
 	 * @param string $startTimeConstraint
 	 * @return bool
 	 */
-	public static function ysFuture($startTimeConstraint)
+	public static function isFuture($startTimeConstraint)
 	{
 		return strtolower($startTimeConstraint) == self::FUTURE;
 	}

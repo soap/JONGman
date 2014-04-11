@@ -10,7 +10,7 @@ class RFSlotLabelFactory
 	 */
 	public static function create(RFReservationItem $reservation)
 	{
-		$f = new SlotLabelFactory();
+		$f = new RFSlotLabelFactory();
 		return $f->format($reservation);
 	}
 

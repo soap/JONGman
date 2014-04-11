@@ -112,7 +112,7 @@ class RFReservationSlot implements IReservationSlot
 	{
 		if (empty($factory))
 		{
-			return SlotLabelFactory::create($this->_reservation);
+			return RFSlotLabelFactory::create($this->_reservation);
 		}
 		return $factory->format($this->_reservation);
 	}
