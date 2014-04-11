@@ -196,6 +196,9 @@ select.schedule_list {
 	font-size: 14pt;
 	padding-bottom: 10px;
 }
+.schedule_dates a:link, a:hover {
+	text-decoration: none;
+}	
 
 .ui-datepicker {
 	margin-left: auto;
