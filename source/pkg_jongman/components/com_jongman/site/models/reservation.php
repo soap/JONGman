@@ -297,14 +297,6 @@ class JongmanModelReservation extends JModelAdmin
 				
 		}
 		
-		$userId = (int)$this->_series->userId();
-		if (!empty($userId)) {
-			$obj = new StdClass();
-			$obj->reservation_id = (int) $result;
-			$obj->user_id = $userId;
-			$obj->user_level = 1;
-			$success = $dbo->insertObject('#__jongman_reservation_users', $obj);	
-		}
 		
 		return true;
 	}

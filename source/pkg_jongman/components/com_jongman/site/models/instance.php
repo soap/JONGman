@@ -57,11 +57,11 @@ class JongmanModelInstance extends JModelAdmin
 		}
 		
 		$series = $this->buildSeries($table->reference_number);
-		$resutl = new JObject();
+		$result = new JObject();
 		$result->repeat_type = $series->getRepeatOptions()->repeatType();
 		$result->repeat_options = new JRegistry($series->getRepeatOptions()->configurationString());
 			
-		$result->owner_id = $this->getOwnerId($table->reservation_id);
+		$result->owner_id = $series->userId();
 		$result->id = $table->id;
 		$result->checked_out = 0;
 		$result->instance_id = $table->id;
@@ -407,7 +407,7 @@ class JongmanModelInstance extends JModelAdmin
 
 		$factory = new RFReservationRepeatOptionsFactory();
 		$repeatConfig = new JRegistry($reservation->repeat_options);
-		$repeatTerminated = RFDate::fromDatabase($reservation->get('repeat_terminated'));
+		$repeatTerminated = RFDate::fromDatabase($repeatConfig->get('repeat_terminated'));
 		$repeatOptions = $factory->create($reservation->repeat_type, 
 							$repeatConfig->get('repeat_interval'), $repeatTerminated,
 							$repeatConfig->get('repeat_days', array()),  
@@ -417,7 +417,7 @@ class JongmanModelInstance extends JModelAdmin
 		$existingSeries->withId($instance->reservation_id);
 		$existingSeries->withTitle($reservation->title);
 		$existingSeries->withDescription($reservation->description);
-		$existingSeries->withOwner($this->getOwnerId($instance->reservation_id));
+		$existingSeries->withOwner($reservation->owner_id);
 		$existingSeries->withStatus($reservation->state);
 		
 		$startDate = RFDate::fromDatabase($instance->start_date);
@@ -428,6 +428,7 @@ class JongmanModelInstance extends JModelAdmin
 		
 		$this->populateResources($existingSeries);
 		$this->populateInstances($existingSeries);
+		//$this->populateUsers($existingSeries);
 		// populate participants
 		// populate accessories
 		$this->series = $existingSeries;
@@ -530,31 +531,16 @@ class JongmanModelInstance extends JModelAdmin
 		
 		return $table->$pkName;
 	}
+ 
 	
-	/**
-	 * 
-	 * Get owner id 
-	 * @param int $reservationId
-	 * @return int owner id
-	 */
-	protected function getOwnerId($reservationId)
-	{
-		if (!empty($this->users)) {
-			return $this->users[1]->user_id;
-		}
-		$this->populateUsers($reservationId);
-
-		return $this->users[1]->user_id;
-	} 
-	
-	protected function populateUsers($reservationId)
+	protected function populateUsers(RFReservationExistingSeries $series)
 	{
 		$db = $this->getDbo();
 		
 		$query = $db->getQuery(true);
 		$query->select('user_id, user_level')
 		->from('#__jongman_reservation_users')
-		->where('reservation_id = '.(int)$reservationId);
+		->where('reservation_id = '.(int)$series);
 		$db->setQuery($query);
 		
 		$this->users = $db->loadObjectList('user_level');

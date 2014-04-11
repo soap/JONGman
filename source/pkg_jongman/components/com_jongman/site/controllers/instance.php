@@ -19,7 +19,6 @@ class JongmanControllerInstance extends JControllerForm
 	
 	public function allowEdit($data = array(), $key = 'id') 
 	{
-		var_dump($_REQUEST);
 		$user = JFactory::getUser();
 		if (isset($data) && ($data[$key] > 0)) {
 			$model = $this->getModel();

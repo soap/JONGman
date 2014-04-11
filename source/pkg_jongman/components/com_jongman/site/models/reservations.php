@@ -116,13 +116,10 @@ class JongmanModelReservations extends JModelList
 		
 		$query->select('r.id as reservation_id, r.alias, r.title as reservation_title, ' . 
 				'r.description as reservation_description, ' .
-				//'r.owner_id, 0 as user_level, ' .
+				'r.owner_id, 0 as user_level, ' .
 				'r.checked_out, r.checked_out_time, r.schedule_id, ' .
 				'r.state, r.created');		
 		$query->join('INNER','#__jongman_reservations AS r ON r.id=a.reservation_id');
-		
-		$query->select('o.user_id as owner_id, o.user_level as user_level');
-		$query->join('INNER', '#__jongman_reservation_users AS o ON o.reservation_id=r.id');
 		
 		$query->select('s.name AS schedule_name');
 		$query->join('LEFT', '#__jongman_schedules AS s ON s.id=r.schedule_id');
@@ -137,7 +134,7 @@ class JongmanModelReservations extends JModelList
 		
 		// Join over the users for the owner.
 		$query->select('uo.name AS owner_name, uo.email as owner_email');
-		$query->join('LEFT', '#__users AS uo ON uo.id = o.user_id');
+		$query->join('LEFT', '#__users AS uo ON uo.id = r.owner_id');
 
 		$query->select('rrs.resource_id');
 		$query->join('INNER', '#__jongman_reservation_resources AS rrs ON rrs.reservation_id=a.reservation_id');

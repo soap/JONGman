@@ -27,15 +27,11 @@ class JongmanModelInstanceitem extends JModelItem
 						
 		$query->select('r.title, r.description, r.schedule_id')
 			->join('INNER', '#__jongman_reservations AS r ON r.id=a.reservation_id');
-		
-		$query->select('u.user_id as owner_id')
-			->join('INNER', '#__jongman_reservation_users AS u ON u.reservation_id=a.reservation_id');
 			
 		$query->select('own.name as owner_name, own.email as owner_email')
-			->join('LEFT', '#__users AS own ON own.id=u.user_id');
+			->join('LEFT', '#__users AS own ON own.id=r.owner_id');
 
 		$query->where('a.id ='.$this->_db->quote($pk));
-		$query->where('u.user_level=1');
 		
 		$this->_db->setQuery($query);
 		
