@@ -13,6 +13,7 @@
     <files>
         <folder>base</folder>
         <folder>blackout</folder><!-- shall be grouped to reservation -->
+        <folder>cms</folder>
         <folder>controller</folder>
         <folder>date</folder>
         <folder>event</folder>
