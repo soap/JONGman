@@ -30,9 +30,9 @@ class JongmanController extends JControllerLegacy
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{	
-		$jquery_site = JComponentHelper::getParams('com_jongman')->get('jquery_site');
+		$jquery_site = JComponentHelper::getParams('com_jongman')->get('jquery_site', '1');
 		
-		if ($jquery_site == 1) {
+		if ($jquery_site == '1') {
 			JHtml::_('script', 'com_jongman/jquery/jquery-1.8.2.min.js', false, true);
 			JHtml::_('script', 'com_jongman/jquery/jquery-ui-1.9.0.custom.min.js', false, true);		
 			JHtml::_('script', 'com_jongman/jquery/jquery.qtip.min.js', false, true);

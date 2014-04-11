@@ -582,7 +582,6 @@ class JongmanModelInstance extends JModelAdmin
 				$series->withResource($resource);	
 			}	
 		}
-		
 	}	
 	
 	/**

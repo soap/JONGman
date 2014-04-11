@@ -281,7 +281,13 @@ class JongmanModelReservation extends JModelAdmin
 			if (!$instanceTable->store()) {
 				return false;
 			}
-	
+			
+			$obj = new StdClass();
+			$obj->reservation_instance_id = $instanceTable->id;
+			$obj->user_id = $data['owner_id'];
+			$obj->user_level = 1; //owner
+			
+			$this->_db->insertObject('#__jongman_reservation_users', $obj);
 		}
 		
 		$resourceIds = $this->_series->allResourceIds();

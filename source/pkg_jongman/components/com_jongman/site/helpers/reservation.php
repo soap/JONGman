@@ -14,7 +14,6 @@ class ReservationHelper
 	 */
 	public static function canEdit($record)
 	{
-		var_dump($record); jexit();
 		$user = JFactory::getUser();
 		if (is_array($record) && isset($record['id'])) {
 			
