@@ -63,6 +63,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_quotas` (
 CREATE TABLE IF NOT EXISTS `#__jongman_reservations` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `schedule_id` int(11) NOT NULL,
+  `owner_id` int(11) NOT NULL,  
   `title` varchar(200) NOT NULL,
   `description` text NOT NULL,
   `alias` varchar(50) NOT NULL,
@@ -122,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_reservation_resources` (
 
 CREATE TABLE IF NOT EXISTS `#__jongman_reservation_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `reservation_id` int(11) NOT NULL,
+  `reservation_instance_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `user_level` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`),
