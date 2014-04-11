@@ -13,7 +13,7 @@ class RFEventCommandInstanceupdated extends RFEventCommand
 	 */
 	private $series;
 	
-	public function __construct(RFReservation $instance, RFReservationExistingseries $series)
+	public function __construct(RFReservation $instance, RFReservationExistingSeries $series)
 	{
 		$this->instance = $instance;
 		$this->series = $series;

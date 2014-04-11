@@ -13,7 +13,7 @@ class RFEventCommand
 	 */
 	private $series;
 
-	public function __construct(JDatabaseQuery $command, RFReservationExistingseries $series)
+	public function __construct(JDatabaseQuery $command, RFReservationExistingSeries $series)
 	{
 		$this->command = $command;
 		$this->series = $series;

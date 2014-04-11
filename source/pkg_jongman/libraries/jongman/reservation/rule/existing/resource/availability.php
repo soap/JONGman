@@ -11,7 +11,7 @@ class RFReservationRuleExistingResourceAvailability extends RFReservationRuleRes
 	
 	/**
 	 * @param RFReservation $instance
-	 * @param RFReservationSeries|RFReservationExistingseries $series
+	 * @param RFReservationSeries|RFReservationExistingSeries $series
 	 * @param IReservedItem $existingItem
 	 * @return bool
 	 */

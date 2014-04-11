@@ -18,7 +18,7 @@ class RFEventOwnerChanged extends RFSeriesEvent
 	 * @param int $oldOwnerId
 	 * @param int $newOwnerId
 	 */
-	public function __construct(RFReservationExistingseries $series, $oldOwnerId, $newOwnerId)
+	public function __construct(RFReservationExistingSeries $series, $oldOwnerId, $newOwnerId)
 	{
 		$this->series = $series;
 		$this->oldOwnerId = $oldOwnerId;

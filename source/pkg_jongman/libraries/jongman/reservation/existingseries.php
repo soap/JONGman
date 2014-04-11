@@ -7,7 +7,7 @@ defined('_JEXEC') or die;
  * @author Prasit Gebsaap
  *
  */
-class RFReservationExistingseries extends RFReservationSeries
+class RFReservationExistingSeries extends RFReservationSeries
 {
 	/**
 	 * @var ISeriesUpdateScope

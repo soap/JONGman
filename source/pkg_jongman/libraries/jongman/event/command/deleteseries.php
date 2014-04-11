@@ -3,7 +3,7 @@ defined('_JEXEC') or die;
 
 class RFEventCommandDeleteseries extends RFEventCommand
 {
-	public function __construct(RFReservationExistingseries $series)
+	public function __construct(RFReservationExistingSeries $series)
 	{
 		$this->series = $series;
 	}

@@ -3,7 +3,7 @@ defined('_JEXEC') or die;
 
 class RFEventSeriesDeleted extends RFSeriesEvent
 {
-	public function __construct(RFReservationExistingseries $series)
+	public function __construct(RFReservationExistingSeries $series)
 	{
 		parent::__construct($series, RFEventPriority::Highest);
 	}

@@ -19,7 +19,7 @@ class RFEventResourceRemoved extends RFEventSeries
 	 * @param int|ResourceLevel $resourceLevel
 	 * @param ExistingReservationSeries $series
 	 */
-	public function __construct(RFResourceBookable $resource, RFReservationExistingseries $series)
+	public function __construct(RFResourceBookable $resource, RFReservationExistingSeries $series)
 	{
 		$this->resource = $resource;
 

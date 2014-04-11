@@ -16,9 +16,9 @@ class RFEventResourceAdded extends RFSeriesEvent
 	/**
 	 * @param RFResourceBookable $resource
 	 * @param int|ResourceLevel $resourceLevel
-	 * @param RFReservationExistingseries $series
+	 * @param RFReservationExistingSeries $series
 	 */
-	public function __construct(RFResourceBookable $resource, $resourceLevel, RFReservationExistingseries $series)
+	public function __construct(RFResourceBookable $resource, $resourceLevel, RFReservationExistingSeries $series)
 	{
 		$this->resource = $resource;
 		$this->resourceLevel = $resourceLevel;
@@ -40,7 +40,7 @@ class RFEventResourceAdded extends RFSeriesEvent
 	}
 
 	/**
-	 * @return RFReservationExistingseries
+	 * @return RFReservationExistingSeries
 	 */
 	public function series()
 	{

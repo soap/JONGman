@@ -390,13 +390,13 @@ class JongmanModelInstance extends JModelAdmin
 	 * 
 	 * Build existing reservation series from database
 	 * @param string $referenceNumber
-	 * @return RFReservationExistingseries object
+	 * @return RFReservationExistingSeries object
 	 */
 	public function buildSeries($referenceNumber) 
 	{
 		if (!empty($this->series)) return $this->series;
 		
-		$existingSeries = new RFReservationExistingseries();
+		$existingSeries = new RFReservationExistingSeries();
 		
 		$keys = array('reference_number'=>$referenceNumber);
 		$instance = $this->getTable();
@@ -565,10 +565,10 @@ class JongmanModelInstance extends JModelAdmin
 	/**
 	 * 
 	 * Populate reservation resources into existing series
-	 * @param RFReservationExistingseries $series
+	 * @param RFReservationExistingSeries $series
 	 * @since 2.0
 	 */
-	private function populateResources(RFReservationExistingseries $series)
+	private function populateResources(RFReservationExistingSeries $series)
 	{
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
@@ -602,10 +602,10 @@ class JongmanModelInstance extends JModelAdmin
 	/**
 	 * 
 	 * Populate reservation instances into exisiting series
-	 * @param RFReservationExistingseries $series
+	 * @param RFReservationExistingSeries $series
 	 * @since 2.0
 	 */
-	private function populateInstances(RFReservationExistingseries $series)
+	private function populateInstances(RFReservationExistingSeries $series)
 	{
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
