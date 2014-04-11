@@ -8,7 +8,7 @@
 			label="COM_JONGMAN_USE_SINGLE_LAYOUT_LABEL" />
 		<field name="timezone" 
 			type="text" readonly="true"
-			label="COM_JONGMAIN_TIMEZONE" />
+			label="COM_JONGMAN_TIMEZONE_LABEL" />
 	</filedset>
 	<fieldset name="static">
 		<field name="reservable_slots" 

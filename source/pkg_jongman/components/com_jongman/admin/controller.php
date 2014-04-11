@@ -32,8 +32,6 @@ class JongmanController extends JControllerLegacy
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
-		require_once JPATH_COMPONENT.'/helpers/jongman.php';
-
 		$view	= JRequest::getWord('view','cpanel');
 		$layout = JRequest::getWord('layout', 'default');
 

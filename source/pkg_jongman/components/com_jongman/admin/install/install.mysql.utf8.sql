@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_reservation_users` (
   `user_id` int(11) NOT NULL,
   `user_level` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `reservation_id` (`reservation_id`,`user_id`)
+  UNIQUE KEY `reservation_instance_id` (`reservation_instance_id`,`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Users in each reservation, owner=1 implies reservation owner' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------

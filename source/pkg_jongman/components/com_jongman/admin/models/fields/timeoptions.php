@@ -76,7 +76,7 @@ class JFormFieldTimeoptions extends JFormField {
         $resourceId = $this->resourceId;
 
         $user = JFactory::getUser();
-        $userTz = $user->getParam('timezone', 'UTC');
+        $userTz = $user->getParam('timezone', JFactory::getConfig()->get('offset', 'UTC'));
 
         $model = JModelLegacy::getInstance('Schedule', 'JongmanModel');
         $layout = $model->getScheduleLayout($scheduleId, $userTz);

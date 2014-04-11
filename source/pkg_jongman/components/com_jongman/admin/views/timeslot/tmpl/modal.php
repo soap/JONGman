@@ -39,8 +39,8 @@ JHtml::_('behavior.keepalive');
 	</div>
 	<div class="clr"></div>
 	<div class="width-100 fltlft">
-		<fieldset>
-			<ul>
+		<fieldset class="adminform">
+			<ul class="adminformlist">
 				<li>
 					<?php echo $this->form->getLabel('timezone')?>
 					<?php echo $this->form->getInput('timezone')?>
@@ -52,29 +52,36 @@ JHtml::_('behavior.keepalive');
 			</ul>
 		</fieldset>
 	</div>
-	<div class="width-40 layoutDialog fltlft" id="layoutDialog-left">
-		<fieldset name="static-reservable">
-		<ul>
-			<li>
-				<?php echo $this->form->getLabel('reservable_slots')?>
-			</li>
-			<li>
-				<?php echo $this->form->getInput('reservable_slots')?>
-			</li>
-		</ul>
-		</fieldset>
+	<div class="clr"></div>
+	<div class="width-40 fltlft">
+		<div class="layoutDialog" id="layoutDialog-left">
+			<fieldset name="static-reservable">
+				<ul class="adminformlist">
+					<li>
+						<?php echo $this->form->getLabel('reservable_slots')?>
+					</li>
+					<div class="clr"></div>
+					<li>
+						<?php echo $this->form->getInput('reservable_slots')?>
+					</li>
+				</ul>
+			</fieldset>
+		</div>
 	</div>
-	<div class="width-50 layoutDialog fltrt" id="layoutDialog-right">
-		<fieldset name="static-blocked">
-		<ul>
-			<li>
-				<?php echo $this->form->getLabel('blocked_slots')?>
-			</li>
-			<li>
-				<?php echo $this->form->getInput('blocked_slots')?>
-			</li>
-		</ul>	
-		</fieldset>	
+	<div class="width-40 fltrt">
+		<div class="layoutDialog" id="layoutDialog-right">
+			<fieldset name="static-blocked">
+				<ul class="adminformlist">
+					<li>
+						<?php echo $this->form->getLabel('blocked_slots')?>
+					</li>
+					<div class="clr"></div>
+					<li>
+						<?php echo $this->form->getInput('blocked_slots')?>
+					</li>
+				</ul>	
+			</fieldset>
+		</div>	
 	</div>
 	<div class="clr"></div>
 
