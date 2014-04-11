@@ -2,8 +2,6 @@
 defined('_JEXEC') or die;
 
 $function	= JRequest::getCmd('function', 'jSelectSchedule');
-$listOrder	= $this->escape($this->state->get('list.ordering'));
-$listDirn	= $this->escape($this->state->get('list.direction'));
 ?>
 	<fieldset class="filter clearfix">
 		<div class="left">

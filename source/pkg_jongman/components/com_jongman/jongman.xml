@@ -55,6 +55,7 @@
         <!-- Administration Menu Section -->
         <menu>COM_JONGMAN</menu>
         <submenu>
+            <menu view="layouts">COM_JONGMAN_SUBMENU_LAYOUTS</menu>
             <menu view="schedules">COM_JONGMAN_SUBMENU_SCHEDULES</menu>
             <menu view="resources">COM_JONGMAN_SUBMENU_RESOURCES</menu>
             <menu view="reservations">COM_JONGMAN_SUBMENU_RESERVATIONS</menu>

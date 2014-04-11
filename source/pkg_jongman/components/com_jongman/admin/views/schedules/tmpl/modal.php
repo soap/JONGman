@@ -14,6 +14,8 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
 
 $function	= JRequest::getCmd('function', 'jSelectContact');
+$listOrder	= $this->escape($this->state->get('list.ordering'));
+$listDirn	= $this->escape($this->state->get('list.direction'));
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&view=schedules&layout=modal&tmpl=component');?>" method="post" name="adminForm" id="adminForm">
 <?php echo $this->loadTemplate('filter_' . ($this->is_j25 ? 'j25' : 'j30')); ?>

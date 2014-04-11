@@ -96,23 +96,6 @@ class JongmanModelLayout extends JModelAdmin
 	}
 
 	/**
-	 * A protected method to get a set of ordering conditions.
-	 *
-	 * @param   JTable  $table  A record object.
-	 *
-	 * @return  array  An array of conditions to add to add to ordering queries.
-	 * @since   2.0
-	 */
-	protected function getReorderConditions($table = null)
-	{
-		$condition = array(
-			'category_id = '.(int) $table->category_id
-		);
-
-		return $condition;
-	}
-
-	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
 	 * @param   type    $type    The table type to instantiate
@@ -165,7 +148,23 @@ class JongmanModelLayout extends JModelAdmin
 				$form->setFieldAttribute($field, 'filter', 'unset');
 			}
 		}
-		
+		$disableChangeLayout = false;
+		if (!empty($data)) {
+			if (is_array($data)) {
+				if (empty($data['id'])) {
+					$disableChangeLayout = true;
+				}	
+			}else{
+				if (empty($data->id)) {
+					$disableChangeLayout = true;	
+				}
+			}
+		}
+		if ($disableChangeLayout) {
+			$form->setFieldAttribute('timeslots', 'readonly', 'true');
+			$form->setFieldAttribute('timeslots', 'filter', 'unset');	
+		}
+ 		
 		parent::preprocessForm($form, $data, $group);
 	}
 	
@@ -187,28 +186,6 @@ class JongmanModelLayout extends JModelAdmin
 		// If the alias is empty, prepare from the value of the title.
 		if (empty($table->alias)) {
 			$table->alias = JApplication::stringURLSafe($table->title);
-		}
-
-		if (empty($table->id)) {
-			// For a new record.
-
-			// Set ordering to the last item if not set
-			if (empty($table->ordering)) {
-				$db		= JFactory::getDbo();
-				$query	= $db->getQuery(true);
-				$query->select('MAX(ordering)');
-				$query->from('#__jongman_layouts');
-				$query->where('category_id = '.(int) $table->category_id);
-				
-				$max = (int) $db->setQuery($query)->loadResult();
-				
-				if ($error = $db->getErrorMsg()) {
-					$this->setError($error);
-					return false;
-				}
-
-				$table->ordering = $max + 1;
-			}
 		}
 
 		// Clean up keywords -- eliminate extra spaces between phrases

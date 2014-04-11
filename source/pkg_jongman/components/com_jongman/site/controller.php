@@ -30,8 +30,11 @@ class JongmanController extends JControllerLegacy
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{	
-		$jquery_site = JComponentHelper::getParams('com_jongman')->get('jquery_site', '1');
-		
+		$params = JComponentHelper::getParams('com_jongman');
+		$jquery_site = $params->get('jquery_site', '1');
+		$bootstrap_js = $params->get('bootstrap_js', '1');
+		$bootstrap_css = $params->get('bootstrap_css', '1');
+		$jongman_css = $params->get('jongman_css', '1');
 		if ($jquery_site == '1') {
 			JHtml::_('script', 'com_jongman/jquery/jquery-1.8.2.min.js', false, true);
 			JHtml::_('script', 'com_jongman/jquery/jquery-ui-1.9.0.custom.min.js', false, true);		
@@ -39,6 +42,16 @@ class JongmanController extends JControllerLegacy
 			JHtml::_('script', 'com_jongman/jquery/jquery.noconflict.js', false, true);	
 			JHtml::_('stylesheet', 'com_jongman/jongman/jquery.qtip.min.css', false, true, false, false, false);							
 		}
+		if ($bootstrap_js) {
+			JHtml::_('script', 'com_jongman/bootstrap/bootstrap.min.js', false, true);	
+		}
+		if ($bootstrap_css) {
+			JHtml::_('stylesheet', 'com_jongman/bootstrap/component.css', false, true, false, false, false);							
+		}
+		if ($jongman_css) {
+			JHtml::_('stylesheet', 'com_jongman/jongman/jongman.css', false, true, false, false, false);
+		}
+		
 		$view = JFactory::getApplication()->input->getCmd('view', null);
 		$layout = JFactory::getApplication()->input->getCmd('layout', null);
 		if (empty($layout) && $view == 'schedule') {
@@ -63,7 +76,6 @@ class JongmanController extends JControllerLegacy
 			JHtml::_('script', 'com_jongman/jongman/recurrence.js', false, true);
 		}
 
-		JHtml::_('stylesheet', 'com_jongman/jongman/jongman.css', false, true, false, false, false);
 		parent::display($cachable, $urlparams);
 		
 		return $this;
