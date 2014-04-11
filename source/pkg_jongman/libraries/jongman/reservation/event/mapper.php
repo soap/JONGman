@@ -70,32 +70,48 @@ class RFReservationEventMapper
 
 	private function buildAddReservationCommand(RFEventInstanceAdded $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommandInstanceadded($event->getInstance(), $series);
+		return new RFEventCommandInstanceAdded($event->getInstance(), $series);
 	}
 
 	private function buildRemoveReservationCommand(RFEventInstanceRemoved $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommandInstanceremoved($event->getInstance(), $series);
+		return new RFEventCommandInstanceRemoved($event->getInstance(), $series);
 	}
 
 	private function buildUpdateReservationCommand(RFEventInstanceUpdated $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommandInstanceupdated($event->getInstance(), $series);
+		return new RFEventCommandInstanceUpdated($event->getInstance(), $series);
 	}
 
 	private function ownerChangedCommand(RFEventOwnerChanged $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommandOwnerchanged($event);
+		return new RFEventCommandOwnerChanged($event);
 	}
-	
+	/**
+	 * 
+	 * @todo rewrite it
+	 * @param RFEventResourceRemoved $event
+	 * @param RFReservationExistingSeries $series
+	 */
 	private function buildRemoveResourceCommand(RFEventResourceRemoved $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommand(new RemoveReservationResourceCommand($series->seriesId(), $event->resourceId()), $series);
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->delete('#__jongman_reservation_resources')
+			->where('reservation_id = '.$series->seriesId())
+			->where('resource_id = '.$event->resourceId());
+		return new RFEventCommand($query, $series);
 	}
 
 	private function buildAddResourceCommand(RFEventResourceAdded $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommand(new AddReservationResourceCommand($series->seriesId(), $event->resourceId(), $event->resourceLevel()), $series);
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->insert('#__jongman_reservation_resources')
+			->set('reservation_id = '.$series->seriesId())
+			->set('resource_id = '.$event->resourceId())
+			->set('resource_level = 1');
+		return new RFEventCommand($query, $series);
 	}
 
 	private function buildAddAccessoryCommand(RFEventAccessoryAdded $event, RFReservationExistingSeries $series)
