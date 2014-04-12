@@ -14,7 +14,7 @@ class JongmanViewTimeslots extends JViewLegacy
 {
 	public function display($tp=null)
 	{
-		$this->is_j25     	= version_compare(JVERSION, '3', 'lt');
+		
 		parent::display($tp);
 	}
 }

@@ -34,21 +34,27 @@ class JongmanViewQuotas extends JViewLegacy
 	 * @since  1.0
 	 */
 	protected $state;
-
+	protected $sidebar;
 	/**
 	 * Prepare and display the quotas view.
 	 *
 	 * @return  void
 	 * @since   1.0
 	 */
-	public function display()
+	public function display($tp = null)
 	{
 		JHtml::stylesheet( 'administrator/components/com_jongman/assets/css/jongman.css' );
 		// Initialise variables.
 		$this->items		= $this->get('Items');
 		$this->pagination	= $this->get('Pagination');
 		$this->state		= $this->get('State');
-
+        $this->is_j25     	= version_compare(JVERSION, '3', 'lt');
+        if (!$this->is_j25) {
+        	$this->filterForm    = $this->get('FilterForm');
+			$this->activeFilters = $this->get('ActiveFilters');
+			$this->sidebar = JHtmlSidebar::render();	
+        } 
+        
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
@@ -57,7 +63,7 @@ class JongmanViewQuotas extends JViewLegacy
 
 		// Add the toolbar and display the view layout.
 		$this->addToolbar();
-		parent::display();
+		parent::display($tp);
 	}
 
 	/**

@@ -25,18 +25,28 @@ class JongmanViewResources extends JViewLegacy
      * model 's state
      */
     protected $state;
+    protected $sidebar = null;
 
-    public  function display($tpl = null) {
+    public  function display($tpl = null) 
+    {
         JHtml::stylesheet( 'administrator/components/com_jongman/assets/css/jongman.css' );
-        // Get data from the model
-        $items              = $this->get('Items');
-        $pagination         = $this->get('Pagination');
-        // Assign data to the view
-        $this->items        = $items;
-        $this->pagination   = $pagination;
-        $this->state        = $this->get('State');
-
-        $this->addToolbar();
+        $this->items        = $this->get("Items");
+        $this->pagination   = $this->get("Pagination");
+        $this->state        = $this->get("State");
+        $this->is_j25     	= version_compare(JVERSION, '3', 'lt');
+        if (!$this->is_j25) {
+        	$this->filterForm    = $this->get('FilterForm');
+			$this->activeFilters = $this->get('ActiveFilters');
+			$this->sidebar = JHtmlSidebar::render();	
+        } 
+    	
+        // Check for errors.
+		if (count($errors = $this->get('Errors'))) {
+			JError::raiseError(500, implode("\n", $errors));
+			return false;
+		}
+        
+		$this->addToolbar();
         // Display the template
         parent::display($tpl);
     }

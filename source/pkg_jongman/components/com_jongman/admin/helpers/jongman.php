@@ -121,7 +121,7 @@ class JongmanHelper {
 		$dbo->setQuery($query);
 		return $dbo->loadObjectList();
 	} 
-	
+
 	public static function getReservationCategoryOptions()
 	{
 		return array(
@@ -145,8 +145,18 @@ class JongmanHelper {
                     .'</div>'
                 .'</div>';
         return $button;
-    }  
+    } 
 
+    public static function quickIcon($link, $image, $text)
+    {
+    	$html	= array();
+    	$html[] =  "<a href=\"{$link}\" class=\"thumbnail btn pull-left\">";
+    	$html[] =  JHtml::image(JURI::root().'media/com_jongman/images/'.$image, $text);
+    	$html[] = "<span class=\"small\">{$text}</span>";
+    	$html[] = "</a>";
+    	
+    	return implode('', $html);    	
+    }
 	/**
 	 * 
 	 * Get user timezone first from user parameter otherwise global configuration offset
@@ -164,7 +174,7 @@ class JongmanHelper {
 		return $timezone;
 	}
 	
-    public function getVersion() 
+    public static function getVersion() 
     {
     	$manifest = JFactory::getXML(JPATH_COMPONENT_ADMINISTRATOR.'/jongman.xml' ); 
     	return $manifest->version;

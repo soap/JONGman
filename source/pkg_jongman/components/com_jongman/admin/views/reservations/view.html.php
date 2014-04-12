@@ -36,6 +36,7 @@ class JongmanViewReservations extends JViewLegacy
 	 * @since  1.0
 	 */
 	protected $state;
+	protected $sidebar = null; 
 
 	/**
 	 * Prepare and display the reservations view.
@@ -50,7 +51,13 @@ class JongmanViewReservations extends JViewLegacy
 		$this->items		= $this->get('Items');
 		$this->pagination	= $this->get('Pagination');
 		$this->state		= $this->get('State');
-
+        $this->is_j25     	= version_compare(JVERSION, '3', 'lt');
+        if (!$this->is_j25) {
+        	$this->filterForm    = $this->get('FilterForm');
+			$this->activeFilters = $this->get('ActiveFilters');
+			$this->sidebar = JHtmlSidebar::render();	
+        } 
+        
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));

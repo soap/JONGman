@@ -9,7 +9,7 @@
 defined('_JEXEC') or die;
 
 $user		= JFactory::getUser();
-$userId = $user->get('id');
+$userId 	= $user->get('id');
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn   = $this->escape($this->state->get('list.direction'));
 $saveOrder	= $listOrder=='ordering';
@@ -27,16 +27,22 @@ if (!$this->is_j25) :
     	<div id="j-main-container">
     <?php
     endif;
+    //Search Toolbar
+    echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
+else:
+	 echo $this->loadTemplate('filter_j25');
 endif;
-
-    echo $this->loadTemplate('filter_' . ($this->is_j25 ? 'j25' : 'j30'));
-    ?>	
+?>	
 	<div class="clr"> </div>
-    
+<?php if (empty($this->items)) : ?>
+	<div class="alert alert-no-items">
+		<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
+	</div>
+<?php else : ?>
 	<table class="adminlist table table-striped">
 		<thead>
 			<tr>
-				<th width="1%">
+				<th width="1%" clas="hidden-phone">
 					<input type="checkbox" name="checkall-toggle" value="" onclick="checkAll(this)" />
 				</th>
 				<th>
@@ -54,10 +60,10 @@ endif;
                 <th width="5%">
                     <?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_VIEW_DAYS', 's.view_days', $listDirn, $listOrder)?>
                 </th>
-				<th width="10%">
+				<th width="10%" class="hidden-phone">
 					<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ACCESS', 'access_level', $listDirn, $listOrder); ?>
 				</th>
-				<th width="5%">
+				<th width="5%" class="hidden-phone">
 					<?php echo JHtml::_('grid.sort', 'JPUBLISHED', 'published', $listDirn, $listOrder); ?>
 				</th>
 				<th width="1%" class="nowrap">
@@ -65,19 +71,7 @@ endif;
 				</th>
 			</tr>
 		</thead>
-		<tfoot>
-			<tr>
-				<td colspan="9">
-					<?php echo $this->pagination->getListFooter(); ?>
-				</td>
-			</tr>
-		</tfoot>
-		<tbody>
-        <?php if (count($this->items)==0 || (!$this->items) ) : ?>
-            <tr>
-                <td colspan="7" class="center"><?php echo JText::_("COM_JONGMAN_NO_RECORD")?></td>
-            </tr>
-        <?php else: ?>            
+		<tbody>         
 		<?php foreach ($this->items as $i => $item) :
 			$ordering	= ($listOrder == 'ordering');
 			$canCreate	= $user->authorise('core.create', 'com_jongman');
@@ -136,18 +130,26 @@ endif;
 					<?php echo $item->id; ?>
 				</td>
 			</tr>
-		<?php endforeach; 
-        endif;
-        ?>
+		<?php endforeach; ?>
 		</tbody>
+		<?php if ($this->is_j25) : ?>
+		<tfoot>
+			<tr>
+				<td colspan="9">
+					<?php echo $this->pagination->getListFooter(); ?>
+				</td>
+			</tr>
+		</tfoot>
+		<?php endif;?>
 	</table>
-	</div>
-
+	<?php if (!$this->is_j25) : echo $this->pagination->getListFooter(); endif; ?>
+<?php endif?>
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="boxchecked" value="0" />
-	<?php if ($this->is_j25) : ?>		
 	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
 	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
-	<?php endif; ?>
 	<?php echo JHtml::_('form.token'); ?>
+<?php if (!$this->is_j25) : ?>
+	</div>
+<?php endif; ?>
 </form>

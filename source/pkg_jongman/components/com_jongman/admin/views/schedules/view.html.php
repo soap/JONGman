@@ -19,6 +19,7 @@ class JongmanViewSchedules extends JViewLegacy
     protected $is_j25;
     
     protected $state;
+    protected $sidebar = null;
     /**
      * JongmanSchedules view display method
      * @return void
@@ -30,7 +31,12 @@ class JongmanViewSchedules extends JViewLegacy
         $this->items        = $this->get('Items');
         $this->pagination   = $this->get('Pagination');
         $this->state        = $this->get('State');
-        $this->is_j25     = version_compare(JVERSION, '3', 'lt');
+        $this->is_j25     	= version_compare(JVERSION, '3', 'lt');
+        if (!$this->is_j25) {
+        	$this->filterForm    = $this->get('FilterForm');
+			$this->activeFilters = $this->get('ActiveFilters');
+			$this->sidebar = JHtmlSidebar::render();	
+        } 
         
         // Check for errors.
 		if (count($errors = $this->get('Errors'))) {
@@ -38,15 +44,13 @@ class JongmanViewSchedules extends JViewLegacy
 			return false;
 		}
         $this->addToolbar();
-
+        
         // Display the template
         parent::display($tpl);
-
     }
     
     function addToolbar() 
     {
-  		require_once JPATH_COMPONENT .'/helpers/jongman.php';
         JToolBarHelper::title(JText::_('COM_JONGMAN_SCHEDULES_TITLE'), 'schedules.png');
         
         $canDo	= JongmanHelper::getActions();
