@@ -88,7 +88,7 @@ class JongmanModelReservations extends JModelList
 		$query->join('LEFT', '#__users AS uc ON uc.id=r.checked_out');
 		
 		$query->select('o.user_id as owner_id, o.user_level');
-		$query->join('LEFT', '#__jongman_reservation_users AS o ON o.reservation_id=a.reservation_id');
+		$query->join('LEFT', '#__jongman_reservation_users AS o ON o.reservation_instance_id=a.id');
 		
 		// Join over the users for the owner user.
 		$query->select('own.name AS owner');
