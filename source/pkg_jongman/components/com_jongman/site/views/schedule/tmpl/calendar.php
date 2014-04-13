@@ -16,7 +16,8 @@ $firstDate = $this->scheduledates->getBegin();
 $lastDate = $this->scheduledates->getEnd();
 $url = JSite::getMenu()->getActive()->link.'&Itemid='.JSite::getMenu()->getActive()->id;
 ?>
-<div>
+<div class="row-flulid">
+	<div clas="span12">
 	<div class="schedule_title">
 		<span><?php echo $this->schedule->name?></span>
 		<a href="#" id="calendar_toggle"><img src="<?php echo $calLink?>" alt="<?php echo JText::_('COM_JONGMAN_SHOWHIDE_CALENDAR')?>"/></a>
@@ -31,7 +32,7 @@ $url = JSite::getMenu()->getActive()->link.'&Itemid='.JSite::getMenu()->getActiv
 		</a>	
 	</div>
 	<div type="text" id="datepicker" style="display:none"></div>
-</div>
+
 <?php 
 echo $this->loadTemplate('legend');
 echo $this->loadTemplate('main');
@@ -39,6 +40,8 @@ if ($bottomNavigation) {
 	echo $this->loadTemplate('footer');
 }
 ?>
+	</div>
+</div>
 <form name="reservationForm" id="reservation-form" method="POST" action="<?php JFactory::getURI()->toString()?>">
 	<input type="hidden" name="cid[]" value="" />
 	<input type="hidden" name="task" value="" />
