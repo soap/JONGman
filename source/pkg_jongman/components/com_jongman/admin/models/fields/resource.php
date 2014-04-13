@@ -14,9 +14,9 @@ jimport('joomla.form.helper');
 
 JFormHelper::loadFieldClass('list');
 
-class JFormFieldJongmanSelectResource extends JFormFieldList {
+class JFormFieldResource extends JFormFieldList {
 
-    public $type = 'JongmanSelectResource';
+    public $type = 'Resource';
     
     protected $schedule;
     protected $quota;

@@ -33,7 +33,7 @@
 			description="COM_JONGMAN_FIELD_RESERVATION_RESERVED_FOR_DESC" />
 			
 		<field name="resource_id" 
-			type="jongmanselectresource"  
+			type="resource"  
 			filter="int"
 			size="1"
 			label="COM_JONGMAN_FIELD_RESERVATION_RESOURCE_LABEL"

@@ -8,12 +8,15 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
 
+jimport('joomla.html.html');
+jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 
+JFormHelper::loadFieldClass('list');
 
-class JFormFieldJongmanSelectTimespan extends JFormField {
+class JFormFieldSchedule extends JFormFieldList {
 
-    protected $type = 'JongmanSelectTimespan';
+    protected $type = 'Schedule';
 
     public function getInput() {
         // Initialize variables.
@@ -46,25 +49,26 @@ class JFormFieldJongmanSelectTimespan extends JFormField {
 		else {
 			$html[] = JHtml::_('select.genericlist', $options, $this->name, trim($attr), 'value', 'text', $this->value, $this->id);
 		}
-
-		return implode($html);
+		/* Hidden element to store old value, if required is true */
+		if ( ($this->element['required'] == 'true') || ($this->element['required']=='1') ) { 
+			$html[] = '<input type="hidden" id="old_schedule_id" name="old_schedule_id" value="'.$this->value.'">';
+		}
+		return implode("\n", $html);
     }
-
+    
     protected function getOptions() {
-        $options = array();
-        $options[] = JHtml::_('select.option', '10', '10 '.JText::_('COM_JONGMAN_MINUTES'));
-        $options[] = JHtml::_('select.option', '15', '15 '.JText::_('COM_JONGMAN_MINUTES'));
-		$options[] = JHtml::_('select.option', '30', '30 '.JText::_('COM_JONGMAN_MINUTES'));
-		$options[] = JHtml::_('select.option', '60', '1 '.JText::_('COM_JONGMAN_HOUR'));
-		$options[] = JHtml::_('select.option', '120', '2 '.JText::_('COM_JONGMAN_HOURS'));
-        $options[] = JHtml::_('select.option', '180', '3 '.JText::_('COM_JONGMAN_HOURS'));
-		$options[] = JHtml::_('select.option', '240', '4 '.JText::_('COM_JONGMAN_HOURS'));
-		$options[] = JHtml::_('select.option', '360', '6 '.JText::_('COM_JONGMAN_HOURS'));
-		$options[] = JHtml::_('select.option', '480', '8 '.JText::_('COM_JONGMAN_HOURS'));
-		$options[] = JHtml::_('select.option', '720', '12 '.JText::_('COM_JONGMAN_HOURS'));
-        $options[] = JHtml::_('select.option', '1440', '24 '.JText::_('COM_JONGMAN_HOURS'));
-
-        return $options;
+    	//get predefined option in xml file (FORM Definition) 
+		$staticOptions = parent::getOptions();
+		
+        $dbo = JFactory::getDbo();
+        $query = $dbo->getQuery(true);
+        $query->select('id as value, name as text')
+        		->from('#__jongman_schedules ')
+        		->order('name asc');
+        $dbo->setQuery($query);
+        
+        $options = $dbo->loadObjectList();
+        return array_merge(
+        	$staticOptions, $options);
     }
-
 }

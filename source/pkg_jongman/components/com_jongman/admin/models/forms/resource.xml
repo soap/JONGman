@@ -23,7 +23,7 @@
 			size="40" label="COM_JONGMAN_FIELD_RESOURCE_CONTACTINFO_LABEL"
 			description="COM_JONGMAN_FIELD_RESOURCE_CONTACTINFO_DESC"/>
 		
-        <field name="schedule_id" type="jongmanselectschedule" 
+        <field name="schedule_id" type="schedule" 
             label="COM_JONGMAN_FIELD_SCHEDULE_NAME_LABEL"
             description="COM_JONGMAN_FIELD_SCHEDULE_NAME_DESC" 
             required="true">
