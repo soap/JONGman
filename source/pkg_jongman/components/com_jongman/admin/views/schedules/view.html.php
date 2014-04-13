@@ -51,7 +51,7 @@ class JongmanViewSchedules extends JViewLegacy
     
     function addToolbar() 
     {
-        JToolBarHelper::title(JText::_('COM_JONGMAN_SCHEDULES_TITLE'), 'schedules.png');
+        JToolBarHelper::title(JText::_('COM_JONGMAN_SCHEDULES_TITLE'), 'schedules');
         
         $canDo	= JongmanHelper::getActions();
   		if ($canDo->get('core.create')) {

@@ -74,7 +74,6 @@ class JongmanViewLayouts extends JViewLegacy
 		// Initialise variables.
 		$state	= $this->get('State');
 		$canDo	= JongmanHelper::getActions();
-
 		JToolBarHelper::title(JText::_('COM_JONGMAN_LAYOUTS_TITLE'));
 
 		if ($canDo->get('core.create')) {

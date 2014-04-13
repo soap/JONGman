@@ -40,8 +40,9 @@ class JongmanController extends JControllerLegacy
             // Load the submenu.
             JongmanHelper::addSubmenu(JRequest::getWord('view', $this->default_view));    
         }
-
-
+		JHtml::_('stylesheet', 'com_jongman/jongman/toolbar.css', false, true, false, false, false);							
+        
+		
 		parent::display();
 
 		return $this;
