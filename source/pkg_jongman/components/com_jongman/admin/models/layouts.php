@@ -94,7 +94,8 @@ class JongmanModelLayouts extends JModelList
 				'list.select',
 				'a.id, a.title, a.alias, a.timezone, a.default,' . 
 				'a.checked_out, a.checked_out_time, ' .
-				'a.published, a.access, a.created, a.language'
+				'a.published, a.access, a.created, a.language, '. 
+				'(SELECT COUNT(s.id) FROM #__jongman_schedules AS s WHERE s.layout_id=a.id) as used_count'
 			)
 		);
 		$query->from('#__jongman_layouts AS a');

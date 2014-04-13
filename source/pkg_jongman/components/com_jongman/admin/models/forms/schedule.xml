@@ -14,7 +14,7 @@
 			size="40" label="JFIELD_ALIAS_LABEL"
 			description="COM_JONGMAN_FIELD_SCHEDULE_ALIAS_DESC"/>
 		
-		<field name="layout_id" type="layout"
+		<field name="layout_id" type="layout" required="true"
 			label="COM_JONGMAN_FIELD_SCHEDULE_LAYOUT_LABEL"
 			description="COM_JONGMAN_FIELD_SCHEDULE_LAYOUT_DESC"
 			/>

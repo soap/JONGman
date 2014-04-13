@@ -52,6 +52,9 @@ endif;
                 </th>
                 <th width="15%">
                     <?php echo JText::_('COM_JONGMAN_HEADING_BLOCKED_SLOTS')?>
+                </th>
+                <th width="2%">
+                	<?php echo JText::_('COM_JONGMAN_HEADING_USED_COUNT')?>
                 </th>						
 				<th width="5%">
 					<?php echo JHtml::_('grid.sort', 'JPUBLISHED', 'a.published', $listDirn, $listOrder); ?>
@@ -111,7 +114,10 @@ endif;
 				</td>
 				<td>
 				
-				</td>				
+				</td>		
+				<td class="center">
+					<?php echo $this->escape($item->used_count)?>
+				</td>		
 				<td class="center">
 					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'layouts.', $canChange); ?>
 				</td>

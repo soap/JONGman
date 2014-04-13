@@ -87,9 +87,16 @@ class JongmanTableLayout extends JTable
 			$this->modified_by	= $userId;
 		}
 		
+		// Verify if there is default layout
+		if ($this->default == '0' && $this->published == '1'){
+			$table = JTable::getInstance('Layout', 'JongmanTable');
+			if (!$table->load( array('default' => '1')) ) {
+				$this->default = '1';	
+			}				
+		} 
+		
 		// Verify that the default layout is unique
-		if ($this->default == '1')
-		{		
+		if ($this->default == '1') {		
 			$table = JTable::getInstance('Layout', 'JongmanTable');
 			if ($table->load( array('default' => '1') ))
 			{
@@ -111,6 +118,7 @@ class JongmanTableLayout extends JTable
 				return false;
 			}
 		}
+
 		// Attempt to store the data.
 		return parent::store($updateNulls);
 	}

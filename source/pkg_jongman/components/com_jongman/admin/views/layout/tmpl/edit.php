@@ -56,7 +56,12 @@ JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, f
 					<?php echo $this->form->getLabel('timezone'); ?>
 					<?php echo $this->form->getInput('timezone'); ?>
 				</li>
-
+				
+				<li>
+					<?php echo $this->form->getLabel('default'); ?>
+					<?php echo $this->form->getInput('default'); ?>
+				</li>
+				
 				<li>
 					<?php echo $this->form->getLabel('published'); ?>
 					<?php echo $this->form->getInput('published'); ?>
