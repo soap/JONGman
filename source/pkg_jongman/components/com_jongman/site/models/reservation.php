@@ -187,13 +187,15 @@ class JongmanModelReservation extends JModelAdmin
 		$tz = JongmanHelper::getUserTimezone();
 
 		$repeatType = $input['repeat_type'];
-		$repeatInterval = $input['repeat_interval'];
-		$weekDays = $input['repeat_days'];
-		$monthyType = $input['repeat_monthly_type'];
+		$repeatInterval = isset($input['repeat_interval']) ?  $input['repeat_interval'] : null;
+		$weekDays = isset($input['repeat_days']) ? $input['repeat_days'] : null;
+		$monthlyType = isset($input['repeat_monthly_type']) ? $input['repeat_monthly_type'] : null;
 		
 		if (isset($input['repeat_terminated'])) {
 			$terminated = RFDate::parse($input['repeat_terminated'], $tz);
 			$terminated->setTime(new RFTime(0, 0, 0, $tz));
+		}else{
+			$terminated = new RFDateNull();
 		}
 		
 		$input['repeatOptions'] = JongmanHelper::getRepeatOptions($repeatType, $repeatInterval, $terminated, $weekDays, $monthlyType);
