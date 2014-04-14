@@ -24,6 +24,7 @@ class JongmanControllerInstance extends JControllerForm
 			$model = $this->getModel();
 			$table = $model->getTable();
 			$table->load($data[$key]);
+
 			$series = $model->buildSeries($table->reference_number);
 			$resourceId = $series->resourceId();						
 			$actions = JongmanHelper::getActions('com_jongman.resource.'.$resourceId);
@@ -249,12 +250,11 @@ class JongmanControllerInstance extends JControllerForm
 		
 		$app = JFactory::getApplication();
 		$schedule_id = $app->input->getInt('schedule_id', null);
-		if (!empty($schedule_id)) {
-			$append .= '&layout=calendar&id='.$schedule_id;	
-		}else{
-			
+		if (empty($schedule_id)) {
+			$schedule_id = $app->input->getInt('id');		
 		}
-		
+	
+		$append .= '&layout=calendar&id='.$schedule_id;	
 		return $append;	
 	}	
 	

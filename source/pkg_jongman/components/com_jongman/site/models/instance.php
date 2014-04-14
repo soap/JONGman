@@ -323,7 +323,7 @@ class JongmanModelInstance extends JModelAdmin
 			$resourceIds = $this->series->allResourceIds();
 			$dbo = $this->getDbo();
 			foreach($resourceIds as $i => $resourceId) {
-				$resource_level = ($i == 0 ? 0 : 1);
+				$resource_level = ($i == 0 ? 1 : 2);
 				$obj = new StdClass();
 				$obj->reservation_id = (int) $newId;
 				$obj->resource_id = $resourceId;
@@ -425,9 +425,9 @@ class JongmanModelInstance extends JModelAdmin
 		$duration = new RFDateRange($startDate, $endDate);
 		$currentInstance = new RFReservation($existingSeries, $duration, $instance->reservation_id, $instance->reference_number);
 		$existingSeries->withCurrentInstance($currentInstance);
-		
 		$this->populateResources($existingSeries);
 		$this->populateInstances($existingSeries);
+		
 		//$this->populateUsers($existingSeries);
 		// populate participants
 		// populate accessories
@@ -566,7 +566,7 @@ class JongmanModelInstance extends JModelAdmin
 		
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
-		
+		var_dump($rows);
 		foreach($rows as $row) {
 			$repeatConfig = new JRegistry($row->params);
 			$resource = new RFResourceBookable(
