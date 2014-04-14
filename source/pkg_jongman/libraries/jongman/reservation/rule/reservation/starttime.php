@@ -1,6 +1,8 @@
 <?php
 defined('_JEXEC') or die;
 
+jimport('jongman.utils.starttimeconstraint');
+
 class RFReservationRuleReservationStarttime implements IReservationValidationRule
 {
 	protected $message;
@@ -15,7 +17,7 @@ class RFReservationRuleReservationStarttime implements IReservationValidationRul
 		return $this->message;
 	}
 	/**
-	 * @param ReservationSeries $reservationSeries
+	 * @param RFReservationSeries $reservationSeries
 	 * @return ReservationRuleResult
 	 */
 	public function validate($reservationSeries)
@@ -24,19 +26,19 @@ class RFReservationRuleReservationStarttime implements IReservationValidationRul
 
 		if (empty($constraint))
 		{
-			$constraint = RFReservationStarttimeConstraint::_DEFAULT;
+			$constraint = RFReservationStartTimeConstraint::_DEFAULT;
 		}
 
-		if ($constraint == RFReservationStarttimeConstraint::NONE)
+		if ($constraint == RFReservationStartTimeConstraint::NONE)
 		{
 			// Ok
-			return new RFReservationValidationResult();
+			return new RFReservationRuleResult();
 		}
 
 		$currentInstance = $reservationSeries->currentInstance();
 
 		$dateThatShouldBeLessThanNow = $currentInstance->startDate();
-		if ($constraint == RFReservationStarttimeConstraint::CURRENT)
+		if ($constraint == RFReservationStartTimeConstraint::CURRENT)
 		{
 			$timezone = $dateThatShouldBeLessThanNow->timezone();
 			$scheduleModel = JModel::getInstance('Schedule', 'JongmanSchedule');
@@ -50,11 +52,11 @@ class RFReservationRuleReservationStarttime implements IReservationValidationRul
 			*/
 			$dateThatShouldBeLessThanNow = $currentPeriod->beginDate();
 		}
-		JLog::add("Start Time Rule: Comparing {$dateThatShouldBeLessThanNow} to Date::Now()", JLog::DEBUG, 'validation');
+		JLog::add("Start Time Rule: Comparing {$dateThatShouldBeLessThanNow} to {Date::Now()}", JLog::DEBUG, 'validation');
 
 		$startIsInFuture = $dateThatShouldBeLessThanNow->compare(RFDate::now()) >= 0;
 		if (!$startIsInFuture) {
-			$this->message = 'Start time is in the past';
+			$this->message = JText::_("COM_JONGMAN_ERROR_RULE_STARTTIME_IN_THE_PAST");
 			return new RFReservationRuleResult(false, $this->getError());
 		}
 		

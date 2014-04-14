@@ -23,7 +23,7 @@ class RFReservationValidationRuleProcessor //implements IReservationValidationSe
 
 			if (!$result->isValid())
 			{
-				$errors = $rule->getError();
+				$errors = $result->errorMessage();
 				if (!is_array($errors)) $errors = array($errors);
 				return new RFReservationValidationResult(false, $errors);
 			}
