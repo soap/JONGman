@@ -52,7 +52,7 @@ class RFReservationRuleReservationStarttime implements IReservationValidationRul
 			*/
 			$dateThatShouldBeLessThanNow = $currentPeriod->beginDate();
 		}
-		JLog::add("Start Time Rule: Comparing {$dateThatShouldBeLessThanNow} to {Date::Now()}", JLog::DEBUG, 'validation');
+		JLog::add("Start Time Rule: Comparing {$dateThatShouldBeLessThanNow} to {RFDate::Now()}", JLog::DEBUG, 'validation');
 
 		$startIsInFuture = $dateThatShouldBeLessThanNow->compare(RFDate::now()) >= 0;
 		if (!$startIsInFuture) {

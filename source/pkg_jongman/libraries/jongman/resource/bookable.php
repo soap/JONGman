@@ -1,7 +1,8 @@
 <?php
 defined('_JEXEC') or die;
 
-class RFResourceBookable
+jimport('jongman.base.iresource');
+class RFResourceBookable implements IResource
 {
 	protected $_resourceId;
 	protected $_name;
@@ -46,7 +47,7 @@ class RFResourceBookable
 								$name,
 								$location,
 								$contact,
-								$notes,
+								$note,
 								$minLength,
 								$maxLength,
 								$autoAssign,
@@ -59,12 +60,12 @@ class RFResourceBookable
 								$scheduleId = null,
 								$adminGroupId = null
 	)
-	{
+	{		
 		$this->setResourceId($resourceId);
 		$this->setName($name);
 		$this->setLocation($location);
 		$this->setContact($contact);
-		$this->setNotes($notes);
+		$this->setNotes($note);
 		$this->setDescription($description);
 		$this->setMinLength($minLength);
 		$this->setMaxLength($maxLength);
@@ -110,10 +111,12 @@ class RFResourceBookable
 	 */
 	public static function create($row)
 	{
-		if (isset($row->params) && $row->params != '') {
+
+		if (isset($row->params) && !($row->params instanceof JRegistry) ) {
 			$row->params = new JRegistry($row->params);
 		}
-		$resource = new RFResourceBookable($row->id,
+		$resource = new RFResourceBookable(
+			$row->id,
 			$row->title,
 			$row->location,
 			$row->contact_info,
@@ -121,7 +124,7 @@ class RFResourceBookable
 			$row->params->get('min_reservation_duration'),
 			$row->params->get('max_reservation_duration'),
 			$row->params->get('auto_assign'),
-			$row->params->get('need_appoval'),
+			$row->params->get('need_approval'),
 			$row->params->get('overlap_day_reservation'),
 			$row->params->get('max_participants'),
 			$row->params->get('min_notice_duration'),
@@ -149,7 +152,6 @@ class RFResourceBookable
 		if (isset($row->schedule_admin_group_id)) {
 			$resource->withScheduleAdminGroupId($row->schedule_admin_group_id);
 		}
-		
 		return $resource;
 	}
 
@@ -545,7 +547,7 @@ class RFResourceBookable
 		}
 	}
 
-	public function DisableSubscription()
+	public function disableSubscription()
 	{
 		$this->setIsCalendarSubscriptionAllowed(false);
 	}

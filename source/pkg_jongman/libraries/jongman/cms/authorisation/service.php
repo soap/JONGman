@@ -1,7 +1,6 @@
 <?php
 defined('_JEXEC') or die;
 
-
 interface IRoleService
 {
 	/**
@@ -9,38 +8,38 @@ interface IRoleService
 	 * @param User $user
 	 * @return bool
 	 */
-	public function isApplicationAdministrator(JUser $user);
+	public function isApplicationAdministrator($user);
 
 	/**
 	 * @abstract
 	 * @param User $user
 	 * @return bool
 	 */
-	public function isResourceAdministrator(JUser $user);
+	public function isResourceAdministrator($user);
 
 	/**
 	 * @abstract
 	 * @param User $user
 	 * @return bool
 	 */
-	public function isGroupAdministrator(JUser $user);
+	public function isGroupAdministrator($user);
 
 	/**
 	 * @abstract
 	 * @param User $user
 	 * @return bool
 	 */
-	public function isScheduleAdministrator(JUser $user);
+	public function isScheduleAdministrator($user);
 }
 
-interface IAuthorizationService extends IRoleService
+interface IAuthorisationService extends IRoleService
 {
 	/**
 	 * @abstract
 	 * @param UserSession $reserver user who is requesting access to perform action
 	 * @return bool
 	 */
-	public function canReserveForOthers(JUser $reserver);
+	public function canReserveForOthers($reserver);
 
 	/**
 	 * @abstract
@@ -48,7 +47,7 @@ interface IAuthorizationService extends IRoleService
 	 * @param int $reserveForId user to reserve for
 	 * @return bool
 	 */
-	public function canReserveFor(JUser $reserver, $reserveForId);
+	public function canReserveFor($reserver, $reserveForId);
 
 	/**
 	 * @abstract
@@ -56,50 +55,49 @@ interface IAuthorizationService extends IRoleService
 	 * @param int $approveForId user to approve for
 	 * @return bool
 	 */
-	public function canApproveFor(JUser $approver, $approveForId);
+	public function canApproveFor($approver, $approveForId);
 
     /**
      * @param UserSession $user
      * @param IResource $resource
      * @return bool
      */
-    public function canEditForResource(JUser $user, IResource $resource);
+    public function canEditForResource($user, IResource $resource);
 
     /**
      * @param UserSession $user
      * @param IResource $resource
      * @return bool
      */
-    public function canApproveForResource(JUser $user, IResource $resource);
+    public function canApproveForResource($user, IResource $resource);
 
 }
 
-class RFAuthorizationService implements IAuthorizationService
+class RFAuthorisationService implements IAuthorisationService
 {
-	/**
-	 * @var IUserRepository
-	 */
-	private $userRepository;
-
-	public function __construct(JFactory $userRepository)
+	public static $_instance;
+	protected function __construct(){}
+	
+	public function getInstance()
 	{
-		$this->userRepository = $userRepository;
+		if (!self::$_instance) {
+			self::$_instance = new RFAuthorisationService();	
+		}
+		return self::$_instance;
 	}
 
 	/**
 	 * @param UserSession $reserver user who is requesting access to perform action
 	 * @return bool
 	 */
-	public function canReserveForOthers(JUser $reserver)
+	public function canReserveForOthers($reserver)
 	{
 		if ($reserver->isAdmin)
 		{
 			return true;
 		}
 
-		$user = $this->userRepository->getUser($reserver->id);
-
-		return $user->IsGroupAdmin();
+		return $user->isGroupAdmin();
 	}
 
 	/**
@@ -107,7 +105,7 @@ class RFAuthorizationService implements IAuthorizationService
 	 * @param int $reserveForId user to reserve for
 	 * @return bool
 	 */
-	public function canReserveFor(UserSession $reserver, $reserveForId)
+	public function canReserveFor($reserver, $reserveForId)
 	{
 		return $this->isAdminFor($reserver, $reserveForId);
 	}
@@ -117,7 +115,7 @@ class RFAuthorizationService implements IAuthorizationService
 	 * @param int $approveForId user to approve for
 	 * @return bool
 	 */
-	public function canApproveFor(UserSession $approver, $approveForId)
+	public function canApproveFor($approver, $approveForId)
 	{
 		return $this->isAdminFor($approver, $approveForId);
 	}
@@ -126,87 +124,36 @@ class RFAuthorizationService implements IAuthorizationService
      * @param User $user
      * @return bool
      */
-    public function isApplicationAdministrator(User $user)
+    public function isApplicationAdministrator($user)
     {
-        if ($user->EmailAddress() == Configuration::Instance()->GetKey(ConfigKeys::ADMIN_EMAIL))
-        {
-            return true;
-        }
-
-        return $user->isInRole(RoleLevel::APPLICATION_ADMIN);
+        return $user->authorise('core.admin', 'com_jongman');
     }
 
     /**
      * @param User $user
      * @return bool
      */
-    public function IsResourceAdministrator(User $user)
+    public function isResourceAdministrator($user)
     {
-        return $user->IsInRole(RoleLevel::RESOURCE_ADMIN);
+        return $user->authorise('core.admin', 'com_jongman');
     }
 
     /**
      * @param User $user
      * @return bool
      */
-    public function IsGroupAdministrator(User $user)
+    public function isGroupAdministrator($user)
     {
-        return $user->IsInRole(RoleLevel::GROUP_ADMIN);
+        return $user->isInRole(RoleLevel::GROUP_ADMIN);
     }
 
 	/**
      * @param User $user
      * @return bool
      */
-    public function IsScheduleAdministrator(User $user)
+    public function isScheduleAdministrator($user)
     {
-        return $user->IsInRole(RoleLevel::SCHEDULE_ADMIN);
-    }
-
-	/**
-	 * @param UserSession $userSession
-	 * @param int $otherUserId
-	 * @return bool
-	 */
-	private function IsAdminFor(UserSession $userSession, $otherUserId)
-	{
-		if ($userSession->IsAdmin)
-		{
-			return true;
-		}
-
-        if (!$userSession->IsGroupAdmin)
-        {
-            // dont even bother checking if the user isnt a group admin
-            return false;
-        }
-
-		$user1 = $this->userRepository->LoadById($userSession->UserId);
-		$user2 = $this->userRepository->LoadById($otherUserId);
-
-		return $user1->IsAdminFor($user2);
-	}
-
-    /**
-     * @param UserSession $userSession
-     * @param IResource $resource
-     * @return bool
-     */
-    public function CanEditForResource(UserSession $userSession, IResource $resource)
-    {
-        if ($userSession->IsAdmin)
-        {
-            return true;
-        }
-
-        if (!$userSession->IsResourceAdmin && !$userSession->IsScheduleAdmin)
-        {
-            return false;
-        }
-
-        $user = $this->userRepository->LoadById($userSession->UserId);
-
-        return $user->IsResourceAdminFor($resource);
+        return $user->isInRole(RoleLevel::SCHEDULE_ADMIN);
     }
 
     /**
@@ -214,20 +161,39 @@ class RFAuthorizationService implements IAuthorizationService
      * @param IResource $resource
      * @return bool
      */
-    public function canApproveForResource(JUser $userSession, IResource $resource)
+    public function canEditForResource($user, IResource $resource)
     {
-        if ($userSession->IsAdmin)
-        {
-            return true;
-        }
+       	if ($user->authorise('core.admin','com_jongman')) {
+    		return true;
+    	}
 
-        if (!$userSession->IsResourceAdmin)
-        {
-            return false;
-        }
+        if ($user->authorise('core.edit', 'com_jongman.resource.'.$resource->getResourceId())) {
+    		return true;
+    	}
 
-        $user = $this->userRepository->LoadById($userSession->UserId);
+        return $user->authorise('core.edit', 'com_jongman');
+    }
 
-        return $user->IsResourceAdminFor($resource);
+    /**
+     * @param $user
+     * @param IResource $resource
+     * @return bool
+     */
+    public function canApproveForResource($user, IResource $resource)
+    {
+    	
+   		if ($user->authorise('core.admin','com_jongman')) {
+    		return true;
+    	}
+    	
+    	if ($user->authorise('core.edit', 'com_jongman.resource.'.$resource->getResourceId())) {
+    		return true;
+    	}
+    	
+    	if ($user->authorise('core.edit.state', 'com_jongman.resource.'.$resource->getResourceId())) {
+    		return true;
+    	}
+    	
+    	return false;
     }
 }

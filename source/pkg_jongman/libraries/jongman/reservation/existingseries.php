@@ -66,7 +66,11 @@ class RFReservationExistingSeries extends RFReservationSeries
 	{
 		$this->userId = $userId;
 	}
-
+	
+	public function withBookedBy($user)
+	{
+		$this->bookedBy = $user;	
+	}
 	/**
 	 * @internal
 	 */
