@@ -96,10 +96,11 @@ class JongmanModelResources extends JModelList
 		// Select the required fields from the table.
 		$query->select(
 				'r.id AS id, r.title AS title, r.alias AS alias,'.
-                //'r.min_reservation as min_reservation, r.max_reservation as max_reservation,'.
-                //'r.min_notice_duration as min_notice_duration,'.
-                //'r.max_notice_duration as max_notice_duration,'.
-                //'r.need_approval as need_approval,'.
+                'r.min_reservation_duration, r.max_reservation_duration,'.
+                'r.min_notice_duration as min_notice_duration,'.
+                'r.max_notice_duration as max_notice_duration,'.
+                'r.requires_approval as requires_approval,'.
+				'r.max_participants, ' .
 				'r.checked_out AS checked_out,'.
 				'r.checked_out_time AS checked_out_time,'.
 				'r.ordering AS ordering, r.published as published, r.params'
@@ -203,7 +204,34 @@ class JongmanModelResources extends JModelList
 		if ($items === false) return false;
 		
 		foreach($items as $i => $item) {
+			
 			$items[$i]->params = new JRegistry($item->params);
+			
+			$items[$i]->hasMinNoticeTime = false;
+			$minNoticeTime = (int) $items[$i]->min_notice_duration;
+			if ( !empty($minNoticeTime)) {
+				$items[$i]->hasMinNoticeTime = true;
+				$items[$i]->minNoticeTime = RFTimeInterval::parse($minNoticeTime * 60);
+			}
+			$maxNoticeTime = (int) $items[$i]->max_notice_duration;
+			$items[$i]->hasMaxNoticeTime = false;
+			if ( !empty($maxNoticeTime)) {
+				$items[$i]->hasMaxNoticeTime = true;
+				$items[$i]->maxNoticeTime = RFTimeInterval::parse($maxNoticeTime * 60);
+			}
+			
+			$items[$i]->hasMinDuration = false;
+			$minDuration = (int) $items[$i]->min_reservation_duration;
+			if ( !empty($minDuration)) {
+				$items[$i]->hasMinDuration = true;
+				$items[$i]->minDuration = RFTimeInterval::parse($minDuration * 60);
+			}
+			$maxDuration = (int) $items[$i]->max_reservation_duration;
+			$items[$i]->hasMaxDuration = false;
+			if ( !empty($maxNoticeTime)) {
+				$items[$i]->hasMaxDuration = true;
+				$items[$i]->maxDuration = RFTimeInterval::parse($maxDuration * 60);
+			}			
 		}
 		
 		return $items;

@@ -111,24 +111,20 @@ class RFResourceBookable implements IResource
 	 */
 	public static function create($row)
 	{
-
-		if (isset($row->params) && !($row->params instanceof JRegistry) ) {
-			$row->params = new JRegistry($row->params);
-		}
 		$resource = new RFResourceBookable(
 			$row->id,
 			$row->title,
 			$row->location,
 			$row->contact_info,
 			$row->note,
-			$row->params->get('min_reservation_duration'),
-			$row->params->get('max_reservation_duration'),
-			$row->params->get('auto_assign'),
-			$row->params->get('need_approval'),
-			$row->params->get('overlap_day_reservation'),
-			$row->params->get('max_participants'),
-			$row->params->get('min_notice_duration'),
-			$row->params->get('max_notice_duration'),
+			$row->min_reservation_duration,
+			$row->max_reservation_duration,
+			$row->auto_assign,
+			$row->requires_approval,
+			$row->allow_multi_days,
+			$row->max_participants,
+			$row->min_notice_duration,
+			$row->max_notice_duration,
 			$row->description,
 			$row->schedule_id);
 

@@ -7,7 +7,7 @@
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
-function JongmanBuildRoute( &$query )
+function JongmanBuildRoute( $query )
 {
     $segments = array();
     if (isset($query['view']) && ($query['view'] != 'reservation') )

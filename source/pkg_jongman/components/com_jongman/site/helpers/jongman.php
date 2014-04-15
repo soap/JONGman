@@ -114,8 +114,8 @@ class JongmanHelper
     	$rules[] = new RFReservationRuleReservationDatetime();
     	$rules[] = new RFReservationRuleAdminexcluded(new RFReservationRuleReservationStarttime(), $user);
     	//$rules[] = new AdminExcluded(new RFReservationRulePermissionValidationRule(new PermissionServiceFactory()), $user);
-    	//$rules[] = new RFReservationRuleAdminExcluded(new RFReservationRuleResourceMinimumNoticeRule(), $user);
-    	//$rules[] = new RFReservationRuleAdminExcluded(new RFReservationRuleResourceMaximumNoticeRule(), $user);
+    	$rules[] = new RFReservationRuleAdminExcluded(new RFReservationRuleResourceMinimumNotice(), $user);
+    	$rules[] = new RFReservationRuleAdminExcluded(new RFReservationRuleResourceMaximumNotice(), $user);
     	//$rules[] = new RFReservationRuleAdminExcluded(new RFReservationRuleResourceParticipationRule(), $user);
     	//$rules[] = new CustomAttributeValidationRule(new RFReservationRuleAttributeRepository());
     	//$rules[] = new ReservationAttachmentRule();

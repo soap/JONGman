@@ -42,7 +42,7 @@ JLoader::discover('RF', JPATH_PLATFORM . '/jongman/utils');
 JLoader::discover('RF', JPATH_PLATFORM . '/jongman/cms');
 JLoader::register('RFReservationStartTimeContraint', JPATH_PLATFORM.'/jongman/utils/starttimeconstraint.php');
 JLoader::register('RFReservationExistingSeries', JPATH_PLATFORM.'/jongman/reservation/existingseries.php');
-
+JLoader::register('RFTimeInterval', JPATH_PLATFORM.'/jongman/utils/timeinterval.php');
 // Add include paths
 JHtml::addIncludePath(JPATH_PLATFORM . '/jongman/html');
 JForm::addFieldPath(JPATH_PLATFORM . '/jongman/form/fields');

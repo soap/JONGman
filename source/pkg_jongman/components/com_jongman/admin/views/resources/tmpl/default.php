@@ -51,20 +51,16 @@ endif;
                     <?php echo JHtml::_('grid.sort',  'COM_JONGMAN_HEADING_SCHEDULE', 'schedule_name', $listDirn, $listOrder); ?>
                 </th>
                 <th width="5%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_MIN_RES').' ('
-                        .JText::_('COM_JONGMAN_MINUTES').')'?>
+                    <?php echo JText::_('COM_JONGMAN_HEADING_MIN_RESERVATION') ?>
                 </th>
                 <th width="5%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_MAX_RES').' ('
-                        .JText::_('COM_JONGMAN_MINUTES').')'?>
+                    <?php echo JText::_('COM_JONGMAN_HEADING_MAX_RESERVATION') ?>
                 </th>
                 <th width="5%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_MIN_NOTICE_TIME').' ('
-                        .JText::_('COM_JONGMAN_HOURS').')'?>
+                    <?php echo JText::_('COM_JONGMAN_HEADING_MIN_NOTICE_TIME'); ?>
                 </th>
                 <th width="5%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_MAX_NOTICE_TIME').' ('
-                        .JText::_('COM_JONGMAN_HOURS').')'?>
+                    <?php echo JText::_('COM_JONGMAN_HEADING_MAX_NOTICE_TIME'); ?>
                 </th>                
                 <th width="5%">
                     <?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_NEED_APPROVAL', 'need_approval', $listDirn, $listOrder); ?>
@@ -109,16 +105,16 @@ endif;
                     <?php echo $item->schedule_name?>
                 </td>
                 <td class="center">
-                    <?php echo $item->params->get('min_reservation_duration')?>
+                    <?php echo ($item->hasMinDuration ? $item->minDuration->interval() : "NA") ?>
                 </td>
                 <td class="center">
-                    <?php echo $item->params->get('max_reservation_duration')?>
+                    <?php echo ($item->hasMaxDuration ? $item->maxDuration->interval() : "NA") ?>
                 </td>
                 <td class="center">
-                    <?php echo $item->params->get('min_notice_duration')?>
+                    <?php echo ($item->hasMinNoticeTime ? $item->minNoticeTime->interval() : "NA")?>
                 </td>
                 <td class="center">
-                    <?php echo $item->params->get('max_notice_duration')?>
+                    <?php echo ($item->hasMaxNoticeTime ? $item->maxNoticeTime->interval() : "NA") ?>
                 </td>                
                 <td class="center">           
                     <?php echo JHtml::_('jgrid.state', 
@@ -127,7 +123,7 @@ endif;
                             1=> array('resetapproval',	'JPUBLISHED',	'COM_JONGMAN_RESOURCE_RESET_APPROVAL',	'JPUBLISHED',	false,	'publish',		'unpublish'),
                             0=> array('setapproval',	'JUNPUBLISHED',	'COM_JONGMAN_RESOURCE_SET_APPROVAL',	'JUNPUBLISHED',	false,	'unpublish',	'publish')      
                             ),
-                        $item->params->get('need_approval'), $i, 
+                        $item->requires_approval, $i, 
                         'resources.',         
                         $canChange); ?>
                 </td>

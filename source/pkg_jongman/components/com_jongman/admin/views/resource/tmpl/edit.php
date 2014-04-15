@@ -64,7 +64,10 @@ JHtml::_('behavior.keepalive');
                 
                 <li><?php echo $this->form->getLabel('note'); ?>
                     <?php echo $this->form->getInput('note'); ?></li>                          
-
+    			<li>
+    				<?php echo $this->form->getLabel('published'); ?>
+                	<?php echo $this->form->getInput('published'); ?>
+                </li>
                 <li><?php echo $this->form->getLabel('access'); ?>
                     <?php echo $this->form->getInput('access'); ?></li>
 				
@@ -81,23 +84,35 @@ JHtml::_('behavior.keepalive');
         </fieldset>
     </div>
     <div class="width-40 fltrt">
-    	<?php echo JHtml::_('sliders.start','resource-sliders-'.$this->item->id, array('useCookie'=>1)); ?>
-    	<?php echo $this->loadTemplate('params'); ?>
-    	<?php echo JHtml::_('sliders.panel',JText::_('COM_JONGMAN_RESOURCE_FIELDSET_PUBLISHING'), 'resource-publishing'); ?>
     	<fieldset class="adminform">
     		<ul class="adminformlist">
-          
-                <li><?php echo $this->form->getLabel('need_approval'); ?>
-                    <?php echo $this->form->getInput('need_approval'); ?></li>
+    			<li>
+                	<?php echo $this->form->getLabel('min_reservation_duration'); ?>
+                    <?php echo $this->form->getInput('min_reservation_duration'); ?>    			
+    			</li>
+    			<li>
+                	<?php echo $this->form->getLabel('max_reservation_duration'); ?>
+                    <?php echo $this->form->getInput('max_reservation_duration'); ?>    			
+    			</li>
+    			<li>
+                	<?php echo $this->form->getLabel('min_notice_duration'); ?>
+                    <?php echo $this->form->getInput('min_notice_duration'); ?>    			
+    			</li>
+    			<li>
+                	<?php echo $this->form->getLabel('max_notice_duration'); ?>
+                    <?php echo $this->form->getInput('max_notice_duration'); ?>    			
+    			</li>
+                <li>
+                	<?php echo $this->form->getLabel('requires_approval'); ?>
+                    <?php echo $this->form->getInput('requires_approval'); ?>
+               	</li>
 
-                <li><?php echo $this->form->getLabel('allow_multi'); ?>
-                    <?php echo $this->form->getInput('allow_multi'); ?></li>
-                    
-    			<li><?php echo $this->form->getLabel('published'); ?>
-                	<?php echo $this->form->getInput('published'); ?></li>
+                <li>
+                	<?php echo $this->form->getLabel('allow_multi_days'); ?>
+                    <?php echo $this->form->getInput('allow_multi_days'); ?>
+                </li>
            	</ul>
     	</fieldset>
-    	<?php echo JHtml::_('sliders.end'); ?>
     </div>
     
     <div class="clr"></div>

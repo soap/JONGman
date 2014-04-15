@@ -561,14 +561,7 @@ class JongmanModelInstance extends JModelAdmin
 		$rows = $db->loadObjectList();
 
 		foreach($rows as $row) {
-			$config = new JRegistry($row->params);
-			$resource = new RFResourceBookable(
-								$row->id, $row->title, $row->location, $row->contact_info, $row->note,
-								$config->get('min_reservation_duration'), $config->get('max_reservation_duration'),
-								$config->get('auto_assign'), $config->get('need_approval'), $config->get('overlap_day_reservation'),
-								$config->get('max_participants'), $config->get('min_notice_time'), $config->get('max_notice_time'),
-								$row->description, $row->schedule_id, null 
-							);
+			$resource = RFResourceBookable::create($row);
 			if ($row->resource_level == 1) {
 				$series->withPrimaryResource($resource);	
 			}else{

@@ -16,9 +16,11 @@ class RFReservationRuleResourceMinimumNotice implements IReservationValidationRu
 		
 		foreach ($resources as $resource)
 		{
+			JLog::add("Resource : {$resource->getId()} has minimum notice time ? {$resource->hasMinNotice()}", JLog::DEBUG, 'validation');
 			if ($resource->hasMinNotice())
-			{
-				$minStartDate = RFDate::Now()->applyDifference($resource->getMinNotice()->interval());
+			{	
+				JLog::add("   Minimum notice time is {$resource->getMinNotice()->interval()}", JLog::DEBUG, 'validation');
+				$minStartDate = RFDate::now()->applyDifference($resource->getMinNotice()->interval());
 		
 				/* @var $instance RFReservation */
 				foreach ($reservationSeries->getInstances() as $instance)
