@@ -8,7 +8,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
 $user		= JFactory::getUser();
-
+JHtml::_('behavior.tooltip');
 $listOrder	= $this->state->get('list.ordering');
 $listDirn	= $this->state->get('list.direction');
 $saveOrder	= $listOrder=='ordering';
@@ -105,16 +105,36 @@ endif;
                     <?php echo $item->schedule_name?>
                 </td>
                 <td class="center">
-                    <?php echo ($item->hasMinDuration ? $item->minDuration->interval() : "NA") ?>
+                	<?php 
+                	$title = "Minimum Duration::".(!$item->hasMinDuration? JText::_("COM_JONGMAN_NO_MIN_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MIN_DURATION_DESC", $item->minDuration->interval()));
+                    ?>
+                	<span class="hasTip" title="<?php echo $title?>">
+                    	<?php echo ($item->hasMinDuration ? $item->minDuration->interval() : "NA") ?>
+                    </span>
                 </td>
                 <td class="center">
-                    <?php echo ($item->hasMaxDuration ? $item->maxDuration->interval() : "NA") ?>
+                	<?php 
+                	$title = "Maximum Duration::".(!$item->hasMaxDuration? JText::_("COM_JONGMAN_NO_MAX_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MAX_DURATION_DESC", $item->maxDuration->interval()));
+                    ?>
+                	<span class="hasTip" title="<?php echo $title?>">
+                    	<?php echo ($item->hasMaxDuration ? $item->maxDuration->interval() : "NA") ?>
+                    </span>
                 </td>
                 <td class="center">
-                    <?php echo ($item->hasMinNoticeTime ? $item->minNoticeTime->interval() : "NA")?>
+                	<?php
+                	$title = "Start Time::".(!$item->hasMinNoticeTime ? JText::_("COM_JONGMAN_NO_MIN_NOTICE_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MIN_NOTICE_DURATION_DESC", $item->minNoticeTime->interval()));
+                	?>
+                	<span class="hasTip" title="<?php echo $title?>">
+                    	<?php echo ($item->hasMinNoticeTime ? $item->minNoticeTime->interval() : "NA")?>
+                    </span>
                 </td>
                 <td class="center">
-                    <?php echo ($item->hasMaxNoticeTime ? $item->maxNoticeTime->interval() : "NA") ?>
+                	<?php 
+               		$title = "End Time::".(!$item->hasMaxNoticeTime ? JText::_("COM_JONGMAN_NO_MAX_NOTICE_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MAX_NOTICE_DURATION_DESC", $item->maxNoticeTime->interval()));
+                    ?>	
+                	<span class="hasTip" title="<?php echo $title?>">
+                    	<?php echo ($item->hasMaxNoticeTime ? $item->maxNoticeTime->interval() : "NA") ?>
+                    </span>
                 </td>                
                 <td class="center">           
                     <?php echo JHtml::_('jgrid.state', 
