@@ -207,35 +207,27 @@ class JongmanModelReservation extends JModelAdmin
 		
 		$reservationSeries = new RFReservationSeries();
 		$reservationSeries->bind($input);
-		// calculate reseravtion status 
-		$status = 1; //created
-		foreach ($reservationSeries->allResources() as $resource) {
-			if ($resource->getRequiresApproval()) {
-				if (!JongmanHelper::canApproveForResource($reservationSeries->bookedBy(), $resource ))
-				{
-					$status = -1; //pending
-					break;
-				}	
-			}	
-		}
-		$reservationSeries->setStatusId($status);
 		
 		//start reservation validation here, get commone rules
 		$ruleProcessor = JongmanHelper::getRuleProcessor();
 		// Add specific rules for new reservation validation
 		$config = array('ignore_request'=>true);
 		$scheduleRepository = JModel::getInstance('Schedule', 'JongmanModel', $config);
-		
+		$createdBy = $reservationSeries->bookedBy();
+		$authorisationService = RFFactory::getAuthorisationService();
+		$ruleProcessor->addRule(
+					new RFReservationRuleAdminexcluded(new RFReservationRuleRequiresApproval($authorisationService, $createdBy), $createdBy )
+				);
 		$ruleProcessor->addRule(
 					new RFReservationRuleExistingResourceAvailability( new RFResourceReservationAvailability($scheduleRepository), $tz ), 
-					$reservationSeries->bookedBy()
+					$createdBy
 				);	
 		$ruleProcessor->addRule(
 					new RFReservationRuleResourceAvailability(new RFResourceBlackoutAvailability($scheduleRepository), $tz), 
-					$reservationSeries->bookedBy()
+					$createdBy
 				);
 		$ruleProcessor->addRule(
-					new RFReservationRuleSchedulePeriod( $scheduleRepository, $reservationSeries->bookedBy() ) 
+					new RFReservationRuleSchedulePeriod( $scheduleRepository, $createdBy ) 
 				);
 					
 		$result = $ruleProcessor->validate($reservationSeries);

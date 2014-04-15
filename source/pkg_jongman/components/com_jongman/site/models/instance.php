@@ -234,30 +234,15 @@ class JongmanModelInstance extends JModelAdmin
 		$existingSeries = $this->buildSeries($input['reference_number']);
 		$input['repeatOptions'] = RFReservationRepeatOptionsFactory::create($repeatType, $repeatInterval, $terminated, $weekDays, $monthlyType);
 		
-		//var_dump($existingSeries->getInstances());
 		$row = JTable::getInstance('Resource', 'JongmanTable');
 		$row->load($input['resource_id']);
 		$resource = RFResourceBookable::create($row);
-		
+
 		// apply update scope before any update
 		$existingSeries->applyChangesTo($updateScope);
 		$existingSeries->update($input['owner_id'], $resource,  $input['title'], $input['description'], JFactory::getUser());
 		
 		//var_dump($existingSeries->getInstances()); //jexit();			
-		// calculate reseravtion status
-		// @todo we should provide option to reset status if update reseravtion detai 
-		$status = 1; //created
-		foreach ($existingSeries->allResources() as $resource) {
-			if ($resource->getRequiresApproval()) {
-				if (!JongmanHelper::canApproveForResource($existingSeries->bookedBy(), $resource ))
-				{
-					$status = -1; //pending
-					break;
-				}	
-			}	
-		}
-		$existingSeries->setStatusId($status);
-
 		$input['start_date'] = $input['start_date'].' '.$input['start_time'];
 		$input['end_date'] = $input['end_date'].' '.$input['end_time'];
 		$duration = new RFDateRange(RFDate::parse($input['start_date'], $tz), RFDate::parse($input['end_date'], $tz));
@@ -268,14 +253,21 @@ class JongmanModelInstance extends JModelAdmin
 		$config = array('ignore_request'=>true);
 		$scheduleRepository = JModel::getInstance('Schedule', 'JongmanModel', $config);
 		//start reservation validation here, get commone rules
+		
+		$createdBy = $existingSeries->bookedBy();
+		$authorisationService = RFFactory::getAuthorisationService();
 		$ruleProcessor = JongmanHelper::getRuleProcessor();
 		// Add specific rules for existing reservation validation
 		$ruleProcessor->addRule(
-					new RFReservationRuleExistingResourceAvailability(new RFResourceReservationAvailability($scheduleRepository), $tz), $existingSeries->bookedBy()
-					);		
+					new RFReservationRuleAdminexcluded(new RFReservationRuleRequiresApproval($authorisationService, $createdBy), $createdBy )
+				);
+		
 		$ruleProcessor->addRule(
-					new RFReservationRuleResourceAvailability(new RFResourceBlackoutAvailability($scheduleRepository), $tz), $existingSeries->bookedBy()
-					);
+					new RFReservationRuleExistingResourceAvailability(new RFResourceReservationAvailability($scheduleRepository), $tz), $createdBy
+				);		
+		$ruleProcessor->addRule(
+					new RFReservationRuleResourceAvailability(new RFResourceBlackoutAvailability($scheduleRepository), $tz), $createdBy
+				);
 		/*
 		$ruleProcessor->addRule(new ExistingResourceAvailabilityRule(new ResourceReservationAvailability($this->reservationRepository), $userSession->Timezone));
 		$ruleProcessor->addRule(new AccessoryAvailabilityRule($this->reservationRepository, new AccessoryRepository(), $userSession->Timezone));
@@ -419,12 +411,14 @@ class JongmanModelInstance extends JModelAdmin
 		$existingSeries->withDescription($reservation->description);
 		$existingSeries->withOwner($reservation->owner_id);
 		$existingSeries->withStatus($reservation->state);
+		$existingSeries->withBookedBy(JFactory::getUser($reservation->created_by));
 		
 		$startDate = RFDate::fromDatabase($instance->start_date);
 		$endDate = RFDate::fromDatabase($instance->end_date);
 		$duration = new RFDateRange($startDate, $endDate);
 		$currentInstance = new RFReservation($existingSeries, $duration, $instance->reservation_id, $instance->reference_number);
 		$existingSeries->withCurrentInstance($currentInstance);
+
 		$this->populateResources($existingSeries);
 		$this->populateInstances($existingSeries);
 		
@@ -432,7 +426,6 @@ class JongmanModelInstance extends JModelAdmin
 		// populate participants
 		// populate accessories
 		$this->series = $existingSeries;
-		
 		return $existingSeries;
 	}
 	
@@ -566,14 +559,14 @@ class JongmanModelInstance extends JModelAdmin
 		
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
-		var_dump($rows);
+
 		foreach($rows as $row) {
-			$repeatConfig = new JRegistry($row->params);
+			$config = new JRegistry($row->params);
 			$resource = new RFResourceBookable(
 								$row->id, $row->title, $row->location, $row->contact_info, $row->note,
-								$repeatConfig->get('min_reservation_duration'), $repeatConfig->get('max_reservation_duration'),
-								$repeatConfig->get('auto_assign'), $repeatConfig->get('need_approval'), $repeatConfig->get('overlap_day_reservation'),
-								$repeatConfig->get('max_participants'), $repeatConfig->get('min_notice_time'), $repeatConfig->get('max_notice_time'),
+								$config->get('min_reservation_duration'), $config->get('max_reservation_duration'),
+								$config->get('auto_assign'), $config->get('need_approval'), $config->get('overlap_day_reservation'),
+								$config->get('max_participants'), $config->get('min_notice_time'), $config->get('max_notice_time'),
 								$row->description, $row->schedule_id, null 
 							);
 			if ($row->resource_level == 1) {

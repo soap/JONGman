@@ -32,9 +32,9 @@ class JongmanControllerInstance extends JControllerForm
 			if ($actions->get('core.edit')) {
 				return true;
 			}elseif ($actions->get('core.edit.own')) {
-				if ($series->bookedBy()->id == $user->id) {
+				if ($series->userId() == $user->id) {
 					return true;
-				}elseif ($series->userId() == $user->id) {
+				}elseif ($series->bookedBy()->id == $user->id) {
 					return true;
 				}	
 			}
