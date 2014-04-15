@@ -8,7 +8,7 @@ class RFResourceBookable implements IResource
 	protected $_name;
 	protected $_location;
 	protected $_contact;
-	protected $_notes;
+	protected $_note;
 	protected $_description;
 	/**
 	 * @var string|int
@@ -65,7 +65,7 @@ class RFResourceBookable implements IResource
 		$this->setName($name);
 		$this->setLocation($location);
 		$this->setContact($contact);
-		$this->setNotes($note);
+		$this->setNote($note);
 		$this->setDescription($description);
 		$this->setMinLength($minLength);
 		$this->setMaxLength($maxLength);
@@ -210,19 +210,19 @@ class RFResourceBookable implements IResource
 		return !empty($this->_contact);
 	}
 
-	public function getNotes()
+	public function getNote()
 	{
-		return $this->_notes;
+		return $this->_note;
 	}
 
-	public function setNotes($value)
+	public function setNote($value)
 	{
-		$this->_notes = $value;
+		$this->_note = $value;
 	}
 
-	public function hasNotes()
+	public function hasNote()
 	{
-		return !empty($this->_notes);
+		return !empty($this->_note);
 	}
 
 	public function getDescription()
@@ -245,7 +245,7 @@ class RFResourceBookable implements IResource
 	 */
 	public function getMinLength()
 	{
-		return TimeInterval::Parse($this->_minLength);
+		return RFTimeInterval::parse($this->_minLength * 60);
 	}
 
 	/**
@@ -269,7 +269,7 @@ class RFResourceBookable implements IResource
 	 */
 	public function getMaxLength()
 	{
-		return TimeInterval::Parse($this->_maxLength);
+		return RFTimeInterval::parse($this->_maxLength * 60);
 	}
 
 	/**
@@ -372,7 +372,7 @@ class RFResourceBookable implements IResource
 	 */
 	public function getMinNotice()
 	{
-		return TimeInterval::Parse($this->_minNotice);
+		return RFTimeInterval::parse($this->_minNotice * 60);
 	}
 
 	/**
@@ -396,7 +396,7 @@ class RFResourceBookable implements IResource
 	 */
 	public function getMaxNotice()
 	{
-		return TimeInterval::Parse($this->_maxNotice);
+		return RFTimeInterval::parse($this->_maxNotice * 60);
 	}
 
 	/**
@@ -472,7 +472,7 @@ class RFResourceBookable implements IResource
 	 * @param string $value
 	 * @return void
 	 */
-	public function SetImage($value)
+	public function setImage($value)
 	{
 		$this->_imageName = $value;
 	}
@@ -645,7 +645,7 @@ class RFResourceBookable implements IResource
 	 * @static
 	 * @return BookableResource
 	 */
-	public static function Null()
+	public static function Nnull()
 	{
 		return new RFResourceBookable(null, null, null, null, null, null, null, false, false, false, null, null, null);
 	}
