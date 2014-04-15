@@ -3,6 +3,7 @@ defined('_JEXEC') or die;
 
 class RFReservationRuleResourceMaximumNotice implements IReservationValidationRule
 {
+	private $message;
 	/**
 	 * @see IReservationValidationRule::validate()
 	 * 
@@ -24,8 +25,8 @@ class RFReservationRuleResourceMaximumNotice implements IReservationValidationRu
 				{
 					if ($instance->startDate()->greaterThan($maxStartDate))
 					{
-						return new RFReservationRuleResult(false, 
-							JText::sprintf("COM_JONGMAN_ERROR_MAX_NOTICE",$maxStartDate->format("Y-m-d H:i:s") ));
+						$this->message = JText::sprintf("COM_JONGMAN_ERROR_MAX_NOTICE",$maxStartDate->format("Y-m-d H:i:s"));
+						return new RFReservationRuleResult(false, $this->message);
 					}
 				}
 			}
@@ -33,4 +34,9 @@ class RFReservationRuleResourceMaximumNotice implements IReservationValidationRu
 		
 		return new RFReservationRuleResult();
 	}
+	
+	public function getError()
+	{
+		return $this->message;	
+	}	
 }

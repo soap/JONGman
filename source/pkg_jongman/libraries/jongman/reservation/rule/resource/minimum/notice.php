@@ -3,6 +3,7 @@ defined('_JEXEC') or die;
 
 class RFReservationRuleResourceMinimumNotice implements IReservationValidationRule
 {
+	private $message;
 	/**
 	 * @see IReservationValidationRule::validate()
 	 * 
@@ -24,8 +25,8 @@ class RFReservationRuleResourceMinimumNotice implements IReservationValidationRu
 				{
 					if ($instance->startDate()->greaterThan($minStartDate))
 					{
-						return new RFReservationRuleResult(false, 
-							JText::sprintf("COM_JONGMAN_ERROR_MIN_NOTICE",$minStartDate->format("Y-m-d H:i:s") ));
+						$this->message = JText::sprintf("COM_JONGMAN_ERROR_MIN_NOTICE",$minStartDate->format("Y-m-d H:i:s") ); 
+						return new RFReservationRuleResult(false, $this->message);
 					}
 				}
 			}
@@ -33,4 +34,9 @@ class RFReservationRuleResourceMinimumNotice implements IReservationValidationRu
 		
 		return new RFReservationRuleResult();
 	}
+
+	public function getError()
+	{
+		return $this->message;	
+	}		
 }

@@ -3,6 +3,7 @@ defined('_JEXEC') or die;
 
 class RFReservationRuleResourceMinimumDuration implements IReservationValidationRule
 {
+	private $message;
 	/**
 	 * @see IReservationValidationRule::validate()
 	 * 
@@ -24,11 +25,17 @@ class RFReservationRuleResourceMinimumDuration implements IReservationValidation
 				$minEnd = $start->applyDifference($minDuration);
 				if ($end->greaterThan($minEnd))
 				{
-					return new RFReservationRuleResult(false, JText::sprintf("COM_JONGMAN_ERROR_MIN_DURATION", $minDuration));
+					$this->message = JText::sprintf("COM_JONGMAN_ERROR_MIN_DURATION", $minDuration);
+					return new RFReservationRuleResult(false, $this->message);
 				}
 			}
 		}
 		
 		return new RFReservationRuleResult();
 	}
+	
+	public function getError()
+	{
+		return $this->message;	
+	}		
 }
