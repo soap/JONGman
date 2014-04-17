@@ -16,10 +16,11 @@ class RFReservationRuleResourceMaximumNotice implements IReservationValidationRu
 		
 		foreach ($resources as $resource)
 		{
+			JLog::add("Resource : {$resource->getId()} has maximum notice time ? {$resource->hasMaxNotice()}", JLog::DEBUG, 'validation');
 			if ($resource->hasMaxNotice())
 			{
-				$maxStartDate = Date::Now()->applyDifference($resource->getMaxNotice()->interval());
-		
+				JLog::add("   Maximum notice is {$resource->getMaxNotice()->interval()}", JLog::DEBUG, 'validation');
+				$maxStartDate = RFDate::now()->applyDifference($resource->getMaxNotice()->interval());
 				/* @var $instance RFReservation */
 				foreach ($reservationSeries->getInstances() as $instance)
 				{

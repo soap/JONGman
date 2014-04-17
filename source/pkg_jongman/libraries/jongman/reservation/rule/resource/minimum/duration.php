@@ -16,16 +16,18 @@ class RFReservationRuleResourceMinimumDuration implements IReservationValidation
 		
 		foreach ($resources as $resource)
 		{
+			JLog::add("Resource : {$resource->getId()} has minimum duration ? {$resource->hasMinLength()}", JLog::DEBUG, 'validation');
 			if ($resource->hasMinLength())
 			{
+				JLog::add("   Minimum duration is {$resource->getMinLength()->interval()}", JLog::DEBUG, 'validation');
 				$minDuration = $resource->getMinLength()->interval();
 				$start = $reservationSeries->currentInstance()->startDate();
 				$end = $reservationSeries->currentInstance()->endDate();
 				
 				$minEnd = $start->applyDifference($minDuration);
-				if ($end->greaterThan($minEnd))
+				if ($end->lessThan($minEnd))
 				{
-					$this->message = JText::sprintf("COM_JONGMAN_ERROR_MIN_DURATION", $minDuration);
+					$this->message = JText::sprintf("COM_JONGMAN_ERROR_RULE_MIN_DURATION", $minDuration);
 					return new RFReservationRuleResult(false, $this->message);
 				}
 			}

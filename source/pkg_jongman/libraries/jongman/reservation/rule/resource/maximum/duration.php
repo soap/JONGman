@@ -16,8 +16,10 @@ class RFReservationRuleResourceMaximumDuration implements IReservationValidation
 		
 		foreach ($resources as $resource)
 		{
+			JLog::add("Resource : {$resource->getId()} has maximum duration ? {$resource->hasMaxLength()}", JLog::DEBUG, 'validation');
 			if ($resource->hasMaxLength())
 			{
+				JLog::add("   Maximum duration is {$resource->getMaxLength()->interval()}", JLog::DEBUG, 'validation');
 				$maxDuration = $resource->getMaxLength()->interval();
 				$start = $reservationSeries->currentInstance()->startDate();
 				$end = $reservationSeries->currentInstance()->endDate();
@@ -25,7 +27,7 @@ class RFReservationRuleResourceMaximumDuration implements IReservationValidation
 				$maxEnd = $start->applyDifference($maxDuration);
 				if ($end->greaterThan($maxEnd))
 				{
-					$this->message = JText::sprintf("COM_JONGMAN_ERROR_MAX_DURATION", $maxDuration);
+					$this->message = JText::sprintf("COM_JONGMAN_ERROR_RULE_MAX_DURATION", $maxDuration);
 					return new RFReservationRuleResult(false, $this->message );
 				}
 			}
