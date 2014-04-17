@@ -71,7 +71,6 @@
             <filename>controller.php</filename>       
             <filename>index.html</filename>                  			
             <filename>jongman.php</filename>
-            <folder>assets</folder>
             <folder>controllers</folder>
             <folder>help</folder>
             <folder>helpers</folder>
