@@ -40,7 +40,7 @@ JHtml::_('behavior.keepalive');
 	}
 </script>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=edit&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="resource-form" class="form-validate">
-    <div class="width-60 fltlft">
+    <div class="width-50 fltlft">
         <fieldset class="adminform">
             <legend><?php echo empty($this->item->id) ? JText::_('COM_JONGMAN_RESOURCE_NEW') : JText::sprintf('COM_JONGMAN_RESOURCE_EDIT', $this->item->id); ?></legend>
             <ul class="adminformlist">
@@ -83,7 +83,7 @@ JHtml::_('behavior.keepalive');
             </ul>
         </fieldset>
     </div>
-    <div class="width-40 fltrt">
+    <div class="width-50 fltrt">
     	<fieldset class="adminform">
     		<ul class="adminformlist">
     			<li>

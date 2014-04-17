@@ -16,8 +16,12 @@ class JongmanViewResource extends JViewLegacy
 	protected $item;
 	protected $state;
     
-    function display($tpl = null) {
+    function display($tpl = null) 
+    {
         JHtml::stylesheet( 'administrator/components/com_jongman/assets/css/jongman.css' );
+        
+		JHtml::_('script', 'com_jongman/jquery/jquery-1.8.2.min.js', false, true);
+		JHtml::_('script', 'com_jongman/jquery/jquery.noconflict.js', false, true);	
         
         $this->form		= $this->get('Form');
 		$this->item		= $this->get('Item');

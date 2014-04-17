@@ -38,24 +38,24 @@
                 <option value="0">JUNPUBLISHED</option>
 		</field>
 		<field name="min_reservation_duration"
-			type="text" size="10" filter="intval"
+			type="timeinterval" size="10" filter="intval"
 			required="true" class="inputbox"
 			label="COM_JONGMAN_FIELD_RESOURCE_MIN_RESERVATION_LENGTH_LABEL"
 			description="COM_JONGMAN_FIELD_RESOURCE_MIN_RESERVATION_LENGTH_DESC"
 			/>
 		<field name="max_reservation_duration"
-			type="text" size="10" default="0" class="inputbox" filter="intval"
+			type="timeinterval" size="10" default="0" class="inputbox" filter="intval"	
 			label="COM_JONGMAN_FIELD_RESOURCE_MAX_RESERVATION_LENGTH_LABEL"
 			description="COM_JONGMAN_FIELD_RESOURCE_MAX_RESERVATION_LENGTH_DESC"
 			/>	
 		<field name="min_notice_duration"
-			type="text" size="10" filter="intval"
+			type="timeinterval" size="10" filter="intval"	
 			required="true" class="inputbox"
 			label="COM_JONGMAN_FIELD_RESOURCE_MIN_NOTICE_DURATION_LABEL"
 			description="COM_JONGMAN_FIELD_RESOURCE_MIN_NOTICE_DURATION_DESC"
 			/>
 		<field name="max_notice_duration"
-			type="text" size="10" default="0" class="inputbox" filter="intval"
+			type="timeinterval" size="10" default="0" class="inputbox" filter="intval"
 			label="COM_JONGMAN_FIELD_RESOURCE_MAX_NOTICE_DURATION_LABEL"
 			description="COM_JONGMAN_FIELD_RESOURCE_MAX_NOTICE_DURATION_DESC"
 			/>				
