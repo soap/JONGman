@@ -26,7 +26,7 @@ class RFReservationRuleResourceMaximumNotice implements IReservationValidationRu
 				{
 					if ($instance->startDate()->greaterThan($maxStartDate))
 					{
-						$this->message = JText::sprintf("COM_JONGMAN_ERROR_MAX_NOTICE",$maxStartDate->format("Y-m-d H:i:s"));
+						$this->message = JText::sprintf("COM_JONGMAN_ERROR_RULE_MAX_NOTICE",$maxStartDate->format("Y-m-d H:i:s"));
 						return new RFReservationRuleResult(false, $this->message);
 					}
 				}
