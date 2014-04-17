@@ -228,7 +228,7 @@ class JongmanModelResources extends JModelList
 			}
 			$maxDuration = (int) $items[$i]->max_reservation_duration;
 			$items[$i]->hasMaxDuration = false;
-			if ( !empty($maxNoticeTime)) {
+			if ( !empty($maxDuration)) {
 				$items[$i]->hasMaxDuration = true;
 				$items[$i]->maxDuration = RFTimeInterval::parse($maxDuration * 60);
 			}			

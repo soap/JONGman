@@ -16,9 +16,13 @@ class JFormFieldTimeInterval extends JFormField
 	public function getInput()
 	{
         // Add the script to the document head.
+        $interval = RFTimeInterval::parse($this->value * 60);
+        $this->days = $interval->days();
+        $this->hours = $interval->hours();
+        $this->minutes = $interval->minutes();
+        
         $script = $this->getJavascript();
         JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
-        
 		$html = $this->getHtml();	
 		return implode("\n", $html);		
 	}
@@ -42,9 +46,9 @@ class JFormFieldTimeInterval extends JFormField
 		// Create a read-only list (no name) with a hidden input to store the value.
 		if ((string) $this->elemet['readonly'] == 'true') {
 			$html[] = '<span class="' . $this->id . '">';
-			$html[] = '<input type="text" name="days" value="" id="" class="days" size="3" disabled="disabled" maxlength="3" placeholder="days" />';
-			$html[] = '<input type="text" name="hours" value="" id="" class="hour" size="2" disabled="disabled" maxlength="2" placeholder="days" />';
-			$html[] = '<input type="text" name="minutes" value="" id="" class="minutes" size="2" disabled="disabled" maxlength="2" placeholder="days" />';
+			$html[] = '<input type="text" name="days" value="'.$this->days.'" id="" class="days" size="3" disabled="disabled" maxlength="3" placeholder="days" />';
+			$html[] = '<input type="text" name="hours" value="'.$this->hours.'" id="" class="hour" size="2" disabled="disabled" maxlength="2" placeholder="days" />';
+			$html[] = '<input type="text" name="minutes" value="'.$this->minutes.'" id="" class="minutes" size="2" disabled="disabled" maxlength="2" placeholder="days" />';
 			$html[] = '</span>';
 			$html[] = '<input type="hidden" name="'.$this->name.'" value="'.$this->value.'"/>';
 		}
@@ -52,9 +56,9 @@ class JFormFieldTimeInterval extends JFormField
 		else {
 
 			$html[] = '<span class="' . $this->id . '">';
-			$html[] = '<input type="text" name="days" value="" id="'.$this->id.'_days" class="days" size="3" maxlength="3" placeholder="day" />';
-			$html[] = '<input type="text" name="hours" value="" id="'.$this->id.'_hours" class="hours" size="2" maxlength="2" placeholder="hrs" />';
-			$html[] = '<input type="text" name="minutes" value="" id="'.$this->id.'_minutes" class="minutes" size="2" maxlength="2" placeholder="min" />';
+			$html[] = '<input type="text" name="days" value="'.$this->days.'" id="'.$this->id.'_days" class="days" size="3" maxlength="3" placeholder="day" />';
+			$html[] = '<input type="text" name="hours" value="'.$this->hours.'" id="'.$this->id.'_hours" class="hours" size="2" maxlength="2" placeholder="hrs" />';
+			$html[] = '<input type="text" name="minutes" value="'.$this->minutes.'" id="'.$this->id.'_minutes" class="minutes" size="2" maxlength="2" placeholder="min" />';
 			$html[] = '<input type="hidden" id="'.$this->id.'" name="'.$this->name.'" value="'.$this->value.'"/>';
 			$html[] = '</span>';			
 		}		
