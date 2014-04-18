@@ -28,7 +28,7 @@ else:
 	 echo $this->loadTemplate('filter_j25');
 endif;
 ?>	
-	<div class="clr" />
+	<div class="clr"></div>
 <?php if (empty($this->items)) : ?>
 	<div class="alert alert-no-items">
 		<?php echo JText::_('COM_JONGMAN_NO_MATCHING_RESULTS'); ?>
@@ -136,7 +136,7 @@ endif;
 					<?php echo (int) $item->id; ?>
 				</td>
 			</tr>
-			<?php endforeach; ?>
+		<?php endforeach; ?>
 		</tbody>
 		<?php if ($this->is_j25) : ?>
 		<tfoot>
