@@ -17,9 +17,9 @@ class JFormFieldTimeInterval extends JFormField
 	{
         // Add the script to the document head.
         $interval = RFTimeInterval::parse($this->value * 60);
-        $this->days = $interval->days();
-        $this->hours = $interval->hours();
-        $this->minutes = $interval->minutes();
+        $this->days = ($interval->days() > 0 ? $interval->days() : '');
+        $this->hours = ($interval->hours() > 0 ? $interval->hours() : '');
+        $this->minutes = ($interval->minutes() > 0 ? $interval->minutes() : '');
         
         $script = $this->getJavascript();
         JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
