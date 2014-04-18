@@ -109,10 +109,15 @@ endif;
 					}	
 				?>
                 <td class="center">
+                	<?php // firefox has problem with long td content ?>
+                	<div style="word-break:break-all; word-wrap: break-word;">
                 	<?php echo implode(',', $reservableSlots)?>
+                	</div>
                 </td>
                 <td class="center">
-                	<?php echo implode(',', $blockedSlots)?>                    
+                	<div style="word-break:break-all; word-wrap: break-word;">
+                	<?php echo implode(',', $blockedSlots)?>                  
+                	</div>  
                 </td>
                 <td class="center">
                 	<?php echo JText::plural('COM_JONGMAN_DAY_OF_WEEK',$item->weekday_start)?>
