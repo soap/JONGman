@@ -36,7 +36,7 @@ endif;
 	<div class="clr"> </div>
 <?php if (empty($this->items)) : ?>
 	<div class="alert alert-no-items">
-		<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
+		<?php echo JText::_('COM_JONGMAN_NO_MATCHING_RESULTS'); ?>
 	</div>
 <?php else : ?>
 	<table class="adminlist table table-striped">
@@ -48,7 +48,7 @@ endif;
 				<th>
 					<?php echo JHtml::_('grid.sort',  'COM_JONGMAN_HEADING_NAME', 'name', $listDirn, $listOrder); ?>
 				</th>
-                <th width="35%">
+                <th width="35% nowrap">
                     <?php echo JText::_('COM_JONGMAN_HEADING_RESERVANLE_SLOTS')?>
                 </th>
                 <th width="15%">

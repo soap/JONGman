@@ -62,26 +62,26 @@ class JongmanModelReservation extends JModelAdmin
 			jimport('joomla.utilities.date');
 			$tz	= new DateTimeZone(JFactory::getApplication()->getCfg('offset'));
 		
-			if (intval($result->created_time)) {
-				$date = new JDate($result->created_time);
+			if (intval($result->created)) {
+				$date = new JDate($result->created);
 				//$date->setTimezone($tz);
 				$result->created_time = $date->toSql();
 			}
 			else {
-				$result->created_time = null;
+				$result->created = null;
 			}
 
-			if (intval($result->modified_time)) {
-				$date = new JDate($result->modified_time);
+			if (intval($result->modified)) {
+				$date = new JDate($result->modified);
 				//$date->setTimezone($tz);
-				$result->modified_time = $date->toSql();
+				$result->modified = $date->toSql();
 			}
 			else {
-				$result->modified_time = null;
+				$result->modified = null;
 			}
 			
 			if (empty($pk)) {
-				$result->reserved_for = JFactory::getUser()->get("id");
+				$result->owner_id = JFactory::getUser()->get("id");
 			}
 		}
 
@@ -123,16 +123,6 @@ class JongmanModelReservation extends JModelAdmin
 	function preprocessForm(JForm $form, $data, $group = null)
 	{
 		if (isset($data)) {
-			if (isset($data->schedule_id) && $data->schedule_id) 
-				$form->setFieldAttribute('resource_id', 'schedule_id', $data->schedule_id);
-			if (isset($data->resource_id) && $data->resource_id) {
-				$resource = JTable::getInstance('Resource', 'JongmanTable');
-				$resource->load((int)$data->resource_id);
-				$form->setFieldAttribute('end_date', 'readonly', ($resource->allow_multi?'false':'true'));
-				if (!$resource->allow_multi) {
-					$form->setFieldAttribute('end_date', 'type', 'text');
-				}	
-			} 
 		}
 		parent::preprocessForm($form, $data, $group);
 	}
@@ -148,16 +138,6 @@ class JongmanModelReservation extends JModelAdmin
 	{
 		jimport('joomla.filter.output');
 
-		// Prepare the alias.
-		$table->alias = JApplication::stringURLSafe($table->alias);
-		$params = JComponentHelper::getParams('com_jongman');
-		$referLength = (int)$params->get('referLength');
-		
-		if ($referLength <= 6) $referLength = 6;
-		// If the alias is empty, prepare from the value of the title.
-		if (empty($table->alias) || strlen($table->alias)) {
-			$table->alias = JUserHelper::genRandomPassword($referLength);
-		}
 	}
 }
 

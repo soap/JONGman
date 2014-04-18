@@ -65,9 +65,11 @@ class JongmanViewReservations extends JViewLegacy
 		}
 
 		// Add the toolbar and display the view layout.
+		// TODO next version, complete reservation in back end or not provide it here
 		$this->addToolbar();
+		
 		parent::display($tpl);
-		//var_dump($this);
+
 	}
 
 	/**
@@ -83,7 +85,9 @@ class JongmanViewReservations extends JViewLegacy
 		$canDo	= JongmanHelper::getActions();
 
 		JToolBarHelper::title(JText::_('COM_JONGMAN_RESERVATIONS_TITLE'), 'reservations.png');
-
+		// TODO display when reservation function in backend is completed
+		return;
+		
 		if ($canDo->get('core.create')) {
 			JToolBarHelper::addNew('reservation.add', 'JTOOLBAR_NEW');
 		}

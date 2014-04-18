@@ -18,7 +18,16 @@ $listOrder	= $this->escape($this->state->get('list.ordering'));
 $listDirn	= $this->escape($this->state->get('list.direction'));
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&view=schedules&layout=modal&tmpl=component');?>" method="post" name="adminForm" id="adminForm">
-<?php echo $this->loadTemplate('filter_' . ($this->is_j25 ? 'j25' : 'j3x')); ?>
+<?php 
+if (!$this->is_j25): 
+?>
+	<div id="j-main-container">
+<?php
+	//Search Toolbar
+    echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));    
+else: 
+	echo $this->loadTemplate('filter_j25');
+endif;?>
 	<table class="adminlist table table-stripped">
 		<thead>
 			<tr>
@@ -33,13 +42,7 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 				</th>
 			</tr>
 		</thead>
-		<tfoot>
-			<tr>
-				<td colspan="3">
-					<?php echo $this->pagination->getListFooter(); ?>
-				</td>
-			</tr>
-		</tfoot>
+
 		<tbody>
 		<?php foreach ($this->items as $i => $item) : ?>
 			<tr class="row<?php echo $i % 2; ?>">
@@ -56,8 +59,20 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 			</tr>
 			<?php endforeach; ?>
 		</tbody>
+		<?php if ($this->is_j25) : ?>
+		<tfoot>
+			<tr>
+				<td colspan="3">
+					<?php echo $this->pagination->getListFooter(); ?>
+				</td>
+			</tr>
+		</tfoot>
+		<?php endif ?>
 	</table>
-
+	<?php if (!$this->is_j25) : echo $this->pagination->getListFooter(); endif; ?>
+	<?php if (!$this->is_j25) : ?>
+	</div>
+	<?php endif;?>
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
 	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
