@@ -33,6 +33,7 @@ jimport('jongman.base.ireserveditem');
 jimport('jongman.base.iseriesupdatescope');
 jimport('jongman.base.seriesevent');
 jimport('jongman.base.ireservationvalidationresult');
+jimport('jongman.base.quota');
 
 // I want to user JM prefix, but JLoader cannot support it, as Joomla 's J matched first
 JLoader::registerPrefix('RF', JPATH_PLATFORM . '/jongman');
@@ -40,6 +41,7 @@ JLoader::registerPrefix('RF', JPATH_PLATFORM . '/jongman');
 //discover classes prefixed by RF in the folder
 JLoader::discover('RF', JPATH_PLATFORM . '/jongman/utils');
 JLoader::discover('RF', JPATH_PLATFORM . '/jongman/cms');
+
 JLoader::register('RFReservationStartTimeContraint', JPATH_PLATFORM.'/jongman/utils/starttimeconstraint.php');
 JLoader::register('RFReservationExistingSeries', JPATH_PLATFORM.'/jongman/reservation/existingseries.php');
 JLoader::register('RFTimeInterval', JPATH_PLATFORM.'/jongman/utils/timeinterval.php');

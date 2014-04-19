@@ -15,7 +15,7 @@ abstract class RFQuotaDuration
 	{
 		/** @var $instances Reservation[] */
 		$instances = $reservationSeries->getInstances();
-		usort($instances, array('Reservation', 'compare'));
+		usort($instances, array('RFReservation', 'compare'));
 
 		return array($instances[0]->startDate(), $instances[count($instances) - 1]->endDate());
 	}

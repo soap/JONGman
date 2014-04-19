@@ -103,15 +103,15 @@ class RFQuota implements IQuota
 	}
 
 	/**
-	 * @param ReservationSeries $reservationSeries
-	 * @param User $user
-	 * @param Schedule $schedule
+	 * @param RFReservationSeries $reservationSeries
+	 * @param JUser $user
+	 * @param unknown $schedule
 	 * @param IReservationViewRepository $reservationViewRepository
 	 * @return bool
 	 */
-	public function exceedsQuota($reservationSeries, $user, $schedule, IReservationViewRepository $reservationViewRepository)
+	public function exceedsQuota($reservationSeries, $user, $schedule, IReservationRepository $reservationRepository)
 	{
-		$timezone = $schedule->getTimezone();
+		$timezone = $schedule->timezone; //getTimezone();
 
 		if (!is_null($this->resourceId))
 		{
@@ -134,9 +134,13 @@ class RFQuota implements IQuota
 		if (!is_null($this->groupId))
 		{
 			$appliesToGroup = false;
-			foreach ($user->groups() as $group)
+			if ($user instanceof JUser) {
+				//array of authorised group id
+				$groups = $user->getAuthorisedGroups();
+			}
+			foreach ($groups() as $groupId)
 			{
-				if (!$appliesToGroup && $this->appliesToGroup($group->groupId))
+				if (!$appliesToGroup && $this->appliesToGroup($groupId))
 				{
 					$appliesToGroup = true;
 				}
@@ -159,7 +163,7 @@ class RFQuota implements IQuota
 		}
 
 		$dates = $this->duration->getSearchDates($reservationSeries, $timezone);
-		$reservationsWithinRange = $reservationViewRepository->getReservationList($dates->start(), $dates->end(), $reservationSeries->userId(), 1 /*OWNER*/);
+		$reservationsWithinRange = $reservationRepository->getReservationList($dates->start(), $dates->end(), $reservationSeries->userId(), 1 /*OWNER*/);
 
 		try
 		{
@@ -266,7 +270,7 @@ class RFQuota implements IQuota
 		$toBeSkipped = array();
 
 		/** @var $instance Reservation */
-		foreach ($series->instances() as $instance)
+		foreach ($series->getInstances() as $instance)
 		{
 			$toBeSkipped[$instance->referenceNumber()] = true;
 
@@ -307,7 +311,7 @@ class RFQuota implements IQuota
 	 */
 	private function willBeDeleted($series, $reservationId)
 	{
-		if (method_exists($series, 'IsMarkedForDelete'))
+		if (method_exists($series, 'isMarkedForDelete'))
 		{
 			return $series->isMarkedForDelete($reservationId);
 		}
@@ -315,14 +319,14 @@ class RFQuota implements IQuota
 		return false;
 	}
 
-	private function _breakAndAdd(Date $startDate, Date $endDate, $timezone)
+	private function _breakAndAdd(RFDate $startDate, RFDate $endDate, $timezone)
 	{
 		$start = $startDate->toTimezone($timezone);
 		$end = $endDate->toTimezone($timezone);
 
 		$range = new RFDateRange($start, $end);
 
-		$ranges = $this->duration->Split($range);
+		$ranges = $this->duration->split($range);
 
 		foreach ($ranges as $dr)
 		{

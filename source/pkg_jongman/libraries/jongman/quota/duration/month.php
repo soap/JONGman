@@ -6,51 +6,51 @@ class RFQuotaDurationMonth extends RFQuotaDuration implements IQuotaDuration
 {
 
 	/**
-	 * @param ReservationSeries $reservationSeries
+	 * @param RFReservationSeries $reservationSeries
 	 * @param string $timezone
-	 * @return QuotaSearchDates
+	 * @return RFQuotaSearchDates
 	 */
-	public function GetSearchDates(ReservationSeries $reservationSeries, $timezone)
+	public function GetSearchDates(RFReservationSeries $reservationSeries, $timezone)
 	{
 		$minMax = $this->GetFirstAndLastReservationDates($reservationSeries);
 
 		/** @var $start Date */
-		$start = $minMax[0]->ToTimezone($timezone);
+		$start = $minMax[0]->toTimezone($timezone);
 		/** @var $end Date */
-		$end = $minMax[1]->ToTimezone($timezone);
+		$end = $minMax[1]->toTimezone($timezone);
 
-		$searchStart = Date::Create($start->Year(), $start->Month(), 1, 0, 0, 0, $timezone);
-		$searchEnd = Date::Create($end->Year(), $end->Month() + 1, 1, 0, 0, 0, $timezone);
+		$searchStart = RFDate::create($start->year(), $start->month(), 1, 0, 0, 0, $timezone);
+		$searchEnd = RFDate::create($end->year(), $end->month() + 1, 1, 0, 0, 0, $timezone);
 
-		return new QuotaSearchDates($searchStart, $searchEnd);
+		return new RFQuotaSearchDates($searchStart, $searchEnd);
 	}
 
 	/**
-	 * @param DateRange $dateRange
-	 * @return array|DateRange[]
+	 * @param RFDateRange $dateRange
+	 * @return array|RFDateRange[]
 	 */
-	public function Split(DateRange $dateRange)
+	public function split(RFDateRange $dateRange)
 	{
 		$ranges = array();
 
-		$start = $dateRange->GetBegin();
-		$end = $dateRange->GetEnd();
+		$start = $dateRange->getBegin();
+		$end = $dateRange->getEnd();
 
-		if (!$this->SameMonth($start, $end))
+		if (!$this->sameMonth($start, $end))
 		{
 			$current = $start;
 
-			while (!$this->SameMonth($current, $end))
+			while (!$this->sameMonth($current, $end))
 			{
-				$next = $this->GetFirstOfMonth($current, 1);
+				$next = $this->getFirstOfMonth($current, 1);
 
-				$ranges[] = new DateRange($current, $next);
+				$ranges[] = new RFDateRange($current, $next);
 
 				$current = $next;
 
-				if ($this->SameMonth($current, $end))
+				if ($this->sameMonth($current, $end))
 				{
-					$ranges[] = new DateRange($current, $end);
+					$ranges[] = new RFDateRange($current, $end);
 				}
 			}
 		}
@@ -67,9 +67,9 @@ class RFQuotaDurationMonth extends RFQuotaDuration implements IQuotaDuration
 	 * @param int $monthOffset
 	 * @return Date
 	 */
-	private function GetFirstOfMonth(Date $date, $monthOffset = 0)
+	private function getFirstOfMonth(RFDate $date, $monthOffset = 0)
 	{
-		return Date::Create($date->Year(), $date->Month() + $monthOffset, 1, 0, 0, 0, $date->Timezone());
+		return RFDate::create($date->year(), $date->month() + $monthOffset, 1, 0, 0, 0, $date->timezone());
 	}
 
 	/**
@@ -77,25 +77,25 @@ class RFQuotaDurationMonth extends RFQuotaDuration implements IQuotaDuration
 	 * @param Date $d2
 	 * @return bool
 	 */
-	private function SameMonth(Date $d1, Date $d2)
+	private function sameMonth(RFDate $d1, RFDate $d2)
 	{
-		return ($d1->Month() == $d2->Month()) && ($d1->Year() == $d2->Year());
+		return ($d1->month() == $d2->month()) && ($d1->year() == $d2->year());
 	}
 
 	/**
 	 * @param Date $date
 	 * @return string
 	 */
-	public function GetDurationKey(Date $date)
+	public function getDurationKey(RFDate $date)
 	{
-		return sprintf("%s%s", $date->Year(), $date->Month());
+		return sprintf("%s%s", $date->year(), $date->month());
 	}
 
 	/**
 	 * @return string QuotaDuration
 	 */
-	public function Name()
+	public function name()
 	{
-		return QuotaDuration::Month;
+		return RFQuotaDuration::Month;
 	}
 }

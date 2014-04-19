@@ -4,9 +4,9 @@ defined('_JEXEC') or die;
 class RFQuotaDurationDay extends RFQuotaDuration implements IQuotaDuration
 {
 	/**
-	 * @param ReservationSeries $reservationSeries
+	 * @param RFReservationSeries $reservationSeries
 	 * @param string $timezone
-	 * @return QuotaSearchDates
+	 * @return RFQuotaSearchDates
 	 */
 	public function getSearchDates(RFReservationSeries $reservationSeries, $timezone)
 	{
@@ -42,23 +42,23 @@ class RFQuotaDurationDay extends RFQuotaDuration implements IQuotaDuration
 		}
 		else
 		{
-			$ranges[] = new DateRange($start, $end);
+			$ranges[] = new RFDateRange($start, $end);
 		}
 
 		return $ranges;
 	}
 
 	/**
-	 * @param Date $date
+	 * @param RFDate $date
 	 * @return string
 	 */
-	public function getDurationKey(Date $date)
+	public function getDurationKey(RFDate $date)
 	{
 		return sprintf("%s%s%s", $date->year(), $date->month(), $date->day());
 	}
 
 	/**
-	 * @return string QuotaDuration
+	 * @return string RFQuotaDuration
 	 */
 	public function name()
 	{

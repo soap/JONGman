@@ -11,7 +11,7 @@ class RFReservationRuleQuota implements IReservationValidationRule
 	/**
 	 * @var \IReservationViewRepository
 	 */
-	private $reservationViewRepository;
+	private $reservationRepository;
 
 	/**
 	 * @var \IUserRepository
@@ -23,32 +23,39 @@ class RFReservationRuleQuota implements IReservationValidationRule
 	 */
 	private $scheduleRepository;
 
-	public function __construct(IQuotaRepository $quotaRepository, IReservationViewRepository $reservationViewRepository, IUserRepository $userRepository, IScheduleRepository $scheduleRepository)
+	public function __construct(IQuotaRepository $quotaRepository, IReservationRepository $reservationRepository, IUserRepository $userRepository, IScheduleRepository $scheduleRepository)
 	{
 		$this->quotaRepository = $quotaRepository;
-		$this->reservationViewRepository = $reservationViewRepository;
+		$this->reservationRepository = $reservationRepository;
 		$this->userRepository = $userRepository;
 		$this->scheduleRepository = $scheduleRepository;
 	}
 
 	/**
-	 * @param ReservationSeries $reservationSeries
-	 * @return ReservationRuleResult
+	 * @param RFReservationSeries $reservationSeries
+	 * @return RFReservationRuleResult
 	 */
 	public function validate($reservationSeries)
 	{
-		$quotas = $this->quotaRepository->LoadAll();
-		$user = $this->userRepository->LoadById($reservationSeries->UserId());
-		$schedule = $this->scheduleRepository->LoadById($reservationSeries->ScheduleId());
+		$quotas = $this->quotaRepository->loadAll();
+		$user = $this->userRepository->loadById($reservationSeries->userId());
+		$schedule = $this->scheduleRepository->loadById($reservationSeries->scheduleId());
 		
 		foreach ($quotas as $quota)
-		{
-			if ($quota->ExceedsQuota($reservationSeries, $user, $schedule, $this->reservationViewRepository))
+		{	
+			// RFQuota
+			if ($quota->exceedsQuota($reservationSeries, $user, $schedule, $this->reservationRepository))
 			{
-				return new ReservationRuleResult(false, 'QuotaExceeded');
+				$this->message = JText::_('COM_JONGMAN_ERROR_RULE_QUOTA_EXCEEDED');
+				return new RFReservationRuleResult(false, JText::_('COM_JONGMAN_ERROR_RULE_QUOTA_EXCEEDED'));
 			}
 		}
 
-		return new ReservationRuleResult();
+		return new RFReservationRuleResult();
+	}
+	
+	public function getError()
+	{
+		return $this->message;
 	}
 }

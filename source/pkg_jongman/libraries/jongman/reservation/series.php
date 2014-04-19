@@ -252,6 +252,10 @@ class RFReservationSeries extends JObject
 		return $this->bookedBy;
 	}
 	
+	public function scheduleId()
+	{
+		return $this->resource->getScheduleId();
+	}
 	/**
 	 * 
 	 * set reservation status, calculate from resource property and user right

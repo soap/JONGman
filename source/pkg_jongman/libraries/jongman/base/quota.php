@@ -10,7 +10,7 @@ interface IQuota
 	 * @param IReservationViewRepository $reservationViewRepository
 	 * @return bool
 	 */
-	public function exceedsQuota($reservationSeries, $user, $schedule, IReservationViewRepository $reservationViewRepository);
+	public function exceedsQuota($reservationSeries, $user, $schedule, IReservationRepository $reservationRepository);
 }
 
 
@@ -27,7 +27,7 @@ interface IQuotaDuration
 	 * @param string $timezone
 	 * @return QuotaSearchDates
 	*/
-	public function getSearchDates(ReservationSeries $reservationSeries, $timezone);
+	public function getSearchDates(RFReservationSeries $reservationSeries, $timezone);
 
 	/**
 	 * @abstract
