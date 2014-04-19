@@ -20,7 +20,7 @@
 			required="true" />
 				
 		<field name="schedule_id"
-			type="jongmanselectschedule"
+			type="schedule"
 			label="COM_JONGMAN_FIELD_QUOTA_SCHEDULE_LABEL"
 			description="COM_JONGMAN_FIELD_QUOTA_SCHEDULE_DESC"
 			default="0"
@@ -30,7 +30,7 @@
 		</field>
 
 		<field name="resource_id"
-			type="jongmanselectresource" quota="true"
+			type="resource" quota="true"
 			label="COM_JONGMAN_FIELD_QUOTA_RESOURCE_LABEL"
 			description="COM_JONGMAN_FIELD_QUOTA_RESOURCE_DESC"
 			default="0"
