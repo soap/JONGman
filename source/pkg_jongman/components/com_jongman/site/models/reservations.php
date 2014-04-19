@@ -168,7 +168,7 @@ class JongmanModelReservations extends JModelList
 		if (is_numeric($published)) {
 			$query->where('r.state = ' . (int) $published);
 		} else if ($published === '') {
-			$query->where('(r.state = 0 OR r.state = 1)');
+			$query->where('(r.state = -1 OR r.state = 0 OR r.state = 1)');
 		}
 
 		// Filter by a type id (reservation or blackout)

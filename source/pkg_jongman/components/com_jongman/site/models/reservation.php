@@ -231,7 +231,9 @@ class JongmanModelReservation extends JModelAdmin
 				);
 		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleResourceMinimumDuration(), $createdBy));
 		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleResourceMaximumDuration(), $createdBy));
-							
+		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleQuota(
+				new RFQuotaRepository(), new RFReservationRepository(), new RFUserRepository(), new RFScheduleRepository()), $createdBy
+				));					
 		$result = $ruleProcessor->validate($reservationSeries);
 		if (!$result->canBeSaved()) {
 			$errors = $result->getErrors();

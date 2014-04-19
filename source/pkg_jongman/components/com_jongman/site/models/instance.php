@@ -270,7 +270,8 @@ class JongmanModelInstance extends JModelAdmin
 				);
 		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleResourceMinimumDuration(), $createdBy));
 		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleResourceMaximumDuration(), $createdBy));
-		
+		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleQuota(
+				new RFQuotaRepository(), new RFReservationRepository(), new RFUserRepository(), new RFScheduleRepository()), $createdBy));			
 		/*
 		$ruleProcessor->addRule(new ExistingResourceAvailabilityRule(new ResourceReservationAvailability($this->reservationRepository), $userSession->Timezone));
 		$ruleProcessor->addRule(new AccessoryAvailabilityRule($this->reservationRepository, new AccessoryRepository(), $userSession->Timezone));
