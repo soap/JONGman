@@ -18,27 +18,28 @@ interface IQuotaDuration
 {
 	/**
 	 * @abstract
-	 * @return string QuotaDuration
+	 * @return string RFQuotaDuration
 	 */
 	public function name();
 
 	/**
-	 * @param ReservationSeries $reservationSeries
+	 * @param RFReservationSeries $reservationSeries
 	 * @param string $timezone
-	 * @return QuotaSearchDates
+	 * @return RFQuotaSearchDates
 	*/
 	public function getSearchDates(RFReservationSeries $reservationSeries, $timezone);
 
 	/**
+	 * Split for counting per duration
 	 * @abstract
-	 * @param DateRange $dateRange
-	 * @return array|DateRange[]
+	 * @param RFDateRange $dateRange
+	 * @return array|RFDateRange[]
 	*/
 	public function split(RFDateRange $dateRange);
 
 	/**
 	 * @abstract
-	 * @param Date $date
+	 * @param RFDate $date
 	 * @return string
 	*/
 	public function getDurationKey(RFDate $date);
@@ -48,11 +49,11 @@ interface IQuotaLimit
 {
 	/**
 	 * @abstract
-	 * @param Date $start
-	 * @param Date $end
+	 * @param RFDate $start
+	 * @param RFDate $end
 	 * @param string $key
 	 * @return void
-	 * @throws QuotaExceededException
+	 * @throws RFQuotaExceededException
 	 */
 	public function tryAdd($start, $end, $key);
 
@@ -64,7 +65,7 @@ interface IQuotaLimit
 
 	/**
 	 * @abstract
-	 * @return string|QuotaUnit
+	 * @return string|RFQuotaUnit
 	*/
 	public function name();
 }

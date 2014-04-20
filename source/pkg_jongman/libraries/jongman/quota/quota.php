@@ -112,7 +112,6 @@ class RFQuota implements IQuota
 	public function exceedsQuota($reservationSeries, $user, $schedule, IReservationRepository $reservationRepository)
 	{
 		$timezone = $schedule->timezone; //getTimezone();
-
 		if (!is_null($this->resourceId))
 		{
 			$appliesToResource = false;
@@ -157,14 +156,16 @@ class RFQuota implements IQuota
 			return false;
 		}
 
-		if (count($reservationSeries->instances()) == 0)
+		if (count($reservationSeries->getInstances()) == 0)
 		{
 			return false;
 		}
 
 		$dates = $this->duration->getSearchDates($reservationSeries, $timezone);
+		
 		$reservationsWithinRange = $reservationRepository->getReservationList($dates->start(), $dates->end(), $reservationSeries->userId(), 1 /*OWNER*/);
-
+		
+		JLog::add("  reservation in range count {count($reservationsWithinRange)}, try checking limit", JLog::DEBUG, 'validation');
 		try
 		{
 			$this->checkAll($reservationsWithinRange, $reservationSeries, $timezone);
@@ -268,7 +269,7 @@ class RFQuota implements IQuota
 	private function checkAll($reservationsWithinRange, $series, $timezone)
 	{
 		$toBeSkipped = array();
-
+		
 		/** @var $instance Reservation */
 		foreach ($series->getInstances() as $instance)
 		{
@@ -290,22 +291,21 @@ class RFQuota implements IQuota
 				$this->addInstance($instance, $timezone);
 			}
 		}
-
-		/** @var $reservation ReservationItemView */
+		/** @var $reservation ReservationItem */
 		foreach ($reservationsWithinRange as $reservation)
 		{
-			if (($series->containsResource($reservation->ResourceId) || $series->ScheduleId() == $reservation->ScheduleId) &&
+			if (($series->containsResource($reservation->resourceId) || $series->scheduleId() == $reservation->scheduleId) &&
 					!array_key_exists($reservation->referenceNumber, $toBeSkipped) &&
 					!$this->willBeDeleted($series, $reservation->reservationId)
 			)
 			{
-				$this->AddExisting($reservation, $timezone);
+				$this->addExisting($reservation, $timezone);
 			}
 		}
 	}
 
 	/**
-	 * @param ExistingReservationSeries $series
+	 * @param RFReservationExistingSeries $series
 	 * @param int $reservationId
 	 * @return bool
 	 */
@@ -342,4 +342,3 @@ class RFQuota implements IQuota
 	}
 
 }
-

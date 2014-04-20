@@ -43,7 +43,7 @@ class RFReservationRuleQuota implements IReservationValidationRule
 		
 		foreach ($quotas as $quota)
 		{	
-			JLog::add("validate quota {$quota}", JLog::DEBUG, 'validation');
+			JLog::add("validate quota {$quota} {$quota->getLimit()->amount()} {$quota->getLimit()->name()}/{$quota->getDuration()->name()}", JLog::DEBUG, 'validation');
 			// RFQuota
 			if ($quota->exceedsQuota($reservationSeries, $user, $schedule, $this->reservationRepository))
 			{

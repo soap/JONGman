@@ -7,7 +7,7 @@ class RFReservationRepository implements IReservationRepository
 {
 	/**
 	 * (non-PHPdoc)
-	 * @see IReservationViewRepository::getReservationList()
+	 * @see IReservationRepository::getReservationList()
 	 */
 	public function getReservationList(RFDate $startDate, RFDate $endDate, $userId = null, $userLevel = 1, $scheduleId = null, $resourceId = null)
 	{
@@ -22,21 +22,26 @@ class RFReservationRepository implements IReservationRepository
 			$model->setState('filter.schedule_id', $scheduleId);
 		}
 		if (!empty($resourceId)) {
-			$model->setState('filter.resource_id', $value);
+			$model->setState('filter.resource_id', $resourceId);
+		}
+		
+		if (!empty($userId)) {
+			$model->setState('filter.user_id', $userId);	
+		}
+		if (!empty($userLevel)) {
+			$model->setState('filter.user_level', $userLevel);
 		}
 		
 		$model->setState('filter.type_id', 1);
 		$items = $model->getItems();
-		
-		$list = new RFReservationListing($tz);
+
+		$reservations = array();
 		
 		foreach($items as $item) {
-			//add reservation first
-			$reservationItem = RFReservationItem::populate($item);
-			$list->add($reservationItem);	
+			$reservations[] = RFReservationItem::populate($item);	
 		}
 		
-		return $list;
+		return $reservations;
 	}
 	
 	public function getAccessoryReservationList(RFDate $startDate, RFDate $endDate, $accessoryName)

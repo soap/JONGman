@@ -20,8 +20,8 @@ class RFQuotaDurationDay extends RFQuotaDuration implements IQuotaDuration
 
 	public function split(RFDateRange $dateRange)
 	{
-		$start = $dateRange->GetBegin();
-		$end = $dateRange->GetEnd();
+		$start = $dateRange->getBegin();
+		$end = $dateRange->getEnd();
 
 		$ranges = array();
 

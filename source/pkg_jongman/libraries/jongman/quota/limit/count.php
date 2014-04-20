@@ -19,7 +19,7 @@ class RFQuotaLimitCount implements IQuotaLimit
 	 */
 	public function __construct($totalAllowed)
 	{
-		$this->totalAllowed = $totalAllowed;
+		$this->totalAllowed = (int) $totalAllowed;
 	}
 
 	public function tryAdd($start, $end, $key)
@@ -32,7 +32,7 @@ class RFQuotaLimitCount implements IQuotaLimit
 		{
 			$this->aggregateCounts[$key] = 1;
 		}
-
+		
 		if ($this->aggregateCounts[$key] > $this->totalAllowed)
 		{
 			throw new RFQuotaExceededException("Only {$this->totalAllowed} reservations are allowed for this duration");

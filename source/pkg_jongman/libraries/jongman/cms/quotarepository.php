@@ -9,6 +9,7 @@ class RFQuotaRepository implements IQuotaRepository, IQuotaViewRepository
 	{
 		$config = array('ignore_request'=>true);
 		$model = JModelLegacy::getInstance('Quotas', 'JongmanModel', $config);
+		$model->setState('filter.published', '1');
 		$items = $model->getItems();
 			
 		$quotas = array();

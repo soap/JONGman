@@ -1,7 +1,6 @@
 <?php
 defined('_JEXEC') or die;
 
-
 class RFQuotaDurationMonth extends RFQuotaDuration implements IQuotaDuration
 {
 
@@ -10,13 +9,13 @@ class RFQuotaDurationMonth extends RFQuotaDuration implements IQuotaDuration
 	 * @param string $timezone
 	 * @return RFQuotaSearchDates
 	 */
-	public function GetSearchDates(RFReservationSeries $reservationSeries, $timezone)
+	public function getSearchDates(RFReservationSeries $reservationSeries, $timezone)
 	{
-		$minMax = $this->GetFirstAndLastReservationDates($reservationSeries);
+		$minMax = $this->getFirstAndLastReservationDates($reservationSeries);
 
-		/** @var $start Date */
+		/** @var $start RFDate */
 		$start = $minMax[0]->toTimezone($timezone);
-		/** @var $end Date */
+		/** @var $end RFDate */
 		$end = $minMax[1]->toTimezone($timezone);
 
 		$searchStart = RFDate::create($start->year(), $start->month(), 1, 0, 0, 0, $timezone);

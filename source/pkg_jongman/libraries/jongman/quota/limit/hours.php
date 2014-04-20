@@ -41,7 +41,7 @@ class RFQuotaLimitHours implements IQuotaLimit
 
 		if (array_key_exists($key, $this->aggregateCounts))
 		{
-			$this->aggregateCounts[$key] = $this->aggregateCounts[$key]->Add($diff);
+			$this->aggregateCounts[$key] = $this->aggregateCounts[$key]->add($diff);
 		}
 		else
 		{
@@ -50,7 +50,7 @@ class RFQuotaLimitHours implements IQuotaLimit
 
 		if ($this->aggregateCounts[$key]->greaterThan($this->allowedDuration))
 		{
-			throw new QuotaExceededException("Cumulative reservation length cannot exceed {$this->allowedHours} hours for this duration");
+			throw new RFQuotaExceededException("Cumulative reservation length cannot exceed {$this->allowedHours} hours for this duration");
 		}
 	}
 

@@ -150,7 +150,23 @@ class RFReservationSeries extends JObject
 		}
 		return false;
 	}
-	
+	/**
+	 * @param Reservation $instance
+	 * @return bool
+	 */
+	protected function isCurrent(RFReservation $instance)
+	{
+		return $instance->referenceNumber() == $this->currentInstance()->referenceNumber();
+	}
+
+	/**
+	 * @param int $resourceId
+	 * @return bool
+	 */
+	public function containsResource($resourceId)
+	{
+		return in_array($resourceId, $this->allResourceIds());
+	}
 	/**
 	 * @param RFDateRange $reservationDate
 	 * @return RFReservation newly created instance

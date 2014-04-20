@@ -8,8 +8,8 @@ abstract class RFQuotaDuration
 	const Month = 'month';
 
 	/**
-	 * @param ReservationSeries $reservationSeries
-	 * @return array|Date[]
+	 * @param RFReservationSeries $reservationSeries
+	 * @return array|RFDate[]
 	 */
 	protected function getFirstAndLastReservationDates(RFReservationSeries $reservationSeries)
 	{
