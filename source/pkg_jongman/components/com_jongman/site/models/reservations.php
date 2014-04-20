@@ -87,7 +87,14 @@ class JongmanModelReservations extends JModelList
 		$this->setState('filter.resource_id', $value);
 		
 		$value = $app->getUserStateFromRequest($this->context.'.filter.type_id', 'filter_type_id', 0, 'int');
-		$this->setState('filter.type_id', $value);		
+		$this->setState('filter.type_id', $value);
+
+		$value = $app->getUserStateFromRequest($this->context.'.filter.user_id', 'filter_user_id', 0, 'int');
+		$this->setState('filter.user_id', $value);
+
+		$value = $app->getUserStateFromRequest($this->context.'.filter.user_level', 'filter_user_level', 1, 'int');
+		$this->setState('filter.user_level', $value);
+		
 
 		// Set list state ordering defaults.
 		parent::populateState($ordering, $direction);
@@ -191,7 +198,14 @@ class JongmanModelReservations extends JModelList
 		if (!empty($scheduleId)) {
 			$query->where('rs.id = '.(int)$scheduleId);
 		}
-
+		
+ 		$userId = $this->getState('filter.user_id');
+ 		$userLevel = $this->getState('filter.user_level', 1);
+ 		if (!empty($userId)) {
+ 			// @todo use user_id from #__jongman_reservation_users
+ 			$query->where('a.id IN (SELECT reservation_instance_id FROM #__jongman_reservation_users WHERE user_id = '.(int)$userId.' AND user_level='.$userLevel.')');
+ 		}
+		
 		$userTz = JongmanHelper::getUserTimezone();
 		$startDate = $this->getState('filter.start_date');
 		$endDate = $this->getState('filter.end_date');
@@ -211,6 +225,7 @@ class JongmanModelReservations extends JModelList
 		$orderDirn	= $this->state->get('list.direction', 'ASC');
 
 		$query->order($db->escape($orderCol.' '.$orderDirn));
+		
 		return $query;
 	}
 	
