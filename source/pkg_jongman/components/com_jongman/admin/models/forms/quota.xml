@@ -23,7 +23,7 @@
 			type="schedule"
 			label="COM_JONGMAN_FIELD_QUOTA_SCHEDULE_LABEL"
 			description="COM_JONGMAN_FIELD_QUOTA_SCHEDULE_DESC"
-			default="0"
+			default="0" quota="true"
 			onchange="JMform.reload('resource_id');"
 			class="inputbox">
 			<option value="0">COM_JONGMAN_OPTION_ALL_SCHEDULES</option>
@@ -59,10 +59,10 @@
 			type="list"
 			label="COM_JONGMAN_FIELD_QUOTA_UNIT_LABEL"
 			description="COM_JONGMAN_FIELD_QUOTA_UNIT_DESC"
-			default="reservation"
+			default="reservations"
 			>
 			<option value="reservations">COM_JONGMAN_OPTION_QUOTA_UNIT_RESERVATIONS</option>
-			<option value="minutes">COM_JONGMAN_OPTION_QUOTA_UNIT_MINUTES</option>
+			<option value="hours">COM_JONGMAN_OPTION_QUOTA_UNIT_HOURS</option>
 		</field>	
 		<field name="duration"
 			type="list"

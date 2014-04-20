@@ -60,11 +60,11 @@ class JFormFieldResource extends JFormFieldList {
     
     protected function getOptions() {
     	//get predefined option in xml file (FORM Definition) 
-    	if (empty($this->schedule)) {
+    	//if (empty($this->schedule)) {
 			$staticOptions = (array) parent::getOptions();
-    	}else{
-    		$staticOptions = array();
-    	}
+    	//}else{
+    		//$staticOptions = array();
+    	//}
 		
         $dbo = JFactory::getDbo();
         $query = $dbo->getQuery(true);
