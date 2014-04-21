@@ -33,7 +33,7 @@ class JongmanModelReservations extends JModelList
 		$accessId = $this->getUserStateFromRequest($this->context.'.filter.access', 'filter_access', null, 'int');
 		$this->setState('filter.access', $accessId);
 
-		$published = $this->getUserStateFromRequest($this->context.'.filter.state', 'filter_published', '', 'string');
+		$published = $this->getUserStateFromRequest($this->context.'.filter.state', 'filter_state', '', 'int');
 		$this->setState('filter.state', $published);
 
 		$scheduleId = $this->getUserStateFromRequest($this->context.'.filter.schedule_id', 'filter_schedule_id', null, 'int');
@@ -125,6 +125,11 @@ class JongmanModelReservations extends JModelList
 			$query->where('a.reservation_id IN 
 				(SELECT reservation_id FROM #__jongman_reservation_resources WHERE resource_id='.(int)$resourceId.')');
 		}
+		
+		$state = $this->getState('filter.state');
+		if (is_numeric($state)) {
+			$query->where('r.state = '.(int)$state);			
+		} 
 		
 		$timezone = JongmanHelper::getUserTimezone();
 		$startDate = $this->getState('filter.start_date');

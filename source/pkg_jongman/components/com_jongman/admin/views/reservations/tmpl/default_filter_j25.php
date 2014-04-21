@@ -33,10 +33,10 @@
 					'value', 'text', $this->state->get('filter.reservation_category'));?>
 			</select>
 			
-			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
+			<select name="filter_state" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'),
-					'value', 'text', $this->state->get('filter.published'), true);?>
+				<?php echo JHtml::_('select.options', JongmanHelper::getReservationOptions(),
+					'value', 'text', $this->state->get('filter.state'), true);?>
 			</select>
 			<select name="filter_access" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('JOPTION_SELECT_ACCESS');?></option>

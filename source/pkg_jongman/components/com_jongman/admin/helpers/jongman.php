@@ -90,6 +90,17 @@ class JongmanHelper {
 		return $result;
 	}
 	
+	public static function getReservationOptions()
+	{
+		// Build the active state filter options.
+		$options = array();
+
+		$options[] = JHtml::_('select.option', '1', 'COM_JONGMAN_RESERVATION_STATUS_CREATED');
+		$options[] = JHtml::_('select.option', '-1', 'COM_JONGMAN_RESERVATION_STATUS_PENDING');
+		$options[] = JHtml::_('select.option', '*', 'JALL');
+	
+		return $options;
+	}	
 	public static function getScheduleOptions()
 	{
 		$dbo = JFactory::getDbo();
