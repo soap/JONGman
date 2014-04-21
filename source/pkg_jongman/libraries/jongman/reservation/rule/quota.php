@@ -47,9 +47,14 @@ class RFReservationRuleQuota implements IReservationValidationRule
 			// RFQuota
 			if ($quota->exceedsQuota($reservationSeries, $user, $schedule, $this->reservationRepository))
 			{
-				JLog::add("  exceed quota", JLog::DEBUG, 'validation');
-				$this->message = JText::_('COM_JONGMAN_ERROR_RULE_QUOTA_EXCEEDED');
-				return new RFReservationRuleResult(false, JText::_('COM_JONGMAN_ERROR_RULE_QUOTA_EXCEEDED'));
+				if ($quota->getLimit()->name() == RFQuotaUnit::Reservations) {
+					//Only {$this->totalAllowed} reservations are allowed for this duration"
+					$this->message = JText::sprintf("COM_JONGMAN_ERROR_RULE_QUOTA_RESERVATIONS_EXCEED", $quota->getLimit()->amount(), $quota->getDuration()->name());		
+				}else{
+					$this->message = JText::sprintf("COM_JONGMAN_ERROR_RULE_QUOTA_HOURS_EXCEED", $quota->getLimit()->amount(), $quota->getDuration()->name());	
+				}
+				JLog::add(" exceeds quota, " .$this->message, JLog::DEBUG, 'validation');
+				return new RFReservationRuleResult(false, $this->message);
 			}
 			
 			JLog::add("  not exceed quota", JLog::DEBUG, 'validation');
