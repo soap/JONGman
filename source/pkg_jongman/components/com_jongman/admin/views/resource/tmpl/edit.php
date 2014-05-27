@@ -40,84 +40,76 @@ JHtml::_('behavior.keepalive');
 	}
 </script>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=edit&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="resource-form" class="form-validate">
-    <div class="width-50 fltlft">
-        <fieldset class="adminform">
-            <legend><?php echo empty($this->item->id) ? JText::_('COM_JONGMAN_RESOURCE_NEW') : JText::sprintf('COM_JONGMAN_RESOURCE_EDIT', $this->item->id); ?></legend>
-            <ul class="adminformlist">
-                <li><?php echo $this->form->getLabel('id'); ?>
-                    <?php echo $this->form->getInput('id'); ?></li>
-                    
-                <li><?php echo $this->form->getLabel('schedule_id'); ?>
-                    <?php echo $this->form->getInput('schedule_id'); ?></li>
-                       
-                <li><?php echo $this->form->getLabel('title'); ?>
-                    <?php echo $this->form->getInput('title'); ?></li>
+	<div class="row-fluid">
+		<div class="width-60 fltlft span7">
+			<fieldset class="adminform">
+				<legend>
+				<?php echo empty($this->item->id) ? JText::_('COM_JONGMAN_RESOURCE_NEW') : JText::sprintf('COM_JONGMAN_RESOURCE_EDIT', $this->item->id); ?>
+				</legend>
+				<ul class="adminformlist unstyled">
+					<li><?php echo $this->form->getLabel('id'); ?> <?php echo $this->form->getInput('id'); ?>
+					</li>
 
-                <li><?php echo $this->form->getLabel('alias'); ?>
-                    <?php echo $this->form->getInput('alias'); ?></li>
+					<li><?php echo $this->form->getLabel('schedule_id'); ?> <?php echo $this->form->getInput('schedule_id'); ?>
+					</li>
 
-                <li><?php echo $this->form->getLabel('location'); ?>
-                    <?php echo $this->form->getInput('location'); ?></li>
-                
-                <li><?php echo $this->form->getLabel('contact_info'); ?>
-                    <?php echo $this->form->getInput('contact_info'); ?></li>
-                
-                <li><?php echo $this->form->getLabel('note'); ?>
-                    <?php echo $this->form->getInput('note'); ?></li>                          
-    			<li>
-    				<?php echo $this->form->getLabel('published'); ?>
-                	<?php echo $this->form->getInput('published'); ?>
-                </li>
-                <li><?php echo $this->form->getLabel('access'); ?>
-                    <?php echo $this->form->getInput('access'); ?></li>
-				
-                <?php if ($this->canDo->get('core.admin')): ?>
-				<li><span class="faux-label"><?php echo JText::_('JGLOBAL_ACTION_PERMISSIONS_LABEL'); ?></span>
-					<div class="button2-left"><div class="blank">
-						<button type="button" onclick="document.location.href='#access-rules';">
-							<?php echo JText::_('JGLOBAL_PERMISSIONS_ANCHOR'); ?>
-						</button>
-					</div></div>
-				</li>
-				<?php endif; ?>                    
-            </ul>
-        </fieldset>
-    </div>
-    <div class="width-50 fltrt">
-    	<fieldset class="adminform">
-    		<ul class="adminformlist">
-    			<li>
-                	<?php echo $this->form->getLabel('min_reservation_duration'); ?>
-                    <?php echo $this->form->getInput('min_reservation_duration'); ?>    			
-    			</li>
-    			<li>
-                	<?php echo $this->form->getLabel('max_reservation_duration'); ?>
-                    <?php echo $this->form->getInput('max_reservation_duration'); ?>    			
-    			</li>
-    			<li>
-                	<?php echo $this->form->getLabel('min_notice_duration'); ?>
-                    <?php echo $this->form->getInput('min_notice_duration'); ?>    			
-    			</li>
-    			<li>
-                	<?php echo $this->form->getLabel('max_notice_duration'); ?>
-                    <?php echo $this->form->getInput('max_notice_duration'); ?>    			
-    			</li>
-                <li>
-                	<?php echo $this->form->getLabel('requires_approval'); ?>
-                    <?php echo $this->form->getInput('requires_approval'); ?>
-               	</li>
+					<li><?php echo $this->form->getLabel('title'); ?> <?php echo $this->form->getInput('title'); ?>
+					</li>
 
-                <li>
-                	<?php echo $this->form->getLabel('allow_multi_days'); ?>
-                    <?php echo $this->form->getInput('allow_multi_days'); ?>
-                </li>
-           	</ul>
-    	</fieldset>
-    </div>
-    
-    <div class="clr"></div>
+					<li><?php echo $this->form->getLabel('alias'); ?> <?php echo $this->form->getInput('alias'); ?>
+					</li>
+
+					<li><?php echo $this->form->getLabel('location'); ?> <?php echo $this->form->getInput('location'); ?>
+					</li>
+
+					<li><?php echo $this->form->getLabel('contact_info'); ?> <?php echo $this->form->getInput('contact_info'); ?>
+					</li>
+
+					<li><?php echo $this->form->getLabel('note'); ?> <?php echo $this->form->getInput('note'); ?>
+					</li>
+
+					<li><?php echo $this->form->getLabel('access'); ?> <?php echo $this->form->getInput('access'); ?>
+					</li>
+
+					<?php if ($this->canDo->get('core.admin')): ?>
+					<li><span class="faux-label"><?php echo JText::_('JGLOBAL_ACTION_PERMISSIONS_LABEL'); ?>
+					</span>
+						<div class="button2-left">
+							<div class="blank">
+								<button type="button"
+									onclick="document.location.href='#access-rules';">
+									<?php echo JText::_('JGLOBAL_PERMISSIONS_ANCHOR'); ?>
+								</button>
+							</div>
+						</div>
+					</li>
+					<?php endif; ?>
+				</ul>
+			</fieldset>
+		</div>
+		<div class="width-40 fltrt span4">
+		<?php echo JHtml::_('sliders.start','resource-sliders-'.$this->item->id, array('useCookie'=>1)); ?>
+		<?php echo $this->loadTemplate('params'); ?>
+		<?php echo JHtml::_('sliders.panel',JText::_('COM_JONGMAN_RESOURCE_FIELDSET_PUBLISHING'), 'resource-publishing'); ?>
+			<fieldset class="adminform">
+				<ul class="adminformlist unstyled">
+
+					<li><?php echo $this->form->getLabel('need_approval'); ?> <?php echo $this->form->getInput('need_approval'); ?>
+					</li>
+
+					<li><?php echo $this->form->getLabel('allow_multi'); ?> <?php echo $this->form->getInput('allow_multi'); ?>
+					</li>
+
+					<li><?php echo $this->form->getLabel('published'); ?> <?php echo $this->form->getInput('published'); ?>
+					</li>
+				</ul>
+			</fieldset>
+			<?php echo JHtml::_('sliders.end'); ?>
+		</div>
+	</div>
+	<div class="clr"></div>
 	<?php if ($this->canDo->get('core.admin')): ?>
-		<div class="width-100 fltlft">
+		<div class="width-100 fltlft span12">
 			<?php echo JHtml::_('sliders.start','resource-permissions-sliders-'.$this->item->id, array('useCookie'=>1)); ?>
 				<?php echo JHtml::_('sliders.panel',JText::_('COM_JONGMAN_RESOURCE_FIELDSET_RULES'), 'access-rules'); ?>
 				<fieldset class="panelform">

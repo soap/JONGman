@@ -35,80 +35,61 @@ JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, f
 
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=edit&id='.(int) $this->item->id); ?>"
 	method="post" name="adminForm" id="layout-form" class="form-validate">
-	<div class="width-60 fltlft">
-		<fieldset class="adminform">
-			<ul class="adminformlist">
-				<li>
-					<?php echo $this->form->getLabel('id')?>
-					<?php echo $this->form->getInput('id')?>
-				</li>
-				<li>
-					<?php echo $this->form->getLabel('title'); ?>
-					<?php echo $this->form->getInput('title'); ?>
-				</li>
+	<div class="row-fluid">
+		<div class="width-60 fltlft span7">
+			<fieldset class="adminform">
+				<ul class="adminformlist unstyled">
+					<li><?php echo $this->form->getLabel('id')?> <?php echo $this->form->getInput('id')?>
+					</li>
+					
+					<li><?php echo $this->form->getLabel('title'); ?> <?php echo $this->form->getInput('title'); ?>
+					</li>
 
-				<li>
-					<?php echo $this->form->getLabel('alias'); ?>
-					<?php echo $this->form->getInput('alias'); ?>
-				</li>
+					<li><?php echo $this->form->getLabel('alias'); ?> <?php echo $this->form->getInput('alias'); ?>
+					</li>
 
-				<li>
-					<?php echo $this->form->getLabel('timezone'); ?>
-					<?php echo $this->form->getInput('timezone'); ?>
-				</li>
-				
-				<li>
-					<?php echo $this->form->getLabel('default'); ?>
-					<?php echo $this->form->getInput('default'); ?>
-				</li>
-				
-				<li>
-					<?php echo $this->form->getLabel('published'); ?>
-					<?php echo $this->form->getInput('published'); ?>
-				</li>
+					<li><?php echo $this->form->getLabel('timezone'); ?> <?php echo $this->form->getInput('timezone'); ?>
+					</li>
 
-				<li>
-					<?php echo $this->form->getLabel('access'); ?>
-					<?php echo $this->form->getInput('access'); ?>
-				</li>
+					<li><?php echo $this->form->getLabel('published'); ?> <?php echo $this->form->getInput('published'); ?>
+					</li>
 
-				<li>
-					<?php echo $this->form->getLabel('language'); ?>
-					<?php echo $this->form->getInput('language'); ?>
-				</li>
+					<li><?php echo $this->form->getLabel('access'); ?> <?php echo $this->form->getInput('access'); ?>
+					</li>
 
-				<li>
-					<?php echo $this->form->getLabel('note'); ?>
-					<?php echo $this->form->getInput('note'); ?>
-				</li>
-			</ul>
+					<li><?php echo $this->form->getLabel('language'); ?> <?php echo $this->form->getInput('language'); ?>
+					</li>
 
-		</fieldset>
-	</div>
-	<div class="width-40 fltrt">
+					<li><?php echo $this->form->getLabel('note'); ?> <?php echo $this->form->getInput('note'); ?>
+					</li>
+				</ul>
+			</fieldset>
+		</div>
+	<div class="width-40 fltrt span4">
 		<?php echo JHtml::_('sliders.start','layout-sliders-'.$this->item->id, array('useCookie' => 1)); ?>
 
 		<?php echo $this->loadTemplate('params'); ?>
 
 		<?php echo $this->loadTemplate('metadata'); ?>
 		<?php echo JHtml::_('sliders.end'); ?>
-
+		<div class="clr"></div>
 	</div>
 	<div class="clr"></div>
+	</div>
+	<div class="width-100 fltlft span12">
+		<?php echo JHtml::_('sliders.start','layout-timeslot-sliders-'.$this->item->id, array('useCookie'=>1)); ?>
+		<?php echo JHtml::_('sliders.panel',JText::_('COM_JONGMAN_TIMESLOT_FIELDSET_TIMESLOTS'), 'layout-timeslots'); ?>
+		<fieldset class="panelform">
+			<?php echo $this->form->getLabel('timeslots'); ?>
+			<div id="jform_timeslots_element">
+            	<div id="jform_timeslots_reload" style="clear: both;"> 
+					<?php echo $this->form->getInput('timeslots'); ?>
+				</div>
+			</div>
+		</fieldset>
+		<?php echo JHtml::_('sliders.end'); ?>
+	</div>
 
-		<div class="width-100 fltlft">
-			<?php echo JHtml::_('sliders.start','layout-timeslot-sliders-'.$this->item->id, array('useCookie'=>1)); ?>
-				<?php echo JHtml::_('sliders.panel',JText::_('COM_JONGMAN_TIMESLOT_FIELDSET_TIMESLOTS'), 'layout-timeslots'); ?>
-				<fieldset class="panelform">
-					<?php echo $this->form->getLabel('timeslots'); ?>
-					<div id="jform_timeslots_element">
-                        <div id="jform_timeslots_reload" style="clear: both;"> 
-							<?php echo $this->form->getInput('timeslots'); ?>
-						</div>
-					</div>
-				</fieldset>
-			<?php echo JHtml::_('sliders.end'); ?>
-		</div>
 	<?php echo $this->form->getInput('elements'); ?>
 	<input type="hidden" name="view" value="layout" />
 	<input type="hidden" name="task" value="" />

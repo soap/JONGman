@@ -76,7 +76,7 @@ class JongmanModelLayout extends JModelAdmin
 			if (intval($result->created)) {
 				$date = new JDate($result->created);
 				$date->setTimezone($tz);
-				$result->created = $date->toMySQL(true);
+				$result->created = $date->toSql(true);
 			}
 			else {
 				$result->created = null;
@@ -85,7 +85,7 @@ class JongmanModelLayout extends JModelAdmin
 			if (intval($result->modified)) {
 				$date = new JDate($result->modified);
 				$date->setTimezone($tz);
-				$result->modified = $date->toMySQL(true);
+				$result->modified = $date->toSql(true);
 			}
 			else {
 				$result->modified = null;

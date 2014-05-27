@@ -9,7 +9,7 @@ foreach ($fieldSets as $name => $fieldSet) :
 	endif;
 	?>
 	<fieldset class="panelform">
-		<ul class="adminformlist">
+		<ul class="adminformlist unstyled">
 		<?php foreach ($this->form->getFieldset($name) as $field) : ?>
 			<li>
 				<?php echo $field->label; ?>

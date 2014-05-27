@@ -30,24 +30,9 @@ class JongmanController extends JControllerLegacy
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{	
+		$this->_init();
 		$params = JComponentHelper::getParams('com_jongman');
-		$jquery_site = $params->get('jquery_site', '1');
-		$bootstrap_js = $params->get('bootstrap_js', '1');
-		$bootstrap_css = $params->get('bootstrap_css', '1');
 		$jongman_css = $params->get('jongman_css', '1');
-		if ($jquery_site == '1') {
-			JHtml::_('script', 'com_jongman/jquery/jquery-1.8.2.min.js', false, true);
-			JHtml::_('script', 'com_jongman/jquery/jquery-ui-1.9.0.custom.min.js', false, true);		
-			JHtml::_('script', 'com_jongman/jquery/jquery.qtip.min.js', false, true);
-			JHtml::_('script', 'com_jongman/jquery/jquery.noconflict.js', false, true);	
-			JHtml::_('stylesheet', 'com_jongman/jongman/jquery.qtip.min.css', false, true, false, false, false);							
-		}
-		if ($bootstrap_js) {
-			JHtml::_('script', 'com_jongman/bootstrap/bootstrap.min.js', false, true);	
-		}
-		if ($bootstrap_css) {
-			JHtml::_('stylesheet', 'com_jongman/bootstrap/component.css', false, true, false, false, false);							
-		}
 		if ($jongman_css) {
 			JHtml::_('stylesheet', 'com_jongman/jongman/jongman.css', false, true, false, false, false);
 		}
@@ -96,5 +81,38 @@ class JongmanController extends JControllerLegacy
 		}
 		
 		return parent::getModel($name, $prefix, $config);
+	}
+	
+	private function _init()
+	{
+		 $is_j25 = version_compare(JVERSION, '3', 'lt');
+		 if (!$is_j25) {
+		 	JHtml::_('bootstrap.framework');
+		 	JHtml::_('jquery.framework');
+		 	JHtml::_('jquery.ui',array('core', 'sortable'));	
+		 	JHtml::_('script', 'com_jongman/jquery/jquery.ui.selectable.js', false, true);
+		 	JHtml::_('script', 'com_jongman/jquery/jquery.qtip.min.js', false, true);
+		 	JHtml::_('stylesheet', 'com_jongman/jongman/jquery.qtip.min.css', false, true, false, false, false);							
+		 	JHtml::_('script', 'com_jongman/jquery/jquery.datetimepicker.js', false, true);		
+		 }else{
+		 	$params = JComponentHelper::getParams('com_jongman');
+			$jquery_site = $params->get('jquery_site', '1');
+			$bootstrap_js = $params->get('bootstrap_js', '1');
+			$bootstrap_css = $params->get('bootstrap_css', '1');
+			$jongman_css = $params->get('jongman_css', '1');
+			if ($jquery_site == '1') {
+				JHtml::_('script', 'com_jongman/jquery/jquery-1.8.2.min.js', false, true);
+				JHtml::_('script', 'com_jongman/jquery/jquery-ui-1.9.0.custom.min.js', false, true);		
+				JHtml::_('script', 'com_jongman/jquery/jquery.qtip.min.js', false, true);
+				JHtml::_('script', 'com_jongman/jquery/jquery.noconflict.js', false, true);	
+				JHtml::_('stylesheet', 'com_jongman/jongman/jquery.qtip.min.css', false, true, false, false, false);							
+			}
+			if ($bootstrap_js) {
+				JHtml::_('script', 'com_jongman/bootstrap/bootstrap.min.js', false, true);	
+			}
+			if ($bootstrap_css) {
+				JHtml::_('stylesheet', 'com_jongman/bootstrap/component.css', false, true, false, false, false);							
+			}		 	
+		 }	
 	}
 }

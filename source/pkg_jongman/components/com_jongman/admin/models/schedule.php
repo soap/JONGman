@@ -27,7 +27,7 @@ class JongmanModelSchedule extends JModelAdmin
     /**
      * Prepare data before save
      */
-    function prepareTable(&$table) {
+    protected function prepareTable($table) {
     	$table->name		= htmlspecialchars_decode($table->name, ENT_QUOTES);
 		$table->alias		= JApplication::stringURLSafe($table->alias);
 

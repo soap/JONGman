@@ -40,7 +40,7 @@ class JongmanTableResource extends JTable
 	* We provide our global ACL as parent
     * @see JTable::_getAssetParentId()
     */
-	protected function _getAssetParentId($table = null, $id = null)
+	protected function _getAssetParentId(JTable $table = null, $id = null)
 	{
 		$asset = JTable::getInstance('Asset');
 		$asset->loadByName('com_jongman');

@@ -43,78 +43,58 @@ JHtml::_('behavior.keepalive');
 
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=edit&id='.(int) $this->item->id); ?>"
 	method="post" name="adminForm" id="item-form" class="form-validate">
-	<div class="width-60 fltlft">
-		
-		<fieldset class="adminform">
-			<ul class="adminformlist">
-				<li>
-					<?php echo $this->form->getLabel('title'); ?>
-					<?php echo $this->form->getInput('title'); ?>
-				</li>
-				<li>
-					<?php echo $this->form->getLabel('schedule_id'); ?>
-					<?php echo $this->form->getInput('schedule_id'); ?>
-				</li>
+	<div class="row-fluid">
+		<div class="width-60 fltlft span7">
+			<fieldset class="adminform">
+				<ul class="adminformlist unstyled">
+					<li><?php echo $this->form->getLabel('title'); ?> <?php echo $this->form->getInput('title'); ?>
+					</li>
+					<li><?php echo $this->form->getLabel('schedule_id'); ?> <?php echo $this->form->getInput('schedule_id'); ?>
+					</li>
 
-				<li>
-					<?php echo $this->form->getLabel('resource_id'); ?>
-				    <div id="jform_resource_id_element">
-            			<div id="jform_resource_id_reload">
+					<li><?php echo $this->form->getLabel('resource_id'); ?>
+						<div id="jform_resource_id_element">
+							<div id="jform_resource_id_reload">
 							<?php echo $this->form->getInput('resource_id'); ?>
-                		</div>
-            		</div>
-				</li>
+							</div>
+						</div>
+					</li>
 
-				<li>
-					<?php echo $this->form->getLabel('group_id'); ?>
-					<?php echo $this->form->getInput('group_id'); ?>
-				</li>
+					<li><?php echo $this->form->getLabel('group_id'); ?> <?php echo $this->form->getInput('group_id'); ?>
+					</li>
 
-				<li>
-					<?php echo $this->form->getLabel('quota_limit'); ?>
-					<?php echo $this->form->getInput('quota_limit'); ?>
-				</li>
+					<li><?php echo $this->form->getLabel('quota_limit'); ?> <?php echo $this->form->getInput('quota_limit'); ?>
+					</li>
 
-				<li>
-					<?php echo $this->form->getLabel('unit'); ?>
-					<?php echo $this->form->getInput('unit'); ?>
-				</li>
-				
-				<li>
-					<?php echo $this->form->getLabel('duration'); ?>
-					<?php echo $this->form->getInput('duration'); ?>
-				</li>
-												
-				<li>
-					<?php echo $this->form->getLabel('published'); ?>
-					<?php echo $this->form->getInput('published'); ?>
-				</li>
+					<li><?php echo $this->form->getLabel('unit'); ?> <?php echo $this->form->getInput('unit'); ?>
+					</li>
 
-				<li>
-					<?php echo $this->form->getLabel('access'); ?>
-					<?php echo $this->form->getInput('access'); ?>
-				</li>
-				
-				<li>
-					<?php echo $this->form->getLabel('ordering'); ?>
-					<?php echo $this->form->getInput('ordering'); ?>
-				</li>
-				<li>
-					<?php echo $this->form->getLabel('note'); ?>
-					<?php echo $this->form->getInput('note'); ?>
-				</li>
-			</ul>
+					<li><?php echo $this->form->getLabel('duration'); ?> <?php echo $this->form->getInput('duration'); ?>
+					</li>
 
-		</fieldset>
-	</div>
-	<div class="width-40 fltrt">
+					<li><?php echo $this->form->getLabel('published'); ?> <?php echo $this->form->getInput('published'); ?>
+					</li>
+
+					<li><?php echo $this->form->getLabel('access'); ?> <?php echo $this->form->getInput('access'); ?>
+					</li>
+
+					<li><?php echo $this->form->getLabel('ordering'); ?> <?php echo $this->form->getInput('ordering'); ?>
+					</li>
+					<li><?php echo $this->form->getLabel('note'); ?> <?php echo $this->form->getInput('note'); ?>
+					</li>
+				</ul>
+
+			</fieldset>
+		</div>
+		<div class="width-40 fltrt span4">
 		<?php echo JHtml::_('sliders.start','quota-sliders-'.$this->item->id, array('useCookie' => 1)); ?>
 
 		<?php echo JHtml::_('sliders.end'); ?>
 
+		</div>
 	</div>
 	<div class="clr"></div>
-            
+
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="view" value="<?php echo htmlspecialchars($this->get('Name'), ENT_COMPAT, 'UTF-8');?>" />
 	<?php echo $this->form->getInput('elements'); ?>

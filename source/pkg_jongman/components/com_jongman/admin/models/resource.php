@@ -34,6 +34,27 @@ class JongmanModelResource extends JModelAdmin
 		if (empty($table->alias)) {
 			$table->alias = JApplication::stringURLSafe($table->title);
 		}
+		
+    	if (empty($table->id)) {
+			// For a new record.
+			// Set ordering to the last item if not set
+			if (empty($table->ordering)) {
+				$db		= JFactory::getDbo();
+				$query	= $db->getQuery(true);
+				$query->select('MAX(ordering)');
+				$query->from('#__jongman_resources');
+				$query->where('schedule_id = '.(int) $table->schedule_id);
+				
+				$max = (int) $db->setQuery($query)->loadResult();
+				
+				if ($error = $db->getErrorMsg()) {
+					$this->setError($error);
+					return false;
+				}
+
+				$table->ordering = $max + 1;
+			}
+    	}
     }
     /**
 	 * Method to get the record form.
@@ -88,6 +109,23 @@ class JongmanModelResource extends JModelAdmin
 		return $data;
 	}  
 
+	/**
+	 * A protected method to get a set of ordering conditions.
+	 *
+	 * @param   JTable  $table  A record object.
+	 *
+	 * @return  array  An array of conditions to add to add to ordering queries.
+	 * @since   ${SINCE}
+	 */
+	protected function getReorderConditions($table = null)
+	{
+		$condition = array(
+			'schedule_id = '.(int) $table->schedule_id
+		);
+
+		return $condition;
+	}
+	
 	public function approval($pks, $value=1)
 	{
 		// Initialise variables.

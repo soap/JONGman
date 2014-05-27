@@ -297,7 +297,7 @@ class JongmanModelSchedule extends JModelItem {
 	private function getReservationList(RFDateRange $dateRange, $scheduleId = null, $resourceId=null, $userId = null, $tz = null)
 	{		
 		$config = array('ignore_request'=>true);
-		$rModel = JModel::getInstance('Reservations', 'JongmanModel', $config);
+		$rModel = JModelLegacy::getInstance('Reservations', 'JongmanModel', $config);
 		$rModel->setState('filter.start_date', $dateRange->getBegin()->format('Y-m-d H:i:s'));
 		// add one day to include all reservations for the last date 
 		$rModel->setState('filter.end_date', $dateRange->getEnd()->addDays(1)->format('Y-m-d H:i:s'));
@@ -312,6 +312,7 @@ class JongmanModelSchedule extends JModelItem {
 		}
 		
 		$list = new RFReservationListing($tz);
+		if (empty($resItems)) return $list;
 		
 		foreach($resItems as $item) {
 			//add reservation first

@@ -50,6 +50,10 @@ endif;
                 <th width="20%">
                     <?php echo JHtml::_('grid.sort',  'COM_JONGMAN_HEADING_SCHEDULE', 'schedule_name', $listDirn, $listOrder); ?>
                 </th>
+                <th width="10%" class="nowrap">
+					<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ORDERING', 'r.ordering', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.order',  $this->items, 'filesave.png', 'resources.saveorder'); ?>
+				</th>
                 <th width="5%">
                     <?php echo JText::_('COM_JONGMAN_HEADING_MIN_RESERVATION') ?>
                 </th>
@@ -104,6 +108,21 @@ endif;
                 <td class="center">
                     <?php echo $item->schedule_name?>
                 </td>
+				<td class="order">
+					<?php if ($canChange) : ?>
+						<span><?php echo $this->pagination->orderUpIcon($i,
+							($item->schedule_id == @$this->items[$i-1]->schedule_id),
+							'reources.orderup', 'JLIB_HTML_MOVE_UP', $ordering); ?></span>
+						<span><?php echo $this->pagination->orderDownIcon($i,
+							$this->pagination->total,
+							($item->schedule_id == @$this->items[$i+1]->schedule_id),
+							'resources.orderdown', 'JLIB_HTML_MOVE_DOWN', $ordering); ?></span>
+						<?php $disabled = $ordering ?  '' : 'disabled="disabled"'; ?>
+						<input type="text" name="order[]" size="5" value="<?php echo $item->ordering;?>" <?php echo $disabled ?> class="text-area-order" />
+					<?php else : ?>
+						<?php echo (int) $item->ordering; ?>
+					<?php endif; ?>
+				</td>                
                 <td class="center">
                 	<?php 
                 	$title = "Minimum Duration::".(!$item->hasMinDuration? JText::_("COM_JONGMAN_NO_MIN_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MIN_DURATION_DESC", $item->minDuration->interval()));
@@ -162,7 +181,7 @@ endif;
 		<?php if ($this->is_j25) : ?>
 		<tfoot>
 			<tr>
-				<td colspan="11">
+				<td colspan="12">
 					<?php echo $this->pagination->getListFooter(); ?>
 				</td>
 			</tr>
