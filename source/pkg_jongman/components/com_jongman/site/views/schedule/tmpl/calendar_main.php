@@ -14,7 +14,7 @@ $dailyDateFormat = $this->state->get('params')->get('daily_date_format', 'Y-m-d'
 <div id="reservations">
 <!-- start one day reservation table -->
 <?php foreach($displayDates as $date) : ?>
-	<table class="reservations" border="1" cellpadding="0" width="100%">
+	<table class="reservations ui-widget" border="1" cellpadding="0" width="100%">
 	<?php if ($today->dateEquals($date)) : ?>
 		<tr class="today">
 	<?php else: ?>
@@ -50,4 +50,3 @@ $dailyDateFormat = $this->state->get('params')->get('daily_date_format', 'Y-m-d'
 <?php endforeach; ?>
 </div>
 <div style="height: 10px">&nbsp;</div>
-

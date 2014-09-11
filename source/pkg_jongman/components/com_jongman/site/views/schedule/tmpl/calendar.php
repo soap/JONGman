@@ -16,8 +16,8 @@ $firstDate = $this->scheduledates->getBegin();
 $lastDate = $this->scheduledates->getEnd();
 $url = JSite::getMenu()->getActive()->link.'&Itemid='.JSite::getMenu()->getActive()->id;
 ?>
-<div class="row-flulid">
-	<div clas="span12">
+<div class="row-fluid">
+	<div class="span12">
 	<div class="schedule_title">
 		<span><?php echo $this->schedule->name?></span>
 		<a href="#" id="calendar_toggle"><img src="<?php echo $calLink?>" alt="<?php echo JText::_('COM_JONGMAN_SHOWHIDE_CALENDAR')?>"/></a>
@@ -31,8 +31,7 @@ $url = JSite::getMenu()->getActive()->link.'&Itemid='.JSite::getMenu()->getActiv
 		<?php echo JHtml::image('com_jongman/arrow_large_right.png', 'Forward', array(), true);?>
 		</a>	
 	</div>
-	<div type="text" id="datepicker" style="display:none"></div>
-
+	<div id="datepicker" style="display:none"></div>
 <?php 
 echo $this->loadTemplate('legend');
 echo $this->loadTemplate('main');
@@ -48,21 +47,21 @@ if ($bottomNavigation) {
 	<input type="hidden" name="return" value="<?php echo base64_encode(JFactory::getURI()->toString());?>" />
 </form>
 <script type="text/javascript">
-	var forceReload = false;
-	window.location.hash = 'sc-top';
-
-	window.addEvent('domready', function() {
+		//var forceReload = false;
+		window.location.hash = 'sc-top';
 		var scheduleOpts = {
-			reservationUrlTemplate: '<?php echo $reservationUrl?>',
-			summaryPopupUrl: "index.php?option=com_jongman&tmpl=component&view=instanceitem",
-			cookieName: "schedule-direction-1",
-			cookieValue: "horizontal"
-		};
-
-		var schedule = new Schedule(scheduleOpts);
-		schedule.init();
-
-		jQuery('#datepicker').datepicker({
+				reservationUrlTemplate: "<?php echo $reservationUrl?>",
+				summaryPopupUrl: "index.php?option=com_jongman&tmpl=component&view=instanceitem",
+				cookieName: "schedule-direction-1",
+				cookieValue: "horizontal"
+			};
+		
+		var schedule = new JSchedule(scheduleOpts);	
+		console.log(schedule);
+		console.log(scheduleOpts);
+		schedule.setup();
+		
+		jQuery("#datepicker").datepicker({
 			numberOfMonths: 3,
 			showButtonPanel: true,
 			onSelect: dpDateChanged,
@@ -71,7 +70,4 @@ if ($bottomNavigation) {
 			currentText: '<?php echo JText::_('COM_JONGMAN_TODAY')?>'
 			
 		});
-	});
-
-	
 </script>

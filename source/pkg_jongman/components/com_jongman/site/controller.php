@@ -90,7 +90,7 @@ class JongmanController extends JControllerLegacy
 		 	JHtml::_('bootstrap.framework');
 		 	JHtml::_('jquery.framework');
 		 	JHtml::_('jquery.ui',array('core', 'sortable'));	
-		 	JHtml::_('script', 'com_jongman/jquery/jquery.ui.selectable.js', false, true);
+		 	JHtml::_('script', 'com_jongman/jquery/jquery.ui.selectable.1.11.1.js', false, true);
 		 	JHtml::_('script', 'com_jongman/jquery/jquery.qtip.min.js', false, true);
 		 	JHtml::_('stylesheet', 'com_jongman/jongman/jquery.qtip.min.css', false, true, false, false, false);							
 		 	JHtml::_('script', 'com_jongman/jquery/jquery.datetimepicker.js', false, true);		
