@@ -55,7 +55,7 @@ class JongmanModelQuota extends JModelAdmin
 			if (intval($result->created_time)) {
 				$date = new JDate($result->created_time);
 				$date->setTimezone($tz);
-				$result->created_time = $date->toMySQL(true);
+				$result->created_time = $date->toSql(true);
 			}
 			else {
 				$result->created_time = null;
