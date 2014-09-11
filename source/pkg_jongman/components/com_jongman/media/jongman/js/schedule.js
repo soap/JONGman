@@ -1,8 +1,8 @@
-function Schedule(opts)
+var JSchedule = function JSchedule(opts)
 {
-	var options = opts;
-
-	this.init = function ()
+	this.options = opts;
+	/** Dynimic method (public) **/
+	this.setup = function()
 	{
 		this.initRotateSchedule();
 		this.initReservations();
@@ -36,7 +36,7 @@ function Schedule(opts)
 		this.initResources();
 		this.initNavigation();
 	};
-
+	
 	this.initResources = function ()
 	{
 		jQuery('.resourceNameSelector').each(function ()
@@ -100,7 +100,7 @@ function Schedule(opts)
 			jQuery(this).click(function ()
 			{
 				var form = document.getElementById('reservation-form');
-				for(i=0; i<form.elements.length; i++) {
+				for(var i=0; i<form.elements.length; i++) {
 					if (form.elements[i].name = 'cid[]') {
 						form.elements[i].value = resid;
 						break;
@@ -164,6 +164,7 @@ function Schedule(opts)
 				endDate = element.find('.end').val();
 			}
 		};
+		
 
 		reservationsElement.selectable({
 			filter: 'td.reservable',
@@ -189,8 +190,9 @@ function Schedule(opts)
 				}
 			}
 		});
-	}
-}
+	};
+	
+};
 
 function dpDateChanged(dateText, inst)
 {
@@ -224,3 +226,4 @@ function RedirectToSelf(queryStringParam, regexMatch, substitution)
 	newUrl = newUrl.replace("sc-top", "");
 	window.location = newUrl;
 }
+
