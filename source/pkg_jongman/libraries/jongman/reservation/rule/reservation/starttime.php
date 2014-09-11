@@ -1,8 +1,6 @@
 <?php
 defined('_JEXEC') or die;
 
-jimport('jongman.utils.starttimeconstraint');
-
 class RFReservationRuleReservationStarttime implements IReservationValidationRule
 {
 	protected $message;
@@ -17,7 +15,7 @@ class RFReservationRuleReservationStarttime implements IReservationValidationRul
 		return $this->message;
 	}
 	/**
-	 * @param RFReservationSeries $reservationSeries
+	 * @param ReservationSeries $reservationSeries
 	 * @return ReservationRuleResult
 	 */
 	public function validate($reservationSeries)
@@ -26,19 +24,19 @@ class RFReservationRuleReservationStarttime implements IReservationValidationRul
 
 		if (empty($constraint))
 		{
-			$constraint = RFReservationStartTimeConstraint::_DEFAULT;
+			$constraint = RFReservationStarttimeConstraint::_DEFAULT;
 		}
 
-		if ($constraint == RFReservationStartTimeConstraint::NONE)
+		if ($constraint == RFReservationStarttimeConstraint::NONE)
 		{
 			// Ok
-			return new RFReservationRuleResult();
+			return new RFReservationValidationResult();
 		}
 
 		$currentInstance = $reservationSeries->currentInstance();
 
 		$dateThatShouldBeLessThanNow = $currentInstance->startDate();
-		if ($constraint == RFReservationStartTimeConstraint::CURRENT)
+		if ($constraint == RFReservationStarttimeConstraint::CURRENT)
 		{
 			$timezone = $dateThatShouldBeLessThanNow->timezone();
 			$scheduleModel = JModel::getInstance('Schedule', 'JongmanSchedule');
@@ -52,11 +50,11 @@ class RFReservationRuleReservationStarttime implements IReservationValidationRul
 			*/
 			$dateThatShouldBeLessThanNow = $currentPeriod->beginDate();
 		}
-		JLog::add("Start Time Rule: Comparing {$dateThatShouldBeLessThanNow} to {RFDate::Now()}", JLog::DEBUG, 'validation');
+		JLog::add("Start Time Rule: Comparing {$dateThatShouldBeLessThanNow} to Date::Now()", JLog::DEBUG, 'validation');
 
 		$startIsInFuture = $dateThatShouldBeLessThanNow->compare(RFDate::now()) >= 0;
 		if (!$startIsInFuture) {
-			$this->message = JText::_("COM_JONGMAN_ERROR_RULE_STARTTIME_IN_THE_PAST");
+			$this->message = 'Start time is in the past';
 			return new RFReservationRuleResult(false, $this->getError());
 		}
 		

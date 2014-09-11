@@ -21,7 +21,7 @@ final class JMVersion
     public $PRODUCT = 'JONGman';
 
     /** @var  string  Release version. */
-    public $RELEASE = '2.1';
+    public $RELEASE = '2.0';
 
     /** @var  string  Maintenance version. */
     public $DEV_LEVEL = '1';
@@ -30,13 +30,13 @@ final class JMVersion
     public $DEV_STATUS = 'releae candidate';
 
     /** @var  string  Build number. */
-    public $BUILD = '1';
+    public $BUILD = '8';
 
     /** @var  string  Code name. */
-    public $CODENAME = 'My2Angles';
+    public $CODENAME = 'Nada';
 
     /** @var  string  Release date. */
-    public $RELDATE = '21-April-2014';
+    public $RELDATE = '30-June-2013';
 
     /** @var  string  Release time. */
     public $RELTIME = '20:00';

@@ -7,7 +7,7 @@ class RFQuotaDurationWeek extends RFQuotaDuration implements IQuotaDuration
 	/**
 	 * @param RFReservationSeries $reservationSeries
 	 * @param string $timezone
-	 * @return RFQuotaSearchDates
+	 * @return QuotaSearchDates
 	 */
 	public function getSearchDates(RFReservationSeries $reservationSeries, $timezone)
 	{
@@ -28,7 +28,7 @@ class RFQuotaDurationWeek extends RFQuotaDuration implements IQuotaDuration
 	 * @param Date $date
 	 * @return void
 	 */
-	public function getDurationKey(RFDate $date)
+	public function getDurationKey(Date $date)
 	{
 		$daysFromWeekStart = $date->weekday();
 		$firstDayOfWeek = $date->addDays(-$daysFromWeekStart)->getDate();
@@ -36,8 +36,8 @@ class RFQuotaDurationWeek extends RFQuotaDuration implements IQuotaDuration
 	}
 
 	/**
-	 * @param RFDateRange $dateRange
-	 * @return array|RFDateRange[]
+	 * @param DateRange $dateRange
+	 * @return array|DateRange[]
 	 */
 	public function split(RFDateRange $dateRange)
 	{
@@ -87,14 +87,14 @@ class RFQuotaDurationWeek extends RFQuotaDuration implements IQuotaDuration
 	 * @param Date $date
 	 * @return Date
 	 */
-	private function getStartOfNextWeek(RFDate $date)
+	private function getStartOfNextWeek(Date $date)
 	{
 		$daysFromWeekEnd = 7 - $date->weekday();
 		return $date->addDays($daysFromWeekEnd)->getDate();
 	}
 
 	/**
-	 * @return string RFQuotaDuration
+	 * @return string QuotaDuration
 	 */
 	public function name()
 	{

@@ -150,23 +150,7 @@ class RFReservationSeries extends JObject
 		}
 		return false;
 	}
-	/**
-	 * @param Reservation $instance
-	 * @return bool
-	 */
-	protected function isCurrent(RFReservation $instance)
-	{
-		return $instance->referenceNumber() == $this->currentInstance()->referenceNumber();
-	}
-
-	/**
-	 * @param int $resourceId
-	 * @return bool
-	 */
-	public function containsResource($resourceId)
-	{
-		return in_array($resourceId, $this->allResourceIds());
-	}
+	
 	/**
 	 * @param RFDateRange $reservationDate
 	 * @return RFReservation newly created instance
@@ -268,10 +252,6 @@ class RFReservationSeries extends JObject
 		return $this->bookedBy;
 	}
 	
-	public function scheduleId()
-	{
-		return $this->resource->getScheduleId();
-	}
 	/**
 	 * 
 	 * set reservation status, calculate from resource property and user right

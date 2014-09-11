@@ -10,7 +10,7 @@ interface IQuota
 	 * @param IReservationViewRepository $reservationViewRepository
 	 * @return bool
 	 */
-	public function exceedsQuota($reservationSeries, $user, $schedule, IReservationRepository $reservationRepository);
+	public function exceedsQuota($reservationSeries, $user, $schedule, IReservationViewRepository $reservationViewRepository);
 }
 
 
@@ -18,28 +18,27 @@ interface IQuotaDuration
 {
 	/**
 	 * @abstract
-	 * @return string RFQuotaDuration
+	 * @return string QuotaDuration
 	 */
 	public function name();
 
 	/**
-	 * @param RFReservationSeries $reservationSeries
+	 * @param ReservationSeries $reservationSeries
 	 * @param string $timezone
-	 * @return RFQuotaSearchDates
+	 * @return QuotaSearchDates
 	*/
-	public function getSearchDates(RFReservationSeries $reservationSeries, $timezone);
+	public function getSearchDates(ReservationSeries $reservationSeries, $timezone);
 
 	/**
-	 * Split for counting per duration
 	 * @abstract
-	 * @param RFDateRange $dateRange
-	 * @return array|RFDateRange[]
+	 * @param DateRange $dateRange
+	 * @return array|DateRange[]
 	*/
 	public function split(RFDateRange $dateRange);
 
 	/**
 	 * @abstract
-	 * @param RFDate $date
+	 * @param Date $date
 	 * @return string
 	*/
 	public function getDurationKey(RFDate $date);
@@ -49,11 +48,11 @@ interface IQuotaLimit
 {
 	/**
 	 * @abstract
-	 * @param RFDate $start
-	 * @param RFDate $end
+	 * @param Date $start
+	 * @param Date $end
 	 * @param string $key
 	 * @return void
-	 * @throws RFQuotaExceededException
+	 * @throws QuotaExceededException
 	 */
 	public function tryAdd($start, $end, $key);
 
@@ -65,7 +64,7 @@ interface IQuotaLimit
 
 	/**
 	 * @abstract
-	 * @return string|RFQuotaUnit
+	 * @return string|QuotaUnit
 	*/
 	public function name();
 }
