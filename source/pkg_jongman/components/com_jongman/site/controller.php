@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id: controller.php 502 2012-12-24 13:15:38Z mrs.siam $
- * @copyright	Copyright (C) 2007 - 2013 Prasit Gebsaap. All rights reserved.
+ * @copyright	Copyright (C) 2007 - 2014 Prasit Gebsaap. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 // No direct access
@@ -102,7 +102,8 @@ class JongmanController extends JControllerLegacy
 			$jongman_css = $params->get('jongman_css', '1');
 			if ($jquery_site == '1') {
 				JHtml::_('script', 'com_jongman/jquery/jquery-1.8.2.min.js', false, true);
-				JHtml::_('script', 'com_jongman/jquery/jquery-ui-1.9.0.custom.min.js', false, true);		
+				JHtml::_('script', 'com_jongman/jquery/jquery-ui-1.9.0.custom.min.js', false, true);	
+				JHtml::_('script', 'com_jongman/jquery/jquery.ui.selectable.js', false, true);
 				JHtml::_('script', 'com_jongman/jquery/jquery.qtip.min.js', false, true);
 				JHtml::_('script', 'com_jongman/jquery/jquery.noconflict.js', false, true);	
 				JHtml::_('stylesheet', 'com_jongman/jongman/jquery.qtip.min.css', false, true, false, false, false);							
