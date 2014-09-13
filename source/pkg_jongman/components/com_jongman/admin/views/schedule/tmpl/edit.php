@@ -37,64 +37,33 @@ JHtml::_('behavior.keepalive');
 	}
 </script>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=edit&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="schedule-form" class="form-validate">
-	<div class="row-fluid">
-		<div class="width-60 fltlft span7">
-			<fieldset class="adminform">
-				<legend>
-				<?php echo empty($this->item->id) ? JText::_('COM_JONGMAN_SCHEDULE_NEW') : JText::sprintf('COM_JONGMAN_SCHEDULE_EDIT', $this->item->id); ?>
-				</legend>
-				<ul class="adminformlist unstyled">
-					<li><?php echo $this->form->getLabel('id'); ?> <?php echo $this->form->getInput('id'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('name'); ?> <?php echo $this->form->getInput('name'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('alias'); ?> <?php echo $this->form->getInput('alias'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('layout_id'); ?> <?php echo $this->form->getInput('layout_id'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('weekday_start'); ?> <?php echo $this->form->getInput('weekday_start'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('view_days'); ?> <?php echo $this->form->getInput('view_days'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('timezone'); ?> <?php echo $this->form->getInput('timezone'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('time_format'); ?> <?php echo $this->form->getInput('time_format'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('admin_email'); ?> <?php echo $this->form->getInput('admin_email'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('notify_admin'); ?> <?php echo $this->form->getInput('notify_admin'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('published'); ?> <?php echo $this->form->getInput('published'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('access'); ?> <?php echo $this->form->getInput('access'); ?>
-					</li>
-				</ul>
-			</fieldset>
+	<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
+	<div class="form-horizontal">
+		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'details')); ?>
+		
+		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', empty($this->item->id) ? JText::_('COM_JONGMAN_SCHEDULE_NEW', true) : JText::_('COM_JONGMAN_SCHEDULE_EDIT', true)); ?>
+		<div class="row-fluid">
+			<div class="span9">
+				<div class="row-fluid form-horizontal-desktop">
+					<div class="span10">
+						<?php echo $this->form->renderField('layout_id'); ?>
+						<?php echo $this->form->renderField('weekday_start'); ?>
+						<?php echo $this->form->renderField('view_days'); ?>
+						<?php echo $this->form->renderField('timezone'); ?>
+						<?php echo $this->form->renderField('time_format'); ?>
+						<?php echo $this->form->renderField('admin_email'); ?>
+						<?php echo $this->form->renderField('notify_admin'); ?>
+					</div>
+					<div class="span2">
+					</div>
+				</div>
+			</div>
+			<div class="span3">
+				<?php echo JLayoutHelper::render('joomla.edit.global', $this); ?>
+			</div>
 		</div>
-		<div class="width-40 fltrt span5">
-		<?php echo JHtml::_('sliders.start','schedule-sliders-'.$this->item->id, array('useCookie' => 1)); ?>
-
-		<?php echo $this->loadTemplate('params'); ?>
-
-		<?php echo $this->loadTemplate('metadata'); ?>
-		<?php echo JHtml::_('sliders.end'); ?>
-		</div>
+		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 	</div>
-	<div class="clr" />
-	<div class="width-90 fltlft">
-    	<?php echo $this->loadTemplate('layout')?>
-    </div>
     <input type="hidden" name="task" value=""/>
     <?php echo JHtml::_('form.token'); ?>
 </form>
