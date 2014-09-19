@@ -39,7 +39,7 @@ class RFReservationRuleReservationStarttime implements IReservationValidationRul
 		if ($constraint == RFReservationStarttimeConstraint::CURRENT)
 		{
 			$timezone = $dateThatShouldBeLessThanNow->timezone();
-			$scheduleModel = JModel::getInstance('Schedule', 'JongmanSchedule');
+			$scheduleModel = JModelLegacy::getInstance('Schedule', 'JongmanSchedule');
 			/** @var $currentPeriod SchedulePeriod */
 			$currentPeriod = $scheduleModel->getScheduleLayout($reservationSeries->scheduleId(), $timezone)
 				->getPeriod($currentInstance->endDate);

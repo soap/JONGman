@@ -52,7 +52,7 @@ JHtml::_('behavior.keepalive');
 				<div class="row-fluid form-horizontal-desktop">
 					<div class="span8">
 						<?php echo $this->form->renderField('schedule_id')?>
-						<?php echo JLayoutHelper::render('form.reloadablefield', $this->form->getField('resource_id'), JPATH_COMPONENT_ADMINISTRATOR.'layouts')?>
+						<?php echo $this->form->renderField('resource_id')?>
 						<?php echo $this->form->renderField('group_id')?>
 						<?php echo $this->form->renderField('quota_limit')?>
 						<?php echo $this->form->renderField('unit')?>
@@ -66,6 +66,7 @@ JHtml::_('behavior.keepalive');
 				<?php echo JLayoutHelper::render('joomla.edit.global', $this); ?>
 			</div>
 		</div>
+		<?php echo JHtml::_('bootstrap.endTab'); ?>
 		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 	</div>		
 	<input type="hidden" name="task" value="" />

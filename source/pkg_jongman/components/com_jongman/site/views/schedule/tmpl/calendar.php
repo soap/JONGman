@@ -31,7 +31,7 @@ $url = JSite::getMenu()->getActive()->link.'&Itemid='.JSite::getMenu()->getActiv
 		<?php echo JHtml::image('com_jongman/arrow_large_right.png', 'Forward', array(), true);?>
 		</a>	
 	</div>
-	<div id="datepicker" style="display:none"></div>
+	<div type="text" id="datepicker" style="display:none;"></div>
 <?php 
 echo $this->loadTemplate('legend');
 echo $this->loadTemplate('main');
@@ -56,18 +56,17 @@ if ($bottomNavigation) {
 				cookieValue: "horizontal"
 			};
 		
-		var schedule = new JSchedule(scheduleOpts);	
-		console.log(schedule);
-		console.log(scheduleOpts);
-		schedule.setup();
-		
-		jQuery("#datepicker").datepicker({
-			numberOfMonths: 3,
-			showButtonPanel: true,
-			onSelect: dpDateChanged,
-			dateFormat: 'yy-mm-dd',
-			firstDay: <?php echo $this->schedule->weekday_start?>,
-			currentText: '<?php echo JText::_('COM_JONGMAN_TODAY')?>'
-			
+		var schedule = {};
+		schedule = new JScheduleClass(scheduleOpts);	
+		schedule.init();
+		jQuery( document ).ready(function () { 
+			jQuery('#datepicker').datepicker({
+				numberOfMonths: 3,
+				showButtonPanel: true,
+				onSelect: dpDateChanged,
+				formatDate: 'yy-mm-dd',
+				firstDay: <?php echo $this->schedule->weekday_start?>,
+				currentText: '<?php echo JText::_('COM_JONGMAN_TODAY')?>'
+			})
 		});
 </script>

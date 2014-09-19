@@ -187,15 +187,13 @@ class JongmanModelReservation extends JModelAdmin
 		$tz = JongmanHelper::getUserTimezone();
 
 		$repeatType = $input['repeat_type'];
-		$repeatInterval = isset($input['repeat_interval']) ?  $input['repeat_interval'] : null;
-		$weekDays = isset($input['repeat_days']) ? $input['repeat_days'] : null;
-		$monthlyType = isset($input['repeat_monthly_type']) ? $input['repeat_monthly_type'] : null;
+		$repeatInterval = $input['repeat_interval'];
+		$weekDays = $input['repeat_days'];
+		$monthyType = $input['repeat_monthly_type'];
 		
 		if (isset($input['repeat_terminated'])) {
 			$terminated = RFDate::parse($input['repeat_terminated'], $tz);
 			$terminated->setTime(new RFTime(0, 0, 0, $tz));
-		}else{
-			$terminated = new RFDateNull();
 		}
 		
 		$input['repeatOptions'] = JongmanHelper::getRepeatOptions($repeatType, $repeatInterval, $terminated, $weekDays, $monthlyType);
@@ -207,33 +205,37 @@ class JongmanModelReservation extends JModelAdmin
 		
 		$reservationSeries = new RFReservationSeries();
 		$reservationSeries->bind($input);
+		// calculate reseravtion status 
+		$status = 1; //created
+		foreach ($reservationSeries->allResources() as $resource) {
+			if ($resource->getRequiresApproval()) {
+				if (!JongmanHelper::canApproveForResource($reservationSeries->bookedBy(), $resource ))
+				{
+					$status = -1; //pending
+					break;
+				}	
+			}	
+		}
+		$reservationSeries->setStatusId($status);
 		
 		//start reservation validation here, get commone rules
 		$ruleProcessor = JongmanHelper::getRuleProcessor();
 		// Add specific rules for new reservation validation
 		$config = array('ignore_request'=>true);
-		$scheduleRepository = JModel::getInstance('Schedule', 'JongmanModel', $config);
-		$createdBy = $reservationSeries->bookedBy();
-		$authorisationService = RFFactory::getAuthorisationService();
-		$ruleProcessor->addRule(
-					new RFReservationRuleAdminexcluded(new RFReservationRuleRequiresApproval($authorisationService, $createdBy), $createdBy )
-				);
+		$scheduleRepository = JModelLegacy::getInstance('Schedule', 'JongmanModel', $config);
+		
 		$ruleProcessor->addRule(
 					new RFReservationRuleExistingResourceAvailability( new RFResourceReservationAvailability($scheduleRepository), $tz ), 
-					$createdBy
+					$reservationSeries->bookedBy()
 				);	
 		$ruleProcessor->addRule(
 					new RFReservationRuleResourceAvailability(new RFResourceBlackoutAvailability($scheduleRepository), $tz), 
-					$createdBy
+					$reservationSeries->bookedBy()
 				);
 		$ruleProcessor->addRule(
-					new RFReservationRuleSchedulePeriod( $scheduleRepository, $createdBy ) 
+					new RFReservationRuleSchedulePeriod( $scheduleRepository, $reservationSeries->bookedBy() ) 
 				);
-		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleResourceMinimumDuration(), $createdBy));
-		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleResourceMaximumDuration(), $createdBy));
-		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleQuota(
-				new RFQuotaRepository(), new RFReservationRepository(), new RFUserRepository(), new RFScheduleRepository()), $createdBy
-				));					
+					
 		$result = $ruleProcessor->validate($reservationSeries);
 		if (!$result->canBeSaved()) {
 			$errors = $result->getErrors();

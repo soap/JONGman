@@ -1,8 +1,9 @@
-var JSchedule = function JSchedule(opts)
+var JScheduleClass = function (opts)
 {
-	this.options = opts;
+	var that = this;
+	this.options = opts;	
 	/** Dynimic method (public) **/
-	this.setup = function()
+	this.init = function()
 	{
 		this.initRotateSchedule();
 		this.initReservations();
@@ -13,17 +14,17 @@ var JSchedule = function JSchedule(opts)
 			jQuery(this).siblings('.resourcename').toggleClass('hilite');
 			var ref = jQuery(this).attr('ref');
 			reservations.find('td[ref="' + ref + '"]').toggleClass('hilite');
-		});
+		})
 
 		reservations.delegate('td.clickres', 'mousedown', function ()
 		{
 			jQuery(this).addClass('clicked');
-		});
+		})
 
 		reservations.delegate('td.clickres', 'mouseup', function ()
 		{
 			jQuery(this).removeClass('clicked');
-		});
+		})
 
 		reservations.delegate('.reservable', 'click', function ()
 		{
@@ -31,11 +32,11 @@ var JSchedule = function JSchedule(opts)
 			var end = jQuery('.end', this).val();
 			var link = jQuery('.href', this).val();
 			window.location = link + "&sd=" + start + "&ed=" + end;
-		});
+		})
 
 		this.initResources();
 		this.initNavigation();
-	};
+	}
 	
 	this.initResources = function ()
 	{
@@ -43,7 +44,7 @@ var JSchedule = function JSchedule(opts)
 		{
 			jQuery(this).bindResourceDetails(jQuery(this).attr('resourceId'));
 		});
-	};
+	}
 
 	this.initNavigation = function ()
 	{
@@ -63,7 +64,7 @@ var JSchedule = function JSchedule(opts)
 				jQuery(this).find("img").first().attr("src", "media/com_jongman/jongman/images/calendar-minus.png");
 			}
 		});
-	};
+	}
 
 	this.initRotateSchedule = function ()
 	{
@@ -73,7 +74,7 @@ var JSchedule = function JSchedule(opts)
 			createCookie(opts.cookieName, opts.cookieValue, 30);
 			window.location.reload();
 		});
-	};
+	}
 
 	this.initReservations = function ()
 	{
@@ -120,7 +121,7 @@ var JSchedule = function JSchedule(opts)
 				content: {
 					text: 'Loading...',
 					ajax: {
-						url: options.summaryPopupUrl,
+						url: that.options.summaryPopupUrl,
 						type: 'GET',
 						data: { id: resid },
 						dataType: 'html'
@@ -138,7 +139,7 @@ var JSchedule = function JSchedule(opts)
 				overwrite: false
 			});
 		});
-	};
+	}
 
 	this.makeSlotsSelectable = function (reservationsElement)
 	{
@@ -191,8 +192,9 @@ var JSchedule = function JSchedule(opts)
 			}
 		});
 	};
-	
+
 };
+
 
 function dpDateChanged(dateText, inst)
 {

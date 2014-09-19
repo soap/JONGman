@@ -107,7 +107,7 @@ class RFDisplaySlotFactory
 	 * @param unknown_type $accessAllowed
 	 * @param unknown_type $view
 	 */
-	public function display(IReservationSlot $slot, $slotRef, $href, $accessAllowed = false, $view=null)
+	public static function display(IReservationSlot $slot, $slotRef, $href, $accessAllowed = false, $view=null)
 	{
 		$method = self::getFunction($slot, $accessAllowed);
 		if ($method) {
@@ -121,7 +121,7 @@ class RFDisplaySlotFactory
 		}	
 	}
 	
-	protected function getFunction(IReservationSlot $slot, $accessAllowed = false)
+	protected static function getFunction(IReservationSlot $slot, $accessAllowed = false)
 	{
 		$slot->isPending();
 		if ($slot->isReserved())
@@ -167,18 +167,18 @@ class RFDisplaySlotFactory
 		return null;
 	}
 
-	private function userHasAdminRights(IReservationSlot $slot)
+	private static function userHasAdminRights(IReservationSlot $slot)
 	{
 		return true;
 	}
 
-	private function isMyReservation(IReservationSlot $slot)
+	private static function isMyReservation(IReservationSlot $slot)
 	{
 		$user = JFactory::getUser();
 		return $slot->isOwnedBy($user);
 	}
 
-	private function amIParticipating(IReservationSlot $slot)
+	private static function amIParticipating(IReservationSlot $slot)
 	{
 		$user = JFactory::getUser();
 		return $slot->isParticipating($user);

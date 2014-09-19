@@ -70,7 +70,7 @@ class JongmanController extends JControllerLegacy
 	{
 		$view = JFactory::getApplication()->input->getCmd('view'); 
 		if ($name == 'users' || (empty($name) && $view == 'users') ) {
-			JModel::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_users/models/', 'UsersModel');
+			JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_users/models/', 'UsersModel');
 			$name = 'users';
 			$prefix = 'UsersModel';		
 		} 
@@ -93,7 +93,8 @@ class JongmanController extends JControllerLegacy
 		 	JHtml::_('script', 'com_jongman/jquery/jquery.ui.selectable.1.11.1.js', false, true);
 		 	JHtml::_('script', 'com_jongman/jquery/jquery.qtip.min.js', false, true);
 		 	JHtml::_('stylesheet', 'com_jongman/jongman/jquery.qtip.min.css', false, true, false, false, false);							
-		 	JHtml::_('script', 'com_jongman/jquery/jquery.datetimepicker.js', false, true);		
+		 	//JHtml::_('stylesheet', 'com_jongman/jongman/jquery.datetimepicker.css', false, true, false, false, false);
+		 	JHtml::_('script', 'com_jongman/jquery/jquery.datepicker.js', false, true);		
 		 }else{
 		 	$params = JComponentHelper::getParams('com_jongman');
 			$jquery_site = $params->get('jquery_site', '1');
