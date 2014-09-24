@@ -33,4 +33,10 @@ class RFReservationRuleResourceMaximumNotice implements IReservationValidationRu
 		
 		return new RFReservationRuleResult();
 	}
+
+	public function getError()
+	{
+		$result = '';
+		return $result;
+	}	
 }

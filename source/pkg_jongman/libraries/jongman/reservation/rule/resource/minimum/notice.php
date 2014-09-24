@@ -25,7 +25,7 @@ class RFReservationRuleResourceMinimumNotice implements IReservationValidationRu
 					if ($instance->startDate()->greaterThan($minStartDate))
 					{
 						return new RFReservationRuleResult(false, 
-							JText::sprintf("COM_JONGMAN_ERROR_MIN_NOTICE",$minStartDate->format("Y-m-d H:i:s") ));
+							JText::sprintf("COM_JONGMAN_ERROR_MIN_NOTICE", $minStartDate->format("Y-m-d H:i:s") ));
 					}
 				}
 			}
@@ -33,4 +33,11 @@ class RFReservationRuleResourceMinimumNotice implements IReservationValidationRu
 		
 		return new RFReservationRuleResult();
 	}
+	
+	public function getError() 
+	{
+		$result = '';
+		return $result;	
+	}
+				
 }
