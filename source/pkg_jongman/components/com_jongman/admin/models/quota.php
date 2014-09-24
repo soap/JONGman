@@ -123,6 +123,13 @@ class JongmanModelQuota extends JModelAdmin
 		if (empty($table->group_id)) {
 			$table->group_id = 0;
 		}
+		
+		$table->title		= htmlspecialchars_decode($table->title, ENT_QUOTES);
+		$table->alias		= JApplication::stringURLSafe($table->alias);
+		
+		if (empty($table->alias)) {
+			$table->alias = JApplication::stringURLSafe($table->title);
+		}
 
 	}
 }
