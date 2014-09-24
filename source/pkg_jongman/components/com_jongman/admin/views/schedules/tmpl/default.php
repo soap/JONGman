@@ -15,10 +15,7 @@ $listDirn   = $this->escape($this->state->get('list.direction'));
 $saveOrder	= $listOrder=='ordering';
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&view=schedules'); ?>" method="post" name="adminForm" id="adminForm">
-<?php
-if (!$this->is_j25) :
-	if (!empty($this->sidebar)) :
-?>
+<?php if (!empty($this->sidebar)) : ?>
 	<div id="j-sidebar-container" class="span2">
     	<?php echo $this->sidebar; ?>
     </div>
@@ -29,26 +26,29 @@ if (!$this->is_j25) :
     endif;
     //Search Toolbar
     echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
-else:
-	 echo $this->loadTemplate('filter_j25');
-endif;
 ?>	
-	<div class="clr"> </div>
-<?php if (empty($this->items)) : ?>
+
+	<?php if (empty($this->items)) : ?>
 	<div class="alert alert-no-items">
 		<?php echo JText::_('COM_JONGMAN_NO_MATCHING_RESULTS'); ?>
 	</div>
-<?php else : ?>
+	<?php else : ?>
 	<table class="adminlist table table-striped">
 		<thead>
 			<tr>
-				<th width="1%" clas="hidden-phone">
-					<input type="checkbox" name="checkall-toggle" value="" onclick="checkAll(this)" />
+				<th width="1%" class="nowrap center hidden-phone">
+					<?php echo JHtml::_('grid.sort', '<i class="icon-menu-2"></i>', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>
 				</th>
-				<th>
-					<?php echo JHtml::_('grid.sort',  'COM_JONGMAN_HEADING_NAME', 'name', $listDirn, $listOrder); ?>
+				<th width="1%" class="hidden-phone">
+					<?php echo JHtml::_('grid.checkall'); ?>
 				</th>
-                <th width="35% nowrap">
+				<th width="1%" style="min-width:55px" class="nowrap center">
+					<?php echo JHtml::_('grid.sort', 'JSTATUS', 'a.published', $listDirn, $listOrder); ?>
+				</th>
+				<th class="center">
+					<?php echo JHtml::_('grid.sort',  'COM_JONGMAN_HEADING_NAME', 'title', $listDirn, $listOrder); ?>
+				</th>
+                <th width="40% nowrap">
                     <?php echo JText::_('COM_JONGMAN_HEADING_RESERVANLE_SLOTS')?>
                 </th>
                 <th width="15%">
@@ -63,9 +63,6 @@ endif;
 				<th width="10%" class="hidden-phone">
 					<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ACCESS', 'access_level', $listDirn, $listOrder); ?>
 				</th>
-				<th width="5%" class="hidden-phone">
-					<?php echo JHtml::_('grid.sort', 'JPUBLISHED', 'published', $listDirn, $listOrder); ?>
-				</th>
 				<th width="1%" class="nowrap">
 					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'id', $listDirn, $listOrder); ?>
 				</th>
@@ -79,23 +76,62 @@ endif;
 			$canCheckin	= $user->authorise('core.manage',	'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
 			$canChange	= $user->authorise('core.edit.state', 'com_jongman') && $canCheckin;            
 			?>
-			<tr class="row<?php echo $i % 2; ?>">
-				<td class="center">
-					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
-				</td>
-				<td>
-					<?php if ($item->checked_out) : ?>
-						<?php echo JHtml::_('jgrid.checkedout', $i, $item->name, $item->checked_out_time, 'schedules.', $canCheckin); ?>
-					<?php endif; ?>
-					<?php if ($canEdit) : ?>
-						<a href="<?php echo JRoute::_('index.php?option=com_jongman&task=schedule.edit&id='.(int) $item->id); ?>">
-							<?php echo $this->escape($item->name); ?></a>
-					<?php else : ?>
-						<?php echo $this->escape($item->name); ?>
-					<?php endif; ?>
-					<p class="smallsub">
-						<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias));?></p>
-				</td>
+				<tr class="row<?php echo $i % 2; ?>" sortable-group-id="">
+					<td class="order nowrap center hidden-phone">
+					<?php
+						$iconClass = '';
+						if (!$canChange)
+						{
+							$iconClass = ' inactive';
+						}
+						elseif (!$saveOrder)
+						{
+							$iconClass = ' inactive tip-top hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
+						}
+					?>
+						<span class="sortable-handler<?php echo $iconClass ?>">
+							<i class="icon-menu"></i>
+						</span>
+						<?php if ($canChange && $saveOrder) : ?>
+						<input type="text" style="display:none" name="order[]" size="5"
+								value="<?php echo $item->ordering; ?>" class="width-20 text-area-order " />
+						<?php endif; ?>
+					</td>
+					<td class="center hidden-phone">
+						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+					</td>
+					<td class="center">
+						<div class="btn-group">
+							<?php echo JHtml::_('jgrid.published', $item->published, $i, 'schedules.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
+							<?php
+							// Create dropdown items
+							$action = $archived ? 'unarchive' : 'archive';
+							JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'schedules');
+
+							$action = $trashed ? 'untrash' : 'trash';
+							JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'schedules');
+
+							// Render dropdown list
+							echo JHtml::_('actionsdropdown.render', $this->escape($item->name));
+							?>
+						</div>
+					</td>
+					<td class="nowrap has-context">
+						<div class="pull-left">
+							<?php if ($item->checked_out) : ?>
+								<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'contacts.', $canCheckin); ?>
+							<?php endif; ?>
+							<?php if ($canEdit || $canEditOwn) : ?>
+								<a href="<?php echo JRoute::_('index.php?option=com_jongman&task=resource.edit&id='.(int) $item->id); ?>">
+									<?php echo $this->escape($item->name); ?></a>
+							<?php else : ?>
+									<?php echo $this->escape($item->name); ?>
+							<?php endif; ?>
+							<div class="small">
+								<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias));?>
+							</div>
+						</div>
+					</td> 
 				<?php 
 					$slots = $item->layout->getSlots();
 					$reservableSlots = array();
@@ -129,32 +165,18 @@ endif;
                     <?php echo $item->access_level?>
                 </td>
 				<td class="center">
-					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'schedules.', $canChange); ?>
-				</td>
-				<td class="center">
 					<?php echo $item->id; ?>
 				</td>
 			</tr>
 		<?php endforeach; ?>
 		</tbody>
-		<?php if ($this->is_j25) : ?>
-		<tfoot>
-			<tr>
-				<td colspan="9">
-					<?php echo $this->pagination->getListFooter(); ?>
-				</td>
-			</tr>
-		</tfoot>
-		<?php endif;?>
 	</table>
-	<?php if (!$this->is_j25) : echo $this->pagination->getListFooter(); endif; ?>
+	<?php  echo $this->pagination->getListFooter(); ?>
 <?php endif?>
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="boxchecked" value="0" />
 	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
 	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
 	<?php echo JHtml::_('form.token'); ?>
-<?php if (!$this->is_j25) : ?>
 	</div>
-<?php endif; ?>
 </form>
