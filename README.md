@@ -1,13 +1,13 @@
 JONGman
 =======
 
-JONGman is reservation system for Joomla! 2.x CMS. The current version is 2.0. It is still in alpha state. This is a most re-write verison compared to JONGman 1.0 for Joomla! 1.5
+JONGman is reservation system for Joomla! 3.x CMS. The current version is 3.0.0. It is now in release candidate state. This is a most re-write verison compared to JONGman 1.0 for Joomla! 1.5.
 
 Requirements
 ============
 
-JONGman 2.0 requires 
-+ Joomla! 2.5.x
-+ PHP 5.2.x
+JONGman 3.0.0 requires 
++ Joomla! 3.x
++ PHP 5.3.1 (PHP 5.4.x, 5.5.x tested)
 
-We will make JONGman 2.0 to be able to run on Joomla 3.5, after it becomes stable for Joomla 2.5.
+JONGman 3.0.0 can be run on Joomla 3.2.x/3.3.x
