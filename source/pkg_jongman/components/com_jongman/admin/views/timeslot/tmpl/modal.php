@@ -34,66 +34,39 @@ JHtml::_('behavior.keepalive');
 
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=modal&tmpl=component&layout_id='.(int) $this->item->layout_id); ?>"
 	method="post" name="adminForm" id="timeslot-form" class="form-validate">
-	<div>
-		<button type="submit" class="button2 right" onclick="Joomla.submitbutton('timeslot.save');"><?php echo JText::_('JTOOLBAR_SAVE')?></button>
-	</div>
-	<div class="clr"></div>
-	<div class="width-100 fltlft">
-		<fieldset class="adminform">
-			<ul class="adminformlist">
-				<li>
-					<?php echo $this->form->getLabel('timezone')?>
-					<?php echo $this->form->getInput('timezone')?>
-				</li>
-				<li>
-					<?php echo $this->form->getLabel('dailylayout')?>
-					<?php echo $this->form->getInput('dailylayout')?>
-				</li>				
-			</ul>
-		</fieldset>
-	</div>
-	<div class="clr"></div>
-	<div class="width-40 fltlft">
-		<div class="layoutDialog" id="layoutDialog-left">
-			<fieldset name="static-reservable">
-				<ul class="adminformlist">
-					<li>
-						<?php echo $this->form->getLabel('reservable_slots')?>
-					</li>
-					<div class="clr"></div>
-					<li>
-						<?php echo $this->form->getInput('reservable_slots')?>
-					</li>
-				</ul>
-			</fieldset>
+	<div class="form-inline form-inline-header">
+		<div class="row-fluid">
+			<div class="span8">
+			<?php echo $this->form->renderField('timezone')?>
+			<?php echo $this->form->renderField('dailylayout')?>
+			</div>
+			<div class="span4">
+				<button type="submit" class="btn btn-small btn-primary" onclick="Joomla.submitbutton('timeslot.save');"><?php echo JText::_('JTOOLBAR_SAVE')?></button>
+			</div>
 		</div>
 	</div>
-	<div class="width-40 fltrt">
-		<div class="layoutDialog" id="layoutDialog-right">
-			<fieldset name="static-blocked">
-				<ul class="adminformlist">
-					<li>
-						<?php echo $this->form->getLabel('blocked_slots')?>
-					</li>
-					<div class="clr"></div>
-					<li>
-						<?php echo $this->form->getInput('blocked_slots')?>
-					</li>
-				</ul>	
-			</fieldset>
-		</div>	
+	<div class="form-vertical">
+		<div class="row-fluid">
+			<div class="span6" id="layoutDialog-left">
+				<?php echo $this->form->renderField('reservable_slots')?>
+			</div>
+			<div class="span6" id="layoutDialog-right">
+				<?php echo $this->form->renderField('blocked_slots')?>
+			</div>
+		</div>
 	</div>
-	<div class="clr"></div>
-
-	<?php echo JText::_('COM_JONGMAN_CREATE_TIMESLOT_EVEREY')?>
-	<input type="text" name="interval" id="quickLayoutInterval" value="30" size="4" maxlength="4" />
-	<?php echo JText::_('COM_JONGMAN_MINUTES')?>
-	<?php echo JText::_('COM_JONGMAN_FROM')?>
-	<input type="text" name="start_time" id="quickLayoutStart" value="08:00" size="5"/>
-	<?php echo JText::_('COM_JONGMAN_UNTIL')?>
-	<input type="text" name="enf_time" id="quickLayoutEnd" value="17:00" size="5"/>
-	
-	<button type="button" class="button2 right" id="createQuickLayout"><?php echo JText::_('COM_JONGMAN_CREATE')?></button>
+	<div class="form-inline form-inline-header">
+		<?php echo JText::_('COM_JONGMAN_CREATE_TIMESLOT_EVEREY')?>
+		<div class="input-append">
+			<input type="text" name="interval" id="quickLayoutInterval" value="30" class="input-small" />
+			<span class="add-on"><?php echo JText::_('COM_JONGMAN_MINUTES')?></span>
+		</div>
+		<?php echo JText::_('COM_JONGMAN_FROM')?>
+		<input type="text" name="start_time" id="quickLayoutStart" value="08:00" class="input-small"/>
+		<?php echo JText::_('COM_JONGMAN_UNTIL')?>
+		<input type="text" name="enf_time" id="quickLayoutEnd" value="17:00" class="input-small"/>
+		<button type="button" class="btn btn-small btn-primary" id="createQuickLayout"><?php echo JText::_('COM_JONGMAN_CREATE')?></button>
+	</div>
 	<?php echo $this->form->getInput('layout_id')?>
 	<input type="hidden" name="layout_id" value="<?php echo $this->item->layout_id?>" />
 	<input type="hidden" name="task" value="" />	

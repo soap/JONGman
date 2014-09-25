@@ -56,9 +56,11 @@ JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, f
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'timeslots', JText::_('COM_JONGMAN_TIMESLOT_FIELDSET_TIMESLOTS', true)); ?>
-		<div class="row-fluid">
-			<div class="span12">
-				<?php echo $this->form->renderField('timeslots')?>
+		<div class="form-vertical">
+			<div class="row-fluid">
+				<div class="span12">
+					<?php echo $this->form->renderField('timeslots')?>
+				</div>
 			</div>
 		</div>
 		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
