@@ -38,7 +38,7 @@ class JongmanViewReservation extends JViewLegacy
 	 * @return  void
 	 * @since   1.0
 	 */
-	public function display()
+	public function display($tpl=NULL)
 	{
 		// Intialiase variables.
 		$this->item		= $this->get('Item');
@@ -64,7 +64,7 @@ class JongmanViewReservation extends JViewLegacy
 			);
 		
 		$this->canDelete = (!$isNew);
-		parent::display();
+		parent::display($tpl);
 		
 	}
 	
@@ -81,7 +81,7 @@ class JongmanViewReservation extends JViewLegacy
             	'COM_JONGMAN_ACTION_SAVE',
             	'reservation.save',
             	false, //no need to select item first
-           	 	array('access' => $access->get('core.edit'))
+           	 	array('access' => $access->get('core.create') || $access->get('core.edit') || $access->get('core.edit.own'))
         	);
         	RFToolbar::button(
             	'JCANCEL',
