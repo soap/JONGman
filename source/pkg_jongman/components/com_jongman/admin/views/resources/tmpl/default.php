@@ -14,73 +14,62 @@ $listDirn	= $this->state->get('list.direction');
 $saveOrder	= $listOrder=='ordering';
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&view=resources'); ?>" method="post" name="adminForm" id="adminForm">
-<?php
-if (!$this->is_j25) :
-	if (!empty($this->sidebar)) :
-?>
+<?php if (!empty( $this->sidebar)) : ?>
 	<div id="j-sidebar-container" class="span2">
-    	<?php echo $this->sidebar; ?>
-    </div>
-    <div id="j-main-container" class="span10">
-    <?php else : ?>
-    	<div id="j-main-container">
-    <?php
-    endif;
-    //Search Toolbar
-    echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
-else:
-	 echo $this->loadTemplate('filter_j25');
-endif;
-?>		
-	<div class="clr"> </div>
-<?php if (empty($this->items)) : ?>
-	<div class="alert alert-no-items">
-		<?php echo JText::_('COM_JONGMAN_NO_MATCHING_RESULTS'); ?>
+		<?php echo $this->sidebar; ?>
 	</div>
-<?php else : ?>	
-	<table class="adminlist table table-stripped">
-		<thead>
-			<tr>
-				<th width="1%">
-					<input type="checkbox" name="checkall-toggle" value="" onclick="checkAll(this)" />
-				</th>
-				<th>
-					<?php echo JHtml::_('grid.sort',  'COM_JONGMAN_HEADING_NAME', 'title', $listDirn, $listOrder); ?>
-				</th>
-                <th width="20%">
-                    <?php echo JHtml::_('grid.sort',  'COM_JONGMAN_HEADING_SCHEDULE', 'schedule_name', $listDirn, $listOrder); ?>
-                </th>
-                <th width="10%" class="nowrap">
-					<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ORDERING', 'r.ordering', $listDirn, $listOrder); ?>
-					<?php echo JHtml::_('grid.order',  $this->items, 'filesave.png', 'resources.saveorder'); ?>
-				</th>
-                <th width="5%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_MIN_RESERVATION') ?>
-                </th>
-                <th width="5%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_MAX_RESERVATION') ?>
-                </th>
-                <th width="5%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_MIN_NOTICE_TIME'); ?>
-                </th>
-                <th width="5%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_MAX_NOTICE_TIME'); ?>
-                </th>                
-                <th width="5%">
-                    <?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_NEED_APPROVAL', 'need_approval', $listDirn, $listOrder); ?>
-                </th>
-                <th width="10%">
-                	<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ACCESS', 'access', $listDirn, $listOrder); ?>
-                </th>
-				<th width="5%">
-					<?php echo JHtml::_('grid.sort', 'JPUBLISHED', 'published', $listDirn, $listOrder); ?>
-				</th>
-				<th width="1%" class="nowrap">
-					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'id', $listDirn, $listOrder); ?>
-				</th>
-			</tr>
-		</thead>
-		<tbody>
+	<div id="j-main-container" class="span10">
+<?php else : ?>
+	<div id="j-main-container">
+<?php endif;?>
+   <?php 
+    //Search Toolbar
+    	echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
+	?>		
+		<?php if (empty($this->items)) : ?>
+		<div class="alert alert-no-items">
+			<?php echo JText::_('COM_JONGMAN_NO_MATCHING_RESULTS'); ?>
+		</div>
+		<?php else : ?>	
+		<table class="adminlist table table-stripped">
+			<thead>
+				<tr>
+					<th width="1%" class="nowrap center hidden-phone">
+						<?php echo JHtml::_('grid.sort', '<i class="icon-menu-2"></i>', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>
+					</th>
+					<th width="1%" class="hidden-phone">
+						<?php echo JHtml::_('grid.checkall'); ?>
+					</th>
+					<th width="1%" style="min-width:55px" class="nowrap center">
+						<?php echo JHtml::_('grid.sort', 'JSTATUS', 'a.published', $listDirn, $listOrder); ?>
+					</th>
+					<th class="center">
+						<?php echo JHtml::_('grid.sort',  'COM_JONGMAN_HEADING_NAME', 'title', $listDirn, $listOrder); ?>
+					</th>
+                	<th class="nowrap center">
+                    	<?php echo JText::_('COM_JONGMAN_HEADING_MIN_RESERVATION') ?>
+                	</th>
+                	<th class="nowrap center">
+                    	<?php echo JText::_('COM_JONGMAN_HEADING_MAX_RESERVATION') ?>
+                	</th>
+                	<th class="nowrap center">
+                    	<?php echo JText::_('COM_JONGMAN_HEADING_MIN_NOTICE_TIME'); ?>
+                	</th>
+                	<th class="nowrap center">
+                    	<?php echo JText::_('COM_JONGMAN_HEADING_MAX_NOTICE_TIME'); ?>
+                	</th>                
+                	<th width="5%">
+                    	<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_NEED_APPROVAL', 'need_approval', $listDirn, $listOrder); ?>
+                	</th>
+                	<th width="10%">
+                		<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ACCESS', 'access', $listDirn, $listOrder); ?>
+                	</th>
+					<th width="1%" class="nowrap center">
+						<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'id', $listDirn, $listOrder); ?>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
 		<?php foreach ($this->items as $i => $item) :
 			$ordering	= ($listOrder == 'ordering');
 			$canCreate	= $user->authorise('core.create', 'com_jongman');
@@ -88,114 +77,124 @@ endif;
 			$canCheckin	= $user->authorise('core.manage',	'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
 			$canChange	= $user->authorise('core.edit.state', 'com_jongman') && $canCheckin;            
 			?>
-			<tr class="row<?php echo $i % 2; ?>">
-				<td class="center">
-					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
-				</td>
-				<td>
-					<?php if ($item->checked_out) : ?>
-						<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'resources.', $canCheckin); ?>
-					<?php endif; ?>
-					<?php if ($canEdit) : ?>
-						<a href="<?php echo JRoute::_('index.php?option=com_jongman&task=resource.edit&id='.(int) $item->id); ?>">
-							<?php echo $this->escape($item->title); ?></a>
-					<?php else : ?>
-						<?php echo $this->escape($item->title); ?>
-					<?php endif; ?>
-					<p class="smallsub">
-						<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias));?></p>
-				</td>
-                <td class="center">
-                    <?php echo $item->schedule_name?>
-                </td>
-				<td class="order">
-					<?php if ($canChange) : ?>
-						<span><?php echo $this->pagination->orderUpIcon($i,
-							($item->schedule_id == @$this->items[$i-1]->schedule_id),
-							'reources.orderup', 'JLIB_HTML_MOVE_UP', $ordering); ?></span>
-						<span><?php echo $this->pagination->orderDownIcon($i,
-							$this->pagination->total,
-							($item->schedule_id == @$this->items[$i+1]->schedule_id),
-							'resources.orderdown', 'JLIB_HTML_MOVE_DOWN', $ordering); ?></span>
-						<?php $disabled = $ordering ?  '' : 'disabled="disabled"'; ?>
-						<input type="text" name="order[]" size="5" value="<?php echo $item->ordering;?>" <?php echo $disabled ?> class="text-area-order" />
-					<?php else : ?>
-						<?php echo (int) $item->ordering; ?>
-					<?php endif; ?>
-				</td>                
-                <td class="center">
-                	<?php 
-                	$title = "Minimum Duration::".(!$item->hasMinDuration? JText::_("COM_JONGMAN_NO_MIN_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MIN_DURATION_DESC", $item->minDuration->interval()));
-                    ?>
-                	<span class="hasTip" title="<?php echo $title?>">
-                    	<?php echo ($item->hasMinDuration ? $item->minDuration->interval() : "NA") ?>
-                    </span>
-                </td>
-                <td class="center">
-                	<?php 
-                	$title = "Maximum Duration::".(!$item->hasMaxDuration? JText::_("COM_JONGMAN_NO_MAX_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MAX_DURATION_DESC", $item->maxDuration->interval()));
-                    ?>
-                	<span class="hasTip" title="<?php echo $title?>">
-                    	<?php echo ($item->hasMaxDuration ? $item->maxDuration->interval() : "NA") ?>
-                    </span>
-                </td>
-                <td class="center">
-                	<?php
-                	$title = "Start Time::".(!$item->hasMinNoticeTime ? JText::_("COM_JONGMAN_NO_MIN_NOTICE_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MIN_NOTICE_DURATION_DESC", $item->minNoticeTime->interval()));
-                	?>
-                	<span class="hasTip" title="<?php echo $title?>">
-                    	<?php echo ($item->hasMinNoticeTime ? $item->minNoticeTime->interval() : "NA")?>
-                    </span>
-                </td>
-                <td class="center">
-                	<?php 
-               		$title = "End Time::".(!$item->hasMaxNoticeTime ? JText::_("COM_JONGMAN_NO_MAX_NOTICE_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MAX_NOTICE_DURATION_DESC", $item->maxNoticeTime->interval()));
-                    ?>	
-                	<span class="hasTip" title="<?php echo $title?>">
-                    	<?php echo ($item->hasMaxNoticeTime ? $item->maxNoticeTime->interval() : "NA") ?>
-                    </span>
-                </td>                
-                <td class="center">           
-                    <?php echo JHtml::_('jgrid.state', 
-                        array(
-                                //task, text, active title, inactive title, tip, active class, inactive class
-                            1=> array('resetapproval',	'JPUBLISHED',	'COM_JONGMAN_RESOURCE_RESET_APPROVAL',	'JPUBLISHED',	false,	'publish',		'unpublish'),
-                            0=> array('setapproval',	'JUNPUBLISHED',	'COM_JONGMAN_RESOURCE_SET_APPROVAL',	'JUNPUBLISHED',	false,	'unpublish',	'publish')      
+				<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->schedule_id?>">
+					<td class="order nowrap center hidden-phone">
+					<?php
+						$iconClass = '';
+						if (!$canChange)
+						{
+							$iconClass = ' inactive';
+						}
+						elseif (!$saveOrder)
+						{
+							$iconClass = ' inactive tip-top hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
+						}
+					?>
+						<span class="sortable-handler<?php echo $iconClass ?>">
+							<i class="icon-menu"></i>
+						</span>
+						<?php if ($canChange && $saveOrder) : ?>
+						<input type="text" style="display:none" name="order[]" size="5"
+								value="<?php echo $item->ordering; ?>" class="width-20 text-area-order " />
+						<?php endif; ?>
+					</td>
+					<td class="center hidden-phone">
+						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+					</td>
+					<td class="center">
+						<div class="btn-group">
+							<?php echo JHtml::_('jgrid.published', $item->published, $i, 'resources.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
+							<?php
+							// Create dropdown items
+							$action = $archived ? 'unarchive' : 'archive';
+							JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'resources');
+
+							$action = $trashed ? 'untrash' : 'trash';
+							JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'resources');
+
+							// Render dropdown list
+							echo JHtml::_('actionsdropdown.render', $this->escape($item->name));
+							?>
+						</div>
+					</td>
+					<td class="nowrap has-context">
+						<div class="pull-left">
+							<?php if ($item->checked_out) : ?>
+								<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'contacts.', $canCheckin); ?>
+							<?php endif; ?>
+							<?php if ($canEdit || $canEditOwn) : ?>
+								<a href="<?php echo JRoute::_('index.php?option=com_jongman&task=resource.edit&id='.(int) $item->id); ?>">
+									<?php echo $this->escape($item->title); ?></a>
+							<?php else : ?>
+									<?php echo $this->escape($item->title); ?>
+							<?php endif; ?>
+							<span class="small">
+								<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias));?>
+							</span>
+							<div class="small">
+								<?php echo $item->schedule_name; ?>
+							</div>
+						</div>
+					</td>              
+                	<td class="center">
+                		<?php 
+                			$title = "Minimum Duration::".(!$item->hasMinDuration? JText::_("COM_JONGMAN_NO_MIN_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MIN_DURATION_DESC", $item->minDuration->interval()));
+                    	?>
+                		<span class="hasTip" title="<?php echo $title?>">
+                    		<?php echo ($item->hasMinDuration ? $item->minDuration->interval() : "NA") ?>
+                    	</span>
+                	</td>
+                	<td class="center">
+                		<?php 
+                			$title = "Maximum Duration::".(!$item->hasMaxDuration? JText::_("COM_JONGMAN_NO_MAX_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MAX_DURATION_DESC", $item->maxDuration->interval()));
+                    	?>
+                		<span class="hasTip" title="<?php echo $title?>">
+                    		<?php echo ($item->hasMaxDuration ? $item->maxDuration->interval() : "NA") ?>
+                    	</span>
+                	</td>
+                	<td class="center">
+                		<?php
+                			$title = "Start Time::".(!$item->hasMinNoticeTime ? JText::_("COM_JONGMAN_NO_MIN_NOTICE_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MIN_NOTICE_DURATION_DESC", $item->minNoticeTime->interval()));
+                		?>
+                		<span class="hasTip" title="<?php echo $title?>">
+                    		<?php echo ($item->hasMinNoticeTime ? $item->minNoticeTime->interval() : "NA")?>
+                    	</span>
+                	</td>
+                	<td class="center">
+                		<?php 
+               				$title = "End Time::".(!$item->hasMaxNoticeTime ? JText::_("COM_JONGMAN_NO_MAX_NOTICE_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MAX_NOTICE_DURATION_DESC", $item->maxNoticeTime->interval()));
+                    	?>	
+                		<span class="hasTip" title="<?php echo $title?>">
+                    		<?php echo ($item->hasMaxNoticeTime ? $item->maxNoticeTime->interval() : "NA") ?>
+                    	</span>
+                	</td>                
+                	<td class="center">           
+                    	<?php echo JHtml::_('jgrid.state', 
+                        	array(
+                                	//task, text, active title, inactive title, tip, active class, inactive class
+                            	1=> array('resetapproval',	'JPUBLISHED',	'COM_JONGMAN_RESOURCE_RESET_APPROVAL',	'JPUBLISHED',	false,	'publish',		'unpublish'),
+                            	0=> array('setapproval',	'JUNPUBLISHED',	'COM_JONGMAN_RESOURCE_SET_APPROVAL',	'JUNPUBLISHED',	false,	'unpublish',	'publish')      
                             ),
-                        $item->requires_approval, $i, 
-                        'resources.',         
-                        $canChange); ?>
-                </td>
-                <td class="center">
-                	<?php echo $item->access_level?>
-                </td>
-				<td class="center">
-					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'resources.', $canChange); ?>
-				</td>
-				<td class="center">
-					<?php echo $item->id; ?>
-				</td>
-			</tr>
-			<?php endforeach; ?>
-		</tbody>
-		<?php if ($this->is_j25) : ?>
-		<tfoot>
-			<tr>
-				<td colspan="12">
-					<?php echo $this->pagination->getListFooter(); ?>
-				</td>
-			</tr>
-		</tfoot>		
-		<?php endif; ?>
-	</table>
-	<?php if (!$this->is_j25) : echo $this->pagination->getListFooter(); endif; ?>
-<?php endif ?>
-	<input type="hidden" name="task" value="" />
-	<input type="hidden" name="boxchecked" value="0" />
-	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
-	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
-	<?php echo JHtml::_('form.token'); ?>
-<?php if (!$this->is_j25) : ?>
-	</div>
-<?php endif; ?>			
+                        	$item->requires_approval, $i, 
+                        	'resources.',         
+                        	$canChange); ?>
+                	</td>
+                	<td class="center">
+                		<?php echo $item->access_level?>
+                	</td>
+					<td class="center">
+						<?php echo $item->id; ?>
+					</td>
+				</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<?php echo $this->pagination->getListFooter(); ?>
+	<?php endif ?>
+		<input type="hidden" name="task" value="" />
+		<input type="hidden" name="boxchecked" value="0" />
+		<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
+		<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
+		<?php echo JHtml::_('form.token'); ?>
+	</div>			
 </form>

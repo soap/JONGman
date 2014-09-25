@@ -1,14 +1,13 @@
 <?php
 defined('_JEXEC') or die;
 
-jimport('jongman.base.iresource');
-class RFResourceBookable implements IResource
+class RFResourceBookable
 {
 	protected $_resourceId;
 	protected $_name;
 	protected $_location;
 	protected $_contact;
-	protected $_note;
+	protected $_notes;
 	protected $_description;
 	/**
 	 * @var string|int
@@ -47,7 +46,7 @@ class RFResourceBookable implements IResource
 								$name,
 								$location,
 								$contact,
-								$note,
+								$notes,
 								$minLength,
 								$maxLength,
 								$autoAssign,
@@ -60,12 +59,12 @@ class RFResourceBookable implements IResource
 								$scheduleId = null,
 								$adminGroupId = null
 	)
-	{		
+	{
 		$this->setResourceId($resourceId);
 		$this->setName($name);
 		$this->setLocation($location);
 		$this->setContact($contact);
-		$this->setNote($note);
+		$this->setNotes($notes);
 		$this->setDescription($description);
 		$this->setMinLength($minLength);
 		$this->setMaxLength($maxLength);
@@ -111,20 +110,22 @@ class RFResourceBookable implements IResource
 	 */
 	public static function create($row)
 	{
-		$resource = new RFResourceBookable(
-			$row->id,
+		if (isset($row->params) && $row->params != '') {
+			$row->params = new JRegistry($row->params);
+		}
+		$resource = new RFResourceBookable($row->id,
 			$row->title,
 			$row->location,
 			$row->contact_info,
 			$row->note,
-			$row->min_reservation_duration,
-			$row->max_reservation_duration,
-			$row->auto_assign,
-			$row->requires_approval,
-			$row->allow_multi_days,
-			$row->max_participants,
-			$row->min_notice_duration,
-			$row->max_notice_duration,
+			$row->params->get('min_reservation_duration'),
+			$row->params->get('max_reservation_duration'),
+			$row->params->get('auto_assign'),
+			$row->params->get('need_appoval'),
+			$row->params->get('overlap_day_reservation'),
+			$row->params->get('max_participants'),
+			$row->params->get('min_notice_duration'),
+			$row->params->get('max_notice_duration'),
 			$row->description,
 			$row->schedule_id);
 
@@ -148,6 +149,7 @@ class RFResourceBookable implements IResource
 		if (isset($row->schedule_admin_group_id)) {
 			$resource->withScheduleAdminGroupId($row->schedule_admin_group_id);
 		}
+		
 		return $resource;
 	}
 
@@ -206,19 +208,19 @@ class RFResourceBookable implements IResource
 		return !empty($this->_contact);
 	}
 
-	public function getNote()
+	public function getNotes()
 	{
-		return $this->_note;
+		return $this->_notes;
 	}
 
-	public function setNote($value)
+	public function setNotes($value)
 	{
-		$this->_note = $value;
+		$this->_notes = $value;
 	}
 
-	public function hasNote()
+	public function hasNotes()
 	{
-		return !empty($this->_note);
+		return !empty($this->_notes);
 	}
 
 	public function getDescription()
@@ -241,7 +243,7 @@ class RFResourceBookable implements IResource
 	 */
 	public function getMinLength()
 	{
-		return RFTimeInterval::parse($this->_minLength * 60);
+		return TimeInterval::Parse($this->_minLength);
 	}
 
 	/**
@@ -265,7 +267,7 @@ class RFResourceBookable implements IResource
 	 */
 	public function getMaxLength()
 	{
-		return RFTimeInterval::parse($this->_maxLength * 60);
+		return TimeInterval::Parse($this->_maxLength);
 	}
 
 	/**
@@ -368,7 +370,7 @@ class RFResourceBookable implements IResource
 	 */
 	public function getMinNotice()
 	{
-		return RFTimeInterval::parse($this->_minNotice * 60);
+		return TimeInterval::Parse($this->_minNotice);
 	}
 
 	/**
@@ -392,7 +394,7 @@ class RFResourceBookable implements IResource
 	 */
 	public function getMaxNotice()
 	{
-		return RFTimeInterval::parse($this->_maxNotice * 60);
+		return TimeInterval::Parse($this->_maxNotice);
 	}
 
 	/**
@@ -468,7 +470,7 @@ class RFResourceBookable implements IResource
 	 * @param string $value
 	 * @return void
 	 */
-	public function setImage($value)
+	public function SetImage($value)
 	{
 		$this->_imageName = $value;
 	}
@@ -543,7 +545,7 @@ class RFResourceBookable implements IResource
 		}
 	}
 
-	public function disableSubscription()
+	public function DisableSubscription()
 	{
 		$this->setIsCalendarSubscriptionAllowed(false);
 	}
@@ -641,7 +643,7 @@ class RFResourceBookable implements IResource
 	 * @static
 	 * @return BookableResource
 	 */
-	public static function Nnull()
+	public static function Null()
 	{
 		return new RFResourceBookable(null, null, null, null, null, null, null, false, false, false, null, null, null);
 	}

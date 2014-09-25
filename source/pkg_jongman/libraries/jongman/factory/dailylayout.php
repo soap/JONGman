@@ -14,9 +14,9 @@ interface IDailyLayoutFactory
 
 class DailyLayoutFactory implements IDailyLayoutFactory
 {
-	public function create(IReservationListing $listing, IScheduleLayout $layout)
+	public static function create(IReservationListing $listing, IScheduleLayout $layout)
 	{
-		return new DailyLayout($listing, $layout);
+		return new RFLayoutDaily($listing, $layout);
 	}
 }
 

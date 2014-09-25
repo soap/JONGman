@@ -9,8 +9,7 @@ JHtml::_('behavior.keepalive');
 ?>
 <script type="text/javascript">
 	window.addEvent('domready', function() {
-    	document.formvalidator.setHandler('abovezerodecimal',
-            function (value) {
+    	document.formvalidator.setHandler('abovezerodecimal', function (value) {
            		regex=/^[1-9]?[0-9]{0,3}(\.[0-9]{1,2})?/;
                 return regex.test(value);
     	});
@@ -43,58 +42,33 @@ JHtml::_('behavior.keepalive');
 
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=edit&id='.(int) $this->item->id); ?>"
 	method="post" name="adminForm" id="item-form" class="form-validate">
-	<div class="row-fluid">
-		<div class="width-60 fltlft span7">
-			<fieldset class="adminform">
-				<ul class="adminformlist unstyled">
-					<li><?php echo $this->form->getLabel('title'); ?> <?php echo $this->form->getInput('title'); ?>
-					</li>
-					<li><?php echo $this->form->getLabel('schedule_id'); ?> <?php echo $this->form->getInput('schedule_id'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('resource_id'); ?>
-						<div id="jform_resource_id_element">
-							<div id="jform_resource_id_reload">
-							<?php echo $this->form->getInput('resource_id'); ?>
-							</div>
-						</div>
-					</li>
-
-					<li><?php echo $this->form->getLabel('group_id'); ?> <?php echo $this->form->getInput('group_id'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('quota_limit'); ?> <?php echo $this->form->getInput('quota_limit'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('unit'); ?> <?php echo $this->form->getInput('unit'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('duration'); ?> <?php echo $this->form->getInput('duration'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('published'); ?> <?php echo $this->form->getInput('published'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('access'); ?> <?php echo $this->form->getInput('access'); ?>
-					</li>
-
-					<li><?php echo $this->form->getLabel('ordering'); ?> <?php echo $this->form->getInput('ordering'); ?>
-					</li>
-					<li><?php echo $this->form->getLabel('note'); ?> <?php echo $this->form->getInput('note'); ?>
-					</li>
-				</ul>
-
-			</fieldset>
+	
+	<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
+	<div class="form-horizontal">
+		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'details')); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', JText::_('COM_JONGMAN_DETAILS', true)); ?>
+		<div class="row-fluid">
+			<div class="span9">
+				<div class="row-fluid form-horizontal-desktop">
+					<div class="span8">
+						<?php echo $this->form->renderField('schedule_id')?>
+						<?php echo $this->form->renderField('resource_id')?>
+						<?php echo $this->form->renderField('group_id')?>
+						<?php echo $this->form->renderField('quota_limit')?>
+						<?php echo $this->form->renderField('unit')?>
+						<?php echo $this->form->renderField('duration')?>			
+					</div>
+					<div class="span2">
+					</div>
+				</div>
+			</div>
+			<div class="span3">
+				<?php echo JLayoutHelper::render('joomla.edit.global', $this); ?>
+			</div>
 		</div>
-		<div class="width-40 fltrt span4">
-		<?php echo JHtml::_('sliders.start','quota-sliders-'.$this->item->id, array('useCookie' => 1)); ?>
-
-		<?php echo JHtml::_('sliders.end'); ?>
-
-		</div>
-	</div>
-	<div class="clr"></div>
-
+		<?php echo JHtml::_('bootstrap.endTab'); ?>
+		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
+	</div>		
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="view" value="<?php echo htmlspecialchars($this->get('Name'), ENT_COMPAT, 'UTF-8');?>" />
 	<?php echo $this->form->getInput('elements'); ?>

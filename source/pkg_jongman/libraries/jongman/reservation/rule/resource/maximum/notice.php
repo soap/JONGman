@@ -3,7 +3,6 @@ defined('_JEXEC') or die;
 
 class RFReservationRuleResourceMaximumNotice implements IReservationValidationRule
 {
-	private $message;
 	/**
 	 * @see IReservationValidationRule::validate()
 	 * 
@@ -16,18 +15,17 @@ class RFReservationRuleResourceMaximumNotice implements IReservationValidationRu
 		
 		foreach ($resources as $resource)
 		{
-			JLog::add("Resource : {$resource->getId()} has maximum notice time ? {$resource->hasMaxNotice()}", JLog::DEBUG, 'validation');
 			if ($resource->hasMaxNotice())
 			{
-				JLog::add("   Maximum notice is {$resource->getMaxNotice()->interval()}", JLog::DEBUG, 'validation');
-				$maxStartDate = RFDate::now()->applyDifference($resource->getMaxNotice()->interval());
+				$maxStartDate = Date::Now()->applyDifference($resource->getMaxNotice()->interval());
+		
 				/* @var $instance RFReservation */
 				foreach ($reservationSeries->getInstances() as $instance)
 				{
 					if ($instance->startDate()->greaterThan($maxStartDate))
 					{
-						$this->message = JText::sprintf("COM_JONGMAN_ERROR_RULE_MAX_NOTICE",$maxStartDate->format("Y-m-d H:i:s"));
-						return new RFReservationRuleResult(false, $this->message);
+						return new RFReservationRuleResult(false, 
+							JText::sprintf("COM_JONGMAN_ERROR_MAX_NOTICE",$maxStartDate->format("Y-m-d H:i:s") ));
 					}
 				}
 			}
@@ -35,9 +33,10 @@ class RFReservationRuleResourceMaximumNotice implements IReservationValidationRu
 		
 		return new RFReservationRuleResult();
 	}
-	
+
 	public function getError()
 	{
-		return $this->message;	
+		$result = '';
+		return $result;
 	}	
 }

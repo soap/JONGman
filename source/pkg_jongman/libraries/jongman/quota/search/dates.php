@@ -14,7 +14,7 @@ class RFQuotaSearchDates
 	 */
 	private $end;
 
-	public function __construct(RFDate $start, RFDate $end)
+	public function __construct(Date $start, Date $end)
 	{
 		$this->start = $start;
 		$this->end = $end;

@@ -32,7 +32,7 @@
             	</div>
 <?php
 		echo '<h3>'.  JText::_('COM_JONGMAN_VERSION').'</h3>'
-		.'<p>'.  $this->version .'</p>';
+		.'<p>'.  $this->version .' (JONGman Library : '.$this->libVersion.')</p>';
 
 		echo '<h3>'.  JText::_('COM_JONGMAN_COPYRIGHT').'</h3>'
 		.'<p>© 2009 - '.  date("Y"). ' Prasit Gebsaap</p>'

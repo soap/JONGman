@@ -34,18 +34,7 @@
 			description="JFIELD_ALIAS_DESC"
 			class="inputbox"
 			size="45" />
-			
-		<field name="default"
-			type="list"
-			label="COM_JONGMAN_FIELD_DEFAULT_LABEL"
-			description="COM_JONGMAN_FIELD_DEFAULT_DESC"
-			default="0"
-			class="inputbox"
-			filter="intval"
-			size="1">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</field>
+
 		<field name="description"
 			type="editor"
 			label="COM_JONGMAN_FIELD_DESCRIPTION_LABEL"
@@ -80,7 +69,7 @@
 		</field>
 
 		<field name="timeslots"
-			type="timeslot"
+			type="timeslot" hiddenLabel="true"
 			label="COM_JONGMAN_FIELD_TIMESLOT_LABEL"
 			description="COM_JONGMAN_FIELD_TIMESLOT_DESC"
 		/>

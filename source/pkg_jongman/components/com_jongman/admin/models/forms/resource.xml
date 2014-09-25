@@ -23,7 +23,7 @@
 			size="40" label="COM_JONGMAN_FIELD_RESOURCE_CONTACTINFO_LABEL"
 			description="COM_JONGMAN_FIELD_RESOURCE_CONTACTINFO_DESC"/>
 		
-        <field name="schedule_id" type="schedule" 
+        <field name="schedule_id" type="jongmanselectschedule" 
             label="COM_JONGMAN_FIELD_SCHEDULE_NAME_LABEL"
             description="COM_JONGMAN_FIELD_SCHEDULE_NAME_DESC" 
             required="true">
@@ -37,49 +37,7 @@
                 <option value="1">JPUBLISHED</option>
                 <option value="0">JUNPUBLISHED</option>
 		</field>
-		<field name="min_reservation_duration"
-			type="timeinterval" size="10" filter="intval"
-			required="true" class="inputbox"
-			label="COM_JONGMAN_FIELD_RESOURCE_MIN_RESERVATION_LENGTH_LABEL"
-			description="COM_JONGMAN_FIELD_RESOURCE_MIN_RESERVATION_LENGTH_DESC"
-			/>
-		<field name="max_reservation_duration"
-			type="timeinterval" size="10" default="0" class="inputbox" filter="intval"	
-			label="COM_JONGMAN_FIELD_RESOURCE_MAX_RESERVATION_LENGTH_LABEL"
-			description="COM_JONGMAN_FIELD_RESOURCE_MAX_RESERVATION_LENGTH_DESC"
-			/>	
-		<field name="min_notice_duration"
-			type="timeinterval" size="10" filter="intval"	
-			required="true" class="inputbox"
-			label="COM_JONGMAN_FIELD_RESOURCE_MIN_NOTICE_DURATION_LABEL"
-			description="COM_JONGMAN_FIELD_RESOURCE_MIN_NOTICE_DURATION_DESC"
-			/>
-		<field name="max_notice_duration"
-			type="timeinterval" size="10" default="0" class="inputbox" filter="intval"
-			label="COM_JONGMAN_FIELD_RESOURCE_MAX_NOTICE_DURATION_LABEL"
-			description="COM_JONGMAN_FIELD_RESOURCE_MAX_NOTICE_DURATION_DESC"
-			/>				
-        <field name="max_participants" type="text" class="inputbox"
-			size="10" 
-			label="COM_JONGMAN_FIELD_RESOURCE_MAX_PARTICIPANTS_LABEL"
-			description="COM_JONGMAN_FIELD_RESOURCE_MAX_PARTICIPANTS_DESC" 
-			filter="intval" />
-		<field name="allow_multi_days" type="radio" default="0"
-			filter="intval"
-			label="COM_JONGMAN_FIELD_RESOURCE_ALLOW_MULTIDAYS_RESERVATION_LABEL"
-			description="COM_JONGMAN_FIELD_RESOURCE_ALLOW_MULTIDAYS_RESERVATION_DESC">
-                <option value="0">JNO</option>
-                <option value="1">JYES</option>
-		</field>
-		        
-		<field name="requires_approval" type="radio" default="0"
-			filter="intval"
-			label="COM_JONGMAN_FIELD_RESOURCE_NEED_APPROVAL_LABEL"
-			description="COM_JONGMAN_FIELD_RESOURCE_NEED_APPROVAL_DESC">
-                <option value="0">JNO</option>
-                <option value="1">JYES</option>
-		</field>				
-						
+		
         <field name="access" type="accesslevel" label="JFIELD_ACCESS_LABEL"
             description="JFIELD_ACCESS_DESC" class="inputbox" size="1" />     
     </fieldset>
@@ -101,10 +59,54 @@
 			section="resource_reservation" />
 	</fieldset>
 	<fields name="params">
-		<fieldset name="basic" label="COM_JONGMAN_BASIC_PARAMS_FIELDSET_LABEL">			
+		<fieldset name="basic" label="COM_JONGMAN_BASIC_PARAMS_FIELDSET_LABEL">
+			<field name="min_reservation_duration"
+				type="text" size="10" filter="intval"
+				required="true" class="inputbox"
+				label="COM_JONGMAN_FIELD_RESOURCE_MIN_RESERVATION_LENGTH_LABEL"
+				description="COM_JONGMAN_FIELD_RESOURCE_MIN_RESERVATION_LENGTH_DESC"
+				/>
+			<field name="max_reservation_duration"
+				type="text" size="10" default="0" class="inputbox" filter="intval"
+				label="COM_JONGMAN_FIELD_RESOURCE_MAX_RESERVATION_LENGTH_LABEL"
+				description="COM_JONGMAN_FIELD_RESOURCE_MAX_RESERVATION_LENGTH_DESC"
+				/>	
+			<field name="min_notice_duration"
+				type="text" size="10" filter="intval"
+				required="true" class="inputbox"
+				label="COM_JONGMAN_FIELD_RESOURCE_MIN_NOTICE_DURATION_LABEL"
+				description="COM_JONGMAN_FIELD_RESOURCE_MIN_NOTICE_DURATION_DESC"
+				/>
+			<field name="max_notice_duration"
+				type="text" size="10" default="0" class="inputbox" filter="intval"
+				label="COM_JONGMAN_FIELD_RESOURCE_MIN_NOTICE_DURATION_LABEL"
+				description="COM_JONGMAN_FIELD_RESOURCE_MIN_NOTICE_DURATION_DESC"
+				/>				
+        	<field name="max_participants" type="text" class="inputbox"
+				size="10" 
+				label="COM_JONGMAN_FIELD_RESOURCE_MAX_PARTICIPANTS_LABEL"
+				description="COM_JONGMAN_FIELD_RESOURCE_MAX_PARTICIPANTS_DESC" 
+				filter="intval" />
+			     
+			<field name="overlap_day_reservation" type="radio" default="0"
+				filter="intval"
+				label="COM_JONGMAN_FIELD_RESOURCE_OVERLAPPED_DAY_RESERVATION_LABEL"
+				description="COM_JONGMAN_FIELD_RESOURCE_OVERLAPPED_DAY_RESERVATION_DESC">
+                	<option value="0">JNO</option>
+                	<option value="1">JYES</option>
+			</field>
+		        
+			<field name="need_approval" type="radio" default="0"
+				filter="intval"
+				label="COM_JONGMAN_FIELD_RESOURCE_NEED_APPROVAL_LABEL"
+				description="COM_JONGMAN_FIELD_RESOURCE_NEED_APPROVAL_DESC">
+                	<option value="0">JNO</option>
+                	<option value="1">JYES</option>
+			</field>				
 		</fieldset>
 
 		<fieldset name="advanced" label="COM_JONGMAN_ADVANCED_PARAMS_FIELDSET_LABEL">
+
 		</fieldset>
 	</fields>
  </form>

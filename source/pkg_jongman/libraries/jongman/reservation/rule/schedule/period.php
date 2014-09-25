@@ -12,7 +12,7 @@ class RFReservationRuleSchedulePeriod implements IReservationValidationRule
 	private $repository;
 	private $user;
 	
-	public function __construct(JModel $repository, JUser $user)
+	public function __construct(JModelLegacy $repository, JUser $user)
 	{
 		$this->repostiory = $repository;
 		$this->user = $user;

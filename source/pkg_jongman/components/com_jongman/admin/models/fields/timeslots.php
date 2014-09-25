@@ -6,13 +6,13 @@ jimport('jongman.domain.schedulelayout');
 jimport('jongman.date.date');
 jimport('jongman.date.time');
 
-class JFormFieldTimeslots extends JFormField {
+class JFormFieldTimeslots extends JFormFieldReloadable {
 
     protected $type = 'Timeslots';
     
     public function getInput()
     {
-    	        // Load the modal behavior script
+    	// Load the modal behavior script
         JHtml::_('behavior.modal', 'a.modal_' . $this->id);
     	$html = array();
     	$layout_id = (int) $this->form->getValue('id');

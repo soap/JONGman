@@ -2,42 +2,39 @@
 defined('_JEXEC') or die;
 
 
-class RFReservationRuleRequiresApproval implements IReservationValidationRule
+class RFValidationRuleRequiresApproval implements IReservationValidationRule
 {
 	/**
 	 * @var IAuthorizationService
 	 */
 	private $authorizationService;
 	
-	public function __construct(IAuthorisationService $authorisationService)
+	public function __construct(IAuthorizationService $authorizationService)
 	{
-		$this->authorisationService = $authorisationService;
+		$this->authorizationService = $authorizationService;
 	}
 	
-	public function getError() {}
 	/**
 	 * @param ReservationSeries $reservationSeries
 	 * @return ReservationRuleResult
 	 */
 	function validate($reservationSeries)
 	{
-		$status = RFReservationStatus::created;
-		
+		$status = 1; //ReservationStatus::Created;
+	
 		/** @var RFResourceBookable $resource */
 		foreach ($reservationSeries->allResources() as $resource)
 		{
-			JLog::add(" resource id : {$resource->getResourceId()}", JLog::DEBUG, 'validation');
 			if ($resource->getRequiresApproval())
 			{
-				JLog::add("    it requires approval ", JLog::DEBUG, 'validation');
-				if (!$this->authorisationService->canApproveForResource($reservationSeries->bookedBy(), $resource))
+				if (!$this->authorizationService->canApproveForResource($reservationSeries->bookedBy(), $resource))
 				{
-					$status = RFReservationStatus::pending;
+					$status = -1; //pending
 					break;
 				}
 			}
 		}
-		JLog::add("Got final reservation staus : {$status}", JLog::DEBUG, 'validation');
+	
 		$reservationSeries->setStatusId($status);
 	
 		return new RFReservationRuleResult();

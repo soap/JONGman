@@ -6,8 +6,6 @@ defined('_JEXEC') or die;
  * @author Prasit Gebsaap
  *
  */
-jimport('jongman.utils.starttimeconstraint');
-
 class RFReservationSeriesUpdatescopeFull extends RFReservationSeriesUpdatescopeBase
 {
 	private $hasSameConfiguration = false;
@@ -46,12 +44,12 @@ class RFReservationSeriesUpdatescopeFull extends RFReservationSeriesUpdatescopeB
 	{
 		$startTimeConstraint = 'none';
 
-		if (RFReservationStartTimeConstraint::isCurrent($startTimeConstraint))
+		if (RFReservationStarttimeConstraint::isCurrent($startTimeConstraint))
 		{
 			return $series->currentInstance()->startDate();
 		}
 
-		if (RFReservationStartTimeConstraint::isNone($startTimeConstraint))
+		if (RFReservationStarttimeConstraint::isNone($startTimeConstraint))
 		{
 			return RFDate::min();
 		}

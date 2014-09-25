@@ -55,7 +55,7 @@ class JongmanModelQuota extends JModelAdmin
 			if (intval($result->created_time)) {
 				$date = new JDate($result->created_time);
 				$date->setTimezone($tz);
-				$result->created_time = $date->toMySQL(true);
+				$result->created_time = $date->toSql(true);
 			}
 			else {
 				$result->created_time = null;
@@ -122,6 +122,13 @@ class JongmanModelQuota extends JModelAdmin
 
 		if (empty($table->group_id)) {
 			$table->group_id = 0;
+		}
+		
+		$table->title		= htmlspecialchars_decode($table->title, ENT_QUOTES);
+		$table->alias		= JApplication::stringURLSafe($table->alias);
+		
+		if (empty($table->alias)) {
+			$table->alias = JApplication::stringURLSafe($table->title);
 		}
 
 	}

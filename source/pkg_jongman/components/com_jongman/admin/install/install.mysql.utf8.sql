@@ -1,3 +1,15 @@
+-- phpMyAdmin SQL Dump
+-- version 4.1.14
+-- http://www.phpmyadmin.net
+--
+-- Host: 127.0.0.1
+-- Generation Time: Sep 23, 2014 at 05:58 PM
+-- Server version: 5.6.17
+-- PHP Version: 5.5.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
 -- --------------------------------------------------------
 
 --
@@ -8,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_layouts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(200) NOT NULL,
   `alias` varchar(200) NOT NULL,
-  `default` tinyint(4) NOT NULL DEFAULT '0',  
+  `default` tinyint(4) NOT NULL DEFAULT '0',
   `timezone` varchar(100) NOT NULL,
   `published` tinyint(4) NOT NULL DEFAULT '1',
   `note` varchar(200) NOT NULL,
@@ -52,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_quotas` (
   KEY `resource_id` (`resource_id`),
   KEY `group_id` (`group_id`),
   KEY `schedule_id` (`schedule_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -63,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_quotas` (
 CREATE TABLE IF NOT EXISTS `#__jongman_reservations` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `schedule_id` int(11) NOT NULL,
-  `owner_id` int(11) NOT NULL,  
+  `owner_id` int(11) NOT NULL,
   `title` varchar(200) NOT NULL,
   `description` text NOT NULL,
   `alias` varchar(50) NOT NULL,
@@ -83,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_reservations` (
   KEY `res_created` (`created`),
   KEY `res_modified` (`modified`),
   KEY `reservations_pending` (`state`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Store reservation series' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Store reservation series' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -98,7 +110,8 @@ CREATE TABLE IF NOT EXISTS `#__jongman_reservation_instances` (
   `reference_number` varchar(20) NOT NULL,
   `reservation_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='one reservation has more than one instance if its repeat option is not none.' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='one reservation has more than one instance if its repeat option is not none.' AUTO_INCREMENT=1 ;
+
 
 -- --------------------------------------------------------
 
@@ -113,7 +126,8 @@ CREATE TABLE IF NOT EXISTS `#__jongman_reservation_resources` (
   `resource_level` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `reservation_id` (`reservation_id`,`resource_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='multiple resources per reservation' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='multiple resources per reservation' AUTO_INCREMENT=1 ;
+
 
 -- --------------------------------------------------------
 
@@ -128,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_reservation_users` (
   `user_level` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `reservation_instance_id` (`reservation_instance_id`,`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Users in each reservation, owner=1 implies reservation owner' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Users in each reservation, owner=1 implies reservation owner' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -145,14 +159,6 @@ CREATE TABLE IF NOT EXISTS `#__jongman_resources` (
   `alias` varchar(128) NOT NULL,
   `location` varchar(250) DEFAULT NULL,
   `contact_info` varchar(200) NOT NULL,
-  `auto_assign` tinyint(4) NOT NULL DEFAULT '1',
-  `allow_multi_days` tinyint(4) NOT NULL DEFAULT '0',
-  `max_participants` smallint(6) NOT NULL DEFAULT '0',
-  `min_reservation_duration` int(11) NOT NULL DEFAULT '0',
-  `max_reservation_duration` int(11) NOT NULL DEFAULT '0',
-  `min_notice_duration` int(11) NOT NULL DEFAULT '0',
-  `max_notice_duration` int(11) NOT NULL DEFAULT '0',
-  `requires_approval` tinyint(4) NOT NULL DEFAULT '0',
   `note` varchar(200) NOT NULL,
   `rphone` varchar(16) DEFAULT NULL COMMENT 'deprecated',
   `notes` text COMMENT 'deprecated',
@@ -171,6 +177,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_resources` (
   KEY `rs_scheduleid` (`schedule_id`),
   KEY `rs_name` (`title`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 
 -- --------------------------------------------------------
 
@@ -205,6 +212,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_schedules` (
   `published` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 
 -- --------------------------------------------------------
 

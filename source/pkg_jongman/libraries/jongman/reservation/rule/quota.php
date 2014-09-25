@@ -11,7 +11,7 @@ class RFReservationRuleQuota implements IReservationValidationRule
 	/**
 	 * @var \IReservationViewRepository
 	 */
-	private $reservationRepository;
+	private $reservationViewRepository;
 
 	/**
 	 * @var \IUserRepository
@@ -23,48 +23,32 @@ class RFReservationRuleQuota implements IReservationValidationRule
 	 */
 	private $scheduleRepository;
 
-	public function __construct(IQuotaRepository $quotaRepository, IReservationRepository $reservationRepository, IUserRepository $userRepository, IScheduleRepository $scheduleRepository)
+	public function __construct(IQuotaRepository $quotaRepository, IReservationViewRepository $reservationViewRepository, IUserRepository $userRepository, IScheduleRepository $scheduleRepository)
 	{
 		$this->quotaRepository = $quotaRepository;
-		$this->reservationRepository = $reservationRepository;
+		$this->reservationViewRepository = $reservationViewRepository;
 		$this->userRepository = $userRepository;
 		$this->scheduleRepository = $scheduleRepository;
 	}
 
 	/**
-	 * @param RFReservationSeries $reservationSeries
-	 * @return RFReservationRuleResult
+	 * @param ReservationSeries $reservationSeries
+	 * @return ReservationRuleResult
 	 */
 	public function validate($reservationSeries)
 	{
-		$quotas = $this->quotaRepository->loadAll();
-		$user = $this->userRepository->loadById($reservationSeries->userId());
-		$schedule = $this->scheduleRepository->loadById($reservationSeries->scheduleId());
+		$quotas = $this->quotaRepository->LoadAll();
+		$user = $this->userRepository->LoadById($reservationSeries->UserId());
+		$schedule = $this->scheduleRepository->LoadById($reservationSeries->ScheduleId());
 		
 		foreach ($quotas as $quota)
-		{	
-			JLog::add("validate quota {$quota} {$quota->getLimit()->amount()} {$quota->getLimit()->name()}/{$quota->getDuration()->name()}", JLog::DEBUG, 'validation');
-			// RFQuota
-			if ($quota->exceedsQuota($reservationSeries, $user, $schedule, $this->reservationRepository))
+		{
+			if ($quota->ExceedsQuota($reservationSeries, $user, $schedule, $this->reservationViewRepository))
 			{
-				if ($quota->getLimit()->name() == RFQuotaUnit::Reservations) {
-					//Only {$this->totalAllowed} reservations are allowed for this duration"
-					$this->message = JText::sprintf("COM_JONGMAN_ERROR_RULE_QUOTA_RESERVATIONS_EXCEED", $quota->getLimit()->amount(), $quota->getDuration()->name());		
-				}else{
-					$this->message = JText::sprintf("COM_JONGMAN_ERROR_RULE_QUOTA_HOURS_EXCEED", $quota->getLimit()->amount(), $quota->getDuration()->name());	
-				}
-				JLog::add(" exceeds quota, " .$this->message, JLog::DEBUG, 'validation');
-				return new RFReservationRuleResult(false, $this->message);
+				return new ReservationRuleResult(false, 'QuotaExceeded');
 			}
-			
-			JLog::add("  not exceed quota", JLog::DEBUG, 'validation');
 		}
 
-		return new RFReservationRuleResult();
-	}
-	
-	public function getError()
-	{
-		return $this->message;
+		return new ReservationRuleResult();
 	}
 }

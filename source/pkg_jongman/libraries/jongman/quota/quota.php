@@ -103,15 +103,16 @@ class RFQuota implements IQuota
 	}
 
 	/**
-	 * @param RFReservationSeries $reservationSeries
-	 * @param JUser $user
-	 * @param unknown $schedule
+	 * @param ReservationSeries $reservationSeries
+	 * @param User $user
+	 * @param Schedule $schedule
 	 * @param IReservationViewRepository $reservationViewRepository
 	 * @return bool
 	 */
-	public function exceedsQuota($reservationSeries, $user, $schedule, IReservationRepository $reservationRepository)
+	public function exceedsQuota($reservationSeries, $user, $schedule, IReservationViewRepository $reservationViewRepository)
 	{
-		$timezone = $schedule->timezone; //getTimezone();
+		$timezone = $schedule->getTimezone();
+
 		if (!is_null($this->resourceId))
 		{
 			$appliesToResource = false;
@@ -133,13 +134,9 @@ class RFQuota implements IQuota
 		if (!is_null($this->groupId))
 		{
 			$appliesToGroup = false;
-			if ($user instanceof JUser) {
-				//array of authorised group id
-				$groups = $user->getAuthorisedGroups();
-			}
-			foreach ($groups() as $groupId)
+			foreach ($user->groups() as $group)
 			{
-				if (!$appliesToGroup && $this->appliesToGroup($groupId))
+				if (!$appliesToGroup && $this->appliesToGroup($group->groupId))
 				{
 					$appliesToGroup = true;
 				}
@@ -156,16 +153,14 @@ class RFQuota implements IQuota
 			return false;
 		}
 
-		if (count($reservationSeries->getInstances()) == 0)
+		if (count($reservationSeries->instances()) == 0)
 		{
 			return false;
 		}
 
 		$dates = $this->duration->getSearchDates($reservationSeries, $timezone);
-		
-		$reservationsWithinRange = $reservationRepository->getReservationList($dates->start(), $dates->end(), $reservationSeries->userId(), 1 /*OWNER*/);
-		
-		JLog::add("  reservation in range count {count($reservationsWithinRange)}, try checking limit", JLog::DEBUG, 'validation');
+		$reservationsWithinRange = $reservationViewRepository->getReservationList($dates->start(), $dates->end(), $reservationSeries->userId(), 1 /*OWNER*/);
+
 		try
 		{
 			$this->checkAll($reservationsWithinRange, $reservationSeries, $timezone);
@@ -269,9 +264,9 @@ class RFQuota implements IQuota
 	private function checkAll($reservationsWithinRange, $series, $timezone)
 	{
 		$toBeSkipped = array();
-		
+
 		/** @var $instance Reservation */
-		foreach ($series->getInstances() as $instance)
+		foreach ($series->instances() as $instance)
 		{
 			$toBeSkipped[$instance->referenceNumber()] = true;
 
@@ -291,27 +286,28 @@ class RFQuota implements IQuota
 				$this->addInstance($instance, $timezone);
 			}
 		}
-		/** @var $reservation ReservationItem */
+
+		/** @var $reservation ReservationItemView */
 		foreach ($reservationsWithinRange as $reservation)
 		{
-			if (($series->containsResource($reservation->resourceId) || $series->scheduleId() == $reservation->scheduleId) &&
+			if (($series->containsResource($reservation->ResourceId) || $series->ScheduleId() == $reservation->ScheduleId) &&
 					!array_key_exists($reservation->referenceNumber, $toBeSkipped) &&
 					!$this->willBeDeleted($series, $reservation->reservationId)
 			)
 			{
-				$this->addExisting($reservation, $timezone);
+				$this->AddExisting($reservation, $timezone);
 			}
 		}
 	}
 
 	/**
-	 * @param RFReservationExistingSeries $series
+	 * @param ExistingReservationSeries $series
 	 * @param int $reservationId
 	 * @return bool
 	 */
 	private function willBeDeleted($series, $reservationId)
 	{
-		if (method_exists($series, 'isMarkedForDelete'))
+		if (method_exists($series, 'IsMarkedForDelete'))
 		{
 			return $series->isMarkedForDelete($reservationId);
 		}
@@ -319,14 +315,14 @@ class RFQuota implements IQuota
 		return false;
 	}
 
-	private function _breakAndAdd(RFDate $startDate, RFDate $endDate, $timezone)
+	private function _breakAndAdd(Date $startDate, Date $endDate, $timezone)
 	{
 		$start = $startDate->toTimezone($timezone);
 		$end = $endDate->toTimezone($timezone);
 
 		$range = new RFDateRange($start, $end);
 
-		$ranges = $this->duration->split($range);
+		$ranges = $this->duration->Split($range);
 
 		foreach ($ranges as $dr)
 		{
@@ -342,3 +338,4 @@ class RFQuota implements IQuota
 	}
 
 }
+

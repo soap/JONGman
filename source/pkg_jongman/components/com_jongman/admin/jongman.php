@@ -13,6 +13,7 @@ jimport('joomla.application.component.controller');
 jimport('joomla.application.component.helper');
 jimport('jongman.framework');
 JLoader::register('JongmanHelper', JPATH_COMPONENT.'/helpers/jongman.php');
+JLoader::registerPrefix('J', JPATH_COMPONENT.'/helpers', false, true);
 
 // Get an instance of the controller prefixed by Jongman, assign default view 's name in case of no view or task
 $controller = JControllerLegacy::getInstance('Jongman', array('default_view'=>'cpanel'));

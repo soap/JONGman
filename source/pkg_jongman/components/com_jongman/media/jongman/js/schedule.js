@@ -1,8 +1,9 @@
-function Schedule(opts)
+var JScheduleClass = function (opts)
 {
-	var options = opts;
-
-	this.init = function ()
+	var that = this;
+	this.options = opts;	
+	/** Dynimic method (public) **/
+	this.init = function()
 	{
 		this.initRotateSchedule();
 		this.initReservations();
@@ -13,17 +14,17 @@ function Schedule(opts)
 			jQuery(this).siblings('.resourcename').toggleClass('hilite');
 			var ref = jQuery(this).attr('ref');
 			reservations.find('td[ref="' + ref + '"]').toggleClass('hilite');
-		});
+		})
 
 		reservations.delegate('td.clickres', 'mousedown', function ()
 		{
 			jQuery(this).addClass('clicked');
-		});
+		})
 
 		reservations.delegate('td.clickres', 'mouseup', function ()
 		{
 			jQuery(this).removeClass('clicked');
-		});
+		})
 
 		reservations.delegate('.reservable', 'click', function ()
 		{
@@ -31,19 +32,19 @@ function Schedule(opts)
 			var end = jQuery('.end', this).val();
 			var link = jQuery('.href', this).val();
 			window.location = link + "&sd=" + start + "&ed=" + end;
-		});
+		})
 
 		this.initResources();
 		this.initNavigation();
-	};
-
+	}
+	
 	this.initResources = function ()
 	{
 		jQuery('.resourceNameSelector').each(function ()
 		{
 			jQuery(this).bindResourceDetails(jQuery(this).attr('resourceId'));
 		});
-	};
+	}
 
 	this.initNavigation = function ()
 	{
@@ -63,7 +64,7 @@ function Schedule(opts)
 				jQuery(this).find("img").first().attr("src", "media/com_jongman/jongman/images/calendar-minus.png");
 			}
 		});
-	};
+	}
 
 	this.initRotateSchedule = function ()
 	{
@@ -73,7 +74,7 @@ function Schedule(opts)
 			createCookie(opts.cookieName, opts.cookieValue, 30);
 			window.location.reload();
 		});
-	};
+	}
 
 	this.initReservations = function ()
 	{
@@ -100,7 +101,7 @@ function Schedule(opts)
 			jQuery(this).click(function ()
 			{
 				var form = document.getElementById('reservation-form');
-				for(i=0; i<form.elements.length; i++) {
+				for(var i=0; i<form.elements.length; i++) {
 					if (form.elements[i].name = 'cid[]') {
 						form.elements[i].value = resid;
 						break;
@@ -120,7 +121,7 @@ function Schedule(opts)
 				content: {
 					text: 'Loading...',
 					ajax: {
-						url: options.summaryPopupUrl,
+						url: that.options.summaryPopupUrl,
 						type: 'GET',
 						data: { id: resid },
 						dataType: 'html'
@@ -138,7 +139,7 @@ function Schedule(opts)
 				overwrite: false
 			});
 		});
-	};
+	}
 
 	this.makeSlotsSelectable = function (reservationsElement)
 	{
@@ -164,6 +165,7 @@ function Schedule(opts)
 				endDate = element.find('.end').val();
 			}
 		};
+		
 
 		reservationsElement.selectable({
 			filter: 'td.reservable',
@@ -189,8 +191,10 @@ function Schedule(opts)
 				}
 			}
 		});
-	}
-}
+	};
+
+};
+
 
 function dpDateChanged(dateText, inst)
 {
@@ -224,3 +228,4 @@ function RedirectToSelf(queryStringParam, regexMatch, substitution)
 	newUrl = newUrl.replace("sc-top", "");
 	window.location = newUrl;
 }
+

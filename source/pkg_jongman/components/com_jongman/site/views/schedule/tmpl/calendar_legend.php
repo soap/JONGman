@@ -1,4 +1,4 @@
-<div id="legend-container" class="container">
+<div id="legend-container" class="row-fluid jm-container center">
 	<div class="legend rservable"><?php echo JText::_('COM_JONGMAN_RESERVABLE')?></div>
 	<div class="legend unreservable"><?php echo JText::_('COM_JONGMAN_UNRESERVABLE')?></div>
 	<div class="legend reserved"><?php echo JText::_('COM_JONGMAN_RESERVED')?></div>

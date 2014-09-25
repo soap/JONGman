@@ -18,7 +18,7 @@ defined('_JEXEC') or die();
 final class JMVersion
 {
     /** @var  string  Product name. */
-    public $PRODUCT = 'JONGman';
+    public $PRODUCT = 'JONGman Library';
 
     /** @var  string  Release version. */
     public $RELEASE = '2.0';
@@ -45,7 +45,7 @@ final class JMVersion
     public $RELTZ = 'CET';
 
     /** @var  string  Copyright Notice. */
-    public $COPYRIGHT = 'Copyright (C) 2007 - 2013 Prasit Gebsaap. All rights reserved.';
+    public $COPYRIGHT = 'Copyright (C) 2007 - 2014 Prasit Gebsaap. All rights reserved.';
 
     /** @var  string  Link text. */
     public $URL = '<a href="http://www.joomlant.org">joomlant.org</a> is Free Software released under the GNU General Public License.';

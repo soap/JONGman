@@ -18,19 +18,22 @@
 			class="inputbox"
 			size="45"
 			required="true" />
-				
+        <field name="alias" type="text" class="inputbox"
+			size="40" label="JFIELD_ALIAS_LABEL"
+			description="COM_JONGMAN_FIELD_RESOURCE_ALIAS_DESC" />
+			
 		<field name="schedule_id"
-			type="schedule"
+			type="jongmanselectschedule"
 			label="COM_JONGMAN_FIELD_QUOTA_SCHEDULE_LABEL"
 			description="COM_JONGMAN_FIELD_QUOTA_SCHEDULE_DESC"
-			default="0" quota="true"
+			default="0"
 			onchange="JMform.reload('resource_id');"
 			class="inputbox">
 			<option value="0">COM_JONGMAN_OPTION_ALL_SCHEDULES</option>
 		</field>
 
 		<field name="resource_id"
-			type="resource" quota="true"
+			type="jongmanselectresource" quota="true"
 			label="COM_JONGMAN_FIELD_QUOTA_RESOURCE_LABEL"
 			description="COM_JONGMAN_FIELD_QUOTA_RESOURCE_DESC"
 			default="0"
@@ -56,13 +59,13 @@
 			filter="int" />
 			
 		<field name="unit"
-			type="list"
+			type="list" hiddenLabel="true"
 			label="COM_JONGMAN_FIELD_QUOTA_UNIT_LABEL"
 			description="COM_JONGMAN_FIELD_QUOTA_UNIT_DESC"
-			default="reservations"
+			default="reservation"
 			>
-			<option value="reservations">COM_JONGMAN_OPTION_QUOTA_UNIT_RESERVATIONS</option>
-			<option value="hours">COM_JONGMAN_OPTION_QUOTA_UNIT_HOURS</option>
+			<option value="reservation">COM_JONGMAN_OPTION_QUOTA_UNIT_RESERVATION</option>
+			<option value="minute">COM_JONGMAN_OPTION_QUOTA_UNIT_MINUTE</option>
 		</field>	
 		<field name="duration"
 			type="list"
@@ -70,11 +73,11 @@
 			description="COM_JONGMAN_FIELD_QUOTA_DURATION_DESC"
 			default="weekly"
 			>
-			<option value="day">COM_JONGMAN_OPTION_QUOTA_PERIOD_DAY</option>
-			<option value="week">COM_JONGMAN_OPTION_QUOTA_PERIOD_WEEK</option>
-			<option value="month">COM_JONGMAN_OPTION_QUOTA_PERIOD_MONTH</option>
-			<!--option value="quarter">COM_JONGMAN_OPTION_QUOTA_PERIOD_QUARTER</option-->
-			<!--option value="year">COM_JONGMAN_OPTION_QUOTA_PERIOD_YEAR</option-->
+			<option value="daily">COM_JONGMAN_OPTION_QUOTA_PERIOD_DAILAY</option>
+			<option value="weekly">COM_JONGMAN_OPTION_QUOTA_PERIOD_WEEKLY</option>
+			<option value="monthly">COM_JONGMAN_OPTION_QUOTA_PERIOD_MONTHLY</option>
+			<option value="quarterly">COM_JONGMAN_OPTION_QUOTA_PERIOD_QUARTERLY</option>
+			<option value="yearly">COM_JONGMAN_OPTION_QUOTA_PERIOD_YEARLY</option>
 		</field>		
 
 		<field name="note"

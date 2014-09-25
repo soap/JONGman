@@ -17,7 +17,9 @@ class JongmanViewCpanel extends JViewLegacy
 		
         $this->is_j25     = version_compare(JVERSION, '3', 'lt');
 		$this->version = JongmanHelper::getVersion();
-        
+		$libVersion 	= new JMVersion();
+		$this->libVersion = $libVersion->getShortVersion();
+		
 	   	if ($this->getLayout() !== 'modal') {
             $this->addToolbar();
 
