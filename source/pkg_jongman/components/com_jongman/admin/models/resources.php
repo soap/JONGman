@@ -206,6 +206,32 @@ class JongmanModelResources extends JModelList
 		
 		foreach($items as $i => $item) {
 			$items[$i]->params = new JRegistry($item->params);
+			
+			$items[$i]->hasMinNoticeTime = false;
+			$minNoticeTime = (int) $items[$i]->params->get('min_notice_duration');
+			if ( !empty($minNoticeTime)) {
+				$items[$i]->hasMinNoticeTime = true;
+				$items[$i]->minNoticeTime = RFTimeInterval::parse($minNoticeTime * 60);
+			}
+			$maxNoticeTime = (int) $items[$i]->params->get('max_notice_duration');
+			$items[$i]->hasMaxNoticeTime = false;
+			if ( !empty($maxNoticeTime)) {
+				$items[$i]->hasMaxNoticeTime = true;
+				$items[$i]->maxNoticeTime = RFTimeInterval::parse($maxNoticeTime * 60);
+			}
+			
+			$items[$i]->hasMinDuration = false;
+			$minDuration = (int) $items[$i]->params->get('min_reservation_duration');
+			if ( !empty($minDuration)) {
+				$items[$i]->hasMinDuration = true;
+				$items[$i]->minDuration = RFTimeInterval::parse($minDuration * 60);
+			}
+			$maxDuration = (int) $items[$i]->params->get('max_reservation_duration');
+			$items[$i]->hasMaxDuration = false;
+			if ( !empty($maxDuration)) {
+				$items[$i]->hasMaxDuration = true;
+				$items[$i]->maxDuration = RFTimeInterval::parse($maxDuration * 60);
+			}
 		}
 		
 		return $items;
