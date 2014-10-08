@@ -280,11 +280,12 @@ class JongmanModelInstance extends JModelAdmin
 		$ruleProcessor->addRule(new ExistingResourceAvailabilityRule(new ResourceReservationAvailability($this->reservationRepository), $userSession->Timezone));
 		$ruleProcessor->addRule(new AccessoryAvailabilityRule($this->reservationRepository, new AccessoryRepository(), $userSession->Timezone));
 		$ruleProcessor->addRule(new ResourceAvailabilityRule(new ResourceBlackoutAvailability($this->reservationRepository), $userSession->Timezone));
-		$ruleProcessor->addRule(new AdminExcludedRule(new ResourceMinimumDurationRule($this->resourceRepository), $userSession));
-		$ruleProcessor->addRule(new AdminExcludedRule(new ResourceMaximumDurationRule($this->resourceRepository), $userSession));
-		$ruleProcessor->addRule(new AdminExcludedRule(new QuotaRule(new QuotaRepository(), $this->reservationRepository, $this->userRepository, $this->scheduleRepository), $userSession));
-		$ruleProcessor->addRule(new SchedulePeriodRule($this->scheduleRepository, $userSession));
-		*/		
+		*/
+		//$ruleProcessor->addRule(new AdminExcludedRule(new ResourceMinimumDurationRule($this->resourceRepository), $userSession));
+		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new ResourceMaximumDurationRule($this->resourceRepository), $userSession));
+		//$ruleProcessor->addRule(new AdminExcludedRule(new QuotaRule(new QuotaRepository(), $this->reservationRepository, $this->userRepository, $this->scheduleRepository), $userSession));
+		//$ruleProcessor->addRule(new SchedulePeriodRule($this->scheduleRepository, $userSession));
+				
 		$result = $ruleProcessor->validate($existingSeries);
 
 		if (!$result->canBeSaved()) {
