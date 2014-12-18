@@ -36,6 +36,6 @@ class RFReservationRuleAdminexcluded implements IReservationValidationRule
 	
 	public function getError()
 	{
-		return '';
+		return $this->rule->getError();
 	}
 }
