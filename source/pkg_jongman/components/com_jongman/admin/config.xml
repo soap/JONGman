@@ -136,6 +136,31 @@
 			label="COM_JONGMAN_CONFIG_REFERENCE_LENGTH_LABEL"
 			description="COM_JONGMAN_CONFIG_REFERENCE_LENGTH_DESC" />
 	</fieldset>
+	<fieldset 
+		name="logging"
+		label="COM_JONGMAN_CONFIG_LOGGING_LABEL"
+		description="COM_JONGMAN_CONFIG_LOGGING_DESC">
+		<field
+			name="logging_enabled"
+			type="list"
+			default="0"
+			label="COM_JONGMAN_CONFIG_LOGGING_ENABLED_LABEL">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field 
+			name="logging_level"
+			type="list"
+			default="NOTICE"
+			label="COM_JONGMAN_CONFIG_LOGGING_LEVEL_LABEL"
+			description="COM_JONGMAN_CONFIG_LOGGING_LEVEL_DESC">
+			<option value="DEBUG">COM_JONGMAN_OPTION_DEBUG_LEVEL_DEBUG</option>
+			<option value="INFO">COM_JONGMAN_OPTION_DEBUG_LEVEL_INFO</option>
+			<option value="NOTICE">COM_JONGMAN_OPTION_DEBUG_LEVEL_NOTICE</option>
+			<option value="ERROR">COM_JONGMAN_OPTION_DEBUG_LEVEL_ERROR</option>
+			<option value="ALL">COM_JONGMAN_OPTION_DEBUG_LEVEL_ALL</option>
+		</field>
+	</fieldset>
 	<fieldset
 		name="permissions"
 		label="JCONFIG_PERMISSIONS_LABEL"

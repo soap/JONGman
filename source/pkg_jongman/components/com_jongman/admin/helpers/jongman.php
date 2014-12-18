@@ -102,7 +102,8 @@ class JongmanHelper {
 		$options[] = JHtml::_('select.option', '*', 'JALL');
 	
 		return $options;
-	}	
+	}
+		
 	public static function getScheduleOptions()
 	{
 		$dbo = JFactory::getDbo();
@@ -114,6 +115,7 @@ class JongmanHelper {
 		$dbo->setQuery($query);
 		return $dbo->loadObjectList();
 	} 
+	
 	/**
 	 * 
 	 * Get resources ready for HTML options tag created

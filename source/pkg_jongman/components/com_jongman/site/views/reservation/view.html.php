@@ -70,11 +70,15 @@ class JongmanViewReservation extends JViewLegacy
 	
 	public function getToolbar()
 	{
-        $access  = JongmanHelper::getActions();
         $state   = $this->get('State');
         $item 	 = $this->get("Item");
         $isNew	 = $item->id == 0;
         $isRecurring = ($item->repeat_type !== 'none') || empty($item->repeat_type);
+        
+        $asset =  $isNew ? 'com_jongman' : 'com_jongman.resource.'.$this->item->resource_id;
+        
+        $access  = JongmanHelper::getActions($asset);
+        
         $options = array();
 		if ($isNew) {
         	RFToolbar::button(
@@ -89,57 +93,56 @@ class JongmanViewReservation extends JViewLegacy
              	false, //no need to select item first
            	 	array('acces' => true, 'icon'=>'icon-chevron-left')
         	);
-		}elseif ($isRecurring){
-        	RFToolbar::button(
-            	'COM_JONGMAN_ACTION_UPDATE_INSTANCE',
-            	'instance.updateinstance',
-           		false,
-            	array('access' => $access->get('core.edit'),
+		}else {
+			if ($isRecurring){
+        		RFToolbar::button(
+            		'COM_JONGMAN_ACTION_UPDATE_INSTANCE',
+            		'instance.updateinstance',
+           			false,
+            		array('access' => $access->get('core.edit') || $access->get('core.edit.own'),
+            			'icon'=>'icon-ok')
+        		);
+        	
+        		RFToolbar::button(
+            		'COM_JONGMAN_ACTION_UPDATE_FULL',
+            		'instance.updatefull',
+           			false,
+            		array('access' => $access->get('core.edit') || $access->get('core.edit.own'),
             		'icon'=>'icon-ok')
-        	);
+        		);
         	
-        	RFToolbar::button(
-            	'COM_JONGMAN_ACTION_UPDATE_FULL',
-            	'instance.updatefull',
-           		false,
-            	array('access' => $access->get('core.edit'),
-            	'icon'=>'icon-ok')
-        	);
-        	
-        	RFToolbar::button(
-            	'COM_JONGMAN_ACTION_UPDATE_FUTURE',
-            	'instance.updatefuture',
-           		false,
-            	array('access' => $access->get('core.edit'),
-            	'icon'=>'icon-ok')
-        	);
-		}else{
+        		RFToolbar::button(
+            		'COM_JONGMAN_ACTION_UPDATE_FUTURE',
+            		'instance.updatefuture',
+           			false,
+            		array('access' => $access->get('core.edit') || $access->get('core.edit.own'),
+            		'icon'=>'icon-ok')
+        		);
+        		
+			}else{
+				RFToolbar::button(
+            		'COM_JONGMAN_ACTION_UPDATE',
+            		'instance.updatefull',
+           			false,
+            		array('access' => $access->get('core.edit') ||  $access->get('core.edit.own'),
+            		'icon'=>'icon-ok')
+        		);	
+			}
+			
 			RFToolbar::button(
-            	'COM_JONGMAN_ACTION_UPDATE',
-            	'instance.updatefull',
-           		false,
-            	array('access' => $access->get('core.edit'),
-            	'icon'=>'icon-ok')
-        	);	
+				'COM_JONGMAN_ACTION_DELETE',
+				'instances.delete',
+				false,
+				array('access' => $access->get('core.delete'), 'icon' => 'icon-minus')
+			);
+			RFToolbar::button(
+				'JCANCEL',
+				'instance.cancel',
+				false, //no need to select item first
+				array('acces' => true, 'icon'=>'icon-chevron-left')
+			);
 		}	
 		
-		if (!$isNew) {
-        	RFToolbar::button(
-        		'COM_JONGMAN_ACTION_DELETE',
-        		'instances.delete',
-        		false,
-        		array('access' => $access->get('core.delete'), 'icon' => 'icon-minus')
-        	);
-        	RFToolbar::button(
-            	'JCANCEL',
-            	'instance.cancel',
-             	false, //no need to select item first
-           	 	array('acces' => true, 'icon'=>'icon-chevron-left')
-        	);        	
-		}
-
-
-
         return RFToolbar::render();	
 	}
 }
