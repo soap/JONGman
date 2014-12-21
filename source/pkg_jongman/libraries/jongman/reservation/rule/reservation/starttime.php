@@ -58,7 +58,7 @@ class RFReservationRuleReservationStarttime implements IReservationValidationRul
 			return new RFReservationRuleResult(false, $this->getError());
 		}
 		
-		return new RFReservationRuleResult();
+		return new RFReservationRuleResult(true);
 	}
 	
 }

@@ -382,28 +382,28 @@ interface IQuotaDuration
 	 * @abstract
 	 * @return string QuotaDuration
 	 */
-	public function Name();
+	public function name();
 
 	/**
 	 * @param ReservationSeries $reservationSeries
 	 * @param string $timezone
 	 * @return QuotaSearchDates
 	 */
-	public function GetSearchDates(ReservationSeries $reservationSeries, $timezone);
+	public function getSearchDates(RFReservationSeries $reservationSeries, $timezone);
 
 	/**
 	 * @abstract
 	 * @param DateRange $dateRange
 	 * @return array|DateRange[]
 	 */
-	public function Split(DateRange $dateRange);
+	public function split(RFDateRange $dateRange);
 
 	/**
 	 * @abstract
 	 * @param Date $date
 	 * @return string
 	 */
-	public function GetDurationKey(Date $date);
+	public function getDurationKey(RFDate $date);
 }
 
 class QuotaSearchDates

@@ -268,24 +268,26 @@ class JongmanModelInstance extends JModelAdmin
 		$config = array('ignore_request'=>true);
 		$scheduleRepository = JModelLegacy::getInstance('Schedule', 'JongmanModel', $config);
 		//start reservation validation here, get commone rules
+		
+		$createdBy = $existingSeries->bookedBy();
+		$authorisationService = RFFactory::getAuthorisationService();
 		$ruleProcessor = JongmanHelper::getRuleProcessor();
 		// Add specific rules for existing reservation validation
 		$ruleProcessor->addRule(
-					new RFReservationRuleExistingResourceAvailability(new RFResourceReservationAvailability($scheduleRepository), $tz), $existingSeries->bookedBy()
-					);		
+					new RFReservationRuleAdminexcluded(new RFReservationRuleRequiresApproval($authorisationService, $createdBy), $createdBy )
+				);
+		
 		$ruleProcessor->addRule(
-					new RFReservationRuleResourceAvailability(new RFResourceBlackoutAvailability($scheduleRepository), $tz), $existingSeries->bookedBy()
-					);
-		/*
-		$ruleProcessor->addRule(new ExistingResourceAvailabilityRule(new ResourceReservationAvailability($this->reservationRepository), $userSession->Timezone));
-		$ruleProcessor->addRule(new AccessoryAvailabilityRule($this->reservationRepository, new AccessoryRepository(), $userSession->Timezone));
-		$ruleProcessor->addRule(new ResourceAvailabilityRule(new ResourceBlackoutAvailability($this->reservationRepository), $userSession->Timezone));
-		*/
-		//$ruleProcessor->addRule(new AdminExcludedRule(new ResourceMinimumDurationRule($this->resourceRepository), $userSession));
-		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new ResourceMaximumDurationRule($this->resourceRepository), $userSession));
-		//$ruleProcessor->addRule(new AdminExcludedRule(new QuotaRule(new QuotaRepository(), $this->reservationRepository, $this->userRepository, $this->scheduleRepository), $userSession));
-		//$ruleProcessor->addRule(new SchedulePeriodRule($this->scheduleRepository, $userSession));
-				
+					new RFReservationRuleExistingResourceAvailability(new RFResourceReservationAvailability($scheduleRepository), $tz), $createdBy
+				);		
+		$ruleProcessor->addRule(
+					new RFReservationRuleResourceAvailability(new RFResourceBlackoutAvailability($scheduleRepository), $tz), $createdBy
+				);
+		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleResourceMinimumDuration(), $createdBy));
+		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleResourceMaximumDuration(), $createdBy));
+		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleQuota(
+				new RFQuotaRepository(), new RFReservationViewRepository(), new RFUserRepository(), new RFScheduleRepository()), $createdBy));			
+			
 		$result = $ruleProcessor->validate($existingSeries);
 
 		if (!$result->canBeSaved()) {

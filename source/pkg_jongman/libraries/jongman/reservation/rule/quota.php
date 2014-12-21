@@ -22,6 +22,8 @@ class RFReservationRuleQuota implements IReservationValidationRule
 	 * @var \IScheduleRepository
 	 */
 	private $scheduleRepository;
+	
+	private $message;
 
 	public function __construct(IQuotaRepository $quotaRepository, IReservationViewRepository $reservationViewRepository, IUserRepository $userRepository, IScheduleRepository $scheduleRepository)
 	{
@@ -37,18 +39,24 @@ class RFReservationRuleQuota implements IReservationValidationRule
 	 */
 	public function validate($reservationSeries)
 	{
-		$quotas = $this->quotaRepository->LoadAll();
-		$user = $this->userRepository->LoadById($reservationSeries->UserId());
-		$schedule = $this->scheduleRepository->LoadById($reservationSeries->ScheduleId());
+		$quotas = $this->quotaRepository->loadAll();
+		$user = $this->userRepository->loadById($reservationSeries->userId());
+		$schedule = $this->scheduleRepository->loadById($reservationSeries->scheduleId());
 		
 		foreach ($quotas as $quota)
 		{
-			if ($quota->ExceedsQuota($reservationSeries, $user, $schedule, $this->reservationViewRepository))
+			if ($quota->exceedsQuota($reservationSeries, $user, $schedule, $this->reservationViewRepository))
 			{
-				return new ReservationRuleResult(false, 'QuotaExceeded');
+				$this->message = JText::_('COM_JONGMAN_RULE_QUOTA_EXCEEDED');
+				return new RFReservationRuleResult(false, $this->message);
 			}
 		}
 
-		return new ReservationRuleResult();
+		return new RFReservationRuleResult();
+	}
+
+	public function getError()
+	{
+		return $this->message;	
 	}
 }

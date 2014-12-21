@@ -46,7 +46,7 @@ class JongmanHelper
 		return $timezone;
 	}
 	
-	function isAdmin( $uid = null, $resource_id = null )
+	public static function isAdmin( $uid = null, $resource_id = null )
 	{
 		if (empty($uid)) {
 			$user = JFactory::getUser();
@@ -62,7 +62,7 @@ class JongmanHelper
 		return $user->authorise('core.admin', $assetName);
 	}
 
-    function getUserSelectList($tagname, $attribs = '', $selected)
+    public static function getUserSelectList($tagname, $attribs = '', $selected)
     {
         $dbo = & JFactory::getDbo();
         $sql = "SELECT id as value, name as text FROM #__users WHERE block = 0";
@@ -82,7 +82,7 @@ class JongmanHelper
 	 * @param string $monthlyType
 	 * @return IRepeatOptions
 	 */
-	public function getRepeatOptions($repeatType, $interval, $terminationDate, $weekdays, $monthlyType)
+	public static function getRepeatOptions($repeatType, $interval, $terminationDate, $weekdays, $monthlyType)
 	{ 
     	switch ($repeatType) {
 			case 'daily': 
@@ -148,7 +148,7 @@ class JongmanHelper
     /**
      * @return string
      */
-    function getVersion()
+    public static function getVersion()
     {
     	$version = stdClass();
     	$manifest = JFactory::getXML(JPATH_COMPONENT_ADMINISTRATOR.'/jongman.xml' ); 

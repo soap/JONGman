@@ -95,8 +95,8 @@ class JongmanModelResources extends JModelList
 
 		// Select the required fields from the table.
 		$query->select(
-				'r.id AS id, r.title AS title, r.alias AS alias,'.
-                
+				'r.id AS id, r.title AS title, r.alias AS alias, r.schedule_id, '.
+                'r.requires_approval, ' .
                 //'r.min_reservation as min_reservation, r.max_reservation as max_reservation,'.
                 //'r.min_notice_duration as min_notice_duration,'.
                 //'r.max_notice_duration as max_notice_duration,'.

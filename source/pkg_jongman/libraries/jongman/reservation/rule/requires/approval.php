@@ -2,16 +2,16 @@
 defined('_JEXEC') or die;
 
 
-class RFValidationRuleRequiresApproval implements IReservationValidationRule
+class RFReservationRuleRequiresApproval implements IReservationValidationRule
 {
 	/**
 	 * @var IAuthorizationService
 	 */
-	private $authorizationService;
+	private $authorisationService;
 	
-	public function __construct(IAuthorizationService $authorizationService)
+	public function __construct(IAuthorisationService $authorisationService)
 	{
-		$this->authorizationService = $authorizationService;
+		$this->authorisationService = $authorisationService;
 	}
 	
 	/**
@@ -27,7 +27,7 @@ class RFValidationRuleRequiresApproval implements IReservationValidationRule
 		{
 			if ($resource->getRequiresApproval())
 			{
-				if (!$this->authorizationService->canApproveForResource($reservationSeries->bookedBy(), $resource))
+				if (!$this->authorisationService->canApproveForResource($reservationSeries->bookedBy(), $resource))
 				{
 					$status = -1; //pending
 					break;
@@ -38,5 +38,10 @@ class RFValidationRuleRequiresApproval implements IReservationValidationRule
 		$reservationSeries->setStatusId($status);
 	
 		return new RFReservationRuleResult();
+	}
+	
+	public function getError()
+	{
+		return '';
 	}
 }

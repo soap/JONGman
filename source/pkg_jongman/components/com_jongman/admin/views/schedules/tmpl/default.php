@@ -13,6 +13,8 @@ $userId 	= $user->get('id');
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn   = $this->escape($this->state->get('list.direction'));
 $saveOrder	= $listOrder=='ordering';
+$archived	= $this->state->get('filter.published') == 2 ? true : false;
+$trashed	= $this->state->get('filter.published') == -2 ? true : false;
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&view=schedules'); ?>" method="post" name="adminForm" id="adminForm">
 <?php if (!empty($this->sidebar)) : ?>
@@ -102,7 +104,7 @@ $saveOrder	= $listOrder=='ordering';
 					</td>
 					<td class="center">
 						<div class="btn-group">
-							<?php echo JHtml::_('jgrid.published', $item->published, $i, 'schedules.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
+							<?php echo JHtml::_('jgrid.published', $item->published, $i, 'schedules.', $canChange, 'cb'); ?>
 							<?php
 							// Create dropdown items
 							$action = $archived ? 'unarchive' : 'archive';

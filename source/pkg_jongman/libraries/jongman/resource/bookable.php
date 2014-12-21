@@ -66,8 +66,8 @@ class RFResourceBookable
 		$this->setContact($contact);
 		$this->setNotes($notes);
 		$this->setDescription($description);
-		$this->setMinLength($minLength);
-		$this->setMaxLength($maxLength);
+		$this->setMinLength($minLength * 60);
+		$this->setMaxLength($maxLength * 60);
 		$this->setAutoAssign($autoAssign);
 		$this->setRequiresApproval($requiresApproval);
 		$this->setAllowMultiday($allowMultiday);
@@ -239,11 +239,11 @@ class RFResourceBookable
 	}
 
 	/**
-	 * @return TimeInterval
+	 * @return RFTimeInterval
 	 */
 	public function getMinLength()
 	{
-		return TimeInterval::Parse($this->_minLength);
+		return RFTimeInterval::parse($this->_minLength);
 	}
 
 	/**
@@ -267,7 +267,7 @@ class RFResourceBookable
 	 */
 	public function getMaxLength()
 	{
-		return TimeInterval::Parse($this->_maxLength);
+		return RFTimeInterval::parse($this->_maxLength);
 	}
 
 	/**
@@ -370,7 +370,7 @@ class RFResourceBookable
 	 */
 	public function getMinNotice()
 	{
-		return TimeInterval::Parse($this->_minNotice);
+		return RFTimeInterval::parse($this->_minNotice);
 	}
 
 	/**
@@ -394,7 +394,7 @@ class RFResourceBookable
 	 */
 	public function getMaxNotice()
 	{
-		return TimeInterval::Parse($this->_maxNotice);
+		return RFTimeInterval::parse($this->_maxNotice);
 	}
 
 	/**
@@ -636,7 +636,7 @@ class RFResourceBookable
 	 */
 	public function __toString()
 	{
-		return 'BookableResource' . $this->_resourceId;
+		return 'RFResourceBookable' . $this->_resourceId;
 	}
 
 	/**
