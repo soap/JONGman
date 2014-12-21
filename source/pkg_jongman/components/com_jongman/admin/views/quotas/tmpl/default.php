@@ -7,6 +7,8 @@ $user		= JFactory::getUser();
 $listOrder	= $this->state->get('list.ordering');
 $listDirn	= $this->state->get('list.direction');
 $saveOrder	= $listOrder=='ordering';
+$archived	= $this->state->get('filter.published') == 2 ? true : false;
+$trashed	= $this->state->get('filter.published') == -2 ? true : false;
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&view=quotas'); ?>" method="post" name="adminForm" id="adminForm">
 <?php if (!empty( $this->sidebar)) : ?>
@@ -75,7 +77,7 @@ $saveOrder	= $listOrder=='ordering';
 			$canCheckin	= $user->authorise('core.manage',	'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
 			$canChange	= $user->authorise('core.edit.state', 'com_jongman') && $canCheckin;            
 			?>
-				<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->catid?>">
+				<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->schedule_id?>">
 					<td class="order nowrap center hidden-phone">
 					<?php
 						$iconClass = '';
@@ -101,7 +103,7 @@ $saveOrder	= $listOrder=='ordering';
 					</td>
 					<td class="center">
 						<div class="btn-group">
-							<?php echo JHtml::_('jgrid.published', $item->published, $i, 'quotas.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
+							<?php echo JHtml::_('jgrid.published', $item->published, $i, 'quotas.', $canChange, 'cb'); ?>
 							<?php
 							// Create dropdown items
 							$action = $archived ? 'unarchive' : 'archive';
@@ -130,7 +132,7 @@ $saveOrder	= $listOrder=='ordering';
 								<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias));?>
 							</span>
 							<div class="small">
-								<?php echo $item->note; ?>
+								<?php //echo $item->note; ?>
 							</div>
 						</div>
 					</td>           

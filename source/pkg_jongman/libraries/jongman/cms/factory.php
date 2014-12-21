@@ -29,7 +29,7 @@ abstract class RFFactory
 	{
 		if (!self::$authorisationService) {
 			jimport('jongman.cms.authorisation.service');
-			self::$authorisationService = RFAuthorisationService::getInstance();
+			self::$authorisationService = new RFAuthorisationService(JFactory::getUser());
 		}
 		
 		return self::$authorisationService;

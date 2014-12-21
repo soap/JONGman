@@ -12,6 +12,8 @@ JHtml::_('behavior.tooltip');
 $listOrder	= $this->state->get('list.ordering');
 $listDirn	= $this->state->get('list.direction');
 $saveOrder	= $listOrder=='ordering';
+$archived	= $this->state->get('filter.published') == 2 ? true : false;
+$trashed	= $this->state->get('filter.published') == -2 ? true : false;
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&view=resources'); ?>" method="post" name="adminForm" id="adminForm">
 <?php if (!empty( $this->sidebar)) : ?>
@@ -103,7 +105,7 @@ $saveOrder	= $listOrder=='ordering';
 					</td>
 					<td class="center">
 						<div class="btn-group">
-							<?php echo JHtml::_('jgrid.published', $item->published, $i, 'resources.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
+							<?php echo JHtml::_('jgrid.published', $item->published, $i, 'resources.', $canChange, 'cb'); ?>
 							<?php
 							// Create dropdown items
 							$action = $archived ? 'unarchive' : 'archive';
@@ -113,7 +115,7 @@ $saveOrder	= $listOrder=='ordering';
 							JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'resources');
 
 							// Render dropdown list
-							echo JHtml::_('actionsdropdown.render', $this->escape($item->name));
+							echo JHtml::_('actionsdropdown.render', $this->escape($item->title));
 							?>
 						</div>
 					</td>

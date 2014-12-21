@@ -10,8 +10,8 @@ class RFScheduleRepository implements IScheduleRepository
 		$config = array('ignore_request'=>true);
 		$model = JModelLegacy::getInstance('Schedule', 'JongmanModel', $config);
 		$model->setState('schedule.id', $scheduleId);
-		$schedule = $model->getItem();
+		$item = $model->getItem();
 		
-		return $schedule;
+		return $item;
 	}
 }

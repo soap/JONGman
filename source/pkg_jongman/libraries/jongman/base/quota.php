@@ -27,7 +27,7 @@ interface IQuotaDuration
 	 * @param string $timezone
 	 * @return QuotaSearchDates
 	*/
-	public function getSearchDates(ReservationSeries $reservationSeries, $timezone);
+	public function getSearchDates(RFReservationSeries $reservationSeries, $timezone);
 
 	/**
 	 * @abstract

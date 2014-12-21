@@ -8,16 +8,19 @@ JLoader::register('JongmanHelper', JPATH_COMPONENT . '/helpers/jongman.php');
 JLoader::registerPrefix('J', JPATH_ADMINISTRATOR.'/components/com_jongman/helpers', false, true);
 
 $logEnabled = (bool)JComponentHelper::getParams('com_jongman')->get('logging_level', false);
-if ( $logEnable ) {
+if ( $logEnabled ) {
 	
-	$logLevel = JComponentHelper::getParams('com_jongman')->get('logging_level', 'NOTICE');
+	$logLevel = JComponentHelper::getParams('com_jongman')->get('logging_level', JLog::WARNING);
 	
 	JLog::addLogger(
-	array('text_file' => 'com_jongman.logs.php'),
-	// Sets messages of all log levels to be sent to the file
-	JLog::$logLevel,
-	// Category for log messages
-	array('error', 'warning', 'validation')
+		array(
+			'logger'=> 'formattedtext',
+			'text_file' => 'com_jongman.logs.php'
+		),
+		// Sets messages of all log levels to be sent to the file
+		$logLevel,
+		// Category for log messages
+		array('error', 'warning', 'validation')
 	);
 }
 
