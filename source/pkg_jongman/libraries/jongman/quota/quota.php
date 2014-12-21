@@ -1,5 +1,6 @@
 <?php
 defined('_JEXEC') or die;
+jimport('jongman.base.quota');
 
 class RFQuota implements IQuota
 {
@@ -111,7 +112,8 @@ class RFQuota implements IQuota
 	 */
 	public function exceedsQuota($reservationSeries, $user, $schedule, IReservationViewRepository $reservationViewRepository)
 	{
-		$timezone = $schedule->getTimezone();
+		//$timezone = $schedule->getTimezone();
+		$timezone = $schedule->timezone;
 
 		if (!is_null($this->resourceId))
 		{
@@ -256,8 +258,8 @@ class RFQuota implements IQuota
 	}
 
 	/**
-	 * @param array|ReservationItemView[] $reservationsWithinRange
-	 * @param ReservationSeries $series
+	 * @param array|RFReservationItemView[] $reservationsWithinRange
+	 * @param RFReservationSeries $series
 	 * @param string $timezone
 	 * @throws QuotaExceededException
 	 */
@@ -290,12 +292,12 @@ class RFQuota implements IQuota
 		/** @var $reservation ReservationItemView */
 		foreach ($reservationsWithinRange as $reservation)
 		{
-			if (($series->containsResource($reservation->ResourceId) || $series->ScheduleId() == $reservation->ScheduleId) &&
+			if (($series->containsResource($reservation->resourceId) || $series->scheduleId() == $reservation->scheduleId) &&
 					!array_key_exists($reservation->referenceNumber, $toBeSkipped) &&
 					!$this->willBeDeleted($series, $reservation->reservationId)
 			)
 			{
-				$this->AddExisting($reservation, $timezone);
+				$this->addExisting($reservation, $timezone);
 			}
 		}
 	}
@@ -315,7 +317,7 @@ class RFQuota implements IQuota
 		return false;
 	}
 
-	private function _breakAndAdd(Date $startDate, Date $endDate, $timezone)
+	private function _breakAndAdd(RFDate $startDate, RFDate $endDate, $timezone)
 	{
 		$start = $startDate->toTimezone($timezone);
 		$end = $endDate->toTimezone($timezone);

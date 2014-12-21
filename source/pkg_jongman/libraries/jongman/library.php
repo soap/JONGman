@@ -33,6 +33,7 @@ jimport('jongman.base.ireserveditem');
 jimport('jongman.base.iseriesupdatescope');
 jimport('jongman.base.seriesevent');
 jimport('jongman.base.ireservationvalidationresult');
+jimport('jongman.base.ireservationviewrepository');
 
 // I want to user JM prefix, but JLoader cannot support it, as Joomla 's J matched first
 JLoader::registerPrefix('RF', JPATH_PLATFORM . '/jongman');

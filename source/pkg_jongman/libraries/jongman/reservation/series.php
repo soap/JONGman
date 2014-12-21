@@ -216,6 +216,15 @@ class RFReservationSeries extends JObject
 	{
 		return $this->resource->getResourceId();
 	}
+	
+	/**
+	 * @return int
+	 */
+	public function scheduleId()
+	{
+		return $this->resource->getScheduleId();
+	}
+	
 	/**
 	 * @return int[]
 	 */
@@ -267,6 +276,23 @@ class RFReservationSeries extends JObject
 		return $this->statusId;
 	}
 	
+	/**
+	 * @param Reservation $instance
+	 * @return bool
+	 */
+	protected function isCurrent(RFReservation $instance)
+	{
+		return $instance->referenceNumber() == $this->currentInstance()->referenceNumber();
+	}
+	
+	/**
+	 * @param int $resourceId
+	 * @return bool
+	 */
+	public function ContainsResource($resourceId)
+	{
+		return in_array($resourceId, $this->AllResourceIds());
+	}
 	public function isMarkedForDelete($reservationId)
 	{
 		// this is a new series

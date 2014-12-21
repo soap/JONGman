@@ -33,7 +33,7 @@ interface IRoleService
 	public function isScheduleAdministrator(JUser $user);
 }
 
-interface IAuthorizationService extends IRoleService
+interface IAuthorisationService extends IRoleService
 {
 	/**
 	 * @abstract
@@ -74,14 +74,14 @@ interface IAuthorizationService extends IRoleService
 
 }
 
-class RFAuthorizationService implements IAuthorizationService
+class RFAuthorisationService implements IAuthorisationService
 {
 	/**
 	 * @var IUserRepository
 	 */
 	private $userRepository;
 
-	public function __construct(JFactory $userRepository)
+	public function __construct(JUser $userRepository)
 	{
 		$this->userRepository = $userRepository;
 	}
@@ -107,7 +107,7 @@ class RFAuthorizationService implements IAuthorizationService
 	 * @param int $reserveForId user to reserve for
 	 * @return bool
 	 */
-	public function canReserveFor(UserSession $reserver, $reserveForId)
+	public function canReserveFor(JUser $reserver, $reserveForId)
 	{
 		return $this->isAdminFor($reserver, $reserveForId);
 	}
@@ -117,7 +117,7 @@ class RFAuthorizationService implements IAuthorizationService
 	 * @param int $approveForId user to approve for
 	 * @return bool
 	 */
-	public function canApproveFor(UserSession $approver, $approveForId)
+	public function canApproveFor(JUser $approver, $approveForId)
 	{
 		return $this->isAdminFor($approver, $approveForId);
 	}
@@ -126,7 +126,7 @@ class RFAuthorizationService implements IAuthorizationService
      * @param User $user
      * @return bool
      */
-    public function isApplicationAdministrator(User $user)
+    public function isApplicationAdministrator(JUser $user)
     {
         if ($user->EmailAddress() == Configuration::Instance()->GetKey(ConfigKeys::ADMIN_EMAIL))
         {
@@ -140,16 +140,16 @@ class RFAuthorizationService implements IAuthorizationService
      * @param User $user
      * @return bool
      */
-    public function IsResourceAdministrator(User $user)
+    public function isResourceAdministrator(JUser $user)
     {
-        return $user->IsInRole(RoleLevel::RESOURCE_ADMIN);
+        return $user->isInRole(RoleLevel::RESOURCE_ADMIN);
     }
 
     /**
      * @param User $user
      * @return bool
      */
-    public function IsGroupAdministrator(User $user)
+    public function isGroupAdministrator(JUser $user)
     {
         return $user->IsInRole(RoleLevel::GROUP_ADMIN);
     }
@@ -158,7 +158,7 @@ class RFAuthorizationService implements IAuthorizationService
      * @param User $user
      * @return bool
      */
-    public function IsScheduleAdministrator(User $user)
+    public function isScheduleAdministrator(JUser $user)
     {
         return $user->IsInRole(RoleLevel::SCHEDULE_ADMIN);
     }
@@ -168,7 +168,7 @@ class RFAuthorizationService implements IAuthorizationService
 	 * @param int $otherUserId
 	 * @return bool
 	 */
-	private function IsAdminFor(UserSession $userSession, $otherUserId)
+	private function isAdminFor(JUser $userSession, $otherUserId)
 	{
 		if ($userSession->IsAdmin)
 		{
@@ -192,19 +192,19 @@ class RFAuthorizationService implements IAuthorizationService
      * @param IResource $resource
      * @return bool
      */
-    public function CanEditForResource(UserSession $userSession, IResource $resource)
+    public function canEditForResource(JUser $userSession, IResource $resource)
     {
-        if ($userSession->IsAdmin)
+        if ($userSession->isAdmin)
         {
             return true;
         }
 
-        if (!$userSession->IsResourceAdmin && !$userSession->IsScheduleAdmin)
+        if (!$userSession->isResourceAdmin && !$userSession->IsScheduleAdmin)
         {
             return false;
         }
 
-        $user = $this->userRepository->LoadById($userSession->UserId);
+        $user = $this->userRepository->LoadById($userSession->userId);
 
         return $user->IsResourceAdminFor($resource);
     }
