@@ -85,12 +85,14 @@
 	<fieldset name="period">
 		<field name="start_date"
 			type="calendar" format="%Y-%m-%d"
+			class="span8"
 			required="true"
 			label="COM_JONGMAN_FIELD_RESERVATION_START_DATE_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_START_DATE_DESC" />
 				
 		<field name="end_date"
 			type="calendar" format="%Y-%m-%d"
+			class="span8"
 			label="COM_JONGMAN_FIELD_RESERVATION_END_DATE_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_END_DATE_DESC" />
 			

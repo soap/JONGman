@@ -44,7 +44,7 @@ JHtml::_('behavior.keepalive');
 		</div>
 	</div>
 	<div class="row-fluid">
-		<div class="span6 form-horizontal">
+		<div class="span7 form-horizontal">
 			<div class="control-group">
 				<div class="control-label">
 				<?php echo $this->form->getLabel('title'); ?>
@@ -83,7 +83,7 @@ JHtml::_('behavior.keepalive');
 				<div class="control-label">
 					<?php echo $this->form->getLabel('start_date'); ?>
 				</div>
-				<div class="controls">
+				<div class="controls form-inline">
 					<?php echo $this->form->getInput('start_date'); ?>
 					<?php echo $this->form->getInput('start_time'); ?>
 				</div>
@@ -92,7 +92,7 @@ JHtml::_('behavior.keepalive');
 				<div class="control-label">
 					<?php echo $this->form->getLabel('end_date'); ?>
 				</div>
-				<div class="controls">
+				<div class="controls form-inline">
 					<?php echo $this->form->getInput('end_date'); ?>
 					<?php echo $this->form->getInput('end_time'); ?>
 				</div>
@@ -105,7 +105,7 @@ JHtml::_('behavior.keepalive');
 					<?php echo $this->form->getInput('reservation_length')?>
 				</div>
 			</div>
-			<div class="control-grouop">
+			<div class="control-grouop form-inline">
 				<div class="control-label">
 					<?php echo $this->form->getLabel('description'); ?>
 				</div>
@@ -114,7 +114,7 @@ JHtml::_('behavior.keepalive');
 				</div>
 			</div>
 		</div>
-		<div class="span6 form-horizontal">
+		<div class="span5 form-horizontal">
 			<?php echo $this->loadTemplate('repeatoptions')?>
 		</div>
 	</div>

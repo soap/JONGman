@@ -8,7 +8,7 @@ class JongmanControllerInstance extends JControllerForm
 	
 	protected $view_item = 'reservation';
 	
-	public function __construct($config = array())
+	public function __construct($config = array()) 
 	{
 		parent::__construct($config);
 		$this->registerTask('updateinstance', 'save');
