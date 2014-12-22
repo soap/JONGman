@@ -70,12 +70,14 @@ class JongmanViewReservation extends JViewLegacy
 	
 	public function getToolbar()
 	{
-        $state   = $this->get('State');
+        $user	 = JFactory::getUser();
+		$state   = $this->get('State');
         $item 	 = $this->get("Item");
         $isNew	 = $item->id == 0;
         $isRecurring = ($item->repeat_type !== 'none') || empty($item->repeat_type);
         
         $asset =  $isNew ? 'com_jongman' : 'com_jongman.resource.'.$this->item->resource_id;
+        $isOwner = ($item->owner_id == $user->id) || ($item->created_by == $user->id);
         
         $access  = JongmanHelper::getActions($asset);
         
@@ -85,7 +87,7 @@ class JongmanViewReservation extends JViewLegacy
             	'COM_JONGMAN_ACTION_SAVE',
             	'reservation.save',
             	false, //no need to select item first
-           	 	array('access' => $access->get('core.create') || $access->get('core.edit') || $access->get('core.edit.own'))
+           	 	array('access' => $access->get('core.create') || $access->get('core.edit') || ($access->get('core.edit.own') && $isOwner))
         	);
         	RFToolbar::button(
             	'JCANCEL',
@@ -99,7 +101,7 @@ class JongmanViewReservation extends JViewLegacy
             		'COM_JONGMAN_ACTION_UPDATE_INSTANCE',
             		'instance.updateinstance',
            			false,
-            		array('access' => $access->get('core.edit') || $access->get('core.edit.own'),
+            		array('access' => $access->get('core.edit') || ($access->get('core.edit.own') && $isOwner),
             			'icon'=>'icon-ok')
         		);
         	
@@ -107,7 +109,7 @@ class JongmanViewReservation extends JViewLegacy
             		'COM_JONGMAN_ACTION_UPDATE_FULL',
             		'instance.updatefull',
            			false,
-            		array('access' => $access->get('core.edit') || $access->get('core.edit.own'),
+            		array('access' => $access->get('core.edit') || ($access->get('core.edit.own') && $isOwner),
             		'icon'=>'icon-ok')
         		);
         	
@@ -115,7 +117,7 @@ class JongmanViewReservation extends JViewLegacy
             		'COM_JONGMAN_ACTION_UPDATE_FUTURE',
             		'instance.updatefuture',
            			false,
-            		array('access' => $access->get('core.edit') || $access->get('core.edit.own'),
+            		array('access' => $access->get('core.edit') || ($access->get('core.edit.own') && $isOwner),
             		'icon'=>'icon-ok')
         		);
         		
@@ -124,7 +126,7 @@ class JongmanViewReservation extends JViewLegacy
             		'COM_JONGMAN_ACTION_UPDATE',
             		'instance.updatefull',
            			false,
-            		array('access' => $access->get('core.edit') ||  $access->get('core.edit.own'),
+            		array('access' => $access->get('core.edit') ||  ($access->get('core.edit.own') && $isOwner),
             		'icon'=>'icon-ok')
         		);	
 			}
@@ -133,7 +135,7 @@ class JongmanViewReservation extends JViewLegacy
 				'COM_JONGMAN_ACTION_DELETE',
 				'instances.delete',
 				false,
-				array('access' => $access->get('core.delete'), 'icon' => 'icon-minus')
+				array('access' => $access->get('core.delete') || ($access->get('com_jongman.delete.own') && $isOwner), 'icon' => 'icon-minus')
 			);
 			RFToolbar::button(
 				'JCANCEL',
