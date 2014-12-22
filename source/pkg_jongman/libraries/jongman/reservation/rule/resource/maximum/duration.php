@@ -25,7 +25,7 @@ class RFReservationRuleResourceMaximumDuration implements IReservationValidation
 				$maxEnd = $start->applyDifference($maxDuration);
 				if ($end->greaterThan($maxEnd))
 				{
-					$this->message =  JText::sprintf("COM_JONGMAN_ERROR_MAX_DURATION", $maxDuration);
+					$this->message =  JText::sprintf("COM_JONGMAN_ERROR_MAX_DURATION", $maxDuration->hours());
 					return new RFReservationRuleResult(false, $this->message);
 				}
 			}
