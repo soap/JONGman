@@ -235,6 +235,15 @@ class JongmanModelReservation extends JModelAdmin
 		$ruleProcessor->addRule(
 					new RFReservationRuleSchedulePeriod( $scheduleRepository, $reservationSeries->bookedBy() ) 
 				);
+		
+		$quotaRepository = new RFQuotaRepository();
+		$scheduleRepository = new RFScheduleRepository();
+		$reservationViewRepository = new RFReservationViewRepository();
+		$userRepository = new RFUserRepository();
+		
+		$ruleProcessor->addRule(
+				new RFReservationRuleAdminexcluded(new RFReservationRuleQuota( $quotaRepository, $reservationViewRepository, $userRepository, $scheduleRepository), $reservationSeries->bookedBy())
+			);
 					
 		$result = $ruleProcessor->validate($reservationSeries);
 		if (!$result->canBeSaved()) {
@@ -242,6 +251,7 @@ class JongmanModelReservation extends JModelAdmin
 			foreach($errors as $error) {
 				$this->setError($error);
 			}
+			
 			return false;		
 		}			
 	
@@ -415,7 +425,7 @@ class JongmanModelReservation extends JModelAdmin
 		return $db->loadObjectList();	
 	}
 	
-	public function delete($pks) 
+	public function delete(&$pks) 
 	{
 		if (parent::delete($pks)) {
 			$dbo = $this->getDbo();
@@ -436,6 +446,7 @@ class JongmanModelReservation extends JModelAdmin
 			
 			return true;
 		}
+		
 		return false;
 	}
 	

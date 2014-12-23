@@ -286,7 +286,7 @@ class JongmanModelInstance extends JModelAdmin
 		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleResourceMinimumDuration(), $createdBy));
 		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleResourceMaximumDuration(), $createdBy));
 		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleQuota(
-				new RFQuotaRepository(), new RFReservationRepository(), new RFUserRepository(), new RFScheduleRepository()), $createdBy));			
+				new RFQuotaRepository(), new RFReservationViewRepository(), new RFUserRepository(), new RFScheduleRepository()), $createdBy));			
 			
 		$result = $ruleProcessor->validate($existingSeries);
 
@@ -620,5 +620,49 @@ class JongmanModelInstance extends JModelAdmin
 	protected function getReservationCommand($event, $series)
 	{
 		return RFReservationEventMapper::getInstance()->map($event, $series);	
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see JModelAdmin::canDelete()
+	 */
+	protected function canDelete($record)
+	{
+		$user = JFactory::getUser();
+		
+		if ($user->authorise('core.admin', 'com_jongman')) return true;
+		
+		$reservationId = $record->reservation_id;
+		// Validate instance date time first
+		
+		$reservation = JTable::getInstance('Reservation', 'JongmanTable');
+		
+		if (!$reservation->load($reservationId)) {
+			return $user->authorise('core.delete', 'com_jongman');
+		}
+		
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
+		$query->select('resource_id')
+				->from('#__jongman_reservation_resources')
+				->where('reservation_id='.(int)$reservationId);
+		$db->setQuery($query);
+		$resources = $db->loadObjectList();
+		
+		if ($reservation->owner_id == $user->id || $reservation->created_by == $user->id) {
+			if ($user->authorise('com_jongman.delete.own', 'com_jongman.resource.'.$resources[0]->resource_id)) {
+				return true;
+			}else{
+				if ($user->authorise('com_jongman.delete.own', 'com_jongman')) return true; 
+			}	
+		}
+		
+		if ($user->authorise('core.delete', 'com_jongman.resource.'.$resources[0]->resource_id)) {
+			return true;
+		}else if ($user->authorise('core.delete','com_jongman')) {
+			return true;
+		}
+		
+		return false;
 	}
 }

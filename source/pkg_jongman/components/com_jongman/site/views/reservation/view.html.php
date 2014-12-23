@@ -5,7 +5,7 @@ jimport('joomla.application.component.view');
 require_once JPATH_COMPONENT.'/helpers/reservation.php';
 
 /**
- * Jongman view.
+ * Reservation view.
  *
  * @package     JONGman
  * @subpackage  Frontend
