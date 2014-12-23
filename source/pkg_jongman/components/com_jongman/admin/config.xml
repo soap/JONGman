@@ -154,11 +154,12 @@
 			default="NOTICE"
 			label="COM_JONGMAN_CONFIG_LOGGING_LEVEL_LABEL"
 			description="COM_JONGMAN_CONFIG_LOGGING_LEVEL_DESC">
-			<option value="DEBUG">COM_JONGMAN_OPTION_DEBUG_LEVEL_DEBUG</option>
-			<option value="INFO">COM_JONGMAN_OPTION_DEBUG_LEVEL_INFO</option>
-			<option value="NOTICE">COM_JONGMAN_OPTION_DEBUG_LEVEL_NOTICE</option>
-			<option value="ERROR">COM_JONGMAN_OPTION_DEBUG_LEVEL_ERROR</option>
-			<option value="ALL">COM_JONGMAN_OPTION_DEBUG_LEVEL_ALL</option>
+			<option value="128">COM_JONGMAN_OPTION_DEBUG_LEVEL_DEBUG</option>
+			<option value="64">COM_JONGMAN_OPTION_DEBUG_LEVEL_INFO</option>
+			<option value="32">COM_JONGMAN_OPTION_DEBUG_LEVEL_NOTICE</option>
+			<option value="16">COM_JONGMAN_OPTION_DEBUG_LEVEL_WARNING</option>
+			<option value="8">COM_JONGMAN_OPTION_DEBUG_LEVEL_ERROR</option>
+			<option value="30719">COM_JONGMAN_OPTION_DEBUG_LEVEL_ALL</option>
 		</field>
 	</fieldset>
 	<fieldset
