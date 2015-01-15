@@ -121,6 +121,7 @@ class JongmanModelInstance extends JModelAdmin
 		}
 		parent::preprocessForm($form, $data, $group);		
 	}
+	
 	/**
 	 * Delete reservation instance, delete reservation series if no instance exists
 	 * @see JModelAdmin::delete()

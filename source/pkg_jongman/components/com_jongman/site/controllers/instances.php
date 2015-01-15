@@ -13,15 +13,6 @@ class JongmanControllerInstances extends JControllerAdmin
 		return parent::getModel($name, $prefix, $config);
 	}	
 	
-	public function delete()
-	{
-		parent::delete();
-		$this->setRedirect(
-			JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list
-				.$this->getRedirectToListAppend(), false)
-		);
-	}
-	
 	protected function getRedirectToListAppend()
 	{
 		$app = JFactory::getApplication();

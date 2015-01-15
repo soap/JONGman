@@ -97,30 +97,22 @@ class JongmanViewReservation extends JViewLegacy
         	);
 		}else {
 			if ($isRecurring){
-        		RFToolbar::button(
-            		'COM_JONGMAN_ACTION_UPDATE_INSTANCE',
-            		'instance.updateinstance',
-           			false,
-            		array('access' => $access->get('core.edit') || ($access->get('core.edit.own') && $isOwner),
-            			'icon'=>'icon-ok')
-        		);
-        	
-        		RFToolbar::button(
-            		'COM_JONGMAN_ACTION_UPDATE_FULL',
-            		'instance.updatefull',
-           			false,
-            		array('access' => $access->get('core.edit') || ($access->get('core.edit.own') && $isOwner),
-            		'icon'=>'icon-ok')
-        		);
-        	
-        		RFToolbar::button(
-            		'COM_JONGMAN_ACTION_UPDATE_FUTURE',
-            		'instance.updatefuture',
-           			false,
-            		array('access' => $access->get('core.edit') || ($access->get('core.edit.own') && $isOwner),
-            		'icon'=>'icon-ok')
-        		);
+				$canEdit =  $access->get('core.edit') || ($access->get('core.edit.own') && $isOwner);
+				$items = array();
+				$items[] = array('text' => 'COM_JONGMAN_ACTION_UPDATE_INSTANCE', 'task' => 'instance.updateinstance', 'class'=>'');
+				$items[] = array('text' => 'COM_JONGMAN_ACTION_UPDATE_FUTURE', 'task' => 'instance.updatefuture', 'class'=>'');
+				$items[] = array('text' => 'COM_JONGMAN_ACTION_UPDATE_FULL', 'task' => 'instance.updatefull', 'class'=>'');
+				RFToolbar::dropdownButton($items);
         		
+        		$canDelete = $access->get('core.delete') || ($access->get('com_jongman.delete.own') && $isOwner);
+        		
+        		$items = array();
+        		$items[] = array('text' => 'COM_JONGMAN_ACTION_DELETE_INSTANCE', 'task' => 'instance.deleteinstance', 
+        				'options' =>array('class'=>'btn-info', 'icon'=>'icon-minus icon-white')        		);
+        		$items[] = array('text' => 'COM_JONGMAN_ACTION_DELETE_FUTURE', 'task' => 'instance.deletefuture');
+        		$items[] = array('text' => 'COM_JONGMAN_ACTION_DELETE_FULL', 'task' => 'instance.deletefull');
+        		RFToolbar::dropdownButton($items);
+
 			}else{
 				RFToolbar::button(
             		'COM_JONGMAN_ACTION_UPDATE',
@@ -128,15 +120,15 @@ class JongmanViewReservation extends JViewLegacy
            			false,
             		array('access' => $access->get('core.edit') ||  ($access->get('core.edit.own') && $isOwner),
             		'icon'=>'icon-ok')
-        		);	
+        		);
+				RFToolbar::button(
+					'COM_JONGMAN_ACTION_DELETE',
+					'instance.deletefull',
+					false,
+					array('access' => $access->get('core.delete') || ($access->get('com_jongman.delete.own') && $isOwner), 'icon' => 'icon-minus')
+				);
 			}
 			
-			RFToolbar::button(
-				'COM_JONGMAN_ACTION_DELETE',
-				'instances.delete',
-				false,
-				array('access' => $access->get('core.delete') || ($access->get('com_jongman.delete.own') && $isOwner), 'icon' => 'icon-minus')
-			);
 			RFToolbar::button(
 				'JCANCEL',
 				'instance.cancel',

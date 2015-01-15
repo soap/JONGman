@@ -14,6 +14,9 @@ class JongmanControllerInstance extends JControllerForm
 		$this->registerTask('updateinstance', 'save');
 		$this->registerTask('updatefull', 'save');
 		$this->registerTask('updatefuture', 'save');
+		$this->registerTask('deleteinstance', 'delete');
+		$this->registerTask('deletefull', 'delete');
+		$this->registerTask('deletefuture', 'delete');
 		JFactory::getApplication()->input->set('layout', null);
 	}
 	
@@ -243,6 +246,102 @@ class JongmanControllerInstance extends JControllerForm
 		return true;
 	}		
 	
+	public function delete()
+	{
+		// Check for request forgeries.
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		
+		// Initialise variables.
+		$app   = JFactory::getApplication();
+		$lang  = JFactory::getLanguage();
+		$model = $this->getModel();
+		$table = $model->getTable();
+		$data  = JRequest::getVar('jform', array(), 'post', 'array');
+		$checkin = property_exists($table, 'checked_out');
+		$context = "$this->option.edit.$this->context";
+		$task = $this->getTask();
+		
+		// Determine the name of the primary key for the data.
+		if (empty($key))
+		{
+			$key = $table->getKeyName();
+		}
+		
+		// To avoid data collisions the urlVar may be different from the primary key.
+		if (empty($urlVar))
+		{
+			$urlVar = $key;
+		}
+		
+		$recordId = JRequest::getInt($urlVar);
+		
+		if (!$this->checkEditId($context, $recordId))
+		{
+			// Somehow the person just went to the form and tried to save it. We don't allow that.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $recordId));
+			$this->setMessage($this->getError(), 'error');
+		
+			$this->setRedirect(
+				JRoute::_(
+						'index.php?option=' . $this->option . '&view=' . $this->view_list
+						. $this->getRedirectToListAppend(), false
+				)
+			);
+		
+			return false;
+		}
+		
+		// Populate the row id from the session.
+		$data[$key] = $recordId;
+		
+		// Access check.
+		if (!$this->allowSave($data, $key))
+		{
+			$this->setError(JText::_('JLIB_APPLICATION_ERROR_SAVE_NOT_PERMITTED'));
+			$this->setMessage($this->getError(), 'error');
+		
+			$this->setRedirect(
+				JRoute::_(
+						'index.php?option=' . $this->option . '&view=' . $this->view_list
+						. $this->getRedirectToListAppend(), false
+				)
+			);
+		
+			return false;
+		}
+		
+		// Validate the posted data.
+		// Sometimes the form needs some posted data, such as for plugins and modules.
+		$form = $model->getForm($data, false);
+		
+		if (!$form)
+		{
+			$app->enqueueMessage($model->getError(), 'error');
+		
+			return false;
+		}
+		
+		switch ($this->getTask()) {
+			case 'deleteinstance':
+				$updatescope = 'this';
+				break;
+			case 'deletefull':
+				$updatescope = 'full';
+				break;
+			case 'deletefuture':
+				$updatescope = 'future';
+				break;
+			default:
+				$updatescope = 'this';
+				break;
+		}
+		
+		// pass for validate usage
+		$data['updateScope'] = $updatescope;
+		
+		// Test whether the data is valid.
+		$validData = $model->validate($form, $data);		
+	}
 	
 	protected function getRedirectToListAppend()
 	{
