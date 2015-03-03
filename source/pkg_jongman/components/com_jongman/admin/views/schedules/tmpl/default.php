@@ -121,10 +121,10 @@ $trashed	= $this->state->get('filter.published') == -2 ? true : false;
 					<td class="nowrap has-context">
 						<div class="pull-left">
 							<?php if ($item->checked_out) : ?>
-								<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'contacts.', $canCheckin); ?>
+								<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'schedules.', $canCheckin); ?>
 							<?php endif; ?>
 							<?php if ($canEdit || $canEditOwn) : ?>
-								<a href="<?php echo JRoute::_('index.php?option=com_jongman&task=resource.edit&id='.(int) $item->id); ?>">
+								<a href="<?php echo JRoute::_('index.php?option=com_jongman&task=schedule.edit&id='.(int) $item->id); ?>">
 									<?php echo $this->escape($item->name); ?></a>
 							<?php else : ?>
 									<?php echo $this->escape($item->name); ?>
