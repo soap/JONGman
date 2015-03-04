@@ -107,11 +107,11 @@ class JongmanViewReservation extends JViewLegacy
         		$canDelete = $access->get('core.delete') || ($access->get('com_jongman.delete.own') && $isOwner);
         		
         		$items = array();
-        		$items[] = array('text' => 'COM_JONGMAN_ACTION_DELETE_INSTANCE', 'task' => 'instance.deleteinstance', 
-        				'options' =>array('class'=>'btn-info', 'icon'=>'icon-minus icon-white')        		);
+        		$options = array('class'=>'btn-info', 'icon'=>'icon-minus icon-white');
+        		$items[] = array('text' => 'COM_JONGMAN_ACTION_DELETE_INSTANCE', 'task' => 'instance.deleteinstance');
         		$items[] = array('text' => 'COM_JONGMAN_ACTION_DELETE_FUTURE', 'task' => 'instance.deletefuture');
         		$items[] = array('text' => 'COM_JONGMAN_ACTION_DELETE_FULL', 'task' => 'instance.deletefull');
-        		RFToolbar::dropdownButton($items);
+        		RFToolbar::dropdownButton($items, $options);
 
 			}else{
 				RFToolbar::button(
