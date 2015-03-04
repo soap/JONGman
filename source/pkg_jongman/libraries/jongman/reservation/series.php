@@ -81,7 +81,7 @@ class RFReservationSeries extends JObject
 		$instance = $this->getInstance($this->getCurrentKey());
 		if (!isset($instance))
 		{
-			throw new Exception("Current instance not found. Missing Reservation key {$this->GetCurrentKey()}");
+			throw new Exception("Current instance not found. Missing Reservation key {$this->getCurrentKey()}");
 		}
 		return $instance;
 	}
@@ -289,7 +289,7 @@ class RFReservationSeries extends JObject
 	 * @param int $resourceId
 	 * @return bool
 	 */
-	public function ContainsResource($resourceId)
+	public function containsResource($resourceId)
 	{
 		return in_array($resourceId, $this->AllResourceIds());
 	}
