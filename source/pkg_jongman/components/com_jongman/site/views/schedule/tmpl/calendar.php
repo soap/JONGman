@@ -27,7 +27,7 @@ $url = JSite::getMenu()->getActive()->link.'&Itemid='.JSite::getMenu()->getActiv
 		<?php echo JHtml::image('com_jongman/arrow_large_left.png', 'Back', array(), true);?>
 		</a>
 		<?php echo $firstDate->format($headerDateFormat)?> - <?php echo $lastDate->format($headerDateFormat)?>
-		<a href="<?php echo $this->navLinks->nextLink;?>">	
+		<a href="<?php echo JRoute::_($this->navLinks->nextLink);?>">	
 		<?php echo JHtml::image('com_jongman/arrow_large_right.png', 'Forward', array(), true);?>
 		</a>	
 	</div>

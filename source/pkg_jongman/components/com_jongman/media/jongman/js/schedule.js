@@ -55,13 +55,14 @@ var JScheduleClass = function (opts)
 			var datePicker = jQuery("#datepicker");
 			datePicker.toggle();
 
+			var src = jQuery(this).find("img").first().attr("src");
 			if (datePicker.css("display") == "none")
 			{
-				jQuery(this).find("img").first().attr("src", "media/com_jongman/jongman/images/calendar.png");
+				jQuery(this).find("img").first().attr("src", src.replace("calendar.png", "calendar-minus.png"));
 			}
 			else
 			{
-				jQuery(this).find("img").first().attr("src", "media/com_jongman/jongman/images/calendar-minus.png");
+				jQuery(this).find("img").first().attr("src",src.replace("calendar-minus.png", "calendar.png"));
 			}
 		});
 	}
