@@ -26,21 +26,29 @@ else {
 //base interface definitions
 jimport('jongman.base.ilayout');
 jimport('jongman.base.irepeats');
+jimport('jongman.base.iresourcerepository');
 jimport('jongman.base.ireservationlisting');
 jimport('jongman.base.ireservationslot');
 jimport('jongman.base.ireservationvalidationrulle');
 jimport('jongman.base.ireserveditem');
 jimport('jongman.base.iseriesupdatescope');
 jimport('jongman.base.seriesevent');
+jimport('jongman.base.ireservationpage');
 jimport('jongman.base.ireservationvalidationresult');
 jimport('jongman.base.ireservationviewrepository');
+jimport('jongman.base.ireservationpersistencefactory');
+jimport('jongman.base.ireservationpersistenceservice');
+jimport('jongman.base.ireservationvalidationfactory');
+jimport('jongman.base.ireservationvalidationservice');
+jimport('jongman.base.ireservationnotificationfactory');
+jimport('jongman.base.ireservationnotificationservice');
 
 // I want to user JM prefix, but JLoader cannot support it, as Joomla 's J matched first
 JLoader::registerPrefix('RF', JPATH_PLATFORM . '/jongman');
+JLoader::registerprefix('RF', JPATH_PLATFORM . '/jongman/cms', false, true);
 
 //discover classes prefixed by RF in the folder
 JLoader::discover('RF', JPATH_PLATFORM . '/jongman/utils');
-JLoader::discover('RF', JPATH_PLATFORM . '/jongman/cms');
 JLoader::register('RFReservationStartTimeContraint', JPATH_PLATFORM.'/jongman/utils/starttimeconstraint.php');
 JLoader::register('RFReservationExistingSeries', JPATH_PLATFORM.'/jongman/reservation/existingseries.php');
 

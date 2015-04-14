@@ -293,6 +293,7 @@ class RFReservationSeries extends JObject
 	{
 		return in_array($resourceId, $this->AllResourceIds());
 	}
+	
 	public function isMarkedForDelete($reservationId)
 	{
 		// this is a new series

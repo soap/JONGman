@@ -47,7 +47,7 @@ class RFReservationEventMapper
 
 	/**
 	 * @param $event mixed
-	 * @param $series ExistingReservationSeries
+	 * @param $series RFReservationSeries
 	 * @return RFEventCommand
 	 */
 	public function map($event, RFReservationExistingSeries $series)
@@ -146,6 +146,6 @@ class RFReservationEventMapper
 
 	private function buildReminderRemovedEvent(RFEventReminderRemoved $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommand(new RemoveReservationReminderCommand($series->SeriesId(), $event->ReminderType()), $series);
+		return new RFEventCommand(new RemoveReservationReminderCommand($series->seriesId(), $event->reminderType()), $series);
 	}
 }

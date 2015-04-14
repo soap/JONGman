@@ -332,7 +332,7 @@ class RFReservationExistingSeries extends RFReservationSeries
 
 			foreach ($instances as $instance)
 			{
-				JLog::add("Removing instance {$instance->ReferenceNumber()} from series $this->SeriesId()", JLog::DEBUG);
+				JLog::add("Removing instance {$instance->referenceNumber()} from series $this->SeriesId()", JLog::DEBUG);
 				$this->addEvent(new RFEventInstanceRemoved($instance, $this));
 			}
 		}
@@ -375,7 +375,7 @@ class RFReservationExistingSeries extends RFReservationSeries
 			//Log::Debug('Adding instance for series %s on %s', $this->seriesId(), $reservationDate);
 
 			$newInstance = parent::addNewInstance($reservationDate);
-			$this->AddEvent(new RFEventInstanceAdded($newInstance, $this));
+			$this->addEvent(new RFEventInstanceAdded($newInstance, $this));
 		}
 	}
 

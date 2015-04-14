@@ -9,7 +9,7 @@ class RFEventSeriesDeleted extends RFSeriesEvent
 	}
 
 	/**
-	 * @return ExistingReservationSeries
+	 * @return RFExistingReservationSeries
 	 */
 	public function series()
 	{
