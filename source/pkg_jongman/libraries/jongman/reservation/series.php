@@ -8,6 +8,8 @@ defined('_JEXEC') or die;
  */
 class RFReservationSeries extends JObject
 {
+	private $_currentInstanceKey;
+	
 	protected $seriesId; //reservation series id
 	protected $title;
 	protected $description;
@@ -26,15 +28,19 @@ class RFReservationSeries extends JObject
 	protected $instances = array();
 	
 	protected $_repeatOptions;
-	private $_currentInstanceKey;
     /**
      * @var RFResourceBookable[]
      */
     protected $_additionalResources = array();
 	
+    protected $startReminder;
+    protected $endReminder;
+    
 	public function __construct()
 	{
 		$this->_repeatOptions = new RFReservationRepeatNone();
+		$this->startReminder = RFReservationReminder::None();
+		$this->endReminder = RFReservationReminder::None();
 	}
 	
 	/**
@@ -304,5 +310,31 @@ class RFReservationSeries extends JObject
 	{
 		// this is a new series
 		return false;
-	}	
+	}
+
+	/**
+	 * @return RFReservationReminder
+	 */
+	public function getStartReminder()
+	{
+		return $this->startReminder;
+	}
+	
+	/**
+	 * @return RFReservationReminder
+	 */
+	public function getEndReminder()
+	{
+		return $this->endReminder;
+	}
+	
+	public function addStartReminder(RFReservationReminder $reminder)
+	{
+		$this->startReminder = $reminder;
+	}
+	
+	public function addEndReminder(RFReservationReminder $reminder)
+	{
+		$this->endReminder = $reminder;
+	}
 }
