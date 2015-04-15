@@ -12,9 +12,9 @@ class RFReservationRuleSchedulePeriod implements IReservationValidationRule
 	private $repository;
 	private $user;
 	
-	public function __construct(JModelLegacy $repository, JUser $user)
+	public function __construct(IScheduleRepository $repository, JUser $user)
 	{
-		$this->repostiory = $repository;
+		$this->repository = $repository;
 		$this->user = $user;
 	}
 	
@@ -24,9 +24,11 @@ class RFReservationRuleSchedulePeriod implements IReservationValidationRule
 	 */
 	public function validate($reservationSeries)
 	{
-		$layout = $this->repostiory->getScheduleLayout(
+		//$layout = $this->repostiory->getScheduleLayout(
+		$config = JFactory::getConfig();
+		$layout = $this->repository->getLayout(		
 			$reservationSeries->getResource()->getScheduleId(), 
-			JongmanHelper::getUserTimezone()
+			new RFFactoryLayoutSchedule($this->user->getParam('timezone', $config->get('config.offset')))
 		);
 
 		$startDate = $reservationSeries->currentInstance()->startDate();
