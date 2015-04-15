@@ -37,14 +37,14 @@ class RFReservationRepeatOptionsFactory
 	 * @param string $terminationDateTimezone
 	 * @return IRepeatOptions
 	 */
-	/*public function CreateFromComposite(IRepeatOptionsComposite $composite, $terminationDateTimezone)
+	public function CreateFromComposite(IRepeatOptionsComposite $composite, $terminationDateTimezone)
 	{
-		$repeatType = $composite->GetRepeatType();
-		$interval = $composite->GetRepeatInterval();
-		$weekdays = $composite->GetRepeatWeekdays();
-		$monthlyType = $composite->GetRepeatMonthlyType();
-		$terminationDate = Date::Parse($composite->GetRepeatTerminationDate(), $terminationDateTimezone);
+		$repeatType = $composite->getRepeatType();
+		$interval = $composite->getRepeatInterval();
+		$weekdays = $composite->getRepeatWeekdays();
+		$monthlyType = $composite->getRepeatMonthlyType();
+		$terminationDate = RFDate::parse($composite->getRepeatTerminationDate(), $terminationDateTimezone);
 
-		return $this->Create($repeatType, $interval, $terminationDate, $weekdays, $monthlyType);
-	}*/
+		return $this->create($repeatType, $interval, $terminationDate, $weekdays, $monthlyType);
+	}
 }
