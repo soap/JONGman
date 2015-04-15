@@ -191,7 +191,7 @@ class RFReservation
 	 */
 	public function changeParticipants($participantIds)
 	{
-		$diff = new ArrayDiff($this->_participantIds, $participantIds);
+		$diff = new RFArrayDiff($this->_participantIds, $participantIds);
 
 		$this->addedParticipants = $diff->getAddedToArray1();
 		$this->removedParticipants = $diff->getRemovedFromArray1();
