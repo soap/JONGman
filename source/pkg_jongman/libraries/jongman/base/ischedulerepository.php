@@ -5,4 +5,7 @@ interface IScheduleRepository
 {
 	public function loadById($scheduleId);
 	
+	public function getAll();
+	
+	public function getLayout($scheduleId, ILayoutFactory $layoutFactory);
 }
