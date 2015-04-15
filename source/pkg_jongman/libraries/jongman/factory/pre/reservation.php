@@ -1,5 +1,6 @@
 <?php
 defined('_JEXEC') or die;
+
 jimport('jongman.cms.resource.repository');
 jimport('jongman.cms.reservation.view.repository');
 jimport('jongman.cms.schedule.repository');
@@ -70,12 +71,14 @@ class RFFactoryPreReservation implements IPreReservationFactory
 
 	private function createUpdateService(RFReservationValidationRuleProcessor $ruleProcessor, $user)
 	{
-		if (Configuration::Instance()->GetSectionKey(ConfigSection::RESERVATION, ConfigKeys::RESERVATION_UPDATES_REQUIRE_APPROVAL, new BooleanConverter()))
+		//if (Configuration::Instance()->GetSectionKey(ConfigSection::RESERVATION, ConfigKeys::RESERVATION_UPDATES_REQUIRE_APPROVAL, new BooleanConverter()))
+		$reservationUpdateRequireApproval = false;
+		if ($reservationUpdateRequireApproval)
 		{
-			$ruleProcessor->addRule(new AdminExcludedRule(new RFReservationRuleRequiresApproval(PluginManager::Instance()->LoadAuthorization()), $userSession, $this->userRepository));
-			$ruleProcessor->addRule(new AdminExcludedRule(new RFReservationRuleUserIsOwner($userSession), $userSession, $this->userRepository));
+			$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleRequiresApproval(), $user, $this->userRepository));
+			$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleUserIsOwner($user), $user, $this->userRepository));
 		}
-		return new RFReservationValidationServiceDelete($ruleProcessor);
+		return new RFReservationValidationServiceUpdate($ruleProcessor);
 	}
 
 	private function createDeleteService(RFReservationValidationRuleProcessor $ruleProcessor, $user)
@@ -87,7 +90,6 @@ class RFFactoryPreReservation implements IPreReservationFactory
 	private function getRuleProcessor($user)
 	{
 		// Common rules
-		$rules = array();
 		$rules = array();
 		$rules[] = new RFReservationRuleReservationDatetime();
 		//$rules[] = new RFReservationRuleInfo();
@@ -113,18 +115,26 @@ class RFFactoryPreReservation implements IPreReservationFactory
 
 	private function getAddUpdateRuleProcessor($user)
 	{
+		$config = JFactory::getConfig();
 		$ruleProcessor = $this->getRuleProcessor($user);
 
-		$ruleProcessor->addRule(new AdminExcludedRule(new ResourceMinimumDurationRule($this->resourceRepository), $user, $this->userRepository));
-		$ruleProcessor->addRule(new AdminExcludedRule(new ResourceMaximumDurationRule($this->resourceRepository), $usern, $this->userRepository));
-		$ruleProcessor->addRule(new AdminExcludedRule(new ResourceCrossDayRule($this->scheduleRepository), $user, $this->userRepository));
-		$ruleProcessor->addRule(new AdminExcludedRule(new QuotaRule(new QuotaRepository(), $this->reservationRepository, $this->userRepository, $this->scheduleRepository), $user, $this->userRepository));
-		$ruleProcessor->addRule(new SchedulePeriodRule($this->scheduleRepository, $user));
-		$ruleProcessor->addRule(new AdminExcludedRule(new CustomAttributeValidationRule(new AttributeService(new AttributeRepository())), $user, $this->userRepository));
-		$ruleProcessor->addRule(new AccessoryAvailabilityRule($this->reservationRepository, new AccessoryRepository(), $user->timezone));
-		$ruleProcessor->addRule(new ResourceAvailabilityRule(new ResourceBlackoutAvailability($this->reservationRepository), $user->timezone));
-		$ruleProcessor->addRule(new ExistingResourceAvailabilityRule(new ResourceReservationAvailability($this->reservationRepository), $user->timezone));
-
+		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleResourceMinimumDuration($this->resourceRepository), $user, $this->userRepository));
+		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleResourceMaximumDuration($this->resourceRepository), $user, $this->userRepository));
+		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleResourceCrossday($this->scheduleRepository), $user, $this->userRepository));
+		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleQuota(new RFQuotaRepository(), $this->reservationRepository, $this->userRepository, $this->scheduleRepository), 
+									$user, $this->userRepository)
+								);
+		$ruleProcessor->addRule(new RFReservationRuleSchedulePeriod($this->scheduleRepository, $user));
+		//$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new CustomAttributeValidationRule(new AttributeService(new AttributeRepository())), $user, $this->userRepository));
+		//$ruleProcessor->addRule(new AccessoryAvailabilityRule($this->reservationRepository, new AccessoryRepository(), $user->timezone));
+		$ruleProcessor->addRule(new RFReservationRuleResourceAvailability(
+									new RFResourceBlackoutAvailability($this->reservationRepository),
+									$user->getParam('timezone', $config->get('config.offset')))
+								);
+		$ruleProcessor->addRule(new RFReservationRuleExistingResourceAvailability(
+									new RFResourceReservationAvailability($this->reservationRepository), 
+									$user->getParam('timezone', $config->get('config.offset')))
+								);
 		return $ruleProcessor;
 	}
 }

@@ -197,9 +197,9 @@ class RFSchedule implements ISchedule
 				$row->timezone,
 				$row->layout_id);
 
-		$schedule->withSubscription($row[ColumnNames::ALLOW_CALENDAR_SUBSCRIPTION]);
-		$schedule->withPublicId($row[ColumnNames::PUBLIC_ID]);
-		$schedule->setAdminGroupId($row[ColumnNames::SCHEDULE_ADMIN_GROUP_ID]);
+		$schedule->withSubscription($row->allow_calendar_subscription);
+		$schedule->withPublicId($row->public_id);
+		$schedule->setAdminGroupId($row->admin_group_id);
 
 		return $schedule;
 	}
