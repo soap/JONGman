@@ -26,11 +26,14 @@ class RFReservationRuleAdminexcluded implements IReservationValidationRule
 
 	public function validate($reservationSeries)
 	{
+		$ruleName = get_class($this->rule);
 		if ($this->user->authorise('core.admin', 'com_jongman'))
 		{
+			JLog::add('User has admin right by pass the '.$ruleName.' rule.', JLog::DEBUG, 'validation');
 			return new RFReservationRuleResult(true);
 		}
-
+		
+		JLog::add('User does not have admin right, call the '.$ruleName.' rule.', JLog::DEBUG, 'validation');
 		return $this->rule->validate($reservationSeries);
 	}
 	
