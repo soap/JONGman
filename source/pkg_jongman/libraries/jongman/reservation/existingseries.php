@@ -38,7 +38,15 @@ class RFReservationExistingSeries extends RFReservationSeries
 	 * @var array|int[]
 	 */
 	protected $attachmentIds = array();
-
+	
+	/**
+	 * @var array|ReservationAccessory[]
+	 */
+	protected $_accessories = array();
+	
+	protected $_attributeValues = array();
+	
+	
 	public function __construct()
 	{
 		parent::__construct();
@@ -46,6 +54,15 @@ class RFReservationExistingSeries extends RFReservationSeries
 		$this->applyChangesTo(RFReservationSeriesUpdatescope::FULLSERIES);
 	}
 
+	/**
+	 * @return array|RFReservationAccessory[]
+	 */
+	public function accessories()
+	{
+		return $this->_accessories;
+	}
+	
+	
 	public function seriesUpdateScope()
 	{
 		return $this->seriesUpdateStrategy->getScope();
@@ -297,7 +314,7 @@ class RFReservationExistingSeries extends RFReservationSeries
 	 */
 	public function changeResources($resources)
 	{
-		$diff = new ArrayDiff($this->_additionalResources, $resources);
+		$diff = new RFArrayDiff($this->_additionalResources, $resources);
 
 		$added = $diff->getAddedToArray1();
 		$removed = $diff->getRemovedFromArray1();
@@ -305,13 +322,13 @@ class RFReservationExistingSeries extends RFReservationSeries
 		/** @var $resource RFResourceBookable */
 		foreach ($added as $resource)
 		{
-			//$this->addEvent(new RFEventResourceAdded($resource, ResourceLevel::Additional, $this));
+			$this->addEvent(new RFEventResourceAdded($resource, RFResourceLevel::Additional, $this));
 		}
 
 		/** @var $resource BookableResource */
 		foreach ($removed as $resource)
 		{
-			//$this->addEvent(new RFEventResourceRemoved($resource, $this));
+			$this->addEvent(new RFEventResourceRemoved($resource, $this));
 		}
 
 		$this->_additionalResources = $resources;
@@ -352,7 +369,7 @@ class RFReservationExistingSeries extends RFReservationSeries
 	{
 		$this->_bookedBy = $approvedBy;
 
-		$this->statusId = ReservationStatus::Created;
+		$this->statusId = RFReservationStatus::Created;
 
 		//Log::Debug("Approving series %s", $this->SeriesId());
 
@@ -548,7 +565,7 @@ class RFReservationExistingSeries extends RFReservationSeries
 	 */
 	public function changeAccessories($accessories)
 	{
-		$diff = new ArrayDiff($this->_accessories, $accessories);
+		$diff = new RFArrayDiff($this->_accessories, $accessories);
 
 		$added = $diff->getAddedToArray1();
 		$removed = $diff->getRemovedFromArray1();
@@ -573,7 +590,7 @@ class RFReservationExistingSeries extends RFReservationSeries
 	 */
 	public function changeAttributes($attributes)
 	{
-		$diff = new ArrayDiff($this->_attributeValues, $attributes);
+		$diff = new RFArrayDiff($this->_attributeValues, $attributes);
 
 		$added = $diff->getAddedToArray1();
 		$removed = $diff->getRemovedFromArray1();
@@ -614,21 +631,21 @@ class RFReservationExistingSeries extends RFReservationSeries
 		return $this->_removedAttachmentIds;
 	}
 
-	public function addStartReminder(ReservationReminder $reminder)
+	public function addStartReminder(RFReservationReminder $reminder)
 	{
 		if ($reminder->minutesPrior() != $this->startReminder->minutesPrior())
 		{
-			$this->addEvent(new RFEventReminderAdded($this, $reminder->minutesPrior(), ReservationReminderType::Start));
+			$this->addEvent(new RFEventReminderAdded($this, $reminder->minutesPrior(), RFReservationReminderType::Start));
 			parent::addStartReminder($reminder);
 		}
 	}
 
-	public function addEndReminder(ReservationReminder $reminder)
+	public function addEndReminder(RFReservationReminder $reminder)
 	{
-		if ($reminder->minutesPrior() != $this->endReminder->MinutesPrior())
+		if ($reminder->minutesPrior() != $this->endReminder->minutesPrior())
 		{
-			$this->addEvent(new ReminderAddedEvent($this, $reminder->MinutesPrior(), ReservationReminderType::End));
-			parent::AddEndReminder($reminder);
+			$this->addEvent(new RFEventReminderAdded($this, $reminder->minutesPrior(), RFReservationReminderType::End));
+			parent::addEndReminder($reminder);
 		}
 	}
 
@@ -636,8 +653,8 @@ class RFReservationExistingSeries extends RFReservationSeries
 	{
 		if ($this->startReminder->enabled())
 		{
-			$this->startReminder = ReservationReminder::None();
-			$this->AddEvent(new RFEventReminderRemoved($this, ReservationReminderType::Start));
+			$this->startReminder = RFReservationReminder::None();
+			$this->addEvent(new RFEventReminderRemoved($this, RFReservationReminderType::Start));
 		}
 	}
 
@@ -645,8 +662,8 @@ class RFReservationExistingSeries extends RFReservationSeries
 	{
 		if ($this->endReminder->enabled())
 		{
-			$this->endReminder = ReservationReminder::None();
-			$this->AddEvent(new ReminderRemovedEvent($this, ReservationReminderType::End));
+			$this->endReminder = RFReservationReminder::None();
+			$this->addEvent(new RFEventReminderRemoved($this,RFReservationReminderType::End));
 		}
 	}
 
