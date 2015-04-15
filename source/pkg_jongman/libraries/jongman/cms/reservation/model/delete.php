@@ -66,7 +66,7 @@ class RFReservationModelDelete implements IReservationDeleteModel
 	 */
 	public function handleReservation($reservationSeries)
 	{
-		JLog::add("Deleting reservation %s", $reservationSeries->currentInstance()->referenceNumber());
+		JLog::add(JText::sprintf('COM_JONGMAN_RESERVATION_DELETED'), $reservationSeries->currentInstance()->referenceNumber());
 
 		$this->handler->handle($reservationSeries, $this->page);
 	}

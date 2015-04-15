@@ -5,7 +5,7 @@ class RFReservationRepository implements IReservationRepository
 {
 	public function loadById($reservationId)
 	{
-		JLog::add("ReservationRepository::LoadById() - ReservationID: $reservationId", JLog::DEBUG);
+		JLog::add("RFReservationRepository::loadById() - ReservationID: $reservationId", JLog::DEBUG, 'info');
 
 		$query = JFactory::getDbo()->getQuery(true);
 		$query->select('*')
@@ -19,7 +19,7 @@ class RFReservationRepository implements IReservationRepository
 
 	public function loadByReferenceNumber($referenceNumber)
 	{
-		JLog::add("RFReservationRepository::loadByReferenceNumber() - referenceNumber: $referenceNumber", JLog::DEBUG);
+		JLog::add("RFReservationRepository::loadByReferenceNumber() - referenceNumber: $referenceNumber", JLog::DEBUG, 'info');
 
 		$dbo = JFactory::getDbo();
 		$query = $dbo->getQuery(true);
@@ -78,7 +78,7 @@ class RFReservationRepository implements IReservationRepository
 	 */
 	public function update(RFReservationExistingSeries $reservationSeries)
 	{
-		$dbo = JFactory::getDbo();
+		$database = JFactory::getDbo();
 
 		if ($reservationSeries->requiresNewSeries())
 		{
@@ -93,20 +93,20 @@ class RFReservationRepository implements IReservationRepository
 			{
 				$updateReservationCommand = new UpdateReservationCommand($instance->ReferenceNumber(), $newSeriesId, $instance->StartDate(), $instance->EndDate());
 
-				$database->Execute($updateReservationCommand);
+				$database->execute($updateReservationCommand);
 			}
 		}
 		else
 		{
-			JLog::add('Updating existing series (seriesId: %s)', $reservationSeries->SeriesId(), JLog::DEBUG);
+			JLog::add('Updating existing series (seriesId: %s)', $reservationSeries->seriesId(), JLog::DEBUG);
 
-			$updateSeries = new UpdateReservationSeriesCommand($reservationSeries->SeriesId(), $reservationSeries->Title(), $reservationSeries->Description(), $reservationSeries->RepeatOptions()->RepeatType(), $reservationSeries->RepeatOptions()->ConfigurationString(), Date::Now(), $reservationSeries->StatusId(), $reservationSeries->UserId());
+			$updateSeries = new UpdateReservationSeriesCommand($reservationSeries->seriesId(), $reservationSeries->title(), $reservationSeries->description(), $reservationSeries->repeatOptions()->repeatType(), $reservationSeries->repeatOptions()->configurationString(), RFDate::now(), $reservationSeries->statusId(), $reservationSeries->userId());
 
 			$database->execute($updateSeries);
 
-			foreach ($reservationSeries->AddedAttachments() as $attachment)
+			foreach ($reservationSeries->addedAttachments() as $attachment)
 			{
-				$this->AddReservationAttachment($attachment);
+				$this->addReservationAttachment($attachment);
 			}
 		}
 
@@ -114,20 +114,20 @@ class RFReservationRepository implements IReservationRepository
 	}
 
 	/**
-	 * @param ReservationSeries $reservationSeries
+	 * @param RFReservationSeries $reservationSeries
 	 * @return int newly created series_id
 	 */
 	private function insertSeries(RFReservationSeries $reservationSeries)
 	{
 		$dbo = JFactory::getDbo();
 
-		$insertReservationSeries = new AddReservationSeriesCommand(Date::Now(), $reservationSeries->Title(), $reservationSeries->Description(), $reservationSeries->RepeatOptions()->RepeatType(), $reservationSeries->RepeatOptions()->ConfigurationString(), ReservationTypes::Reservation, $reservationSeries->StatusId(), $reservationSeries->UserId());
+		$insertReservationSeries = new AddReservationSeriesCommand(RFDate::now(), $reservationSeries->title(), $reservationSeries->description(), $reservationSeries->repeatOptions()->repeatType(), $reservationSeries->repeatOptions()->configurationString(), RFReservationTypes::Reservation, $reservationSeries->statusId(), $reservationSeries->userId());
 
 		$reservationSeriesId = $database->ExecuteInsert($insertReservationSeries);
 
 		$reservationSeries->WithSeriesId($reservationSeriesId);
 
-		$insertReservationResource = new AddReservationResourceCommand($reservationSeriesId, $reservationSeries->ResourceId(), ResourceLevel::Primary);
+		$insertReservationResource = new AddReservationResourceCommand($reservationSeriesId, $reservationSeries->resourceId(), ResourceLevel::Primary);
 
 		$database->Execute($insertReservationResource);
 
@@ -155,16 +155,16 @@ class RFReservationRepository implements IReservationRepository
 			$this->AddReservationAttachment($attachment);
 		}
 
-		if ($reservationSeries->GetStartReminder()->Enabled())
+		if ($reservationSeries->getStartReminder()->enabled())
 		{
-			$reminder = $reservationSeries->GetStartReminder();
+			$reminder = $reservationSeries->getStartReminder();
 			$insertAccessory = new AddReservationReminderCommand($reservationSeriesId, $reminder->MinutesPrior(), ReservationReminderType::Start);
 			$database->Execute($insertAccessory);
 		}
 
-		if ($reservationSeries->GetEndReminder()->Enabled())
+		if ($reservationSeries->getEndReminder()->enabled())
 		{
-			$reminder = $reservationSeries->GetEndReminder();
+			$reminder = $reservationSeries->getEndReminder();
 			$insertAccessory = new AddReservationReminderCommand($reservationSeriesId, $reminder->MinutesPrior(), ReservationReminderType::End);
 			$database->Execute($insertAccessory);
 		}

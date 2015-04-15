@@ -7,20 +7,39 @@ class RFResourceRepository implements IResourceRepository
 	 * Gets all Resources for the given scheduleId
 	 *
 	 * @param int $scheduleId
-	 * @return array|BookableResource[]
+	 * @return array|RFResourceBookable[]
 	 */
 	public function getScheduleResources($scheduleId)
 	{
+		$dbo = JFactory::getDbo();
+		$query = $dbo->getQuery(true);
+		$query->select('*')
+			->from('#__jongman_resources AS rs')
+			->where('rs.schedule_id='.$scheduleId);
+		$dbo->setQuery($query);
+		$rows = $dbo->loadObjectList();
 		
+		$resources = array();
+		foreach($rows as $row) 
+		{
+			$resources[] = RFResourceBookable::create($row);
+		}
+
+		return $resources;
 	}
 	
 	/**
 	 * @param int $resourceId
-	 * @return BookableResource
+	 * @return RFResourceBookable
 	*/
 	public function loadById($resourceId)
 	{
+		$table = JTable::getInstance('Resource', 'JongmanTable');
+		$table->load($resourceId);
+
+		$resource = RFResourceBookable::create($table);
 		
+		return $resource;
 	}
 	
 	/**
