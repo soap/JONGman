@@ -77,7 +77,7 @@ class RFReservationHandler implements IReservationHandler
 			}
 			catch (Exception $ex)
 			{
-				Log::Error('Error saving reservation: %s', $ex);
+				JLog::add('Error saving reservation: %s', $ex);
 				throw($ex);
 			}
 
