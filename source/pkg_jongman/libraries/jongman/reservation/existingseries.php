@@ -241,7 +241,7 @@ class RFReservationExistingSeries extends RFReservationSeries
 	}
 
 	/**
-	 * @param DateRange $reservationDate
+	 * @param RFDateRange $reservationDate
 	 */
 	public function updateDuration(RFDateRange $reservationDate)
 	{
@@ -258,7 +258,7 @@ class RFReservationExistingSeries extends RFReservationSeries
 		$startTimeAdjustment = $currentBegin->getDifference($reservationDate->getBegin());
 		$endTimeAdjustment = $currentEnd->getDifference($reservationDate->getEnd());
 
-		//Log::Debug('Updating duration for series %s', $this->SeriesId());
+		JLog::add( JText::sprintf("COM_JONGMAN_LOG_RESERVATION_UPDATE_DURATION", $this->seriesId()), JLog::DEBUG, 'debug' );
 
 		foreach ($this->getInstances() as $instance)
 		{

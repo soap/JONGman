@@ -68,7 +68,7 @@ class RFReservationHandler implements IReservationHandler
 	{
 		$validationResult = $this->validationService->validate($reservationSeries);
 		$result = $validationResult->canBeSaved();
-
+		
 		if ($validationResult->canBeSaved())
 		{
 			try
