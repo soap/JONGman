@@ -58,6 +58,16 @@ class RFReservationSeries extends JObject
 	{
 		$this->seriesId = $seriesId;
 	}
+	
+	public function getTitle()
+	{
+		return $this->title;
+	}
+	
+	public function getDescription()
+	{
+		return $this->description;
+	}
 	/**
 	 * 
 	 * bind data (from model 's form
