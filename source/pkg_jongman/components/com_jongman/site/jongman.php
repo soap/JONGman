@@ -20,7 +20,7 @@ if ( $logEnabled ) {
 		// Sets messages of all log levels to be sent to the file
 		$logLevel,
 		// Category for log messages
-		array('error', 'warning', 'validation')
+		array('reservation', 'validation', 'other')
 	);
 }
 
