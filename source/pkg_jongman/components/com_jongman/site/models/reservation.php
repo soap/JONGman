@@ -29,7 +29,38 @@ class JongmanModelReservation extends JModelAdmin
 	
 	protected $_series = null; 
 	
-		
+	protected $_actionModel = null;
+	
+	/**
+	 * 
+	 * @param unknown $config
+	 */
+	public function __construct($config = array())
+	{
+		parent::__construct($config);
+
+		if (isset($config['action'])) {
+			switch ($config['$action']) {
+				case RFReservationAction::Create :
+					break;
+				case RFReservationAction::Save :
+						//Save new reservation
+						$this->_actionModel = new RFReservationModelSave();
+					break;
+				case RFReservationAction::Update :
+					$this->_actionModel = new RFReservationModelUpdate();
+					break;
+				case RFReservationAction::Delete :
+					$this->_actionModel = new RFReservationModelDelete();
+					break;
+				case RFReservationAction::Approve :
+					$this->_actionModel = new RFReservationModelApprove();
+					break;
+				default:
+					break;	
+			}					
+		}
+	}
 	/**
      * Method to auto-populate the model state.
      * Note. Calling getState in this method will result in recursion.
@@ -186,10 +217,10 @@ class JongmanModelReservation extends JModelAdmin
 		$input['end_date'] = $input['end_date'].' '.$input['end_time'];
 		$tz = JongmanHelper::getUserTimezone();
 
-		$repeatType = $input['repeat_type'];
-		$repeatInterval = $input['repeat_interval'];
-		$weekDays = $input['repeat_days'];
-		$monthyType = $input['repeat_monthly_type'];
+		$repeatType = isset($input['repeat_type']) ? $input['repeat_type'] : null;
+		$repeatInterval = isset($input['repeat_interval']) ? $input['repeat_interval'] : null;
+		$weekDays = isset($input['repeat_days']) ? $input['repeat_days'] : null;
+		$monthlyType = isset($input['repeat_monthly_type']) ? $input['repeat_monthly_type'] : 'none';
 		
 		if (isset($input['repeat_terminated'])) {
 			$terminated = RFDate::parse($input['repeat_terminated'], $tz);
@@ -221,8 +252,8 @@ class JongmanModelReservation extends JModelAdmin
 		//start reservation validation here, get commone rules
 		$ruleProcessor = JongmanHelper::getRuleProcessor();
 		// Add specific rules for new reservation validation
-		$config = array('ignore_request'=>true);
-		$scheduleRepository = JModelLegacy::getInstance('Schedule', 'JongmanModel', $config);
+		
+		$scheduleRepository = new RFScheduleRepository();
 		
 		$ruleProcessor->addRule(
 					new RFReservationRuleExistingResourceAvailability( new RFResourceReservationAvailability($scheduleRepository), $tz ), 
