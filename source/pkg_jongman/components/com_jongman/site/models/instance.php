@@ -2,6 +2,10 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
+jimport('jongman.base.ireservationsaveresultview');
+jimport('jongman.cms.reservation.repository');
+jimport('jongman.cms.reservation.model.*');
+jimport('jongman.base.irepeatoptionscomposite');
 
 // add field definitions from backend
 JForm::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR . '/models/fields');
@@ -12,11 +16,27 @@ JForm::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR . '/models/fields');
  * @subpackage  Frontend
  * @since       1.0
  */
-class JongmanModelInstance extends JModelAdmin
+class JongmanModelInstance extends JModelAdmin implements IReservationPage, IReservationSaveResultView, IRepeatOptionsComposite
 {
-	
+	private $_handler;
+	private $_repository;
+	private $_saveresult = false;
+	private $_warnings = array();
+	private $_saveSuccessfully = false;
 	protected static $series;
+	protected $validData = array();
 	protected $users = array();
+	
+	/**
+	 * 
+	 * @param array $config
+	 */
+	public function __construct($config=array())
+	{
+		parent::__construct($config);
+		$this->_repository = new RFReservationRepository();
+		
+	}
 	
 	/**
 	 * Method to get the Reservation form.
@@ -122,87 +142,137 @@ class JongmanModelInstance extends JModelAdmin
 		parent::preprocessForm($form, $data, $group);		
 	}
 	
+	public function update2($data) 
+	{
+		$this->validData = $data;
+		$user = JFactory::getUser();
+		$reservationAction = RFReservationAction::Update;
+
+		$persistenceFactory = new RFFactoryReservationPersistence();
+		$persistenceService = $persistenceFactory->create($reservationAction);
+		$handler = $this->getHandler($reservationAction);
+		$resourceRepository = new RFResourceRepository();
+		
+		$model = new RFReservationModelUpdate($this, $persistenceService, $handler, $resourceRepository, $user);
+		
+		$reservationSeries = $model->buildReservation();
+		$model->handleReservation($reservationSeries);
+		
+		if (!$this->_saveresult) {
+			// error already set in $this->setErrors(), get called in RFReservationModelUpdate class
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
 	/**
-	 * Delete reservation instance, delete reservation series if no instance exists
+	 * @since 3.0.0
 	 * @see JModelAdmin::delete()
 	 */
-	public function delete($pks)
+	public function delete(&$data)
 	{
+		$this->validData = $data;
+		
+		$user = JFactory::getUser();
+		$reservationAction = RFReservationAction::Delete;
+		
+		$persistenceFactory = new RFFactoryReservationPersistence();
+		$persistenceService = $persistenceFactory->create($reservationAction);
+
+		$handler = $this->getHandler($reservationAction);
+
+		$model = new RFReservationModelDelete($this, 
+					$persistenceService, 
+					$handler, 
+					$user);
+
+		$reservationSeries = $model->buildReservation();
+		$model->handleReservation($reservationSeries);
+		
+		if (!$this->_saveresult) {
+			// error already set in $this->setErrors(), get called in RFReservationModelDelete class
+			return false;	
+		}
+
+		return true;
+	}
+	
+	
+	/**
+	 * 
+	 * @param unknown $reservationAction
+	 * @param unknown $data
+	 * @return RFReservationExistingSeries
+	 */
+	public function buildReservation($reservationAction, $data)
+	{
+		if ($reservationAction == RFReservationAction::Create) {
+			
+		}else if ($reservationAction == RFReservationAction::Update) {
+			
+		}else if ($reservationAction == RFReservationAction::Delete) {
+			$referenceNumber = $data['reference_number'];
+			$table = JTable::getInstance('Instance', 'JongmanTable');
+			$table->load(array('reference_number'=>$referenceNumber));
+			
+			$series = $this->buildSeries($referenceNumber);
+			$series->applyChangesTo($data['updatescope']);
+			
+			return $series;
+		}else{
+			
+		}
+				
+	}
+	
+	/**
+	 * Delete reservation instance, delete reservation series if no instance exists
+	 * @deprecated 3.0.0
+	 */
+	public function handleReservation($data)
+	{
+		jimport('jongman.cms.reservation.repository');
 		// Initialise variables.
+		$user = JFactory::getUser();
 		$dispatcher = JDispatcher::getInstance();
-		$pks = (array) $pks;
-		$table = $this->getTable();
 		$dbo = $this->getDbo();
+		
 		// Include the content plugins for the on delete events.
 		JPluginHelper::importPlugin('content');
 
-		// Iterate the items to delete each one.
-		foreach ($pks as $i => $pk) {
-			if ($table->load($pk)){
-				
-				if ($this->canDelete($table)){
-					$reservationId = $table->reservation_id;
-					$context = $this->option . '.' . $this->name;
-
-					// Trigger the onContentBeforeDelete event.
-					$result = $dispatcher->trigger($this->event_before_delete, array($context, $table));
-					if (in_array(false, $result, true))
-					{
-						$this->setError($table->getError());
-						return false;
-					}
-
-					if (!$table->delete($pk))
-					{
-						$this->setError($table->getError());
-						return false;
-					}
-					
-					$query = $dbo->getQuery(true);
-					$query->select(count('*'))
-						->from('#__jongman_reservation_instances')
-						->where('reservation_id = '.$reservationId);
-					$dbo->setQuery($query);
-					$count = $dbo->loadResult();
-					if ($count == 0) {
-						$reservationModel = JModelLegacy::getInstance('Reservation', 'JongmanModel', array('ignore_request'=>true));
-						$config = array($reservationId);
-						if (!$reservationModel->delete($config)) {
-							return false;	
-						}
-					}
-					
-					
-					// Trigger the onContentAfterDelete event.
-					$dispatcher->trigger($this->event_after_delete, array($context, $table));
-
-				}
-				else
-				{
-
-					// Prune items that you can't change.
-					unset($pks[$i]);
-					$error = $this->getError();
-					if ($error)
-					{
-						JError::raiseWarning(500, $error);
-						return false;
-					}
-					else
-					{
-						JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_DELETE_NOT_PERMITTED'));
-						return false;
-					}
-				}
-
-			}
-			else
-			{
-				$this->setError($table->getError());
-				return false;
-			}
+		$pk = $data['id'];
+		$table = $this->getTable('Instance', 'JongmanTable');
+		$return = $table->load($pk);
+		
+		// Check for a table object error.
+		if ($return === false && $table->getError())
+		{
+			$this->setError($table->getError());
+			return false;
 		}
-
+		
+		$existingSeries = $this->buildSeries($table->reference_number);
+		$existingSeries->applyChangesTo($data['updatescope']);
+		// Get common rules
+		$ruleProcessor = JongmanHelper::getRuleProcessor();
+		// Add specific reservation delete rules
+		$ruleProcessor->addRule(new RFReservationRuleAdminexcluded(new RFReservationRuleUserIsOwner($user), $user));
+		$result = $ruleProcessor->validate($existingSeries);
+		
+		if (!$result->canBeSaved()) {
+			$errors = $result->getErrors();
+			foreach($errors as $error) {
+				$this->setError($error);
+			}
+			return false;		
+		}
+		
+		//mark instances as deleted or series as delete if it is single instanc
+		$existingSeries->delete($user); 
+		$this->_repository->delete($existingSeries);	
+				
 		// Clear the component's cache
 		$this->cleanCache();
 
@@ -212,11 +282,14 @@ class JongmanModelInstance extends JModelAdmin
 	 * override to add resource reservation validation 
 	 * @see JModelForm::validate()
 	 */
-	public function validate($form, $data, $group = null)
+	public function validate__($form, $data, $group = null)
 	{
+		$validData = parent::validate($form, $data, $group);
+		return $validData;
+		
 		$updateScope = $data['updateScope'];
 		
-		$validData = parent::validate($form, $data, $group);
+
 		if ($validData === false) return false;
 
 		$input = $validData;
@@ -308,6 +381,7 @@ class JongmanModelInstance extends JModelAdmin
 	 */
 	public function update($data)
 	{
+		
 		if ($this->series->requiresNewSeries())
 		{
 			$currentId = $this->series->seriesId();
@@ -435,7 +509,7 @@ class JongmanModelInstance extends JModelAdmin
 		//$this->populateUsers($existingSeries);
 		// populate participants
 		// populate accessories
-		$this->series = $existingSeries;
+		self::$series = $existingSeries;
 		
 		return $existingSeries;
 	}
@@ -666,4 +740,225 @@ class JongmanModelInstance extends JModelAdmin
 		
 		return false;
 	}
+	
+	
+	/**
+	 *
+	 * Get reservation handler based on Reservation Action to handle reservation request
+	 * @param RFReservationAction $reservationAction
+	 * @return IReservationHandler
+	 * @since JONGman 3.0
+	 */
+	protected function getHandler($reservationAction)
+	{
+		$user = JFactory::getUser();
+		/* we should set userSession properties!!! */
+	
+		$persistenceFactory = new RFFactoryReservationPersistence();
+		$persistenceService = $persistenceFactory->create($reservationAction);
+	
+		$handler = RFReservationHandler::create($reservationAction, $persistenceService, $user);
+	
+		return $handler;
+	}
+	
+	/** =========================== =========================================== **/
+	
+	public function getParticipants()
+	{
+		
+	}
+	
+	
+	public function getAccessories()
+	{
+		
+	}
+	
+	public function getInvitees()
+	{
+		
+	}
+	
+	public function getAttributes()
+	{
+		
+	}
+	
+	public function getAttachments()
+	{
+		
+	}
+	
+	public function getRemovedAttachmentIds()
+	{
+		
+	}
+	
+	public function hasStartReminder()
+	{
+		
+	}
+	
+	public function hasEndReminder()
+	{
+	
+	}
+	
+	/** ============ IRepeatOptionsComposite ================================== **/
+	/**
+	 * @abstract
+	 * @return string
+	 */
+	public function getRepeatType()
+	{
+		return $this->validData['repeat_type'];
+	}
+	
+	/**
+	 * @abstract
+	 * @return string|null
+	*/
+	public function getRepeatInterval()
+	{
+		return $this->validData['repeat_interval'];
+	}
+	
+	/**
+	 * @abstract
+	 * @return int[]|null
+	*/
+	public function getRepeatWeekdays()
+	{
+		return $this->validData['repeat_days'];
+	}
+	
+	/**
+	 * @abstract
+	 * @return string|null
+	*/
+	public function getRepeatMonthlyType()
+	{
+		return $this->validData['repeat_monthly_type'];
+	}
+	
+	/**
+	 * @abstract
+	 * @return string|null
+	*/
+	public function getRepeatTerminationDate()
+	{
+		return $this->validData['repeat_terminated'];
+	}
+	
+	/** ===== ============================================= **/
+	public function getReferenceNumber()
+	{
+		$referenceNumber = $this->validData['reference_number'];	
+		return $referenceNumber;
+	}
+	
+	public function getSeriesUpdateScope()
+	{
+		return $this->validData['updatescope'];	
+	}
+	
+	/** ====== IReservationPage =========================== **/
+	
+	public function getUserId() 
+	{
+		return $this->validData['owner_id'];	
+	}
+	
+	/**
+	 * @return int
+	 */
+	public function getResourceId()
+	{
+		return $this->validData['resource_id'];	
+	}
+	
+	/**
+	 * @return string
+	*/
+	public function getTitle()
+	{
+		return $this->validData['title'];	
+	}
+	
+	/**
+	 * @return string
+	*/
+	public function getDescription()
+	{
+		return $this->validData['description'];
+	}
+	
+	/**
+	 * @return string
+	*/
+	public function getStartDate()
+	{
+		return $this->validData['start_date'];
+	}
+	
+	/**
+	 * @return string
+	*/
+	public function getEndDate()
+	{
+		return $this->validData['end_date'];
+	}
+	
+	/**
+	 * @return string
+	*/
+	public function getStartTime()
+	{
+		return $this->validData['start_time'];
+	}
+	/**
+	 * @return string
+	*/
+	public function getEndTime()
+	{
+		return $this->validData['end_time'];
+	}
+	
+	/**
+	 * @return int[]
+	*/
+	public function getResources()
+	{
+		return array();	
+	}
+
+	/** ====== IReservationSaveResultView ================= **/
+	/**
+	 * @param bool $succeeded
+	 */
+	public function setSaveSuccessfulMessage($succeeded)
+	{
+		$this->_saveresult = $succeeded;
+	}
+	
+	/**
+	 * @param array|string[] $errors
+	*/
+	public function setErrors($errors)
+	{
+		foreach($errors as $error) {
+			$error = trim ($error);
+			if (!empty($error)) $this->setError($error);	
+		}
+	}
+	
+	/**
+	 * @param array|string[] $warnings
+	*/
+	public function setWarnings($warnings)
+	{
+		array_push($this->_warnings, $warnings);	
+	}
+	
 }

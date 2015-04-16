@@ -131,24 +131,6 @@ class JongmanControllerInstance extends JControllerForm
 			return false;
 		}
 		
-		switch ($this->getTask()) {
-			case 'updateinstance':
-				$updatescope = 'this';
-				break;
-			case 'updatefull':
-				$updatescope = 'full';
-				break;
-			case 'updatefuture':
-				$updatescope = 'future';
-				break;
-			default:
-				$updatescope = 'this';
-				break;
-		}
-
-		// pass for validate usage 
-		$data['updateScope'] = $updatescope;
-		
 		// Test whether the data is valid.
 		$validData = $model->validate($form, $data);
 
@@ -187,14 +169,33 @@ class JongmanControllerInstance extends JControllerForm
 
 			return false;
 		}
-
-		if (!$model->update($validData))
+		switch ($this->getTask()) {
+			case 'updateinstance':
+				$updatescope = 'this';
+				break;
+			case 'updatefull':
+				$updatescope = 'full';
+				break;
+			case 'updatefuture':
+				$updatescope = 'future';
+				break;
+			default:
+				$updatescope = 'this';
+				break;
+		}
+		// pass for validate usage
+		$validData['updatescope'] = $updatescope;
+		if (!$model->update2($validData))
 		{
+			$tz = JongmanHelper::getUserTimezone();
+			$validData['start_time'] = JDate::getInstance($validData['start_time'], $tz)->format('H:i:s', false);
+			$validData['end_time'] = JDate::getInstance($validData['end_time'], $tz)->format('H:i:s', false);
 			// Save the data in the session.
 			$app->setUserState($context . '.data', $validData);
 
 			// Redirect back to the edit screen.
-			$this->setError(JText::sprintf('COM_JONGMAN_RESERVATION_ERROR_UPDATE_FAILED', $model->getError()));
+
+			$this->setError( JText::sprintf('COM_JONGMAN_RESERVATION_ERROR_UPDATE_FAILED', $model->getError()) );
 			$this->setMessage($this->getError(), 'error');
 
 			$this->setRedirect(
@@ -280,7 +281,7 @@ class JongmanControllerInstance extends JControllerForm
 		}
 		
 		$recordId = JRequest::getInt($urlVar);
-		
+
 		if (!$this->checkEditId($context, $recordId))
 		{
 			// Somehow the person just went to the form and tried to save it. We don't allow that.
@@ -316,17 +317,6 @@ class JongmanControllerInstance extends JControllerForm
 			return false;
 		}
 		
-		// Validate the posted data.
-		// Sometimes the form needs some posted data, such as for plugins and modules.
-		$form = $model->getForm($data, false);
-		
-		if (!$form)
-		{
-			$app->enqueueMessage($model->getError(), 'error');
-		
-			return false;
-		}
-		
 		switch ($this->getTask()) {
 			case 'deleteinstance':
 				$updatescope = 'this';
@@ -343,10 +333,10 @@ class JongmanControllerInstance extends JControllerForm
 		}
 		
 		// pass for validate usage
-		$data['updateScope'] = $updatescope;
+		$data['updatescope'] = $updatescope;
 		
-		// Test whether the data is valid.
-		$validData = $model->validate($form, $data);
+		// Test whether the data is valid, no need here
+		$validData = $data;
 
 		// Check for validation errors.
 		if ($validData === false)
@@ -384,13 +374,33 @@ class JongmanControllerInstance extends JControllerForm
 			return false;
 		}
 		
+		// checkin before attempt to delete
+		if ($checkin && $model->checkin($validData[$key]) === false) 
+		{
+			// Save the data in the session.
+			$app->setUserState($context . '.data', $validData);
+			
+			// Check-in failed, so go back to the record and display a notice.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError()));
+			$this->setMessage($this->getError(), 'error');
+			
+			$this->setRedirect(
+					JRoute::_(
+							'index.php?option=' . $this->option . '&view=' . $this->view_item
+							. $this->getRedirectToItemAppend($recordId, $urlVar), false
+					)
+			);
+			
+			return false;
+		}
+
 		if (!$model->delete($validData))
 		{
-		// Save the data in the session.
+			// Save the data in the session.
 			$app->setUserState($context . '.data', $validData);
 		
 			// Redirect back to the edit screen.
-			$this->setError(JText::sprintf('COM_JONGMAN_RESERVATION_ERROR_UPDATE_FAILED', $model->getError()));
+			$this->setError(JText::sprintf('COM_JONGMAN_RESERVATION_ERROR_DELETE_FAILED', $model->getError()));
 			$this->setMessage($this->getError(), 'error');
 		
 			$this->setRedirect(
@@ -402,31 +412,9 @@ class JongmanControllerInstance extends JControllerForm
 			return false;
 		}
 			
-		// Save succeeded, so check-in the record.
-		if ($checkin && $model->checkin($validData[$key]) === false)
-		{
-			// Save the data in the session.
-			$app->setUserState($context . '.data', $validData);
-		
-			// Check-in failed, so go back to the record and display a notice.
-			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError()));
-			$this->setMessage($this->getError(), 'error');
-		
-			$this->setRedirect(
-					JRoute::_(
-						'index.php?option=' . $this->option . '&view=' . $this->view_item
-						. $this->getRedirectToItemAppend($recordId, $urlVar), false
-					)
-				);
-		
-			return false;
-		}
-			
 		$this->setMessage(
 			JText::_(
-				($lang->hasKey($this->text_prefix . ($recordId == 0 && $app->isSite() ? '_SUBMIT' : '') . '_SAVE_SUCCESS')
-					? $this->text_prefix
-					: 'JLIB_APPLICATION') . ($recordId == 0 && $app->isSite() ? '_SUBMIT' : '') . '_SAVE_SUCCESS'
+				($lang->hasKey($this->text_prefix .'_DELETE_SUCCESS') ? $this->text_prefix : 'JLIB_APPLICATION') . '_DELETE_SUCCESS'
 			)
 		);
 		
@@ -441,9 +429,6 @@ class JongmanControllerInstance extends JControllerForm
 				. $this->getRedirectToListAppend(), false
 			)
 		);
-		
-		// Invoke the postSave method to allow for the child class to access the model.
-		$this->postSaveHook($model, $validData);
 		
 		return true;
 	}
@@ -460,6 +445,6 @@ class JongmanControllerInstance extends JControllerForm
 	
 		$append .= '&layout=calendar&id='.$schedule_id;	
 		return $append;	
-	}	
+	}
 	
 }
