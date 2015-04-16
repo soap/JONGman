@@ -1,14 +1,12 @@
 <?php
-
 defined('_JEXEC') or die;
-
 
 class RFReservationModelSave implements IReservationModel
 {
 	/**
 	 * @var IReservationSavePage
 	 */
-	private $_cmsmodel;
+	private $_page;
 
 	/**
 	 * @var IReservationPersistenceService
@@ -24,19 +22,22 @@ class RFReservationModelSave implements IReservationModel
 	 * @var IResourceRepository
 	 */
 	private $_resourceRepository;
+	
+	
+	private $_user;
 
 	public function __construct(
-			IReservationSavePage $page,
+			IReservationPage $page,
 			IReservationPersistenceService $persistenceService,
 			IReservationHandler $handler,
 			IResourceRepository $resourceRepository,
-			UserSession $userSession)
+			JUser $user)
 	{
 		$this->_page = $page;
 		$this->_persistenceService = $persistenceService;
 		$this->_handler = $handler;
 		$this->_resourceRepository = $resourceRepository;
-		$this->userSession = $userSession;
+		$this->_user = $user;
 	}
 
 	public function buildReservation()
@@ -46,85 +47,84 @@ class RFReservationModelSave implements IReservationModel
 		$resource = $this->_resourceRepository->loadById($primaryResourceId);
 		$title = $this->_page->getTitle();
 		$description = $this->_page->getDescription();
-		$roFactory = new RepeatOptionsFactory();
-		$repeatOptions = $roFactory->CreateFromComposite($this->_page, $this->userSession->Timezone);
-		$duration = $this->GetReservationDuration();
+		$roFactory = new RFReservationRepeatOptionsFactory();
+		
+		$config = JFactory::getConfig();
+		$repeatOptions = $roFactory->createFromComposite($this->_page, $this->_user->getParam('timezone', $config->get('config.offset') ));
+		$duration = $this->getReservationDuration();
 
-		$reservationSeries = RFReservationSeries::create($userId, $resource, $title, $description, $duration, $repeatOptions, $this->userSession);
+		$reservationSeries = RFReservationSeries::create($userId, $resource, $title, $description, $duration, $repeatOptions, $this->_user);
 
 		$resourceIds = $this->_page->getResources();
 		foreach ($resourceIds as $resourceId)
 		{
 			if ($primaryResourceId != $resourceId)
 			{
-				$reservationSeries->AddResource($this->_resourceRepository->LoadById($resourceId));
+				$reservationSeries->addResource($this->_resourceRepository->loadById($resourceId));
 			}
 		}
 
-		$accessories = $this->_page->GetAccessories();
+		$accessories = $this->_page->getAccessories();
 		foreach ($accessories as $accessory)
 		{
-			$reservationSeries->AddAccessory(new ReservationAccessory($accessory->Id, $accessory->Quantity, $accessory->Name));
+			$reservationSeries->addAccessory(new RFReservationAccessory($accessory->id, $accessory->quantity, $accessory->name));
 		}
 
-		$attributes = $this->_page->GetAttributes();
+		$attributes = $this->_page->getAttributes();
 		foreach ($attributes as $attribute)
 		{
-			$reservationSeries->AddAttributeValue(new AttributeValue($attribute->Id, $attribute->Value));
+			$reservationSeries->addAttributeValue(new AttributeValue($attribute->id, $attribute->value));
 		}
 
-		$participantIds = $this->_page->GetParticipants();
-		$reservationSeries->ChangeParticipants($participantIds);
+		$participantIds = $this->_page->getParticipants();
+		$reservationSeries->changeParticipants($participantIds);
 
-		$inviteeIds = $this->_page->GetInvitees();
-		$reservationSeries->ChangeInvitees($inviteeIds);
+		$inviteeIds = $this->_page->getInvitees();
+		$reservationSeries->changeInvitees($inviteeIds);
 		/*
-		$attachments = $this->_page->GetAttachments();
+		$attachments = $this->_page->getAttachments();
 
 		foreach($attachments as $attachment)
 		{
 			if ($attachment != null)
 			{
-				if ($attachment->IsError())
+				if ($attachment->isError())
 				{
-					Log::Error('Error attaching file %s. %s', $attachment->OriginalName(), $attachment->Error());
+					JLog::add('Error attaching file %s. %s', $attachment->OriginalName(), $attachment->Error());
 				}
 				else
 				{
 					$att = ReservationAttachment::Create($attachment->OriginalName(), $attachment->MimeType(), $attachment->Size(), $attachment->Contents(), $attachment->Extension(), 0);
-					$reservationSeries->AddAttachment($att);
+					$reservationSeries->addAttachment($att);
 				}
 			}
 		}
 		*/
 		/*
-		if ($this->_page->HasStartReminder())
+		if ($this->_page->hasStartReminder())
 		{
-			$reservationSeries->AddStartReminder(new ReservationReminder($this->_page->GetStartReminderValue(), $this->_page->GetStartReminderInterval()));
+			$reservationSeries->addStartReminder(new ReservationReminder($this->_page->getStartReminderValue(), $this->_page->getStartReminderInterval()));
 		}
 
-		if ($this->_page->HasEndReminder())
+		if ($this->_page->hasEndReminder())
 		{
-			$reservationSeries->AddEndReminder(new ReservationReminder($this->_page->GetEndReminderValue(), $this->_page->GetEndReminderInterval()));
+			$reservationSeries->addEndReminder(new ReservationReminder($this->_page->getEndReminderValue(), $this->_page->getEndReminderInterval()));
 		}
 		*/
 		return $reservationSeries;
 	}
 
 	/**
-	 * @param ReservationSeries $reservationSeries
+	 * @param RFReservationSeries $reservationSeries
 	 */
 	public function handleReservation($reservationSeries)
 	{
-		$successfullySaved = $this->_handler->handle(
-				$reservationSeries,
-				$this->_page);
-
+		$successfullySaved = $this->_handler->handle($reservationSeries, $this->_page);
 
 		if ($successfullySaved)
 		{
-			$this->_page->setRequiresApproval($reservationSeries->requiresApproval());
-			$this->_page->setReferenceNumber($reservationSeries->currentInstance()->referenceNumber());
+			//$this->_page->setRequiresApproval($reservationSeries->requiresApproval());
+			//$this->_page->setReferenceNumber($reservationSeries->currentInstance()->referenceNumber());
 		}
 	}
 
