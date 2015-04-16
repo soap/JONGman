@@ -140,7 +140,7 @@ class RFReservationModelUpdate implements IReservationModelUpdate
 		{
 			$existingSeries->removeEndReminder();
 		}
-
+		
 		return $existingSeries;
 	}
 
@@ -153,8 +153,8 @@ class RFReservationModelUpdate implements IReservationModelUpdate
 
 		if ($successfullySaved)
 		{
-			$this->page->setRequiresApproval($reservationSeries->requiresApproval());
-			$this->page->setReferenceNumber($reservationSeries->currentInstance()->referenceNumber());
+			//$this->page->setRequiresApproval($reservationSeries->requiresApproval());
+			//$this->page->setReferenceNumber($reservationSeries->currentInstance()->referenceNumber());
 		}
 		
 	}
