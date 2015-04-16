@@ -37,7 +37,7 @@ class RFReservationRepeatOptionsFactory
 	 * @param string $terminationDateTimezone
 	 * @return IRepeatOptions
 	 */
-	public function CreateFromComposite(IRepeatOptionsComposite $composite, $terminationDateTimezone)
+	public function createFromComposite(IRepeatOptionsComposite $composite, $terminationDateTimezone)
 	{
 		$repeatType = $composite->getRepeatType();
 		$interval = $composite->getRepeatInterval();
