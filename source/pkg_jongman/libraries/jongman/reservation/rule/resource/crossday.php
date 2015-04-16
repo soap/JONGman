@@ -24,7 +24,7 @@ class RFReservationRuleResourceCrossday implements IReservationValidationRule
 				$tz = $schedule->getTimezone();
 				$isSameDay = $reservationSeries->currentInstance()->startDate()->toTimezone($tz)->dateEquals($reservationSeries->currentInstance()->endDate()->toTimezone($tz));
 
-				return new RFReservationRuleResult($isSameDay, JText::printf('COM_JONGMAN_VALIDATION_MULTIDAY_RULE', $resource->getName()) );
+				return new RFReservationRuleResult($isSameDay, JText::sprintf('COM_JONGMAN_VALIDATION_CROSSDAY_RULE', $resource->getName()) );
 			}
 		}
 
