@@ -3,31 +3,26 @@ defined('_JEXEC') or die;
 
 class RFEventCommand
 {
-	/**
-	 * @var JDatabaseQuery
-	 */
-	private $command;
+
+	private $query;
 
 	/**
-	 * @var ExistingReservationSeries
+	 * @var RFReservationExistingSeries
 	 */
-	private $series;
+	protected $series;
 
-	public function __construct(JDatabaseQuery $command, RFReservationExistingSeries $series)
+	public function __construct($query, RFReservationExistingSeries $series)
 	{
-		$this->command = $command;
+		$this->query = $query;
 		$this->series = $series;
 	}
 
-	public function execute($dbo = null)
+	public function execute($dbo)
 	{
-		if ($dbo == null) {
-			$dbo = JFactory::getDbo();
-		}
-		
 		if (!$this->series->requiresNewSeries())
 		{
-			return $dbo->execute($this->command);
+			$dbo->setQuery($query);
+			@$dbo->execute($this->query);
 		}
 	}
 }

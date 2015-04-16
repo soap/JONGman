@@ -11,7 +11,7 @@ class RFEventCommandInstanceUpdated extends RFEventCommand
 	/**
 	 * @var ExistingReservationSeries
 	 */
-	private $series;
+	protected $series;
 	
 	public function __construct(RFReservation $instance, RFReservationExistingSeries $series)
 	{
@@ -28,6 +28,7 @@ class RFEventCommandInstanceUpdated extends RFEventCommand
 						'start_date'=> $this->instance->startDate()->toDatabase(),
 						'end_date'=>$this->instance->endDate()->toDatabase()
 					);
+		
 		$table->load($keys);
 		$table->bind($data);
 		$table->check();
