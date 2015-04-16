@@ -65,7 +65,7 @@ class RFReservationRepository implements IReservationRepository
 
 		$instances = $reservationSeries->instances();
 
-		foreach ($instances as $instance)
+		foreach ($instances as $reservation)
 		{
 			$command = new InstanceAddedEventCommand($reservation, $reservationSeries);
 			$command->Execute($database);
@@ -79,7 +79,7 @@ class RFReservationRepository implements IReservationRepository
 	public function update(RFReservationExistingSeries $reservationSeries)
 	{
 		$database = JFactory::getDbo();
-
+		$user = JFactory::getUser();
 		if ($reservationSeries->requiresNewSeries())
 		{
 			$currentId = $reservationSeries->seriesId();
@@ -91,23 +91,37 @@ class RFReservationRepository implements IReservationRepository
 			/** @var $instance Reservation */
 			foreach ($reservationSeries->instances() as $instance)
 			{
-				$updateReservationCommand = new UpdateReservationCommand($instance->ReferenceNumber(), $newSeriesId, $instance->StartDate(), $instance->EndDate());
-
-				$database->execute($updateReservationCommand);
+				$instanceTable = JTable::getInstance('Instance', 'JongmanTable');
+				$instanceData = array('reference_number' => $instance->referenceNumber(),
+						'reservation_id' => $newSeriesId,
+						'start_date' =>  $instance->startDate(), 'end_date' => $instance->endDate()
+				);
+				$instanceTable->save($instanceData);
 			}
 		}
 		else
 		{
-			JLog::add('Updating existing series (seriesId: %s)', $reservationSeries->seriesId(), JLog::DEBUG);
+			JLog::add(JText::sprintf('COM_JONGMAN_LOG_RESERVATION_UPDATE', $reservationSeries->seriesId()), JLog::DEBUG, 'debugging');
+			$reservationTable = JTable::getInstance('Reservation', 'JongmanTable');
+			$reservationTable->load($reservationSeries->seriesId());
+			$reservationData = array('title' => $reservationSeries->getTitle(), 
+					'description' =>$reservationSeries->getDescription(), 
+					'repeat_type' =>$reservationSeries->getRepeatOptions()->repeatType(), 
+					'repeat_options' => $reservationSeries->getRepeatOptions()->configurationString(), 
+					'modified' => RFDate::now(),
+					'modified_by' =>$user->id, 
+					'state' => $reservationSeries->statusId(), 
+					'owner_id' => $reservationSeries->userId());
 
-			$updateSeries = new UpdateReservationSeriesCommand($reservationSeries->seriesId(), $reservationSeries->title(), $reservationSeries->description(), $reservationSeries->repeatOptions()->repeatType(), $reservationSeries->repeatOptions()->configurationString(), RFDate::now(), $reservationSeries->statusId(), $reservationSeries->userId());
+			$reservationTable->save($reservationData);
 
-			$database->execute($updateSeries);
-
-			foreach ($reservationSeries->addedAttachments() as $attachment)
+			/*
+			 * 
+			 foreach ($reservationSeries->addedAttachments() as $attachment)
 			{
 				$this->addReservationAttachment($attachment);
 			}
+			*/
 		}
 
 		$this->executeEvents($reservationSeries);
@@ -121,52 +135,68 @@ class RFReservationRepository implements IReservationRepository
 	{
 		$dbo = JFactory::getDbo();
 
-		$insertReservationSeries = new AddReservationSeriesCommand(RFDate::now(), $reservationSeries->title(), $reservationSeries->description(), $reservationSeries->repeatOptions()->repeatType(), $reservationSeries->repeatOptions()->configurationString(), RFReservationTypes::Reservation, $reservationSeries->statusId(), $reservationSeries->userId());
+		$table = JTable::getInstance('Reservation', 'JongmanTable');
+		$reservationData = array('title'=> $reservationSeries->getTitle(), 
+				'description'=>$reservationSeries->getDescription(),
+				'repeat_type'=> $reservationSeries->getRepeatOptions()->repeatType(), 
+				'repeat_options'=> $reservationSeries->getRepeatOptions()->configurationString(), 
+				'type_id'=> RFReservationTypes::Reservation, 
+				'state'=> $reservationSeries->statusId(), 
+				'owner_id'=> $reservationSeries->userId()
+		);
+		
+		$table->save($reservationData);
+		$reservationSeriesId = $table->id;
 
-		$reservationSeriesId = $database->ExecuteInsert($insertReservationSeries);
+		$reservationSeries->withSeriesId($reservationSeriesId);
+		$resourceData = array('reservation_id'=> $reservationSeriesId,
+				'resource_id' =>	$reservationSeries->resourceId(),
+				'resource_level' => RFResourceLevel::Primary
+		);
+		
+		$table = JTable::getInstance('Resource', 'JongmanTable');
+		$table->save($resourceData);
 
-		$reservationSeries->WithSeriesId($reservationSeriesId);
-
-		$insertReservationResource = new AddReservationResourceCommand($reservationSeriesId, $reservationSeries->resourceId(), ResourceLevel::Primary);
-
-		$database->Execute($insertReservationResource);
-
-		foreach ($reservationSeries->AdditionalResources() as $resource)
+		foreach ($reservationSeries->additionalResources() as $resource)
 		{
-			$insertReservationResource = new AddReservationResourceCommand($reservationSeriesId, $resource->GetResourceId(), ResourceLevel::Additional);
-
-			$database->Execute($insertReservationResource);
+			$table = JTable::getInstance('Resource', 'Jongman');
+			$additionalResource = array('reservation_id'=> $reservationSeriesId,
+				'resource_id'=>$resource->retResourceId(),
+				'resource_level' => RFResourceLevel::Additional		
+			);
+			
+			$table->save($additionalResource);
 		}
 
-		foreach ($reservationSeries->Accessories() as $accessory)
+		foreach ($reservationSeries->accessories() as $accessory)
 		{
-			$insertAccessory = new AddReservationAccessoryCommand($accessory->AccessoryId, $accessory->QuantityReserved, $reservationSeriesId);
-			$database->Execute($insertAccessory);
+			//$insertAccessory = new AddReservationAccessoryCommand($accessory->accessoryId, $accessory->quantityReserved, $reservationSeriesId);
+			//$database->Execute($insertAccessory);
 		}
 
-		foreach ($reservationSeries->AttributeValues() as $attribute)
+		foreach ($reservationSeries->attributeValues() as $attribute)
 		{
-			$insertAttributeValue = new AddAttributeValueCommand($attribute->AttributeId, $attribute->Value, $reservationSeriesId, CustomAttributeCategory::RESERVATION);
-			$database->Execute($insertAttributeValue);
+			//$insertAttributeValue = new AddAttributeValueCommand($attribute->attributeId, $attribute->value, $reservationSeriesId, CustomAttributeCategory::RESERVATION);
+			//$database->Execute($insertAttributeValue);
 		}
 
 		foreach ($reservationSeries->AddedAttachments() as $attachment)
 		{
-			$this->AddReservationAttachment($attachment);
+			//$this->AddReservationAttachment($attachment);
 		}
 
 		if ($reservationSeries->getStartReminder()->enabled())
 		{
-			$reminder = $reservationSeries->getStartReminder();
-			$insertAccessory = new AddReservationReminderCommand($reservationSeriesId, $reminder->MinutesPrior(), ReservationReminderType::Start);
-			$database->Execute($insertAccessory);
+			//$reminder = $reservationSeries->getStartReminder();
+			//$insertAccessory = new AddReservationReminderCommand($reservationSeriesId, $reminder->MinutesPrior(), ReservationReminderType::Start);
+			//$database->Execute($insertAccessory);
 		}
 
 		if ($reservationSeries->getEndReminder()->enabled())
 		{
-			$reminder = $reservationSeries->getEndReminder();
-			$insertAccessory = new AddReservationReminderCommand($reservationSeriesId, $reminder->MinutesPrior(), ReservationReminderType::End);
-			$database->Execute($insertAccessory);
+			//$reminder = $reservationSeries->getEndReminder();
+			//$insertAccessory = new AddReservationReminderCommand($reservationSeriesId, $reminder->MinutesPrior(), ReservationReminderType::End);
+			//$database->Execute($insertAccessory);
 		}
 
 		return $reservationSeriesId;
@@ -181,6 +211,7 @@ class RFReservationRepository implements IReservationRepository
 	{
 		$database = JFactory::getDbo();
 		$events = $existingReservationSeries->getEvents();
+		
 		foreach ($events as $event)
 		{
 			$command = $this->getReservationCommand($event, $existingReservationSeries);
@@ -438,25 +469,25 @@ class RFReservationEventMapper
 	private function __construct()
 	{
 		$this->buildMethods['RFEventSeriesDeleted'] = 'buildDeleteSeriesCommand';
-		$this->buildMethods['OwnerChangedEvent'] = 'buildOwnerChangedCommand';
+		$this->buildMethods['RFEVentOwnerChanged'] = 'buildOwnerChangedCommand';
 
-		$this->buildMethods['InstanceAddedEvent'] = 'buildAddReservationCommand';
-		$this->buildMethods['InstanceRemovedEvent'] = 'buildRemoveReservationCommand';
-		$this->buildMethods['InstanceUpdatedEvent'] = 'buildUpdateReservationCommand';
+		$this->buildMethods['RFEventInstanceAdded'] = 'buildAddReservationCommand';
+		$this->buildMethods['RFEventInstanceRemoved'] = 'buildRemoveReservationCommand';
+		$this->buildMethods['RFEventInstanceUpdated'] = 'buildUpdateReservationCommand';
 
-		$this->buildMethods['ResourceRemovedEvent'] = 'buildRemoveResourceCommand';
-		$this->buildMethods['ResourceAddedEvent'] = 'buildAddResourceCommand';
+		$this->buildMethods['RFEventResourceRemoved'] = 'buildRemoveResourceCommand';
+		$this->buildMethods['RFEventResourceAdded'] = 'buildAddResourceCommand';
 
-		$this->buildMethods['AccessoryAddedEvent'] = 'buildAddAccessoryCommand';
-		$this->buildMethods['AccessoryRemovedEvent'] = 'buildRemoveAccessoryCommand';
+		$this->buildMethods['RFEventAccessoryAdded'] = 'buildAddAccessoryCommand';
+		$this->buildMethods['RFEventAccessoryRemoved'] = 'buildRemoveAccessoryCommand';
 
-		$this->buildMethods['AttributeAddedEvent'] = 'buildAddAttributeCommand';
-		$this->buildMethods['AttributeRemovedEvent'] = 'buildRemoveAttributeCommand';
+		$this->buildMethods['RFEventAttributeAdded'] = 'buildAddAttributeCommand';
+		$this->buildMethods['RFEventAttributeRemoved'] = 'buildRemoveAttributeCommand';
 
-		$this->buildMethods['AttachmentRemovedEvent'] = 'buildAttachmentRemovedEvent';
+		$this->buildMethods['RFEventAttachmentRemoved'] = 'buildAttachmentRemovedEvent';
 
-		$this->buildMethods['ReminderAddedEvent'] = 'buildReminderAddedEvent';
-		$this->buildMethods['ReminderRemovedEvent'] = 'buildReminderRemovedEvent';
+		$this->buildMethods['RFEventReminderAdded'] = 'buildReminderAddedEvent';
+		$this->buildMethods['RFEventReminderRemoved'] = 'buildReminderRemovedEvent';
 	}
 
 	/**
@@ -493,148 +524,74 @@ class RFReservationEventMapper
 
 	private function buildDeleteSeriesCommand(RFEventSeriesDeleted $event)
 	{
-		return new RFEventDeleteSeriesCommand($event->series());
+		return new RFEventCommandSeriesDeleted($event->series());
 	}
 
-	private function buildAddReservationCommand(RFEventInstanceAdded $event, RFExistingReservationSeries $series)
+	private function buildAddReservationCommand(RFEventInstanceAdded $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventInstanceAddedCommand($event->instance(), $series);
+		return new RFEventCommandInstanceAdded($event->getInstance(), $series);
 	}
 
-	private function buildRemoveReservationCommand(RFEventInstanceRemoved $event, RFExistingReservationSeries $series)
+	private function buildRemoveReservationCommand(RFEventInstanceRemoved $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventInstanceRemovedCommand($event->instance(), $series);
+		return new RFEventCommandInstanceRemoved($event->getInstance(), $series);
 	}
 
-	private function buildUpdateReservationCommand(RFEventInstanceUpdated $event, RFExistingReservationSeries $series)
+	private function buildUpdateReservationCommand(RFEventInstanceUpdated $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventInstanceUpdatedCommand($event->instance(), $series);
+		return new RFEventCommandInstanceUpdated($event->getInstance(), $series);
 	}
 
-	private function buildRemoveResourceCommand(ResourceRemovedEvent $event, RFExistingReservationSeries $series)
+	private function buildRemoveResourceCommand(ResourceRemovedEvent $event, RFReservationExistingSeries $series)
 	{
 		return new RFEventCommand(new RemoveReservationResourceCommand($series->seriesId(), $event->ResourceId()), $series);
 	}
 
-	private function buildAddResourceCommand(ResourceAddedEvent $event, RFExistingReservationSeries $series)
+	private function buildAddResourceCommand(ResourceAddedEvent $event, RFReservationExistingSeries $series)
 	{
 		return new RFEventCommand(new AddReservationResourceCommand($series->seriesId(), $event->ResourceId(), $event->ResourceLevel()), $series);
 	}
 
-	private function buildAddAccessoryCommand(AccessoryAddedEvent $event, RFExistingReservationSeries $series)
+	private function buildAddAccessoryCommand(AccessoryAddedEvent $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommand(new AddReservationAccessoryCommand($event->AccessoryId(), $event->Quantity(), $series->SeriesId()), $series);
+		return new RFEventCommand(new AddReservationAccessoryCommand($event->accessoryId(), $event->quantity(), $series->seriesId()), $series);
 	}
 
-	private function buildRemoveAccessoryCommand(AccessoryRemovedEvent $event, RFExistingReservationSeries $series)
+	private function buildRemoveAccessoryCommand(AccessoryRemovedEvent $event, RFReservationExistingSeries $series)
 	{
 		return new RFEventCommand(new RemoveReservationAccessoryCommand($series-sSeriesId(), $event->AccessoryId()), $series);
 	}
 
-	private function buildAddAttributeCommand(AttributeAddedEvent $event, RFExistingReservationSeries $series)
+	private function buildAddAttributeCommand(AttributeAddedEvent $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommand(new AddAttributeValueCommand($event->AttributeId(), $event->Value(), $series->SeriesId(), CustomAttributeCategory::RESERVATION), $series);
+		return new RFEventCommand(new AddAttributeValueCommand($event->attributeId(), $event->Value(), $series->SeriesId(), CustomAttributeCategory::RESERVATION), $series);
 	}
 
-	private function buildRemoveAttributeCommand(AttributeRemovedEvent $event, RFExistingReservationSeries $series)
+	private function buildRemoveAttributeCommand(AttributeRemovedEvent $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommand(new RemoveAttributeValueCommand($event->AttributeId(), $series->SeriesId()), $series);
+		return new RFEventCommand(new RemoveAttributeValueCommand($event->attributeId(), $series->seriesId()), $series);
 	}
 
-	private function buildOwnerChangedCommand(OwnerChangedEvent $event, RFExistingReservationSeries $series)
+	private function buildOwnerChangedCommand(OwnerChangedEvent $event, RFReservationExistingSeries $series)
 	{
 		return new RFEventOwnerChangedCommand($event);
 	}
 
-	private function BuildAttachmentRemovedEvent(AttachmentRemovedEvent $event, RFExistingReservationSeries $series)
+	private function buildAttachmentRemovedEvent(AttachmentRemovedEvent $event, RFReservationExistingSeries $series)
 	{
 		return new RFAttachmentRemovedCommand($event);
 	}
 
-	private function BuildReminderAddedEvent(ReminderAddedEvent $event, RFExistingReservationSeries $series)
+	private function buildReminderAddedEvent(ReminderAddedEvent $event, RFReservationExistingSeries $series)
 	{
 		return new ReminderAddedCommand($event);
 	}
 
-	private function BuildReminderRemovedEvent(ReminderRemovedEvent $event, RFExistingReservationSeries $series)
+	private function buildReminderRemovedEvent(ReminderRemovedEvent $event, RFReservationExistingSeries $series)
 	{
 		return new RFEventCommand(new RemoveReservationReminderCommand($series->SeriesId(), $event->ReminderType()), $series);
 	}
 }
-
-class RFEventCommand
-{
-	
-	private $query;
-
-	/**
-	 * @var ExistingReservationSeries
-	 */
-	protected $series;
-
-	public function __construct($query, RFReservationExistingSeries $series)
-	{
-		$this->query = $query;
-		$this->series = $series;
-	}
-
-	public function execute($dbo)
-	{
-		if (!$this->series->requiresNewSeries())
-		{
-			$dbo->setQuery($query);
-			@$dbo->execute($this->query);
-		}
-	}
-}
-
-
-class RFEventInstanceRemovedCommand extends RFEventCommand
-{
-	/**
-	 * @var Reservation
-	 */
-	private $instance;
-
-	public function __construct(RFReservation $instance, RFReservationSeries $series)
-	{
-		$this->instance = $instance;
-		$this->series = $series;
-	}
-
-	public function execute($dbo)
-	{
-		$table = JTable::getInstance('Instance', 'JongmanTable');
-		if ($table->load(array('reference_number' => $this->instance->referenceNumber()) ))
-		{
-			$table->delete();
-		}
-	}
-}
-
-
-class RFEventDeleteSeriesCommand extends RFEventCommand
-{
-	public function __construct(RFReservationExistingSeries $series)
-	{
-		$this->series = $series;
-	}
-
-	public function execute($database)
-	{
-		$id = $this->series->seriesId();
-		
-		$query = $database->getQuery(true);
-		$query->delete('#__jongman_reservation_instances')
-			->where('reservation_id='.$id);
-		$database->setQuery($query);
-		$database->query();
-
-		$table = JTable::getInstance('Reservation', 'JongmanTable');
-		$table->delete($id);
-	}
-}
-
 
 interface IReservationRepository
 {
