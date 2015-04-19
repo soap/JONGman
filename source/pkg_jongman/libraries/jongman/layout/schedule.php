@@ -388,16 +388,16 @@ class RFLayoutSchedule implements ILayoutSchedule, ILayoutCreation
 
 		foreach (RFDayOfWeek::Days() as $day)
 		{
-			$parser->AddReservable($reservableSlots[$day], $day);
-			$parser->AddBlocked($blockedSlots[$day], $day);
+			$parser->addReservable($reservableSlots[$day], $day);
+			$parser->addBlocked($blockedSlots[$day], $day);
 		}
 
-		return $parser->GetLayout();
+		return $parser->getLayout();
 	}
 
 	/**
 	 * @param Date $date
-	 * @return SchedulePeriod period which occurs at this datetime. Includes start time, excludes end time
+	 * @return RFSchedulePeriod period which occurs at this datetime. Includes start time, excludes end time
 	 */
 	public function getPeriod(RFDate $date)
 	{

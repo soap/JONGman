@@ -16,7 +16,6 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&view=reservations');?>" method="post" name="adminForm" id="adminForm">
 <?php
-if (!$this->is_j25) :
 	if (!empty($this->sidebar)) :
 ?>
 	<div id="j-sidebar-container" class="span2">
@@ -29,9 +28,6 @@ if (!$this->is_j25) :
     endif;
     //Search Toolbar
     echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
-else:
-	 echo $this->loadTemplate('filter_j25');
-endif;
 ?>	
 	<div class="clr"></div>
 <?php if (empty($this->items)) : ?>
@@ -42,8 +38,11 @@ endif;
 	<table class="adminlist table table-stripped">
 		<thead>
 			<tr>
-				<th width="1%">
-					<input type="checkbox" name="toggle" value="" onclick="checkAll(this)" />
+				<th width="1%" class="hidden-phone">
+					<?php echo JHtml::_('grid.checkall'); ?>
+				</th>
+				<th width="5%">
+					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_STATE', 'a.state', $listDirn, $listOrder); ?>
 				</th>
 				<th>
 					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_TITLE', 'title', $listDirn, $listOrder); ?>
@@ -63,16 +62,13 @@ endif;
 				<th width="10%">
 					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_OWNER', 'owner', $listDirn, $listOrder); ?>
 				</th>
-				<th width="5%">
-					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_STATE', 'a.state', $listDirn, $listOrder); ?>
-				</th>
 				<th width="10%">
 					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ACCESS', 'access_level', $listDirn, $listOrder); ?>
 				</th>
 				<th width="10%">
 					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_CREATED_BY', 're.author_name', $listDirn, $listOrder); ?>
 				</th>
-				<th width="5%">
+				<th width="10%">
 					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_CREATED_DATE', 're.created_time', $listDirn, $listOrder); ?>
 				</th>
 				<th width="1%" class="nowrap">
@@ -89,9 +85,14 @@ endif;
 			$canCheckin	= $user->authorise('core.manage',		'com_checkin') || $item->checked_out == $user->get('id') || $item->checked_out == 0;
 			$canChange	= $user->authorise('core.edit.state',	'com_jongman.reservation.'.$item->id) && $canCheckin;
 			?>
-			<tr class="row<?php echo $i % 2; ?>">
+			<tr class="row<?php echo $i % 2; ?> sortable-group-id="<?php echo $item->schedule_id?>">
 				<td class="center">
 					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+				</td>
+				<td class="center">
+					<div class="btn-group">
+						<?php echo JHtml::_('jgrid.published', $item->state, $i, 'reservations.', $canChange); ?>
+					</div>
 				</td>
 				<td>
 					<?php if ($item->checked_out) : ?>
@@ -106,6 +107,7 @@ endif;
 					<p class="smallsub">
 						<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->reference_number));?></p>
 				</td>
+
 				<td>
 					<?php echo $this->escape($item->schedule_title)?>
 				</td>
@@ -118,11 +120,8 @@ endif;
 				<td>
 					<?php echo JHtml::date($item->end_date, 'Y-m-d H:i', true) ;?>
 				</td>				
-				<td>
-					<?php echo $this->escape($item->owner); ?>
-				</td>
 				<td class="center">
-					<?php echo JHtml::_('jgrid.published', $item->state, $i, 'reservations.', $canChange); ?>
+					<?php echo $this->escape($item->owner); ?>
 				</td>
 				<td class="center">
 					<?php echo $this->escape($item->access_level); ?>
@@ -139,15 +138,6 @@ endif;
 			</tr>
 		<?php endforeach; ?>
 		</tbody>
-		<?php if ($this->is_j25) : ?>
-		<tfoot>
-			<tr>
-				<td colspan="12">
-					<?php echo $this->pagination->getListFooter(); ?>
-				</td>
-			</tr>
-		</tfoot>
-		<?php endif; ?>
 	</table>
 <?php endif; ?>
 	<?php if (!$this->is_j25) : echo $this->pagination->getListFooter(); endif; ?>
@@ -156,8 +146,5 @@ endif;
 	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
 	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
 	<?php echo JHtml::_('form.token'); ?>
-<?php if (!$this->is_j25) : ?>
 	</div>
-<?php endif; ?>		
 </form>
-

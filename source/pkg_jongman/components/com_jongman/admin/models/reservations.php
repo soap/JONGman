@@ -11,6 +11,37 @@ jimport('joomla.application.component.modellist');
 class JongmanModelReservations extends JModelList
 {
 	/**
+	 * Constructor override.
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
+	 * @return  JongmanModelReservations
+	 * @since   1.0
+	 * @see     JModelList
+	 */
+
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'id', 'a.id',
+				'title', 'a.title',
+				'reference_numnber', 'a.reference_number',
+				'checked_out', 'a.checked_out',
+				'checked_out_time', 'a.checked_out_time',
+				'a.start_date', 'a.end_date',
+				'state', 'a.state',
+				'access', 'a.access', 'access_level',
+				'created', 'a.created',
+				'created_by', 'a.created_by',
+				'modified', 'a.modified',
+				'modified_by', 'a.modified_by',
+			);
+		}
+		parent::__construct($config);
+	}
+
+	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
@@ -145,7 +176,7 @@ class JongmanModelReservations extends JModelList
 		}
 		
 		// Add the list ordering clause.
-		$orderCol	= $this->state->get('list.ordering', 'a.title');
+		$orderCol	= $this->state->get('list.ordering', 'a.reference_number');
 		$orderDirn	= $this->state->get('list.direction', 'asc');
 
 		$query->order($db->escape($orderCol.' '.$orderDirn));

@@ -56,7 +56,14 @@ class JongmanHelper {
 			JText::_('COM_JONGMAN_SUBMENU_RESERVATIONS'),
 			'index.php?option=com_jongman&view=reservations',
 			$vName == 'reservations'    		
-    	);        
+    	);      
+
+		call_user_func(
+			array($class, 'addEntry'),
+			JText::_('COM_JONGMAN_SUBMENU_BLACKOUTS'),
+			'index.php?option=com_jongman&view=blackouts',
+			$vName == 'blackouts'
+		);
 		             
     }
     
