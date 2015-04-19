@@ -4,8 +4,42 @@
 		<field
 			name="search"
 			type="text"
-			label="COM_BANNERS_SEARCH_IN_TITLE"
+			label="COM_JONGMAN_SEARCH_IN_TITLE"
 			hint="JSEARCH_FILTER"
+			class="js-stools-search-string"
+		/>
+		<field 
+			name="schedule"
+			type="schedule"
+			label="COM_JONGMAN_SELECT_SCHEUDLE"
+			description=""
+			onchange="this.form.submit();"
+			>
+			<option value="">COM_JONGMAN_OPTION_SELECT_SCHEDULE</option>
+		</field>
+		<field 
+			name="resource"
+			type="resource"
+			label="COM_JONGMAN_SELECT_RESOURCE"
+			description=""
+			onchange="this.form.submit();"
+			>
+			<option value="">COM_JONGMAN_OPTION_SELECT_RESOURCE</option>
+		</field>
+		<field
+			name="start_date"
+			type="calendar"
+			label="COM_JONGMAN_SELECT_START_DATE"
+			hint="COM_JONGMAN_START_DATE"
+			filter="user_utc"
+			class="js-stools-search-string"
+		/>
+		<field
+			name="end_date"
+			type="calendar"
+			label="COM_JONGMAN_SELECT_END_DATE"
+			hint="COM_JONGMAN_END_DATE"
+			filter="user_utc"
 			class="js-stools-search-string"
 		/>
 		<field
@@ -17,16 +51,6 @@
 			onchange="this.form.submit();"
 			>
 			<option value="">JOPTION_SELECT_PUBLISHED</option>
-		</field>
-		<field
-			name="language"
-			type="contentlanguage"
-			label="JOPTION_FILTER_LANGUAGE"
-			description="JOPTION_FILTER_LANGUAGE_DESC"
-			onchange="this.form.submit();"
-			>
-			<option value="">JOPTION_SELECT_LANGUAGE</option>
-			<option value="*">JALL</option>
 		</field>
 	</fields>
 	<fields name="list">
@@ -40,14 +64,16 @@
 			default="a.title ASC"
 			>
 			<option value="">JGLOBAL_SORT_BY</option>
-			<option value="ordering ASC">JGRID_HEADING_ORDERING_ASC</option>
-			<option value="ordering DESC">JGRID_HEADING_ORDERING_DESC</option>
+			<option value="resource_name ASC">COM_JONGMAN_HEADING_RESOURCENAME_ASC</option>
+			<option value="resource_name DESC">COM_JONGMAN_HEADING_RESOURCENAME_DESC</option>
+			<option value="a.start_date ASC">COM_JONGMAN_HEADING_STARTDATE_ASC</option>
+			<option value="a.start_date DESC">COM_JONGMAN_HEADING_STARTDATE_DESC</option>
+			<option value="a.end_date ASC">COM_JONGMAN_HEADING_ENDDATE_ASC</option>
+			<option value="a.end_date DESC">COM_JONGMAN_HEADING_ENDDATE_DESC</option>
 			<option value="a.state ASC">JSTATUS_ASC</option>
 			<option value="a.state DESC">JSTATUS_DESC</option>
 			<option value="a.title ASC">COM_JONGMAN_HEADING_NAME_ASC</option>
 			<option value="a.title DESC">COM_JONGMAN_HEADING_NAME_DESC</option>
-			<option value="a.language ASC">JGRID_HEADING_LANGUAGE_ASC</option>
-			<option value="a.language DESC">JGRID_HEADING_LANGUAGE_DESC</option>
 			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
 			<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>
 		</field>
