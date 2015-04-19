@@ -73,13 +73,16 @@ class JFormFieldTimeoptions extends JFormField {
     protected function getOptions() 
     {
         $scheduleId = $this->scheduleId;
-        $resourceId = $this->resourceId;
-
+        //$resourceId = $this->resourceId;
+		if (empty($scheduleId)) return array();
+		
         $user = JFactory::getUser();
         $userTz = $user->getParam('timezone', JFactory::getConfig()->get('offset', 'UTC'));
-
-        $model = JModelLegacy::getInstance('Schedule', 'JongmanModel');
-        $layout = $model->getScheduleLayout($scheduleId, $userTz);
+        
+        $scheduleRepository = new RFScheduleRepository();
+        $layoutFactory = new RFFactoryLayoutSchedule($userTz);
+        $layout = $scheduleRepository->getLayout($scheduleId, $layoutFactory);
+        
 		$periods = $layout->getLayout(new RFDate());
 		foreach($periods as $period) {
 			if ($this->periodType == 'begin') {
