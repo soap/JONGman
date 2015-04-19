@@ -34,17 +34,28 @@ class JFormFieldResource extends JFormFieldList {
         $attr .= $this->multiple                                 ? ' multiple="multiple"'                                   : '';
         $attr .= $this->element['onchange']                      ? ' onchange="' .(string) $this->element['onchange'] . '"' : '';
 		
-		$schedule = (int) $this->form->getValue('schedule_id');
+        $schedule = (int) $this->form->getValue('schedule_id', null);
+		if (empty($schedule)) {
+			$app = JFactory::getApplication();
+			$schedule = $app->getUserStateFromRequest('com_jongman.reservations.filter.schedule', 'filter_schedule');
+		}
+		
 		$quota = (string) $this->element['quota'];
 		
 		$this->schedule = $schedule;
 		// Set the required and validation options.
 		$this->quota = ($quota == 'true' || $quota == '1');
-       	
-		if (!$schedule && !$quota) {
-            // Cant get list without at least a schedule id.
-            $this->form->setValue($this->element['name'], null, '');
-            return '<span class="readonly">' . JText::_('COM_JONGMAN_FIELD_SCHEDULE_REQ') . '</span>' . $hidden;
+		$layout = JFactory::getApplication()->input->getCmd('layout');
+		if ($layout === 'edit') {
+			if (!$schedule && !$quota) {
+            	// Cant get list without at least a schedule id.
+            	$this->form->setValue($this->element['name'], null, '');
+            	return '<span class="readonly">' . JText::_('COM_JONGMAN_FIELD_SCHEDULE_REQ') . '</span>' . $hidden;
+			}
+        }else {
+        	if (!$schedule) {
+ 				return '<span class="readonly"></span>';
+        	}
         }
 		// Get the field options.
 		$options = (array) $this->getOptions();
@@ -59,12 +70,8 @@ class JFormFieldResource extends JFormFieldList {
     }
     
     protected function getOptions() {
-    	//get predefined option in xml file (FORM Definition) 
-    	//if (empty($this->schedule)) {
-			$staticOptions = (array) parent::getOptions();
-    	//}else{
-    		//$staticOptions = array();
-    	//}
+
+		$staticOptions = (array) parent::getOptions();
 		
         $dbo = JFactory::getDbo();
         $query = $dbo->getQuery(true);
