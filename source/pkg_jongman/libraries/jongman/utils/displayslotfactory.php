@@ -15,7 +15,7 @@ class RFDisplaySlotFactory
 	 * @param unknown_type $slotRef
 	 * @param unknown_type $href
 	 */
-	protected function displayMyReserved(IReservationSlot $slot, $slotRef, $href) 
+	protected static function displayMyReserved(IReservationSlot $slot, $slotRef, $href) 
 	{
 		$html 	= array();
 		if ($slot->isPending()) {
@@ -30,7 +30,7 @@ class RFDisplaySlotFactory
 		return implode("", $html);			
 	} 
 	
-	protected function displayReserved(IReservationSlot $slot, $slotRef, $href) 
+	protected static function displayReserved(IReservationSlot $slot, $slotRef, $href) 
 	{
 		$html 	= array();
 		if ($slot->isPending()) {
@@ -45,7 +45,7 @@ class RFDisplaySlotFactory
 		return implode("", $html);		
 	}
 
-	protected function displayMyParticipating(IReservationSlot $slot, $slotRef, $href) 
+	protected static function displayMyParticipating(IReservationSlot $slot, $slotRef, $href) 
 	{
 		$html 	= array();
 		if ($slot->isPending()) {
@@ -59,7 +59,7 @@ class RFDisplaySlotFactory
 		return implode("", $html);			
 	}
 
-	protected function displayPastTime(IReservationSlot $slot, $slotRef, $href) 
+	protected static function displayPastTime(IReservationSlot $slot, $slotRef, $href) 
 	{
 		$html 	= array();
 		$html[] = "<td ref=\"{$slotRef}\" colspan=\"{$slot->periodSpan()}\" class=\"pasttime slot\">";
@@ -69,7 +69,7 @@ class RFDisplaySlotFactory
 		return implode("", $html);		
 	}
 	
-	protected function displayRestricted(IReservationSlot $slot, $slotRef, $href) 
+	protected static function displayRestricted(IReservationSlot $slot, $slotRef, $href) 
 	{
 		$html 	= array();
 		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"stricted slot\">";
@@ -78,7 +78,7 @@ class RFDisplaySlotFactory
 		return implode("", $html);		
 	} 
 	
-	protected function displayReservable(IReservationSlot $slot, $slotRef, $href) 
+	protected static function displayReservable(IReservationSlot $slot, $slotRef, $href) 
 	{
 		$html 	= array();
 		$html[] = "<td ref=\"{$slotRef}\" colspan=\"{$slot->periodSpan()}\" class=\"reservable clickres slot\">";
@@ -90,7 +90,7 @@ class RFDisplaySlotFactory
 		return implode("", $html);		
 	} 
 	 
-	protected function displayUnreservable(IReservationSlot $slot, $slotRef, $href) 
+	protected static function displayUnreservable(IReservationSlot $slot, $slotRef, $href) 
 	{
 		$html 	= array();
 		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"unreservable slot\">";

@@ -26,12 +26,12 @@ class JongmanModelSchedule extends JModelItem {
 		$value = $app->getUserStateFromRequest($this->context.'.filter.start_date', 'sd');
 		$this->setState('filter.start_date', $value);
     	
-    	$pk = JRequest::getInt('id');
+    	$pk = $app->input->getInt('id');
 		$this->setState('schedule.id', $pk);
     	$params = JComponentHelper::getParams('com_jongman');
 		
 		$menuitemid = JRequest::getInt( 'Itemid' );
-		$menu = JSite::getMenu();
+		$menu = $app->getMenu();
 		if ($menuitemid) {
 			$menuparams = $menu->getParams( $menuitemid );
 			$params->merge( $menuparams );
@@ -378,7 +378,7 @@ class JongmanModelSchedule extends JModelItem {
     		$adjustment = max($scheduleLength, 7);
     		$prevAdjustment = 7 * floor($adjustment / 7); // ie, if 10, we only want to go back 7 days so there is overlap
     	}
-    	$menu = JSite::getMenu();
+    	$menu = JFactory::getApplication()->getMenu();
     	$url = $menu->getActive()->link.'&Itemid='.$menu->getActive()->id;
     	$obj = new stdClass();
     	$obj->previousLink = $url.'&sd='.$startDate->addDays(-$prevAdjustment)->getDate()->format('Y-m-d');

@@ -56,7 +56,9 @@ class JongmanViewSchedule extends JViewLegacy
 		// Initialise variables.
 		$this->schedule			= $this->get('Item');
 		$this->resources		= $this->get("Resources");
-		//$this->reservations 	= $this->get("Reservations");
+		if ($this->getLayout()=='default') {
+			$this->reservations 	= $this->get("Items");
+		}
 		/**
 		 * @since 2.0
 		 */
@@ -64,8 +66,8 @@ class JongmanViewSchedule extends JViewLegacy
 		$this->scheduledates	= $this->get("ScheduleDates");
 		$this->navLinks  		= $this->get("NavigationLinks");
 		//-------------------------------------------------------
-		$this->navigation	= $this->get('Navigation');
-		$this->state		= $this->get('State');
+		$this->navigation		= $this->get('Navigation');
+		$this->state			= $this->get('State');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {

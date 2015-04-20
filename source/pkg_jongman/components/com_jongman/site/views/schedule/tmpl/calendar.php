@@ -5,6 +5,7 @@ JHtml::_('behavior.modal');
 jimport('jongman.date.date');
 jimport('jongman.application.displayslotfactory');
 
+$app = JFactory::getApplication();
 $Itemid = JFactory::getApplication()->input->getInt('Itemid', null);
 $reservationUrl = "index.php?option=com_jongman&task=instance.edit&cid[]=[REFERENCENUMBER]&Itemid=".$Itemid;
 
@@ -14,7 +15,7 @@ $calLink = JURI::root().'media/com_jongman/jongman/images/calendar.png';
 
 $firstDate = $this->scheduledates->getBegin();
 $lastDate = $this->scheduledates->getEnd();
-$url = JSite::getMenu()->getActive()->link.'&Itemid='.JSite::getMenu()->getActive()->id;
+$url = $app->getMenu()->getActive()->link.'&Itemid='.$app->getMenu()->getActive()->id;
 ?>
 <div class="row-fluid">
 	<div class="span12">
