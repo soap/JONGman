@@ -70,7 +70,7 @@ class JFormFieldModal_Schedules extends JFormField
 		$link = 'index.php?option=com_jongman&amp;view=schedules&amp;layout=modal&amp;tmpl=component&amp;function=jSelectChart_'.$this->id;
 
 		$html = "\n".'<div class="fltlft"><input type="text" id="'.$this->id.'_name" value="'.htmlspecialchars($title, ENT_QUOTES, 'UTF-8').'" disabled="disabled" class="inputbox" /></div>';
-		$html .= '<div class="button2-left"><div class="blank"><a class="modal" title="'.JText::_('COM_SCHEDULE_CHANGE_SCHEDULE_BUTTON').'"  href="'.$link.'" rel="{handler: \'iframe\', size: {x: 800, y: 450}}">'.JText::_('COM_JONGMAN_CHANGE_SCHEDULE_BUTTON').'</a></div></div>'."\n";
+		$html .= '<div class="button2-left"><div class="blank"><a class="modal" title="'.JText::_('COM_JONGMAN_CHANGE_SCHEDULE_BUTTON').'"  href="'.$link.'" rel="{handler: \'iframe\', size: {x: 800, y: 450}}">'.JText::_('COM_JONGMAN_CHANGE_SCHEDULE_BUTTON').'</a></div></div>'."\n";
 		// The active contact id field.
 		if (0 == (int)$this->value) {
 			$value = '';

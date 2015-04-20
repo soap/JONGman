@@ -30,6 +30,8 @@ class JongmanViewResources extends JViewLegacy
     public  function display($tpl = null) 
     {
         JHtml::stylesheet( 'administrator/components/com_jongman/assets/css/jongman.css' );
+        $layout = $this->getLayout();
+        
         $this->items        = $this->get("Items");
         $this->pagination   = $this->get("Pagination");
         $this->state        = $this->get("State");
@@ -37,7 +39,7 @@ class JongmanViewResources extends JViewLegacy
         if (!$this->is_j25) {
         	$this->filterForm    = $this->get('FilterForm');
 			$this->activeFilters = $this->get('ActiveFilters');
-			$this->sidebar = JHtmlSidebar::render();	
+			if ($layout != 'modal') $this->sidebar = JHtmlSidebar::render();	
         } 
     	
         // Check for errors.

@@ -34,10 +34,12 @@ class JFormFieldResource extends JFormFieldList {
         $attr .= $this->multiple                                 ? ' multiple="multiple"'                                   : '';
         $attr .= $this->element['onchange']                      ? ' onchange="' .(string) $this->element['onchange'] . '"' : '';
 		
-        $schedule = (int) $this->form->getValue('schedule_id', null);
+        $schedule = (int) $this->form->getValue('schedule_id');
+        
 		if (empty($schedule)) {
 			$app = JFactory::getApplication();
-			$schedule = $app->getUserStateFromRequest('com_jongman.reservations.filter.schedule', 'filter_schedule');
+			$view = $app->input->getCmd('view');
+			$schedule = $app->getUserStateFromRequest('com_jongman.'.$view.'.filter.schedule', 'filter_schedule');
 		}
 		
 		$quota = (string) $this->element['quota'];

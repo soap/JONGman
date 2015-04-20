@@ -35,7 +35,7 @@ class JongmanViewSchedules extends JViewLegacy
         if (!$this->is_j25) {
         	$this->filterForm    = $this->get('FilterForm');
 			$this->activeFilters = $this->get('ActiveFilters');
-			$this->sidebar = JHtmlSidebar::render();	
+			if ($this->getLayout() !='modal') $this->sidebar = JHtmlSidebar::render();	
         } 
         
         // Check for errors.

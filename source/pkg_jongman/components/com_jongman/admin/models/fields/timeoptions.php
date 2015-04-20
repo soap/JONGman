@@ -73,8 +73,15 @@ class JFormFieldTimeoptions extends JFormField {
     protected function getOptions() 
     {
         $scheduleId = $this->scheduleId;
-        //$resourceId = $this->resourceId;
-		if (empty($scheduleId)) return array();
+        $resourceId = $this->resourceId;
+		if (empty($scheduleId) && empty($resourceId)) return array();
+		if (empty($scheduleId)) {
+			$dbo = JFactory::getDbo();
+			$query = $dbo->getQuery(true);
+			$query->select('schedule_id')->from('#__jongman_resources')->where('id='.$resourceId);
+			$dbo->setQuery($query);
+			$scheduleId = $dbo->loadResult();			
+		}
 		
         $user = JFactory::getUser();
         $userTz = $user->getParam('timezone', JFactory::getConfig()->get('offset', 'UTC'));

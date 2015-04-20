@@ -9,6 +9,13 @@
 			class="js-stools-search-string"
 		/>
 		<field
+			name="schedule_id"
+			type="schedule"
+			hint="Filter schedule"
+			onchange="this.form.submit();">
+			<option value="">COM_JONGMAN_OPTION_SELECT_SCHEDULE</option>
+			</field>
+		<field
 			name="state"
 			type="status"
 			label="JOPTION_SELECT_PUBLISHED"

@@ -18,35 +18,14 @@ $listDirn	= $this->state->get('list.direction');
 $saveOrder	= $listOrder=='ordering';
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&view=resources&layout=modal&tmpl=component'); ?>" method="post" name="adminForm" id="adminForm">
-	<fieldset id="filter-bar">
-		<div class="filter-search fltlft">
-			<label class="filter-search-lbl" for="filter_search">
-				<?php echo JText::_('JSEARCH_FILTER_LABEL'); ?>:</label>
-			<input type="text" name="filter_search" id="filter_search"
-				value="<?php echo $this->escape($this->state->get('filter.search')); ?>"
-				title="<?php echo JText::_('COM_JONGMAN_RESOURCES_FILTER_SEARCH_DESC'); ?>" />
-
-			<button type="submit" class="btn">
-				<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?></button>
-			<button type="button" onclick="document.id('filter_search').value='';this.form.submit();">
-				<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?></button>
-
+	<div id="j-main-container">
+<?php echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this)); ?>
+<?php if (empty($this->items)) : ?>
+		<div class="alert alert-no-items">
+			<?php echo JText::_('COM_JONGMAN_NO_MATCHING_RESULTS'); ?>
 		</div>
-		<div class="filter-select fltrt">
-			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
-				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'),
-					'value', 'text', $this->state->get('filter.state'), true);?>
-			</select>
-
-			<select name="filter_access" class="inputbox" onchange="this.form.submit()">
-				<option value=""><?php echo JText::_('JOPTION_SELECT_ACCESS');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('access.assetgroups'),
-					'value', 'text', $this->state->get('filter.access'));?>
-			</select>
-		</div>
-	</fieldset>
-	<table class="adminlist">
+<?php else : ?>	
+	<table class="adminlist table table-stripped">
 		<thead>
 			<tr>
 				<th width="30%">
@@ -55,28 +34,18 @@ $saveOrder	= $listOrder=='ordering';
                 <th width="20%">
                     <?php echo JHtml::_('grid.sort',  'COM_JONGMAN_HEADING_SCHEDULE', 'schedule_name', $listDirn, $listOrder); ?>
                 </th>
-                <th width="10%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_MIN_RES').'('
-                        .JText::_('COM_JONGMAN_MINUTES').')'?>
+                <th class="nowrap center">
+                    <?php echo JText::_('COM_JONGMAN_HEADING_MIN_RESERVATION') ?>
                 </th>
-                <th width="10%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_MAX_RES').'('
-                        .JText::_('COM_JONGMAN_MINUTES').')'?>
+                <th class="nowrap center">
+                    <?php echo JText::_('COM_JONGMAN_HEADING_MAX_RESERVATION') ?>
                 </th>
-                <th width="10%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_MIN_NOTICE_TIME').'('
-                        .JText::_('COM_JONGMAN_HOURS').')'?>
+                <th class="nowrap center">
+                    <?php echo JText::_('COM_JONGMAN_HEADING_MIN_NOTICE_TIME'); ?>
                 </th>
-                <th width="10%">
-                    <?php echo JText::_('COM_JONGMAN_HEADING_MAX_NOTICE_TIME').'('
-                        .JText::_('COM_JONGMAN_HOURS').')'?>
-                </th>                
-                <th width="10%">
-                	<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ACCESS', 'access', $listDirn, $listOrder); ?>
-                </th>
-				<th width="5%">
-					<?php echo JHtml::_('grid.sort', 'JPUBLISHED', 'published', $listDirn, $listOrder); ?>
-				</th>
+                <th class="nowrap center">
+                    <?php echo JText::_('COM_JONGMAN_HEADING_MAX_NOTICE_TIME'); ?>
+                </th>               
 				<th width="1%" class="nowrap">
 					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'id', $listDirn, $listOrder); ?>
 				</th>
@@ -89,11 +58,6 @@ $saveOrder	= $listOrder=='ordering';
 				</td>
 			</tr>
 		</tfoot>
-		<?php if (count($this->items)==0) : ?>
-            <tr>
-                <td colspan="10" class="center"><?php echo JText::_("COM_JONGMAN_NO_RECORD")?></td>
-            </tr>
-        <?php else: ?>
 	<?php foreach ($this->items as $i => $item) :
 			$ordering	= ($listOrder == 'ordering');      
 			?>
@@ -108,37 +72,49 @@ $saveOrder	= $listOrder=='ordering';
                     <?php echo $item->schedule_name?>
                 </td>
                 <td class="center">
-                    <?php echo $item->min_res?>
+                	<?php 
+                		$title = "Minimum Duration::".(!$item->hasMinDuration? JText::_("COM_JONGMAN_NO_MIN_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MIN_DURATION_DESC", $item->minDuration->interval()));
+                    ?>
+                	<span class="hasTip" title="<?php echo $title?>">
+                    	<?php echo ($item->hasMinDuration ? $item->minDuration->interval() : "NA") ?>
+                    </span>
                 </td>
                 <td class="center">
-                    <?php echo $item->max_res?>
+                	<?php 
+                		$title = "Maximum Duration::".(!$item->hasMaxDuration? JText::_("COM_JONGMAN_NO_MAX_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MAX_DURATION_DESC", $item->maxDuration->interval()));
+                    ?>
+                	<span class="hasTip" title="<?php echo $title?>">
+                    	<?php echo ($item->hasMaxDuration ? $item->maxDuration->interval() : "NA") ?>
+                    </span>
                 </td>
                 <td class="center">
-                    <?php echo $item->min_notice_time?>
+                	<?php
+                		$title = "Start Time::".(!$item->hasMinNoticeTime ? JText::_("COM_JONGMAN_NO_MIN_NOTICE_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MIN_NOTICE_DURATION_DESC", $item->minNoticeTime->interval()));
+                	?>
+                	<span class="hasTip" title="<?php echo $title?>">
+                    	<?php echo ($item->hasMinNoticeTime ? $item->minNoticeTime->interval() : "NA")?>
+                    </span>
                 </td>
                 <td class="center">
-                    <?php echo $item->max_notice_time?>
-                </td>                
-                <td class="center">
-                	<?php echo $item->access_level?>
-                </td>
-				<td class="center">
-					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'resources.', false); ?>
-				</td>
+                	<?php 
+               			$title = "End Time::".(!$item->hasMaxNoticeTime ? JText::_("COM_JONGMAN_NO_MAX_NOTICE_DURATION_DESC") : JText::sprintf("COM_JONGMAN_ON_MAX_NOTICE_DURATION_DESC", $item->maxNoticeTime->interval()));
+                    ?>	
+                	<span class="hasTip" title="<?php echo $title?>">
+                    	<?php echo ($item->hasMaxNoticeTime ? $item->maxNoticeTime->interval() : "NA") ?>
+                    </span>
+                </td>                  
 				<td class="center">
 					<?php echo $item->id; ?>
 				</td>
 			</tr>
 			<?php endforeach; ?>        
-        <?php endif;?>
 	</table>
-	<div>
-		<input type="hidden" name="task" value="" />
-		<input type="hidden" name="field" value="<?php echo $this->escape($field); ?>" />
-		<input type="hidden" name="filter_schedule_id" value="<?php echo $schedule_id?>"
-		<input type="hidden" name="boxchecked" value="0" />
-		<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
-		<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
-		<?php echo JHtml::_('form.token'); ?>
+<?php endif;?>
+	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="field" value="<?php echo $this->escape($field);?>" />
+	<input type="hidden" name="boxchecked" value="0" />
+	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
+	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
+	<?php echo JHtml::_('form.token'); ?>
 	</div>
 </form>

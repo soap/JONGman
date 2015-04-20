@@ -37,8 +37,8 @@
 			
 		<field name="title"
 			type="text"
-			label="JGLOBAL_TITLE"
-			description="JFIELD_TITLE_DESC"
+			label="COM_JONGMAN_FIELD_REASON_LABEL"
+			description="COM_JONGMAN_FIELD_REASON_DESC"
 			class="inputbox"
 			size="45"
 			required="true" />
@@ -49,12 +49,12 @@
 			description="JFIELD_ALIAS_DESC"
 			class="inputbox"
 			size="45" />
-
+			
 		<field name="resource_id"
-			type="resource"
+			type="modal_resources"
 			label="COM_JONGMAN_FIELD_RESOURCE_LABEL"
 			description="COM_JONGMAN_FIELD_RESOURCE_DESC"
-			class="inputbox"
+			onchange="JMform.reload('start_time,end_time','blackout-form');"
 			required="true">
 			<option value="0">COM_JONGMAN_OPTION_SELECT_RESOURCE</option>
 		</field>
@@ -132,27 +132,18 @@
 			size="20"
 			readonly="true"
 			filter="unset" />
+		
+		<field name="elements"
+			type="hidden"
+			filter="unset" />
+			
 	</fieldset>
 
 	<fields name="params">
 		<fieldset name="basic" label="COM_JONGMAN_BASIC_PARAMS_FIELDSET_LABEL">
-			<field name="show_title"
-				type="list"
-				label="JGLOBAL_SHOW_TITLE_LABEL"
-				description="COM_JONGMAN_PARAM_SHOW_TITLE_DESC">
-				<option value="">JGLOBAL_USE_GLOBAL</option>
-				<option value="0">JHIDE</option>
-				<option value="1">JSHOW</option>
-			</field>
 		</fieldset>
 
 		<fieldset name="advanced" label="COM_JONGMAN_ADVANCED_PARAMS_FIELDSET_LABEL">
-			<field name="layout"
-				type="componentlayout"
-				label="JFIELD_ALT_LAYOUT_LABEL"
-				description="JFIELD_ALT_COMPONENT_LAYOUT_DESC"
-				extension="COM_JONGMAN"
-				view="blackout" />
 		</fieldset>
 	</fields>
 
