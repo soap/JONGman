@@ -72,7 +72,16 @@
 		name="resevation"
 		label="COM_JONGMAN_CONFIG_RESERVATION_LABEL"
 		description="COM_JONGMAN_CONFIG_RESERVATION_DESC">
-		
+		<field
+			name="approvalSystem"
+			type="list"
+			default="1"
+			class="inputbox"
+			label="COM_JONGMAN_CONFIG_APPROVAL_SYSTEM_LABEL"
+			description="COM_JONGMAN_CONFIG_APPROVAL_SYSTEM_DESC">
+			<option value="1">COM_JONGMAN_JONGMAN_APPROVAL_SYSTEM</option>
+			<option value="2">COM_JONGMAN_WFWORKFLOW_APPROVAL_SYSTEM</option>
+		</field>
 		<field
 			name="proxyReservation" 
 			type="list"

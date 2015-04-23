@@ -5,6 +5,7 @@ defined('_JEXEC') or die;
 jimport('jongman.framework');
 JLoader::register('JFormFieldUser', JPATH_COMPONENT.'/models/fields/user.php');
 JLoader::register('JongmanHelper', JPATH_COMPONENT . '/helpers/jongman.php');
+JLoader::register('JongmanHelperRoute', JPATH_COMPONENT . '/helpers/route.php');
 JLoader::registerPrefix('J', JPATH_ADMINISTRATOR.'/components/com_jongman/helpers', false, true);
 
 $logEnabled = (bool)JComponentHelper::getParams('com_jongman')->get('logging_level', false);

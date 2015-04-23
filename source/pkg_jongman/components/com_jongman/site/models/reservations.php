@@ -31,7 +31,7 @@ class JongmanModelReservations extends JModelList
 				'alias', 'a.alias',
 				'checked_out', 'a.checked_out',
 				'checked_out_time', 'a.checked_out_time',
-				'catid', 'a.catid', 'category_title',
+				'a.start_date', 'a.end_date', 
 				'published', 'a.published',
 				'access', 'a.access', 'access_level',
 				'ordering', 'a.ordering',
@@ -64,37 +64,56 @@ class JongmanModelReservations extends JModelList
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication();
-
-		$value = $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
-		$this->setState('filter.search', $value);
-
-		$value = $app->getUserStateFromRequest($this->context.'.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $value);
-
-		$value = $app->getUserStateFromRequest($this->context.'.filter.state', 'filter_state', '');
-		$this->setState('filter.state', $value);
-
-		$value = $app->getUserStateFromRequest($this->context.'.filter.start_date', 'filter_start_date', '');
-		$this->setState('filter.start_date', $value);
 		
-		$value = $app->getUserStateFromRequest($this->context.'.filter.end_date', 'filter_end_date', '');
-		$this->setState('filter.end_date', $value);		
+		// Adjust the context to support modal layouts.
+		$layout = JRequest::getCmd('layout');
 		
-		$value = $app->getUserStateFromRequest($this->context.'.filter.schedule_id', 'filter_schedule_id', 0, 'int');
-		$this->setState('filter.schedule_id', $value);
+		// View Layout
+		$this->setState('layout', $layout);
+		if ($layout && $layout != 'print') $this->context .= '.' . $layout;
 		
-		$value = $app->getUserStateFromRequest($this->context.'.filter.resource_id', 'filter_resource_id', 0, 'int');
-		$this->setState('filter.resource_id', $value);
-		
-		$value = $app->getUserStateFromRequest($this->context.'.filter.type_id', 'filter_type_id', 0, 'int');
-		$this->setState('filter.type_id', $value);
+		// Params
+		$value = $app->getParams();
+		$this->setState('params', $value);
 
-		$value = $app->getUserStateFromRequest($this->context.'.filter.user_id', 'filter_user_id', 0, 'int');
-		$this->setState('filter.user_id', $value);
+		$search = $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
+		$this->setState('filter.search', $search);
 
-		$value = $app->getUserStateFromRequest($this->context.'.filter.user_level', 'filter_user_level', 1, 'int');
-		$this->setState('filter.user_level', $value);
+		$access = $app->getUserStateFromRequest($this->context.'.filter.access', 'filter_access', 0, 'int');
+		$this->setState('filter.access', $access);
+
+		$state = $app->getUserStateFromRequest($this->context.'.filter.state', 'filter_state', '');
+		$this->setState('filter.state', $state);
+
+		$start_date = $app->getUserStateFromRequest($this->context.'.filter.start_date', 'filter_start_date', '');
+		$this->setState('filter.start_date', $start_date);
 		
+		$end_date = $app->getUserStateFromRequest($this->context.'.filter.end_date', 'filter_end_date', '');
+		$this->setState('filter.end_date', $end_date);		
+		
+		$schedule_id = $app->getUserStateFromRequest($this->context.'.filter.schedule_id', 'filter_schedule_id', 0, 'int');
+		$this->setState('filter.schedule_id', $schedule_id);
+		
+		$resource_id = $app->getUserStateFromRequest($this->context.'.filter.resource_id', 'filter_resource_id', 0, 'int');
+		$this->setState('filter.resource_id', $resource_id);
+		
+		$type_id = $app->getUserStateFromRequest($this->context.'.filter.type_id', 'filter_type_id', 0, 'int');
+		$this->setState('filter.type_id', $type_id);
+
+		$owner_id = $app->getUserStateFromRequest($this->context.'.filter.owner_id', 'filter_owner_id', 0, 'int');
+		$this->setState('filter.owner_id', $owner_id);
+		
+		$user_id = $app->getUserStateFromRequest($this->context.'.filter.user_id', 'filter_user_id', 0, 'int');
+		$this->setState('filter.user_id', $user_id);
+
+		$user_level = $app->getUserStateFromRequest($this->context.'.filter.user_level', 'filter_user_level', 1, 'int');
+		$this->setState('filter.user_level', $user_level);
+		
+		// Filter - Is set
+		$this->setState('filter.isset',
+				(is_numeric($state) || !empty($search) || is_numeric($owner_id) ||
+						is_numeric($resource_id) || is_numeric($schedule_id ))
+		);
 
 		// Set list state ordering defaults.
 		parent::populateState($ordering, $direction);
@@ -232,11 +251,77 @@ class JongmanModelReservations extends JModelList
 	public function getItems()
 	{
 		$items = parent::getItems();
+		$timezone = JongmanHelper::getUserTimezone();
+		
 		foreach($items as $i => $item) {
 			$items[$i]->participant_list = array();
 			$items[$i]->invitee_list = array();
+			$items[$i]->reservation_length = RFDateRange::create($items[$i]->start_date, $items[$i]->end_date, $timezone);
 		}
 		
+		return $items;
+	}
+	
+	/**
+	 * Build a list of reservation authors	 *
+	 * @return    	 
+	 */
+	public function getOwners()
+	{
+		$db     = $this->getDbo();
+		$query  = $db->getQuery(true);
+		$user   = JFactory::getUser();
+		//$access = PFtasksHelper::getActions();
+	
+		// Return empty array if no project is select
+		$schedule = (int) $this->getState('filter.schedule');
+	
+		if ($schedule <= 0) {
+			// Make an exception if we are logged in...
+			if ($user->id) {
+				$item = new stdClass();
+				$item->value = $user->id;
+				$item->text  = $user->name;
+	
+				$items = array($item);
+	
+				return $items;
+			}
+	
+			return array();
+		}
+	
+		// Construct the query
+		$query->select('u.id AS value, u.name AS text');
+		$query->from('#__users AS u');
+		$query->join('INNER', '#__jongman_reservations AS a ON a.owner_id = u.id');
+	
+		// Implement View Level Access
+		if (!$user->authorise('core.admin', 'com_pftasks')) {
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+	
+		// Filter fields
+		$filters = array();
+		$filters['a.schedule'] = array('INT-NOTZERO', $this->getState('filter.schedule'));
+	
+		if (!$access->get('core.edit.state') && !$access->get('core.edit')) {
+			$filters['a.state'] = array('STATE', '1');
+		}
+	
+		// Apply Filter
+		RFQueryHelper::buildFilter($query, $filters);
+	
+		// Group and order
+		$query->group('u.id');
+		$query->order('u.name ASC');
+	
+		// Get the results
+		$db->setQuery((string) $query);
+		$items = (array) $db->loadObjectList();
+	
+		// Return the items
 		return $items;
 	}
 }
