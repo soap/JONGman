@@ -7,6 +7,7 @@ defined('_JEXEC') or die;
 JHtml::_('behavior.tooltip');
 
 $user		= JFactory::getUser();
+$dbo		= JFactory::getDbo();
 $listOrder	= $this->escape($this->state->get('list.ordering'));
 $listDirn	= $this->escape($this->state->get('list.direction'));
 $toolbar 	= JToolBar::getInstance('toolbar')->render('toolbar');
@@ -14,12 +15,13 @@ $archived	= $this->state->get('filter.published') == 2 ? true : false;
 $trashed	= $this->state->get('filter.published') == -2 ? true : false;
 $filter_in  = ($this->state->get('filter.isset') ? 'in ' : '');
 
+$datetimeFormat = $this->params->get('datetimeFormat');
+
 $print_url = JongmanHelperRoute::getReservationsRoute()
 . '&tmpl=component&layout=print';
 $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,location=no,directories=no,status=no,menubar=no';
 ?>
 <div id="jongman" class="category-list<?php echo $this->pageclass_sfx;?> view-tasks PrintArea all">
-	
 	<div class="clearfix"></div>
 	<div class="cat-items">
 		<form action="<?php echo JRoute::_('index.php?option=com_jongman&view=reservations');?>" method="post" id="item-form" name="adminForm" id="adminForm">
@@ -68,8 +70,8 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 						<th width="1%">
 							<input type="checkbox" name="toggle" value="" onclick="checkAll(this)" />
 						</th>
-						<th width="5%">
-							<?php echo JHtml::_('grid.sort', 'JPUBLISHED', 'r.state', $listDirn, $listOrder); ?>
+						<th width="15%">
+							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_STATE', 'r.state', $listDirn, $listOrder); ?>
 						</th>
 						<th>
 							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_TITLE', 'reservation_title', $listDirn, $listOrder); ?>
@@ -88,9 +90,6 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 						</th>
 						<th width="10%">
 							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_RESERVED_BY', 'reserved_by', $listDirn, $listOrder); ?>
-						</th>
-						<th width="10%">
-							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_CREATED_TIME', 'r.created_time', $listDirn, $listOrder); ?>
 						</th>
 						<th width="1%" class="nowrap">
 							<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'r.id', $listDirn, $listOrder); ?>
@@ -126,39 +125,41 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 						<td class="center">
 							<?php echo JHtml::_('grid.id', $i, $item->reservation_id); ?>
 						</td>
-						<td class="center">
-							<div class="btn-group" id="reserv_<?php echo $item->reservation_id?>">
-							<?php
-								// Create dropdown items
-								$action = $archived ? 'unarchive' : 'archive';
-								JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'reservations');
-
-								$action = $trashed ? 'untrash' : 'trash';
-								JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'reservations');
-								JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_VIEW'), '', $item->instance_id, 'instance.edit');
-								// Render dropdown list
-								echo JHtml::_('actionsdropdown.render', $this->escape($item->reservation_title));
-							?>
+						<td>
 							<?php if ($this->workflow) :?>
-								<ul class="dropdown-menu"></ul>
+							<?php  $date = ($item->workflow_state->modified==$dbo->getNullDate() ? $item->workflow_state->created : $item->workflow_state->modified);?>
+							<div id="reserv_<?php echo $item->reservation_id?>">
+								<button data-toggle="dropdown" class="dropdown-toggle btn btn-micro pull-right">
+									<span class="caret"></span>
+								</button>
+								<span><?php echo JHtml::_('rfhtml.label.state', $item->workflow_state->title, $date)?></span>	
+								<ul class="dropdown-menu"></ul>	
 								<script type="text/javascript">
 									WFWorkflow.loadWorkflowState('<?php echo JURi::root()?>index.php', 'com_jongman.reservation', jQuery('#reserv_<?php echo $item->reservation_id?>'), '<?php echo $item->reservation_id?>');
 								</script>
+							</div>	
 							<?php else:?>
 								<?php echo JHtml::_('jgrid.published', $item->state, $i, 'reservations.', $canChange, 'cb'); ?>
-								<?php endif;?>
-							</div>
+							<?php endif;?>
 						</td>
 						<td>
 							<?php if ($item->checked_out) : ?>
 								<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'reservations.', $canCheckin); ?>
 							<?php endif; ?>
 							<?php if ($canCreate || $canEdit) : ?>
-							<a href="<?php echo JRoute::_('index.php?option=com_jongman&task=instance.edit&id='.$item->instance_id);?>">
+							<a href="<?php echo JRoute::_('index.php?option=com_jongman&task=instance.view&id='.$item->instance_id);?>">
 								<?php echo $this->escape($item->reservation_title); ?></a>
 							<?php else : ?>
 								<?php echo $this->escape($item->reservation_title); ?>
 							<?php endif; ?>
+							<div class="btn-group">
+							<?php
+								// Create dropdown items
+								JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_VIEW'), '', $item->instance_id, 'instance.view');
+								// Render dropdown list
+								echo JHtml::_('actionsdropdown.render', $this->escape($item->reservation_title));
+							?>
+							</div>
 							<p class="smallsub">
 								<?php echo JText::sprintf('COM_JONGMAN_RESERVATION_REFERENCE_NUMBER', $this->escape($item->reference_number));?>
 							</p>
@@ -168,20 +169,16 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 							<?php echo $this->escape($item->resource_title); ?>
 						</td>
 						<td class="center">
-							<?php echo $this->escape($item->author_name); ?>
+							<?php echo JHtml::_('rfhtml.label.author', $item->owner_name, $item->created) ?>
 						</td>
 						<td>
-							<?php echo JHtml::date($item->start_date, 'Y-m-d H:i', true )?>
+							<?php echo JHtml::date($item->start_date, $datetimeFormat, true)?>
 						</td>
 						<td>
-							<?php echo JHtml::date($item->end_date, 'Y-m-d H:i', true )?>
+							<?php echo JHtml::date($item->end_date, $datetimeFormat, true)?>
 						</td>
 						<td class="center">
-							<?php echo $this->escape($item->access_level); ?>
-						</td>
-
-						<td class="center">
-							<?php echo JHTML::_('date',$item->created, 'Y-m-d'); ?>
+							<?php echo JHtml::_('rfhtml.label.author', $item->author_name, $item->created) ?>
 						</td>
 						<td class="center">
 							<?php echo (int) $item->reservation_id; ?>

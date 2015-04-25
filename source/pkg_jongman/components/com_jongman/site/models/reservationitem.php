@@ -16,7 +16,7 @@ class JongmanModelReservationitem extends JModelItem
 		if (empty($referenceNumber)) {
 			$pk = JFactory::getApplication()->input->getCmd('id');	
 		}
-		echo $pk; exit();
+		/* This $pk is an instance id */
 		if (!empty($this->_item[$referenceNumber])) return $this->_item[$referenceNumber];
 
 		

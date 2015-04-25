@@ -607,4 +607,93 @@ class RFDate
 		$time = $this->getTime();
 		return $this->setTime(new RFTime($time->hour(), $time->minute(), 0, $this->timezone()));
 	}
+	
+	public static function relative($date = null, $tz = true)
+	{
+		static $today_day_of_week = null;
+		static $time_offset = null;
+		static $time_format = null;
+		static $nulldate    = null;
+	
+		if (is_null($time_offset)) {
+			$config = JFactory::getConfig();
+			$user   = JFactory::getUser();
+	
+			$today_day_of_week = date('N');
+	
+			$time_offset = $user->getParam('timezone', $config->get('offset'));
+			$time_format = 'Y-m-d H:i:s';
+			$nulldate    = JFactory::getDbo()->getNullDate();
+		}
+	
+		if ($tz) {
+			$now_date = JFactory::getDate('now', 'UTC');
+	
+			$now_date->setTimeZone(new DateTimeZone($time_offset));
+	
+			$now = strtotime($now_date->format($time_format, true, false));
+		}
+		else {
+			$now = time();
+		}
+	
+		if (!$date || $date == $nulldate) {
+			return false;
+		}
+	
+		if ($tz) {
+			// Get a date object based on UTC.
+			$dateObj = JFactory::getDate($date, 'UTC');
+	
+			// Set the correct time zone based on the user configuration.
+			$dateObj->setTimeZone(new DateTimeZone($time_offset));
+	
+			$timestamp = strtotime($dateObj->format($time_format, true, false));
+		}
+		else {
+			$timestamp = strtotime($date);
+		}
+	
+		$remaining = $timestamp - $now;
+		$is_past   = ($remaining <= 0) ? true : false;
+		$format    = '';
+	
+		if ($is_past) {
+			// Reverse to positive value
+			$remaining = $now - $timestamp;
+		}
+	
+		$minutes = floor($remaining / 60);
+		$hours   = floor($minutes / 60);
+		$days    = floor($hours / 24);
+	
+		if ($days >= 1) {
+			if ($days == '1') {
+				$format = JText::_('COM_JONGMAN_DAY_' . ($is_past ? 'YESTERDAY' : 'TOMORROW'));
+			}
+			else {
+				if ($days <= 7) {
+					$date_n    = date('N', $timestamp);
+					$day_names = array(1 => 'MONDAY', 2 => 'TUESDAY', 3 => 'WEDNESDAY',
+							4 => 'THURSDAY', 5 => 'FRIDAY', 6 => 'SATURDAY', 7 => 'SUNDAY');
+	
+					$format = JText::_('COM_JONGMAN_DAY_' . ($is_past ? 'LAST_' : 'THIS_') . $day_names[$date_n]);
+				}
+				else {
+					$format = JText::sprintf('COM_JONGMAN_DAYS' . ($is_past ? '_PAST' : ''), $days);
+				}
+			}
+		}
+		elseif ($hours >= 1) {
+			$format = JText::sprintf('COM_JONGMAN_HOUR' . ($hours > 1 ? 'S' : '') . ($is_past ? '_PAST' : ''), $hours);
+		}
+		elseif ($minutes >= 1) {
+			$format = JText::sprintf('COM_JONGMAN_MINUTE' . ($minutes > 1 ? 'S' : '') . ($is_past ? '_PAST' : ''), $minutes);
+		}
+		else {
+			$format = JText::_('COM_JONGMAN_MOMENT' . ($is_past ? '_PAST' : ''));
+		}
+	
+		return $format;
+	}
 }

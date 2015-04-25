@@ -46,6 +46,7 @@ jimport('jongman.base.ireservationnotificationservice');
 // I want to user JM prefix, but JLoader cannot support it, as Joomla 's J matched first
 JLoader::registerPrefix('RF', JPATH_PLATFORM . '/jongman');
 JLoader::registerprefix('RF', JPATH_PLATFORM . '/jongman/cms', false, true);
+JLoader::registerprefix('RF', JPATH_PLATFORM . '/jongman/database', false, true);
 
 //discover classes prefixed by RF in the folder
 JLoader::discover('RF', JPATH_PLATFORM . '/jongman/utils');

@@ -52,6 +52,63 @@ class JongmanControllerInstance extends JControllerForm
 		return true;
 	}
 	
+	public function allowView($data = array(), $key = 'id')
+	{
+		return true;
+	}
+	
+	public function view()
+	{
+		$app   = JFactory::getApplication();
+		$model = $this->getModel();
+		$table = $model->getTable();
+		$cid   = $this->input->post->get('cid', array(), 'array');
+		$context = "$this->option.view.$this->context";
+		
+		// Determine the name of the primary key for the data.
+		if (empty($key))
+		{
+			$key = $table->getKeyName();
+		}
+		
+		// To avoid data collisions the urlVar may be different from the primary key.
+		if (empty($urlVar))
+		{
+			$urlVar = $key;
+		}
+		
+		// Get the previous record id (if any) and the current record id.
+		$recordId = (int) (count($cid) ? $cid[0] : $this->input->getInt($urlVar));
+		
+		// Access check.
+		if (!$this->allowView(array($key => $recordId), $key))
+		{
+			$this->setError(JText::_('COM_JONGMAN_ERROR_VIEW_NOT_PERMITTED'));
+			$this->setMessage($this->getError(), 'error');
+		
+			$this->setRedirect(
+					JRoute::_(
+							'index.php?option=' . $this->option . '&view=' . $this->view_list
+							. $this->getRedirectToListAppend(), false
+					)
+			);
+		
+			return false;
+		}
+		
+
+		$app->setUserState($context . '.data', null);
+		
+		$this->input->set('layout', 'readonly');
+		$this->setRedirect(
+				JRoute::_(
+							'index.php?option=' . $this->option . '&view=reservationitem'
+							. $this->getRedirectToItemAppend($recordId, $urlVar), false
+					)
+			);
+		
+			return true;		
+	}
 	/**
 	 * save only existing reservation instance
 	 * @see JControllerForm::save()

@@ -252,11 +252,16 @@ class JongmanModelReservations extends JModelList
 	{
 		$items = parent::getItems();
 		$timezone = JongmanHelper::getUserTimezone();
-		
+		$workflow = (bool)($this->getState('params')->get('approvalSystem') == 2);
 		foreach($items as $i => $item) {
 			$items[$i]->participant_list = array();
 			$items[$i]->invitee_list = array();
 			$items[$i]->reservation_length = RFDateRange::create($items[$i]->start_date, $items[$i]->end_date, $timezone);
+			if ($workflow) {
+				$items[$i]->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $items[$i]->reservation_id);
+			}else{
+				$items[$i]->workflow_state = new stdClass();
+			}
 		}
 		
 		return $items;
