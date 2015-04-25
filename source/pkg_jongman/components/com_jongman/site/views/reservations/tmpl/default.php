@@ -128,11 +128,12 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 						<td>
 							<?php if ($this->workflow) :?>
 							<?php  $date = ($item->workflow_state->modified==$dbo->getNullDate() ? $item->workflow_state->created : $item->workflow_state->modified);?>
-							<div id="reserv_<?php echo $item->reservation_id?>">
-								<button data-toggle="dropdown" class="dropdown-toggle btn btn-micro pull-right">
+							<div class="btn-group" id="reserv_<?php echo $item->reservation_id?>">
+								<button data-toggle="dropdown" class="dropdown-toggle btn btn-micro">
 									<span class="caret"></span>
+									<span class="element-invisible">JACTIONS</span>
 								</button>
-								<span><?php echo JHtml::_('rfhtml.label.state', $item->workflow_state->title, $date)?></span>	
+								<span class="pull-right"><?php echo JHtml::_('rfhtml.label.state', $item->workflow_state->title, $date)?></span>	
 								<ul class="dropdown-menu"></ul>	
 								<script type="text/javascript">
 									WFWorkflow.loadWorkflowState('<?php echo JURi::root()?>index.php', 'com_jongman.reservation', jQuery('#reserv_<?php echo $item->reservation_id?>'), '<?php echo $item->reservation_id?>');
