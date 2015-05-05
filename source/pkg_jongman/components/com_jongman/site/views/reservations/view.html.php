@@ -62,9 +62,10 @@ class JongmanViewReservations extends JViewLegacy
 			return false;
 		}
 		
-		$this->toolbar       = $this->getToolbar();
-		$this->sort_options  = $this->getSortOptions();
-		$this->order_options = $this->getOrderOptions();
+		$this->toolbar       	= $this->getToolbar();
+
+		$this->sort_options  	= $this->getSortOptions();
+		$this->order_options 	= $this->getOrderOptions();
 		
 		// Escape strings for HTML output
 		$this->pageclass_sfx = htmlspecialchars($this->params->get('pageclass_sfx'));

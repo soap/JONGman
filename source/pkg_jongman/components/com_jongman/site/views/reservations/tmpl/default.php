@@ -24,7 +24,7 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 <div id="jongman" class="category-list<?php echo $this->pageclass_sfx;?> view-tasks PrintArea all">
 	<div class="clearfix"></div>
 	<div class="cat-items">
-		<form action="<?php echo JRoute::_('index.php?option=com_jongman&view=reservations');?>" method="post" id="item-form" name="adminForm" id="adminForm">
+		<form action="<?php echo JRoute::_('index.php?option=com_jongman&view=reservations');?>" method="post" name="adminForm" id="adminForm">
 			<div class="grid">
 				<div class="btn-toolbar btn-toolbar-top">
                 	<?php echo $this->toolbar;?>
@@ -68,7 +68,8 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 					<thead>
 					<tr>
 						<th width="1%">
-							<input type="checkbox" name="toggle" value="" onclick="checkAll(this)" />
+							<input type="checkbox" name="checkall-toggle" value="" title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>"
+                                onclick="Joomla.checkAll(this);" />
 						</th>
 						<th width="15%">
 							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_STATE', 'r.state', $listDirn, $listOrder); ?>
@@ -123,7 +124,7 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 				?>
 					<tr class="row<?php echo $i % 2; ?>">
 						<td class="center">
-							<?php echo JHtml::_('grid.id', $i, $item->reservation_id); ?>
+							<?php echo JHtml::_('grid.id', $i, $item->instance_id); ?>
 						</td>
 						<td>
 							<?php if ($this->workflow) :?>
@@ -156,7 +157,7 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 							<div class="btn-group">
 							<?php
 								// Create dropdown items
-								JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_VIEW'), '', $item->instance_id, 'instance.view');
+								JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_VIEW'), '', 'cb'.$i, 'instance.view');
 								// Render dropdown list
 								echo JHtml::_('actionsdropdown.render', $this->escape($item->reservation_title));
 							?>
