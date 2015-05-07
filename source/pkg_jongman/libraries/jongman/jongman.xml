@@ -8,7 +8,7 @@
     <license>GNU General Public License version 2 or later.</license>
     <authorEmail>support@joomlannt.org</authorEmail>
     <authorUrl>www.joomlant.org</authorUrl>
-    <version>3.0.1-RC9</version>
+    <version>3.0.1-rc9</version>
     <description>Shared classes and tools for JONGman related components. Do not remove!</description>
     <files>
     	<folder>application</folder>
