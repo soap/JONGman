@@ -27,7 +27,7 @@ class JongmanControllerReservations extends JControllerAdmin
 	 * @return  JongmanModelReservations	The model for the controller set to ignore the request.
 	 * @since   1.6
 	 */
-	public function getModel($name = 'Reservation', $prefix = 'JongmanModel', $config = array('ignore_request' => true))
+	public function getModel($name = 'Reservation', $prefix = 'JongmanModel', $config = array())
 	{
 		return parent::getModel($name, $prefix, $config);
 	}

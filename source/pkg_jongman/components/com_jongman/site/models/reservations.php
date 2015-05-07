@@ -46,6 +46,7 @@ class JongmanModelReservations extends JModelList
 		if (isset($config['context'])) {
 			$this->context = $config['context'];
 		}
+
 		parent::__construct($config);
 	}
 
@@ -65,17 +66,16 @@ class JongmanModelReservations extends JModelList
 		// Initialise variables.
 		$app = JFactory::getApplication();
 		
+		// Params
+		$value = $app->getParams('com_jongman');
+		$this->setState('params', $value);
+		
 		// Adjust the context to support modal layouts.
-		$layout = JRequest::getCmd('layout');
+		$layout = $app->input->getCmd('layout');
 		
 		// View Layout
 		$this->setState('layout', $layout);
 		if ($layout && $layout != 'print') $this->context .= '.' . $layout;
-		
-
-		// Params
-		$value = $app->getParams('com_jongman');
-		$this->setState('params', $value);
 
 		$search = $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
@@ -113,7 +113,7 @@ class JongmanModelReservations extends JModelList
 		// Filter - Is set
 		$this->setState('filter.isset',
 				(is_numeric($state) || !empty($search) || is_numeric($owner_id) ||
-						is_numeric($resource_id) || is_numeric($schedule_id ))
+						is_numeric($resource_id))
 		);
 
 		// Set list state ordering defaults.
@@ -253,8 +253,10 @@ class JongmanModelReservations extends JModelList
 	{
 		$items = parent::getItems();
 		$timezone = JongmanHelper::getUserTimezone();
+		
 		$params = $this->getState('params');
 		if ($params === null) {
+			// $params === null as this class get called with ignore_request = true
 			$app = JFactory::getApplication();
 			$params = $app->getParams();
 			$this->setState('params', $params);
@@ -336,4 +338,5 @@ class JongmanModelReservations extends JModelList
 		// Return the items
 		return $items;
 	}
+	
 }
