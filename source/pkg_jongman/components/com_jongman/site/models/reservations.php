@@ -72,8 +72,9 @@ class JongmanModelReservations extends JModelList
 		$this->setState('layout', $layout);
 		if ($layout && $layout != 'print') $this->context .= '.' . $layout;
 		
+
 		// Params
-		$value = $app->getParams();
+		$value = $app->getParams('com_jongman');
 		$this->setState('params', $value);
 
 		$search = $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
@@ -252,6 +253,12 @@ class JongmanModelReservations extends JModelList
 	{
 		$items = parent::getItems();
 		$timezone = JongmanHelper::getUserTimezone();
+		$params = $this->getState('params');
+		if ($params === null) {
+			$app = JFactory::getApplication();
+			$params = $app->getParams();
+			$this->setState('params', $params);
+		}
 		$workflow = (bool)($this->getState('params')->get('approvalSystem') == 2);
 		foreach($items as $i => $item) {
 			$items[$i]->participant_list = array();

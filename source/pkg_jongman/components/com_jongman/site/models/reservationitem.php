@@ -68,6 +68,7 @@ class JongmanModelReservationitem extends JModelItem
 		
 		$item->users = array();
 		$item->params = new JRegistry();
+		$item->resources = $this->getResources($item->reservation_id);
 		
 		// Compute selected asset permissions.
 		$user   = JFactory::getUser();
@@ -114,10 +115,16 @@ class JongmanModelReservationitem extends JModelItem
 		}
 		
 		$query = $this->_db->getQuery(true);
-		$query->select('a.id as resource_id, a.title as resource_title')
-			->from('#__jongman_reservation_resources AS a');
-		
+		$query->select('a.resource_id, a.resource_level')
+			->from('#__jongman_reservation_resources AS a')
+			->select('r.title as resource_title')
+			->join('inner', '#__jongman_resources AS r ON r.id=a.resource_id');
+			
 		$query->where('a.reservation_id='.$reservationId);
+		$query->order('a.resource_level ASC');
+		
+		$this->_db->setQuery($query);
+		return $this->_db->loadObjectList();
 				
 	}
 	
