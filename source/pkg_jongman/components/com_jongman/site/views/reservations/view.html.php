@@ -38,6 +38,8 @@ class JongmanViewReservations extends JViewLegacy
 	public function display($tp = NULL)
 	{
 		// Initialise variables.
+		$app				= JFactory::getApplication();
+		$doc 				= JFactory::getDocument();
 		$this->items		= $this->get('Items');
 		$this->pagination	= $this->get('Pagination');
 		$this->state		= $this->get('State');
@@ -45,7 +47,7 @@ class JongmanViewReservations extends JViewLegacy
 		$this->owners		= $this->get('Owners');
 
 		$this->workflow   	= ($this->params->get('approvalSystem')==2);
-		$doc = JFactory::getDocument();
+		
 		if ($this->workflow) {
 			JHtml::_('jquery.ui');
 			jimport('workflow.framework');
@@ -72,7 +74,7 @@ class JongmanViewReservations extends JViewLegacy
 		
 		// Check for empty filter result
 		if ((count($this->items) == 0) && $this->state->get('filter.isset')) {
-			$app->enqueueMessage(JText::_('COM_JONGMAN_EMPTY_SEARCH_RESULT'));
+			//$app->enqueueMessage(JText::_('COM_JONGMAN_EMPTY_SEARCH_RESULT'));
 		}
 		
 		// Check for layout override
