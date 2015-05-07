@@ -30,29 +30,36 @@ $canEditOwn	= ($user->authorise('core.edit.own', $asset_name) && $this->item->cr
     <?php //echo $item->event->beforeDisplayContent;?>
 
 	<div class="item-description">
-            <?php if($item->start_date != $nulldate): ?>
-        		<dt class="start-title">
-        			<?php echo JText::_('COM_JONGMAN_GRID_HEADING_START_DATE');?>:
-        		</dt>
-        		<dd class="start-data">
-        		  <?php echo JHtml::_('rfhtml.label.datetime', $item->start_date); ?>
-        		</dd>
-            <?php endif; ?>
-            <?php if($item->end_date != $nulldate): ?>
-        		<dt class="due-title">
-        			<?php echo JText::_('COM_JONGMAN_GRID_HEADING_END_DATE');?>:
-        		</dt>
-        		<dd class="due-data">
-        			<?php echo JHtml::_('rfhtml.label.datetime', $item->end_date); ?>
-        		</dd>
-            <?php endif; ?>
+		<dl>
+	        <dt class="start-title resourceHover" resourceId="<?php echo $item->resources[0]->resource_id?>">
+        		<?php echo JText::_('COM_JONGMAN_GRID_HEADING_RESOURCE');?>:
+        	</dt>
+        	<dd class="start-data">
+        		 <?php echo $item->resources[0]->resource_title; ?>
+        	</dd>
+  		<?php if($item->start_date != $nulldate): ?>
+        	<dt class="start-title">
+        		<?php echo JText::_('COM_JONGMAN_GRID_HEADING_START_DATE');?>:
+        	</dt>
+        	<dd class="start-data">
+        		<?php echo JHtml::_('rfhtml.label.datetime', $item->start_date); ?>
+        	</dd>
+        <?php endif; ?>
+        <?php if($item->end_date != $nulldate): ?>
+        	<dt class="due-title">
+        		<?php echo JText::_('COM_JONGMAN_GRID_HEADING_END_DATE');?>:
+        	</dt>
+        	<dd class="due-data">
+        		<?php echo JHtml::_('rfhtml.label.datetime', $item->end_date); ?>
+        	</dd>
+        <?php endif; ?>
     		<dt class="owner-title">
     			<?php echo JText::_('COM_JONGMAN_GRID_HEADING_CREATED_BY');?>:
     		</dt>
     		<dd class="owner-data">
     			 <?php echo JHtml::_('rfhtml.label.author', $item->author, $item->created); ?>
     		</dd>
-			<?php if ($item->users) : ?>
+		<?php if ($item->users) : ?>
             <dt class="assigned-title">
     			<?php echo JText::_('COM_JONGMAN_FIELDSET_ASSIGNED_USERS');?>:
     		</dt>			

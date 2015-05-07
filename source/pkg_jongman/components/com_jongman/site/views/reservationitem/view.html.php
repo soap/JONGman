@@ -37,7 +37,9 @@ class JongmanViewReservationitem extends JViewLegacy
 	protected function getToolbar()
 	{
 		$access = JongmanHelper::getActions('com_jongman.reservation');
-			
+
+		$doc = JFactory::getDocument();
+		$doc->addStyleDeclaration(JUri::root(true).'/media/com_jongman/jongman/css/styles.css');
 		$items = array();
 		$items[] = array(
 				'text' => 'COM_JONGMAN_ACTION_DELETE',
