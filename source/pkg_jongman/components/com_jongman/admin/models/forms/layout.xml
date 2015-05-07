@@ -72,6 +72,7 @@
 			type="timeslot" hiddenLabel="true"
 			label="COM_JONGMAN_FIELD_TIMESLOT_LABEL"
 			description="COM_JONGMAN_FIELD_TIMESLOT_DESC"
+			class="required validate-timeslots"
 		/>
 		<field name="ordering"
 			type="text"

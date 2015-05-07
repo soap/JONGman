@@ -79,8 +79,8 @@
 				/>
 			<field name="max_notice_duration"
 				type="text" size="10" default="0" class="inputbox" filter="intval"
-				label="COM_JONGMAN_FIELD_RESOURCE_MIN_NOTICE_DURATION_LABEL"
-				description="COM_JONGMAN_FIELD_RESOURCE_MIN_NOTICE_DURATION_DESC"
+				label="COM_JONGMAN_FIELD_RESOURCE_MAX_NOTICE_DURATION_LABEL"
+				description="COM_JONGMAN_FIELD_RESOURCE_MAX_NOTICE_DURATION_DESC"
 				/>				
         	<field name="max_participants" type="text" class="inputbox"
 				size="10" 

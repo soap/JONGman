@@ -39,15 +39,15 @@ class JFormFieldTimeslots extends JFormFieldReloadable {
     	
         $link = 'index.php?option=com_jongman&amp;view=timeslots&amp;layout_id='.$layout_id
               . '&amp;layout=modal&amp;tmpl=component'
-              . '&amp;function=pfChangeLayout_' . $this->id;
+              . '&amp;function=jmChangeLayout_' . $this->id;
                   	
-    	// Create the project select button.
+    	// Create the timesolots select button.
         if ($this->element['readonly'] != 'true') {
             $html[] = '<div class="button2-left">';
             $html[] = '    <div class="blank">';
             $html[] = '<a class="modal_' . $this->id . '" title="' . JText::_('COM_JONGMAN_EDIT_TIMESLOT') . '"'
                     . ' href="' . $link . '" rel="{handler: \'iframe\', size: {x: 800, y: 500}}">';
-            $html[] = JText::_('COM_PFTICKETS_EDIT_TIMESLOT') . '</a>';
+            $html[] = JText::_('COM_JONGMAN_EDIT_TIMESLOT') . '</a>';
             $html[] = '    </div>';
             $html[] = '</div>';
         }

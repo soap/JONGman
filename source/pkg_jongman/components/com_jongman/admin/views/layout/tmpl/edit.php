@@ -59,6 +59,9 @@ JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, f
 		<div class="form-vertical">
 			<div class="row-fluid">
 				<div class="span12">
+					<?php if ($this->item->id == 0) :?>
+					<legend><?php echo JText::_('COM_JONGMAN_TIMESLOTS_SETTING_TIP'); ?></legend>
+					<?php endif?>
 					<?php echo $this->form->renderField('timeslots')?>
 				</div>
 			</div>
@@ -119,4 +122,15 @@ JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, f
 				async: false
 			});
 		}
+
+		jQuery(document).ready(function(){
+			   document.formvalidator.setHandler('timeslots', function(value) {
+				   	var row = jQuery('#slotLayout');
+					var result = false;
+				   	if (row.text().trim() == "") {
+						result = true;	
+					}
+					return result;
+			   });
+			});
 </script>

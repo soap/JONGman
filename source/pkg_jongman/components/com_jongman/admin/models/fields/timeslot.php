@@ -41,7 +41,7 @@ class JFormFieldTimeslot extends JFormField {
               . '&amp;layout=modal&amp;tmpl=component'
               . '&amp;function=jmChangeLayout_' . $this->id;
                   	
-    	// Create the project select button.
+    	// Create the timeslot select button.
         if ($this->element['readonly'] != 'true') {
             $html[] = '<div class="button2-left">';
             $html[] = '    <div class="blank">';

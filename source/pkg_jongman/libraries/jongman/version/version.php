@@ -21,7 +21,7 @@ final class JMVersion
     public $PRODUCT = 'JONGman Library';
 
     /** @var  string  Release version. */
-    public $RELEASE = '2.0';
+    public $RELEASE = '3.0';
 
     /** @var  string  Maintenance version. */
     public $DEV_LEVEL = '1';
@@ -30,7 +30,7 @@ final class JMVersion
     public $DEV_STATUS = 'releae candidate';
 
     /** @var  string  Build number. */
-    public $BUILD = '8';
+    public $BUILD = '9';
 
     /** @var  string  Code name. */
     public $CODENAME = 'Nada';
