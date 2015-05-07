@@ -59,6 +59,11 @@ function JongmanBuildRoute( &$query )
     			$segments[] = $query['end'];
     			unset($query['end']);	
     		}
+    	}else if ($query['view'] == 'reservations') {
+    		if (isset($query['id'])) {
+    			$segments[] = $query['id'];
+    			unset($query['id']);
+    		}	
     	}
         unset($query['view']);
     }
@@ -104,6 +109,12 @@ function JongmanParseRoute( &$segments )
 
 				list($ed, $et) = explode(' ', urldecode($segments[5]));
 				$vars['end']	=  str_replace(':', '-', $ed) . ' ' . str_replace('-', ':', $et) ;
+			}
+			break;
+		case 'reservations' :
+			$vars['view'] = 'reservations';
+			if ($count == 2) {
+				$vars['id'] = $segments[1];
 			}
 			break;
 	}
