@@ -24,7 +24,7 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 <div id="jongman" class="category-list<?php echo $this->pageclass_sfx;?> view-tasks PrintArea all">
 	<div class="clearfix"></div>
 	<div class="cat-items">
-		<form action="<?php echo JRoute::_('index.php?option=com_jongman&view=reservations');?>" method="post" name="adminForm" id="adminForm">
+		<form action="<?php echo htmlspecialchars(JFactory::getURI()->toString()); ?>" method="post" name="adminForm" id="adminForm">
 			<div class="grid">
 				<div class="btn-toolbar btn-toolbar-top">
                 	<?php echo $this->toolbar;?>
