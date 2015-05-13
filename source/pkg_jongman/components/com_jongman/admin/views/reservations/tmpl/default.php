@@ -51,7 +51,7 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_SCHEDULE', 'schedule_title', $listDirn, $listOrder); ?>				
 				</th>
 				<th width="10%">
-					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_RESOURCE', 'schedule_title', $listDirn, $listOrder); ?>				
+					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_RESOURCE', 'resource_title', $listDirn, $listOrder); ?>				
 				</th>	
 				<th width="10%">
 					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_START_DATE', 'start_date', $listDirn, $listOrder); ?>
@@ -66,10 +66,10 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ACCESS', 'access_level', $listDirn, $listOrder); ?>
 				</th>
 				<th width="10%">
-					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_CREATED_BY', 're.author_name', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_CREATED_BY', 'author', $listDirn, $listOrder); ?>
 				</th>
 				<th width="10%">
-					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_CREATED_DATE', 're.created_time', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_CREATED_DATE', 'r.created', $listDirn, $listOrder); ?>
 				</th>
 				<th width="1%" class="nowrap">
 					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 're.id', $listDirn, $listOrder); ?>

@@ -9,7 +9,7 @@
     <copyright>GPLv3</copyright>
     <license></license>
     <!--  The version string is recorded in the components table -->
-    <version>3.0.0-rc3</version>
+    <version>3.0.0-rc4</version>
     <!-- The description is optional and defaults to the name -->
     <description>COM_JONGMAN_XML_DESCRIPTION</description>
     <install folder="admin"> <!-- Runs on install -->

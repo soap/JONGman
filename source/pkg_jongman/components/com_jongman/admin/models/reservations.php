@@ -25,17 +25,19 @@ class JongmanModelReservations extends JModelList
 		if (empty($config['filter_fields'])) {
 			$config['filter_fields'] = array(
 				'id', 'a.id',
-				'title', 'a.title',
+				'title', 'r.title', 
+				'resource_title', 'schedule_title',
+				'r.owner_id', 'owner',
 				'reference_numnber', 'a.reference_number',
 				'checked_out', 'a.checked_out',
 				'checked_out_time', 'a.checked_out_time',
 				'a.start_date', 'a.end_date',
-				'state', 'a.state',
-				'access', 'a.access', 'access_level',
-				'created', 'a.created',
-				'created_by', 'a.created_by',
-				'modified', 'a.modified',
-				'modified_by', 'a.modified_by',
+				'state', 'r.state',
+				'access', 'r.access', 'access_level',
+				'created', 'r.created',
+				'created_by', 'r.created_by', 'author',
+				'modified', 'r.modified',
+				'modified_by', 'r.modified_by',
 			);
 		}
 		parent::__construct($config);
@@ -111,7 +113,7 @@ class JongmanModelReservations extends JModelList
 		
 		$query->select('r.alias as alias, r.title as title, ' .
 			'r.checked_out, r.checked_out_time, ' .
-			'r.state, r.access, r.created');
+			'r.state, r.access, r.created, r.schedule_id');
 		$query->join('INNER','#__jongman_reservations AS r ON r.id=a.reservation_id');
 		
 		// Join over the users for the checked out user.
@@ -132,11 +134,17 @@ class JongmanModelReservations extends JModelList
 		// Join over the schedules.
 		$query->select('sc.name AS schedule_title');
 		$query->join('LEFT', '#__jongman_schedules AS sc ON sc.id=r.schedule_id');
+		
+		$query->join('LEFT', '#__jongman_reservation_resources AS rr ON r.id=rr.reservation_id AND resource_level=1');	
+		
+		$query->select('rs.title as resource_title');
+		$query->join('LEFT', '#__jongman_resources AS rs ON rs.id=rr.resource_id');
 				
 		// Join over the users for the author.
 		$query->select('au.name AS author');
 		$query->join('LEFT', '#__users AS au ON au.id=r.created_by');
 		
+
 		if ($reservationType = $this->getState('filter.reservation_type')) {
 			$query->where('r.type_id ='.(int)$reservationType);
 		}

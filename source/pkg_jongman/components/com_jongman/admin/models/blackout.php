@@ -47,15 +47,23 @@ class JongmanModelBlackout extends JModelAdmin
 	public function getItem($pk = null)
 	{
 		if ($result = parent::getItem($pk)) {
-
-			// Convert the created and modified dates to local user time for display in the form.
+			
 			jimport('joomla.utilities.date');
 			$tz	= new DateTimeZone(JFactory::getApplication()->getCfg('offset'));
+			
+			if (empty($result->id)) {
+				$date = new JDate();
+				$date->setTimezone($tz);
+				$result->created = $date->toSql(false);
+				$result->modified = $this->_db->getNullDate();
+				$result->checked_out = 0;
+				$result->checked_out_time = $this->_db->getNullDate();
+			}
 
 			if (intval($result->created)) {
 				$date = new JDate($result->created);
 				$date->setTimezone($tz);
-				$result->created = $date->toMySQL(true);
+				$result->created = $date->toSql(true);
 			}
 			else {
 				$result->created = null;
