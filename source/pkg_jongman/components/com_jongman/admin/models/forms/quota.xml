@@ -74,7 +74,7 @@
 			default="weekly"
 			>
 			<option value="day">COM_JONGMAN_OPTION_QUOTA_PERIOD_DAY</option>
-			<option value="week">COM_JONGMAN_OPTION_QUOTA_PERIOD_WEEKL</option>
+			<option value="week">COM_JONGMAN_OPTION_QUOTA_PERIOD_WEEK</option>
 			<option value="month">COM_JONGMAN_OPTION_QUOTA_PERIOD_MONTH</option>
 			<option value="year">COM_JONGMAN_OPTION_QUOTA_PERIOD_YEAR</option>
 		</field>		
