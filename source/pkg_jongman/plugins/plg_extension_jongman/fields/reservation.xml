@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="reservation_custom_fields">
+		<fieldset name="jobs" label="PLG_EXTENSION_JONGMAN_RESERVATION_TASKS">
+		</fieldset>
+	</fields>
+</form>
+	
