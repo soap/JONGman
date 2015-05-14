@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_layouts` (
   `access` int(11) NOT NULL DEFAULT '1',
   `language` varchar(10) NOT NULL DEFAULT '*',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_quotas` (
   KEY `resource_id` (`resource_id`),
   KEY `group_id` (`group_id`),
   KEY `schedule_id` (`schedule_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -272,3 +272,50 @@ CREATE TABLE IF NOT EXISTS `#__jongman_schedules` (
   `published` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+DROP TABLE IF EXISTS `#__jongman_time_blocks`;
+CREATE TABLE IF NOT EXISTS `#__jongman_time_blocks` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `label` varchar(85) DEFAULT NULL,
+  `end_label` varchar(85) DEFAULT NULL,
+  `availability_code` tinyint(2) unsigned NOT NULL,
+  `layout_id` mediumint(8) unsigned NOT NULL,
+  `start_time` time NOT NULL,
+  `end_time` time NOT NULL,
+  `day_of_week` smallint(5) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `layout_id` (`layout_id`)
+) DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Init initial data for table `#__jongman_layouts`
+--
+
+INSERT INTO `#__jongman_layouts` (`id`, `title`, `alias`, `default`, `timezone`, `published`, `note`, `created`, `created_by`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `access`, `language`) VALUES
+(1, 'default', 'default', 1, 'Asia/Bangkok', 1, '', '2014-04-12 07:51:24', 223, '2014-09-18 16:53:15', 614, 0, '0000-00-00 00:00:00', 1, '*');
+--
+-- Init initial data for table `xkboa_jongman_time_blocks`
+--
+
+INSERT INTO `#__jongman_time_blocks` (`id`, `label`, `end_label`, `availability_code`, `layout_id`, `start_time`, `end_time`, `day_of_week`) VALUES
+(1, NULL, NULL, 2, 1, '00:00:00', '08:00:00', NULL),
+(2, NULL, NULL, 1, 1, '08:00:00', '08:30:00', NULL),
+(3, NULL, NULL, 1, 1, '08:30:00', '09:00:00', NULL),
+(4, NULL, NULL, 1, 1, '09:00:00', '09:30:00', NULL),
+(5, NULL, NULL, 1, 1, '09:30:00', '10:00:00', NULL),
+(6, NULL, NULL, 1, 1, '10:00:00', '10:30:00', NULL),
+(7, NULL, NULL, 1, 1, '10:30:00', '11:00:00', NULL),
+(8, NULL, NULL, 1, 1, '11:00:00', '11:30:00', NULL),
+(9, NULL, NULL, 1, 1, '11:30:00', '12:00:00', NULL),
+(10, NULL, NULL, 1, 1, '12:00:00', '12:30:00', NULL),
+(11, NULL, NULL, 1, 1, '12:30:00', '13:00:00', NULL),
+(12, NULL, NULL, 1, 1, '13:00:00', '13:30:00', NULL),
+(13, NULL, NULL, 1, 1, '13:30:00', '14:00:00', NULL),
+(14, NULL, NULL, 1, 1, '14:00:00', '14:30:00', NULL),
+(15, NULL, NULL, 1, 1, '14:30:00', '15:00:00', NULL),
+(16, NULL, NULL, 1, 1, '15:00:00', '15:30:00', NULL),
+(17, NULL, NULL, 1, 1, '15:30:00', '16:00:00', NULL),
+(18, NULL, NULL, 1, 1, '16:00:00', '16:30:00', NULL),
+(19, NULL, NULL, 1, 1, '16:30:00', '17:00:00', NULL),
+(20, NULL, NULL, 2, 1, '17:00:00', '00:00:00', NULL);
