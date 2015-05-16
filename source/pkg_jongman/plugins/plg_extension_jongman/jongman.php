@@ -1,4 +1,12 @@
 <?php
+/*------------------------------------------------------------------------
+ JONGman - Visualized Reservation System extension for Joomla
+ ------------------------------------------------------------------------
+ @Author    Prasit Gebsaap
+ @Website   http://www.joomlant.com
+ @Copyright Copyright (C) 2013 - 2015 Prasit Gebsaap. All Rights Reserved.
+ @License   GNU General Public License version 3, or later
+ ------------------------------------------------------------------------*/
 defined('_JEXEC') or die;
 
 class plgExtensionJongman extends JPlugin
@@ -16,7 +24,7 @@ class plgExtensionJongman extends JPlugin
 	 * @return  boolean
 	 * @since   3.0
 	 */
-	function  onReservationAfterSave($data, $table, $result, $isNew)
+	function  onReservationSeriesAfterSave($data, $table, $result, $isNew)
 	{
 		$dbo = JFactory::getDbo();
 		$query = $dbo->getQuery(true);
@@ -38,13 +46,13 @@ class plgExtensionJongman extends JPlugin
 				$tuples = array();
 				$order	= 1;
 	
-				foreach ($data['reservation_extra_fields'] as $k => $v)
+				foreach ($data['reservation_custom_fields'] as $k => $v)
 				{
 					$tuples[] = '('.$table->id.', '.$dbo->quote('reservation_custom_fields.'.$k).', '.$dbo->quote($v).', '.$order++.')';
 				}
-	
+				
 				$dbo->setQuery('INSERT INTO '.$dbo->quoteName('#__jongman_reservation_fields').' VALUES '.implode(', ', $tuples));
-	
+				
 				if (!$dbo->execute()) {
 					throw new Exception($dbo->getErrorMsg());
 				}
@@ -64,11 +72,11 @@ class plgExtensionJongman extends JPlugin
 	 * @return	boolean
 	 * @since	1.6
 	 */
-	public function onReservationPrepareForm($form, $data)
+	public function onReservationSeriesPrepareForm($form, $data)
 	{
-		// Load solidres plugin language
+		// Load JONGman plugin language
 		$lang = JFactory::getLanguage();
-		$lang->load('plg_extension_jongman');
+		$lang->load('plg_extension_jongman', JPATH_BASE.'/plugins/extension/jongman');
 	
 		if (!($form instanceof JForm)) {
 			$this->_subject->setError('JERROR_NOT_A_FORM');
@@ -76,7 +84,7 @@ class plgExtensionJongman extends JPlugin
 		}
 	
 		// Check we are manipulating a valid form.
-		if (!in_array($form->getName(), array('com_jongman.reservation'))) {
+		if (!in_array($form->getName(), array('com_jongman.reservation', 'com_jongman.instance'))) {
 			return true;
 		}
 	
@@ -92,7 +100,7 @@ class plgExtensionJongman extends JPlugin
 	 * @return	boolean
 	 * @since	1.6
 	 */
-	public function onReservationPrepareData($context, $data)
+	public function onReservationSeriesPrepareData($context, $data)
 	{
 		// Check we are manipulating a valid form.
 		if (!in_array($context, array('com_jongman.reservation')))
