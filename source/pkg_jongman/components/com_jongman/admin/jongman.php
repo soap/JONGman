@@ -1,4 +1,12 @@
 <?php
+/*------------------------------------------------------------------------
+ JONGman - Visualized Reservation System extension for Joomla
+ ------------------------------------------------------------------------
+ @Author    Prasit Gebsaap
+ @Website   http://www.joomlant.com
+ @Copyright Copyright (C) 2013 - 2015 Prasit Gebsaap. All Rights Reserved.
+ @License   GNU General Public License version 3, or later
+ ------------------------------------------------------------------------*/
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 // Access check.
