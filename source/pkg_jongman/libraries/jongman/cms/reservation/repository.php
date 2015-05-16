@@ -68,7 +68,7 @@ class RFReservationRepository implements IReservationRepository
 		foreach ($instances as $reservation)
 		{
 			$command = new InstanceAddedEventCommand($reservation, $reservationSeries);
-			$command->Execute($database);
+			$command->execute($database);
 		}
 	}
 
