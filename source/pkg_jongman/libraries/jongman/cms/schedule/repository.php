@@ -6,12 +6,20 @@ class RFScheduleRepository implements IScheduleRepository
 {
 	public function loadById($scheduleId)
 	{
-		$config = array('ignore_request'=>true);
-		$model = JModelLegacy::getInstance('Schedule', 'JongmanModel', $config);
-		$model->setState('schedule.id', $scheduleId);
-		$item = $model->getItem();
+		JTable::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_jongman/tables');
+		$table = JTable::getInstance('Schedule', 'JongmanTable');
+		$table->load($scheduleId);
+		
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('timezone')->from('#__jongman_layouts')->where('id='.$table->layout_id);
+		$db->setQuery($query);
+		
+		$table->timezone = $db->loadResult();
+		
+		
+		$schedule = RFSchedule::fromRow($table);
 
-		$schedule = RFSchedule::fromRow($item);
 		return $schedule;
 	}
 	
