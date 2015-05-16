@@ -111,6 +111,15 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 			$result->repeat_days = $result->repeat_options->get('repeat_days');
 		}		
 		
+		$dispatcher = JEventDispatcher::getInstance();
+		JPluginHelper::importPlugin('extension');
+		$results = $dispatcher->trigger('onReservationSeriesPrepareData', array('com_jongman.reservation', $result));
+		 
+		if (count($results) && in_array(false, $results, true)) {
+		 	$this->setError($dispatcher->getError());
+		 	return false;
+		}
+		 
 		return $result;
 		
 	}	
@@ -131,7 +140,7 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 	 * (non-PHPdoc)
 	 * @see JModelForm::preprocessForm()
 	 */
-	protected function preprocessForm(JForm $form, $data, $group = 'content')
+	protected function preprocessForm(JForm $form, $data, $group = 'extension')
 	{
 		$params = JComponentHelper::getParams('com_jongman');
 		$proxyReservation = (bool)$params->get('proxyReservation', false);
@@ -139,7 +148,27 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 			$form->setFieldAttribute('owner_id', 'disabled', 'true');	
 			$form->setFieldAttribute('owner_id', 'readonly', 'true');	
 		}
-		parent::preprocessForm($form, $data, $group);		
+		
+		// Import the appropriate plugin group.
+		JPluginHelper::importPlugin($group);
+		$dispatcher = JEventDispatcher::getInstance();
+		
+		// Trigger the form preparation event.
+		$results = $dispatcher->trigger('onReservationSeriesPrepareForm', array($form, $data));
+		
+		// Check for errors encountered while preparing the form.
+		if (count($results) && in_array(false, $results, true))
+		{
+			// Get the last error.
+			$error = $dispatcher->getError();
+		
+			if (!($error instanceof Exception))
+			{
+				throw new Exception($error);
+			}
+		}
+		
+		//parent::preprocessForm($form, $data, $group);		
 	}
 	
 	public function update2($data) 

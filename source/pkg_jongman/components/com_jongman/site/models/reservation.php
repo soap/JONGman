@@ -110,6 +110,7 @@ class JongmanModelReservation extends JModelAdmin
 	{
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState($this->getName() . '.id');
 		
+		$dispatcher = JDispatcher::getInstance();
 		$app = JFactory::getApplication();
 		$user = JFactory::getUser();
 		$tz = JongmanHelper::getUserTimezone();
@@ -148,6 +149,16 @@ class JongmanModelReservation extends JModelAdmin
 				$result->repeat_type 	= $data['repeat_type'];
 				$result->repeat_options	= new JRegistry();
 			}
+			
+			// No need to load data for custom fields as it is a new record
+			/*
+			JPluginHelper::importPlugin('extension');
+			$results = $dispatcher->trigger('onReservationSeriesPrepareData', array('com_jongman.reservation', $item));
+			if (count($results) && in_array(false, $results, true)) {
+				$this->setError($dispatcher->getError());
+				$item = new StdClass();
+			}
+			*/
 			return $result;	
 		}
 		// we are not process existing reservation in this model
@@ -192,7 +203,7 @@ class JongmanModelReservation extends JModelAdmin
 	 * (non-PHPdoc)
 	 * @see JModelForm::preprocessForm()
 	 */
-	protected function preprocessForm(JForm $form, $data, $group = 'content')
+	protected function preprocessForm(JForm $form, $data, $group = 'extension')
 	{
 		$params = JComponentHelper::getParams('com_jongman');
 		$proxyReservation = (bool)$params->get('proxyReservation', false);
@@ -200,7 +211,25 @@ class JongmanModelReservation extends JModelAdmin
 			$form->setFieldAttribute('owner_id', 'disabled', 'true');	
 			$form->setFieldAttribute('owner_id', 'readonly', 'true');	
 		}
-		parent::preprocessForm($form, $data, $group);		
+		
+		// Import the appropriate plugin group.
+		JPluginHelper::importPlugin($group);
+		$dispatcher = JEventDispatcher::getInstance();
+		
+		// Trigger the form preparation event.
+		$results = $dispatcher->trigger('onReservationSeriesPrepareForm', array($form, $data));
+		
+		// Check for errors encountered while preparing the form.
+		if (count($results) && in_array(false, $results, true))
+		{
+			// Get the last error.
+			$error = $dispatcher->getError();
+		
+			if (!($error instanceof Exception))
+			{
+				throw new Exception($error);
+			}
+		}
 	}
 		
 	/**
@@ -216,7 +245,7 @@ class JongmanModelReservation extends JModelAdmin
 		$input['start_date'] = $input['start_date'].' '.$input['start_time'];
 		$input['end_date'] = $input['end_date'].' '.$input['end_time'];
 		$tz = JongmanHelper::getUserTimezone();
-
+		
 		$repeatType = isset($input['repeat_type']) ? $input['repeat_type'] : null;
 		$repeatInterval = isset($input['repeat_interval']) ? $input['repeat_interval'] : null;
 		$weekDays = isset($input['repeat_days']) ? $input['repeat_days'] : null;
@@ -259,10 +288,12 @@ class JongmanModelReservation extends JModelAdmin
 					new RFReservationRuleExistingResourceAvailability( new RFResourceReservationAvailability($scheduleRepository), $tz ), 
 					$reservationSeries->bookedBy()
 				);	
+		
 		$ruleProcessor->addRule(
 					new RFReservationRuleResourceAvailability(new RFResourceBlackoutAvailability($scheduleRepository), $tz), 
 					$reservationSeries->bookedBy()
 				);
+		
 		$ruleProcessor->addRule(
 					new RFReservationRuleSchedulePeriod( $scheduleRepository, $reservationSeries->bookedBy() ) 
 				);
@@ -275,7 +306,7 @@ class JongmanModelReservation extends JModelAdmin
 		$ruleProcessor->addRule(
 				new RFReservationRuleAdminexcluded(new RFReservationRuleQuota( $quotaRepository, $reservationViewRepository, $userRepository, $scheduleRepository), $reservationSeries->bookedBy())
 			);
-					
+		
 		$result = $ruleProcessor->validate($reservationSeries);
 		if (!$result->canBeSaved()) {
 			$errors = $result->getErrors();
@@ -285,7 +316,7 @@ class JongmanModelReservation extends JModelAdmin
 			
 			return false;		
 		}			
-	
+		
 		$this->_series = $reservationSeries;
 		$validData['series'] = $reservationSeries;
 		$validData['repeat_options'] = $reservationSeries->getRepeatOptions()->configurationString();
@@ -299,7 +330,7 @@ class JongmanModelReservation extends JModelAdmin
 	 * @return  boolean  True on success, False on error.
 	 */
 	public function save($data)
-	{
+	{	
 		$result = $this->insertSeries($data);
 		if ($result == false) {
 			return false;
@@ -348,10 +379,15 @@ class JongmanModelReservation extends JModelAdmin
 		return true;
 	}
 	
+	/**
+	 * Save reservation data to database
+	 * @param mixed $data
+	 * @return boolean
+	 */
 	protected function insertSeries($data)
 	{
 		// Initialise variables;
-		$dispatcher = JDispatcher::getInstance();
+		$dispatcher = JEventDispatcher::getInstance();
 		$table = $this->getTable();
 		$key = $table->getKeyName();
 		$pk = (!empty($data[$key])) ? $data[$key] : (int) $this->getState($this->getName() . '.id');
@@ -359,6 +395,7 @@ class JongmanModelReservation extends JModelAdmin
 		
 		// Include the content plugins for the on save events.
 		JPluginHelper::importPlugin('content');
+		JPluginHelper::importPlugin('extension');
 		
 		// Allow an exception to be thrown.
 		try
@@ -397,7 +434,7 @@ class JongmanModelReservation extends JModelAdmin
 			}
 		
 			// Store the data.
-			if (!$table->store())
+			if (!($result = $table->store()))
 			{
 				$this->setError($table->getError());
 				return false;
@@ -408,6 +445,7 @@ class JongmanModelReservation extends JModelAdmin
 		
 			// Trigger the onContentAfterSave event.
 			$dispatcher->trigger($this->event_after_save, array($this->option . '.' . $this->name, &$table, $isNew));
+			$dispatcher->trigger('onReservationSeriesAfterSave', array(&$data, &$table, $result, $isNew));
 		}
 		catch (Exception $e)
 		{
