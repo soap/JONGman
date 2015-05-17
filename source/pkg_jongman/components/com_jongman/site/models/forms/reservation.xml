@@ -75,11 +75,11 @@
 			filter="unset" />
 			
 		<field name="description"
-			type="textarea"
+			type="editor" 
 			label="COM_JONGMAN_FIELD_RESERVATION_DESCRIPTION_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_DESCRIPTION_DESC"
-			rows="5" cols="100"
-			class="" />
+			rows="10" cols="40" filter="JComponentHelper::filterText" buttons="true"
+			class="span12" />
 			
 	</fieldset>
 	<fieldset name="period">
@@ -111,7 +111,7 @@
 	<fieldset name="repeat_options">
 		<field
 			name="repeat_type" 
-			id="repeatOptions"
+			id="repeatOptions" class="input-small"
 			type="list"
 			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_DESC"
@@ -126,7 +126,7 @@
 		<field 
 			name="repeat_interval"
 			type="repeatinterval" 
-			first="1" last="10" step="1" class="span8"
+			first="1" last="10" step="1" default="1" class="span8"
 			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_INTERVAL_LABEL"
 			decription="COM_JONGMAN_FIELD_RESERVATION_REPEAT_INTERVAL_DESC" />
 			
@@ -137,15 +137,15 @@
 			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_DAYS_DESC">
 			<option value="0" class="checkbox">SUNDAY</option>
             <option value="1" class="checkbox">MONDAY</option>
-			<option value="2">TUESDAY</option>
-			<option value="3">WEDNESDAY</option>
-			<option value="4">THURSDAY</option>
-			<option value="5">FRIDAY</option>
-			<option value="6">SATURDAY</option>
+			<option value="2" class="checkbox">TUESDAY</option>
+			<option value="3" class="checkbox">WEDNESDAY</option>
+			<option value="4" class="checkbox">THURSDAY</option>
+			<option value="5" class="checkbox">FRIDAY</option>
+			<option value="6" class="checkbox">SATURDAY</option>
 		</field>
 		
 		<field
-			name="repeat_monthly_type" type="list" class="inline"
+			name="repeat_monthly_type" type="list" class="inline input-small"
 			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_MONTHLY_TYPE_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_MONTHLY_TYPE_DESC"
 			>
@@ -155,7 +155,7 @@
 	
 		<field
 			name="repeat_terminated" 
-			type="calendar"
+			type="calendar" class="input-small"
 			filter="USER_UTC"
 			label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_UNTIL_DATE_LABEL"
 			description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_UNTIL_DATE_DESC" />		

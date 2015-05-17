@@ -20,5 +20,16 @@ class RFEventCommandSeriesDeleted extends RFEventCommand
 	
 		$table = JTable::getInstance('Reservation', 'JongmanTable');
 		$table->delete($id);
+		
+		$query->clear();
+		$query->delete()->from($database->quoteName('#__jongman_reservation_fields'));
+		$query->where('reservation_id = '.$id);
+		$query->where("field_key LIKE 'reservation_custom_fields.%'");
+		$database->setQuery($query);
+		
+		if (!$database->execute()) {
+			throw new Exception($database->getErrorMsg());
+		}
+		
 	}
 }
