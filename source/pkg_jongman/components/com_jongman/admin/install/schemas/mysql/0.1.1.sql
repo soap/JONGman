@@ -1,4 +1,5 @@
-ALTER TABLE `#__jongman_layouts` ADD COLUMN `ordering` int NOT NULL DEFAULT '0';
+ALTER TABLE `#__jongman_layouts` ADD COLUMN `ordering` int(11) NOT NULL DEFAULT '0';
+
 CREATE TABLE IF NOT EXISTS `#__jongman_time_blocks` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `label` varchar(85) DEFAULT NULL,
@@ -11,6 +12,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_time_blocks` (
   PRIMARY KEY (`id`),
   KEY `layout_id` (`layout_id`)
 ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 
 CREATE TABLE IF NOT EXISTS `#__jongman_reservation_fields` (
   `reservation_id` int(11) unsigned NOT NULL,
