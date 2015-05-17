@@ -1,6 +1,5 @@
 <?php
 defined('_JEXEC') or die;
-
 /**
  * 
  * Class to handle existing reservation series update
@@ -43,9 +42,7 @@ class RFReservationExistingSeries extends RFReservationSeries
 	 * @var array|ReservationAccessory[]
 	 */
 	protected $_accessories = array();
-	
-	protected $_attributeValues = array();
-	
+		
 	
 	public function __construct()
 	{
@@ -169,7 +166,7 @@ class RFReservationExistingSeries extends RFReservationSeries
 	/**
 	 * @param AttributeValue $attributeValue
 	 */
-	public function withAttribute(AttributeValue $attributeValue)
+	public function withAttribute(RFAttributeValue $attributeValue)
 	{
 		$this->addAttributeValue($attributeValue);
 	}
@@ -420,7 +417,7 @@ class RFReservationExistingSeries extends RFReservationSeries
 	}
 
 	/**
-	 * @return array|SeriesEvent[]
+	 * @return array|RFSeriesEvent[]
 	 */
 	public function getEvents()
 	{
@@ -441,6 +438,7 @@ class RFReservationExistingSeries extends RFReservationSeries
 
 	/**
 	 * @internal
+	 * @deprecated 3.5
 	 */
 	public function _instances()
 	{
@@ -586,22 +584,23 @@ class RFReservationExistingSeries extends RFReservationSeries
 	}
 
 	/**
-	 * @param $attributes AttributeValue[]|array
+	 * @param $attributes RFAttributeValue[]|array
 	 */
 	public function changeAttributes($attributes)
 	{
+		// Compare new attributes from user with existing ones
 		$diff = new RFArrayDiff($this->_attributeValues, $attributes);
 
 		$added = $diff->getAddedToArray1();
 		$removed = $diff->getRemovedFromArray1();
 
-		/** @var $attribute AttributeValue */
+		/** @var $attribute RFAttributeValue */
 		foreach ($added as $attribute)
 		{
 			$this->addEvent(new RFEventAttributeAdded($attribute, $this));
 		}
 
-		/** @var $accessory ReservationAccessory */
+		/** @var $accessory RFAttributeValue */
 		foreach ($removed as $attribute)
 		{
 			$this->addEvent(new RFEventAttributeRemoved($attribute, $this));
