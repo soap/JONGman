@@ -1,0 +1,1 @@
+ALTER TABLE `#__jongman_layouts` ADD COLUMN `ordering` int NOT NULL DEFAULT '0';
