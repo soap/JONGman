@@ -103,15 +103,22 @@ class plgExtensionJongman extends JPlugin
 	public function onReservationSeriesPrepareData($context, $data)
 	{
 		// Check we are manipulating a valid form.
-		if (!in_array($context, array('com_jongman.reservation')))
+		if (!in_array($context, array('com_jongman.reservation', 'com_jongman.reservationitem')))
 		{
 			return true;
 		}
 	
 		if (is_object($data))
 		{
-			$reservationId = isset($data->id) ? $data->id : 0;
-	
+			if ($context == 'com_jongman.reservationitem') {
+				$reservationId = isset($data->reservation_id) ? $data->reservation_id : 0;	
+			}else{
+				if (isset($data->reservation_id)) {
+					$reservationId = $data->reservation_id;
+				}else{
+					$reservationId = isset($data->id) ? $data->id : 0;
+				}
+			}
 			// Load the custom fields data from the database.
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
