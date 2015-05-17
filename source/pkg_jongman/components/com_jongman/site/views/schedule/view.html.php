@@ -68,7 +68,7 @@ class JongmanViewSchedule extends JViewLegacy
 		//-------------------------------------------------------
 		$this->navigation		= $this->get('Navigation');
 		$this->state			= $this->get('State');
-
+		$this->sidebar			= null;
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
@@ -87,5 +87,12 @@ class JongmanViewSchedule extends JViewLegacy
 	protected function getToolbar()
 	{
 		
+	}
+	
+	protected function getSidebar()
+	{
+		$options = $this->resources;
+		JHtmlSidebar::addFilter(JText::_('COM_JONGMAN_SELECT_RESOURCE'), 'filter.resource', $options);
+		return JHtmlSidebar::render();
 	}
 }
