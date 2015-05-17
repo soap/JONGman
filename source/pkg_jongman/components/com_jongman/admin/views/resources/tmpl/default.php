@@ -8,12 +8,18 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
 $user		= JFactory::getUser();
-JHtml::_('behavior.tooltip');
+JHtml::_('bootstrap.tooltip');
 $listOrder	= $this->state->get('list.ordering');
 $listDirn	= $this->state->get('list.direction');
-$saveOrder	= $listOrder=='ordering';
+$saveOrder	= $listOrder == 'r.ordering';
 $archived	= $this->state->get('filter.published') == 2 ? true : false;
 $trashed	= $this->state->get('filter.published') == -2 ? true : false;
+
+if ($saveOrder)
+{
+	$saveOrderingUrl = 'index.php?option=com_jongman&task=resources.saveOrderAjax&tmpl=component';
+	JHtml::_('sortablelist.sortable', 'adminForm', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
+}
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&view=resources'); ?>" method="post" name="adminForm" id="adminForm">
 <?php if (!empty( $this->sidebar)) : ?>
@@ -37,7 +43,7 @@ $trashed	= $this->state->get('filter.published') == -2 ? true : false;
 			<thead>
 				<tr>
 					<th width="1%" class="nowrap center hidden-phone">
-						<?php echo JHtml::_('grid.sort', '<i class="icon-menu-2"></i>', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>
+						<?php echo JHtml::_('searchtools.sort', '', 'r.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
 					</th>
 					<th width="1%" class="hidden-phone">
 						<?php echo JHtml::_('grid.checkall'); ?>
@@ -92,13 +98,12 @@ $trashed	= $this->state->get('filter.published') == -2 ? true : false;
 							$iconClass = ' inactive tip-top hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
 						}
 					?>
-						<span class="sortable-handler<?php echo $iconClass ?>">
-							<i class="icon-menu"></i>
-						</span>
-						<?php if ($canChange && $saveOrder) : ?>
-						<input type="text" style="display:none" name="order[]" size="5"
-								value="<?php echo $item->ordering; ?>" class="width-20 text-area-order " />
-						<?php endif; ?>
+							<span class="sortable-handler<?php echo $iconClass ?>">
+								<i class="icon-menu"></i>
+							</span>
+							<?php if ($canChange && $saveOrder) : ?>
+							<input type="text" style="display:none" name="order[]" size="5" value="<?php echo $item->ordering; ?>" class="width-20 text-area-order " />
+							<?php endif; ?>
 					</td>
 					<td class="center hidden-phone">
 						<?php echo JHtml::_('grid.id', $i, $item->id); ?>

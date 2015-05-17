@@ -3,6 +3,7 @@
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
+
 ?>
 <script type="text/javascript">
 	// Attach a behaviour to the submit button to check validation.
@@ -10,6 +11,7 @@ JHtml::_('behavior.keepalive');
 	{
 		var form = document.id('reservation-form');
 		if (task == 'reservation.cancel' || task == 'instance.cancel' || document.formvalidator.isValid(form)) {
+			<?php echo $this->form->getField('description')->save() ?>
 			Joomla.submitform(task, form);
 		}
 		else {
@@ -32,18 +34,16 @@ JHtml::_('behavior.keepalive');
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=edit&id='.(int) $this->item->instance_id); ?>"
 	method="post" name="adminForm" id="reservation-form" class="form-validate form-inline">
 	<div class="row-fluid">
-		<div class="span-12">
+		<div class="span12">
 			<div class="formelm-buttons btn-toolbar pull-right">
 				<?php echo $this->toolbar?>
 			</div>
-			<div class="pull-left">
-				<legend>
-				<?php echo $this->title?>
-				</legend>
-			</div>
+			<?php echo $this->title?>
 		</div>
 	</div>
-	<div class="row-fluid">
+	<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'details')); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', JText::_('COM_JONGMAN_RESERVARION_DETAILS', true)); ?>
+	<div class="row-fluid">	
 		<div class="span7 form-horizontal">
 			<div class="control-group">
 				<div class="control-label">
@@ -105,19 +105,30 @@ JHtml::_('behavior.keepalive');
 					<?php echo $this->form->getInput('reservation_length')?>
 				</div>
 			</div>
-			<div class="control-grouop form-inline">
-				<div class="control-label">
-					<?php echo $this->form->getLabel('description'); ?>
-				</div>
-				<div class="controls">
-					<?php echo $this->form->getInput('description'); ?>
-				</div>
-			</div>
 		</div>
 		<div class="span5 form-horizontal">
 			<?php echo $this->loadTemplate('repeatoptions')?>
 		</div>
 	</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'description', JText::_('COM_JONGMAN_RESERVATION_DESCRIPTION', true)); ?>
+		<div class="control-grouop form-inline">
+			<div class="control-label">
+				<?php echo $this->form->getLabel('description'); ?>
+			</div>
+			<div class="controls">
+				<?php echo $this->form->getInput('description'); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php //if ($this->item->custom_fields) : ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'customfields', JText::_('COM_JONGMAN_RESERVATION_CUSTOMFIELD_FIELDSET', true)); ?>
+			<div class="row-fluid form-horizontal-desktop">
+			<?php echo $this->loadTemplate('customfields'); ?>
+			</div>
+		<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php //endif; ?>
+	<?php echo JHtml::_('bootstrap.endTabSet');?>
 
 	<?php echo $this->form->getInput('schedule_id')?>
 	

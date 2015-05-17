@@ -197,6 +197,15 @@ CREATE TABLE IF NOT EXISTS `#__jongman_reservation_users` (
 
 -- --------------------------------------------------------
 
+CREATE TABLE IF NOT EXISTS `#__jongman_reservation_fields` (
+  `reservation_id` int(11) unsigned NOT NULL,
+  `field_key` varchar(100) NOT NULL,
+  `field_value` text,
+  `ordering` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`field_key`,`reservation_id`),
+  KEY `fk_jongman_reservation_idx` (`reservation_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 --
 -- Table structure for table `#__jongman_resources`
 --
