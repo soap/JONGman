@@ -35,7 +35,9 @@ class RFReservationSeries extends JObject
 	
     protected $startReminder;
     protected $endReminder;
-    
+
+    protected $_attributeValues = array();
+        
 	public function __construct()
 	{
 		$this->_repeatOptions = new RFReservationRepeatNone();
@@ -346,5 +348,30 @@ class RFReservationSeries extends JObject
 	public function addEndReminder(RFReservationReminder $reminder)
 	{
 		$this->endReminder = $reminder;
+	}
+	
+	public function addAttributeValue(RFAttributeValue $attributeValue)
+	{
+		$this->_attributeValues[$attributeValue->attributeId] = $attributeValue;
+	}
+	
+	/**
+	 * @param $customAttributeId
+	 * @return mixed
+	 */
+	public function getAttributeValue($customAttributeId)
+	{
+		if (array_key_exists($customAttributeId, $this->_attributeValues))
+		{
+			return $this->_attributeValues[$customAttributeId]->value;
+		}
+	
+		return null;
+	}
+	
+	/* @since 3.0 */
+	public function getAttributeValues()
+	{
+		return $this->_attributeValues;
 	}
 }
