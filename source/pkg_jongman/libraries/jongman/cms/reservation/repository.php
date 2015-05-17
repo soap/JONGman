@@ -68,7 +68,7 @@ class RFReservationRepository implements IReservationRepository
 		foreach ($instances as $reservation)
 		{
 			$command = new InstanceAddedEventCommand($reservation, $reservationSeries);
-			$command->Execute($database);
+			$command->execute($database);
 		}
 	}
 
@@ -128,6 +128,7 @@ class RFReservationRepository implements IReservationRepository
 	}
 
 	/**
+	 * Insert new reservation series to database
 	 * @param RFReservationSeries $reservationSeries
 	 * @return int newly created series_id
 	 */
@@ -174,13 +175,24 @@ class RFReservationRepository implements IReservationRepository
 			//$database->Execute($insertAccessory);
 		}
 
+		$data = array();
+		$data['reservation_custom_fields'] = array();
 		foreach ($reservationSeries->attributeValues() as $attribute)
 		{
-			//$insertAttributeValue = new AddAttributeValueCommand($attribute->attributeId, $attribute->value, $reservationSeriesId, CustomAttributeCategory::RESERVATION);
-			//$database->Execute($insertAttributeValue);
+			$data['reservation_custom_fields'][$attribute->attributeId] = $attribute->value; 
+		}
+		
+		$dispatcher = JEventDispatcher::getInstance();
+		JPluginHelper::importPlugin('extension');
+		$isNew = true;
+		$results = $dispatcher->trigger('onReservationSeriesAfterSave', array($data, $table, $results, $isNew));
+		
+		if (count($results) && in_array(false, $results, true)) {
+			//$this->setError($dispatcher->getError());
+			return false;
 		}
 
-		foreach ($reservationSeries->AddedAttachments() as $attachment)
+		foreach ($reservationSeries->addedAttachments() as $attachment)
 		{
 			//$this->AddReservationAttachment($attachment);
 		}
@@ -355,15 +367,24 @@ class RFReservationRepository implements IReservationRepository
 
 	private function populateAttributeValues(RFReservationExistingSeries $series)
 	{
-		/*
-		$getAttributes = new GetAttributeValuesCommand($series->SeriesId(), CustomAttributeCategory::RESERVATION);
-		$reader = ServiceLocator::GetDatabase()->Query($getAttributes);
-		while ($row = $reader->GetRow())
-		{
-			$series->WithAttribute(new AttributeValue($row[ColumnNames::ATTRIBUTE_ID], $row[ColumnNames::ATTRIBUTE_VALUE]));
+		
+		//RFCustomAttributeCategory::RESERVATION
+		$data = new StdClass();
+		$data->reservation_id = $series->seriesId();
+		$context = 'com_jongman.reservationitem';
+		$dispatcher = JEventDispatcher::getInstance();
+		JPluginHelper::importPlugin('extension');
+
+		$results = $dispatcher->trigger('onReservationSeriesPrepareData', array('com_jongman.reservationitem', $data));
+		
+		if (count($results) && in_array(false, $results, true)) {
+			//$this->setError($dispatcher->getError());
+			return false;
 		}
-		$reader->Free();
-		*/
+		if (isset($data->reservation_custom_fields) && count($data->reservation_custom_fields)) {
+			foreach($data->reservation_custom_fields as $k => $v)
+			$series->withAttribute(new RFAttributeValue($k, $v));
+		}
 	}
 
 	private function populateAttachmentIds(RFReservationExistingSeries $series)
@@ -562,14 +583,28 @@ class RFReservationEventMapper
 		return new RFEventCommand(new RemoveReservationAccessoryCommand($series-sSeriesId(), $event->AccessoryId()), $series);
 	}
 
-	private function buildAddAttributeCommand(AttributeAddedEvent $event, RFReservationExistingSeries $series)
+	private function buildAddAttributeCommand(RFEventAttributeAdded $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommand(new AddAttributeValueCommand($event->attributeId(), $event->Value(), $series->SeriesId(), CustomAttributeCategory::RESERVATION), $series);
+		$dbo = JFactory::getDbo();
+		$query = $dbo->getQuery(true);
+		
+		$values = $dbo->quote(array($series->seriesId(),'reservation_custom_fields.'.$event->attributeId(), $event->value()));
+		
+		$query->insert('#__jongman_reservation_fields')
+			->columns($dbo->quoteName(array('reservation_id', 'field_key', 'field_value')))
+			->values( implode(',', $values));
+		return new RFEventCommand($query, $series);
 	}
 
-	private function buildRemoveAttributeCommand(AttributeRemovedEvent $event, RFReservationExistingSeries $series)
+	private function buildRemoveAttributeCommand(RFEventAttributeRemoved $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommand(new RemoveAttributeValueCommand($event->attributeId(), $series->seriesId()), $series);
+		$dbo = JFactory::getDbo();
+		$query = $dbo->getQuery(true);
+		$query->delete('#__jongman_reservation_fields')
+			->where('reservation_id='.$series->seriesId())
+			->where('field_key='.$dbo->quote('reservation_custom_fields.'.$event->attributeId()) );
+		
+		return new RFEventCommand($query, $series);
 	}
 
 	private function buildOwnerChangedCommand(OwnerChangedEvent $event, RFReservationExistingSeries $series)

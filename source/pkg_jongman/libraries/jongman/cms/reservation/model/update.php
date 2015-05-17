@@ -174,6 +174,10 @@ class RFReservationModelUpdate implements IReservationModelUpdate
 		return RFDateRange::create($startDate . ' ' . $startTime, $endDate . ' ' . $endTime, $timezone);
 	}
 
+	/**
+	 * Get attribute values from page 
+	 * @return multitype:RFReservationAccessory
+	 */
 	private function getAccessories()
 	{
 		$accessories = array();

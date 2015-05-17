@@ -65,7 +65,7 @@ class RFReservationEventMapper
 
 	private function buildDeleteSeriesCommand(RFEventSeriesDeleted $event)
 	{
-		return new RFEventCommandDeleteseries($event->series());
+		return new RFEventCommandSeriesDeleted($event->series());
 	}
 
 	private function buildAddReservationCommand(RFEventInstanceAdded $event, RFReservationExistingSeries $series)
@@ -126,7 +126,7 @@ class RFReservationEventMapper
 
 	private function buildAddAttributeCommand(RFEventAttributeAdded $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommand(new AddAttributeValueCommand($event->AttributeId(), $event->Value(), $series->SeriesId(), CustomAttributeCategory::RESERVATION), $series);
+		return new RFEventCommand(new AddAttributeValueCommand($event->attributeId(), $event->value(), $series->seriesId(), CustomAttributeCategory::RESERVATION), $series);
 	}
 
 	private function buildRemoveAttributeCommand(RFEventAttributeRemoved $event, RFReservationExistingSeries $series)
