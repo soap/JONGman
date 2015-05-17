@@ -20,6 +20,6 @@
         <!-- Installl component -->
         <file type="component" id="com_jongman">components/com_jongman</file>
         <!-- Install plugins -->
-        <file type="plugin" id="extension_jongman" group="extension">plugins/plg_extension_jongman</file>
+        <file type="plugin" id="jongman" group="extension">plugins/plg_extension_jongman</file>
     </files>
 </extension>
