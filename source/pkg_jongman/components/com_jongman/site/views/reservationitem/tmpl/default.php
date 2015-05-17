@@ -68,13 +68,24 @@ $canEditOwn	= ($user->authorise('core.edit.own', $asset_name) && $this->item->cr
     		</dd>
 			<?php endif; ?>
     	</dl>
-        <?php echo $item->description; ?>
+    	<legend><?php echo JText::_('COM_JONGMAN_RESERVATION_DESCRIPTION')?></legend>
+        <?php echo htmlspecialchars($item->description); ?>
         <div class="clearfix"></div>
 	</div>
 	<div class="row-fluid">
-		<div class="span12">
-			<?php echo $this->loadTemplate('workflow')?>
-		</div>
+
+		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'workflow')); ?>
+			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'workflow', JText::_('COM_JONGMAN_RESERVARION_WORKLOW', true)); ?>
+				<div class="span12">
+				<?php echo $this->loadTemplate('workflow')?>
+				</div>
+			<?php  echo JHtml::_('bootstrap.endTab'); ?>
+			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'customfields', JText::_('COM_JONGMAN_RESERVATION_CUSTOMFIELD_FIELDSET', true)); ?>
+				<div class="span12">
+				<?php echo $this->loadTemplate('customfields')?>
+				</div>
+			<?php  echo JHtml::_('bootstrap.endTab'); ?>
+		<?php echo JHtml::_('bootstrap.endTabSet');?>
 	</div>
 	<hr />
 

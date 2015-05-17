@@ -10,7 +10,7 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.modeladmin');
 
 /**
- * Methods supporting a list of schedules records.
+ * Methods supporting a list of resources.
  *
  * @package		JONGman
  * @subpackage	com_jongman
@@ -27,7 +27,8 @@ class JongmanModelResource extends JModelAdmin
     /**
      * Prepare data before save
      */
-   	protected function prepareTable($table) {
+   	protected function prepareTable($table) 
+   	{
     	$table->title		= htmlspecialchars_decode($table->title, ENT_QUOTES);
 		$table->alias		= JApplication::stringURLSafe($table->alias);
 

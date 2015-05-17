@@ -10,6 +10,8 @@ jimport('joomla.application.component.modelitem');
  */
 class JongmanModelReservationitem extends JModelItem
 {
+	
+	protected $_forms = array();
 	/**
 	 * Method to auto-populate the model state.
 	 * Note. Calling getState in this method will result in recursion.
@@ -30,6 +32,156 @@ class JongmanModelReservationitem extends JModelItem
 		if (!$access->get('core.edit.state') && !$access->get('core.edit')) {
 			$this->setState('filter.published', 1);
 			$this->setState('filter.archived', 2);
+		}
+	}
+	
+	/**
+	 * Method to get a form object.
+	 *
+	 * @param   string   $name     The name of the form.
+	 * @param   string   $source   The form source. Can be XML string if file flag is set to false.
+	 * @param   array    $options  Optional array of options for the form creation.
+	 * @param   boolean  $clear    Optional argument to force load a new form.
+	 * @param   string   $xpath    An optional xpath to search for the fields.
+	 *
+	 * @return  mixed  JForm object on success, False on error.
+	 *
+	 * @see     JForm
+	 * @since   12.2
+	 */
+	protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
+	{
+		// Handle the optional arguments.
+		$options['control'] = JArrayHelper::getValue($options, 'control', false);
+	
+		// Create a signature hash.
+		$hash = md5($source . serialize($options));
+	
+		// Check if we can use a previously loaded form.
+		if (isset($this->_forms[$hash]) && !$clear)
+		{
+			return $this->_forms[$hash];
+		}
+	
+		// Get the form.
+		JForm::addFormPath(JPATH_COMPONENT . '/models/forms');
+		JForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
+		JForm::addFormPath(JPATH_COMPONENT . '/model/form');
+		JForm::addFieldPath(JPATH_COMPONENT . '/model/field');
+	
+		try
+		{
+			$form = JForm::getInstance($name, $source, $options, false, $xpath);
+	
+			if (isset($options['load_data']) && $options['load_data'])
+			{
+				// Get the data for the form.
+				$data = $this->loadFormData();
+			}
+			else
+			{
+				$data = array();
+			}
+	
+			// Allow for additional modification of the form, and events to be triggered.
+			// We pass the data because plugins may require it.
+			$this->preprocessForm($form, $data);
+	
+			// Load the data into the form after the plugins have operated.
+			$form->bind($data);
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e->getMessage());
+	
+			return false;
+		}
+	
+		// Store the form for later.
+		$this->_forms[$hash] = $form;
+	
+		return $form;
+	}
+	
+	/**
+	 * Method to get the Custom form.
+	 *
+	 * @param   array    $data      An optional array of data for the form to interogate.
+	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 *
+	 * @return  JForm  A JForm object on success, false on failure
+	 * @since   1.0
+	 */
+	public function getForm($data = array(), $loadData = true)
+	{
+		// Get the form.
+		$form = $this->loadForm(
+				$this->option.'.reservation',
+				'reservation',
+				array('control' => 'jform', 'load_data' => $loadData)
+		);
+	
+		if (empty($form)) {
+			return false;
+		}
+		
+		// Import the appropriate plugin group.
+		JPluginHelper::importPlugin('extension');
+		$dispatcher = JEventDispatcher::getInstance();
+		
+		// Trigger the form preparation event.
+		$results = $dispatcher->trigger('onReservationSeriesPrepareForm', array($form, $data));
+		
+		// Check for errors encountered while preparing the form.
+		if (count($results) && in_array(false, $results, true))
+		{
+			// Get the last error.
+			$error = $dispatcher->getError();
+		
+			if (!($error instanceof Exception))
+			{
+				throw new Exception($error);
+			}
+		}
+	
+		return $form;
+	}
+	
+	
+	protected function loadFormData()
+	{
+		$data = $this->getItem();
+		return $data;
+	}
+	
+	protected function preprocessForm(JForm $form, $data, $group = 'extension')
+	{
+		// Import the appropriate plugin group.
+		JPluginHelper::importPlugin($group);
+		$dispatcher = JEventDispatcher::getInstance();
+	
+		// Trigger the form preparation event.
+		$results = $dispatcher->trigger('onReservationSeriesPrepareForm', array($form, $data));
+	
+		// Check for errors encountered while preparing the form.
+		if (count($results) && in_array(false, $results, true))
+		{
+			// Get the last error.
+			$error = $dispatcher->getError();
+	
+			if (!($error instanceof Exception))
+			{
+				throw new Exception($error);
+			}
+		}	
+		
+		$fieldSets = $form->getFieldsets('reservation_custom_fields');
+		foreach ($fieldSets as $fieldSet) {
+			foreach ($form->getFieldset($fieldSet->name) as $field) {
+				$form->setFieldAttribute($field->fieldname, 'readonly', 'true');	
+				$form->setFieldAttribute($field->fieldname, 'disabled', 'disabled');
+				$form->setFieldAttribute($field->fieldname, 'class', $field->class.' uneditable-input');
+			}
 		}
 	}
 	
@@ -103,6 +255,15 @@ class JongmanModelReservationitem extends JModelItem
 			$item->params->set('access-change', $access->get('core.edit.state'));
 		}
 		
+		$dispatcher = JEventDispatcher::getInstance();
+		JPluginHelper::importPlugin('extension');
+		$results = $dispatcher->trigger('onReservationSeriesPrepareData', array('com_jongman.reservationitem', $item));
+		
+		if (count($results) && in_array(false, $results, true)) {
+		 	$this->setError($dispatcher->getError());
+		 	return false;
+		}
+		 
 		$this->_item[$referenceNumber] = $item;
 		return $this->_item[$referenceNumber];			
 	}

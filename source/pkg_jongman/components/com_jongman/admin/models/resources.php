@@ -104,7 +104,7 @@ class JongmanModelResources extends JModelList
                 
 				'r.checked_out AS checked_out,'.
 				'r.checked_out_time AS checked_out_time,'.
-				'r.ordering AS ordering, r.published as published, r.params'
+				'r.ordering, r.published as published, r.params'
 		);
 		$query->from('`#__jongman_resources` AS r');
         

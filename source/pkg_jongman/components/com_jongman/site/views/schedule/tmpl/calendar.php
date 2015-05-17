@@ -18,7 +18,14 @@ $lastDate = $this->scheduledates->getEnd();
 $url = $app->getMenu()->getActive()->link.'&Itemid='.$app->getMenu()->getActive()->id;
 ?>
 <div class="row-fluid">
+	<?php if (!empty($this->sidebar)) :?>
+	<div id="j-sidebar-container" class="span2">
+		<?php echo $this->sidebar; ?>
+	</div>
+	<div id="j-main-container" class="span10">
+	<?php else :?>
 	<div class="span12">
+	<?php endif?>
 	<div class="schedule_title">
 		<span><?php echo $this->schedule->name?></span>
 		<a href="#" id="calendar_toggle"><img src="<?php echo $calLink?>" alt="<?php echo JText::_('COM_JONGMAN_SHOWHIDE_CALENDAR')?>"/></a>
