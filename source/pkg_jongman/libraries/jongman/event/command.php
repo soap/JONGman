@@ -21,8 +21,8 @@ class RFEventCommand
 	{
 		if (!$this->series->requiresNewSeries())
 		{
-			$dbo->setQuery($query);
-			@$dbo->execute($this->query);
+			$dbo->setQuery($this->query);
+			@$dbo->execute();
 		}
 	}
 }
