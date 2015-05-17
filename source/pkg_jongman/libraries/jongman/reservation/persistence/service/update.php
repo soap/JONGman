@@ -38,7 +38,7 @@ class RFReservationPersistenceServiceUpdate implements IUpdateReservationPersist
 		$this->_repository->update($existingReservationSeries);
 	}
 
-	public function LoadByReferenceNumber($referenceNumber)
+	public function loadByReferenceNumber($referenceNumber)
 	{
 		return $this->_repository->loadByReferenceNumber($referenceNumber);
 	}
