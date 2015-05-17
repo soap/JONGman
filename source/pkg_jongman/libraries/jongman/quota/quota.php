@@ -113,6 +113,10 @@ class RFQuota implements IQuota
 	public function exceedsQuota($reservationSeries, $user, $schedule, IReservationViewRepository $reservationViewRepository)
 	{
 		$timezone = $schedule->getTimezone();
+		if ($timezone===null) {
+			throw new Exception(JText::sprintf('COM_JONGMAN_EXCEPTION_SCHEDULE_TIMEZONE_NOT_SET_AT', __METHOD__), 500);
+		}
+			
 		//$timezone = $schedule->timezone;
 
 		if (!is_null($this->resourceId))

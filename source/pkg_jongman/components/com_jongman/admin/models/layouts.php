@@ -27,7 +27,7 @@ class JongmanModelLayouts extends JModelList
 			$config['filter_fields'] = array(
 				'id', 'a.id',
 				'title', 'a.title',
-				'alias', 'a.alias',
+				'alias', 'a.alias', 'a.default', 'a.timezone',
 				'checked_out', 'a.checked_out',
 				'checked_out_time', 'a.checked_out_time',
 				'catid', 'a.catid', 'category_title',
@@ -93,7 +93,7 @@ class JongmanModelLayouts extends JModelList
 			$this->getState(
 				'list.select',
 				'a.id, a.title, a.alias, a.timezone, a.default,' . 
-				'a.checked_out, a.checked_out_time, ' .
+				'a.checked_out, a.checked_out_time, a.ordering,' .
 				'a.published, a.access, a.created, a.language, '. 
 				'(SELECT COUNT(s.id) FROM #__jongman_schedules AS s WHERE s.layout_id=a.id) as used_count'
 			)
