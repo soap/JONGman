@@ -83,6 +83,7 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 			
 		$result->owner_id = $series->userId();
 		$result->id = $table->id;
+		$result->reservation_id = $table->reservation_id;
 		$result->checked_out = 0;
 		$result->instance_id = $table->id;
 		$result->reference_number = $series->currentInstance()->referenceNumber(); 
@@ -631,7 +632,7 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 	
 	public function getAccessories()
 	{
-		
+		return array();	
 	}
 	
 	public function getInvitees()
@@ -639,9 +640,23 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 		
 	}
 	
+	/**
+	 * Get custom attributes from page
+	 * @return array:
+	 */
 	public function getAttributes()
 	{
+		$attributes = array();
+		if (isset($this->validData['reservation_custom_fields'])) {
+			foreach($this->validData['reservation_custom_fields'] as $k => $v) {
+				$field = new StdClass();
+				$field->id = $k;
+				$field->value = $v;
+				$attributes[] = $field;
+			}
+		}
 		
+		return $attributes;
 	}
 	
 	public function getAttachments()
