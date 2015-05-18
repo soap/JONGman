@@ -11,8 +11,9 @@ $list_dir   = $this->escape($this->state->get('list.direction'));
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&view=layouts&layout=modal&tmpl=component'); ?>" method="post" name="adminForm" id="adminForm">
     <?php if (!$this->is_j25) : ?>
-    	// Search tools bar
+    	<?php // Search tools ba
 		echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
+		?>
     <?php else: ?>
     <?php echo $this->loadTemplate('filter_j25')?>
     <?php endif;?>
