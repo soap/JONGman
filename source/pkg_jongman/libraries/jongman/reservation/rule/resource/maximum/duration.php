@@ -3,7 +3,7 @@ defined('_JEXEC') or die;
 
 class RFReservationRuleResourceMaximumDuration implements IReservationValidationRule
 {
-	private $message;
+	private $__message;
 	/**
 	 * @see IReservationValidationRule::validate()
 	 * 
@@ -25,8 +25,8 @@ class RFReservationRuleResourceMaximumDuration implements IReservationValidation
 				$maxEnd = $start->applyDifference($maxDuration);
 				if ($end->greaterThan($maxEnd))
 				{
-					$this->message =  JText::sprintf("COM_JONGMAN_ERROR_MAX_DURATION", $maxDuration->hours());
-					return new RFReservationRuleResult(false, $this->message);
+					$this->__message =  JText::sprintf("COM_JONGMAN_ERROR_MAX_DURATION", $maxDuration->hours());
+					return new RFReservationRuleResult(false, $this->__message);
 				}
 			}
 		}
@@ -36,6 +36,6 @@ class RFReservationRuleResourceMaximumDuration implements IReservationValidation
 	
 	public function getError()
 	{
-		return $this->message;
+		return $this->__message;
 	}
 }

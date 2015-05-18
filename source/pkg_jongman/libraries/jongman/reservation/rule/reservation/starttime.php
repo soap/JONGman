@@ -3,17 +3,15 @@ defined('_JEXEC') or die;
 
 class RFReservationRuleReservationStarttime implements IReservationValidationRule
 {
-	protected $message;
+	protected $__message;
+	protected $__scheudleRepository;
 	
 	public function __construct(/*IScheduleRepository $scheduleRepository*/)
 	{
-		//$this->scheduleRepository = $scheduleRepository;
+		$scheduleRepository = new RFScheduleRepository();
+		$this->__scheduleRepository = $scheduleRepository;
 	}
 
-	public function getError()
-	{
-		return $this->message;
-	}
 	/**
 	 * @param ReservationSeries $reservationSeries
 	 * @return ReservationRuleResult
@@ -39,26 +37,31 @@ class RFReservationRuleReservationStarttime implements IReservationValidationRul
 		if ($constraint == RFReservationStarttimeConstraint::CURRENT)
 		{
 			$timezone = $dateThatShouldBeLessThanNow->timezone();
-			$scheduleModel = JModelLegacy::getInstance('Schedule', 'JongmanSchedule');
+			
+			//$scheduleModel = JModelLegacy::getInstance('Schedule', 'JongmanSchedule');
 			/** @var $currentPeriod SchedulePeriod */
-			$currentPeriod = $scheduleModel->getScheduleLayout($reservationSeries->scheduleId(), $timezone)
-				->getPeriod($currentInstance->endDate);
-			/*
-			$currentPeriod = $this->scheduleRepository
-				->getLayout($reservationSeries->scheduleId(), new ScheduleLayoutFactory($timezone))
+			//$currentPeriod = $scheduleModel->getScheduleLayout($reservationSeries->scheduleId(), $timezone)
+			//	->getPeriod($currentInstance->endDate);
+			
+			$currentPeriod = $this->__scheduleRepository
+				->getLayout($reservationSeries->scheduleId(), RFFactory::getScheduleLayout($timezone))
 				->getPeriod($currentInstance->endDate());
-			*/
+			
 			$dateThatShouldBeLessThanNow = $currentPeriod->beginDate();
 		}
 		JLog::add("Start Time Rule: Comparing {$dateThatShouldBeLessThanNow} to Date::Now()", JLog::DEBUG, 'validation');
 
 		$startIsInFuture = $dateThatShouldBeLessThanNow->compare(RFDate::now()) >= 0;
 		if (!$startIsInFuture) {
-			$this->message = 'Start time is in the past';
+			$this->__message = JText::_('COM_JONGMAN_ERROR_RULE_STARTTIME_IN_THE_PAST');
 			return new RFReservationRuleResult(false, $this->getError());
 		}
 		
 		return new RFReservationRuleResult(true);
 	}
 	
+	public function getError()
+	{
+		return $this->__message;
+	}	
 }

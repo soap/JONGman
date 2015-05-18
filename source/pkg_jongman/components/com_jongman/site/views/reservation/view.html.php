@@ -88,7 +88,7 @@ class JongmanViewReservation extends JViewLegacy
             	'COM_JONGMAN_ACTION_SAVE',
             	'reservation.save',
             	false, //no need to select item first
-           	 	array('access' => $access->get('core.create') || $access->get('core.edit') || ($access->get('core.edit.own') && $isOwner))
+           	 	array('access' => ($access->get('core.create') || $access->get('core.edit') || $access->get('core.edit.own') ))
         	);
         	RFToolbar::button(
             	'JCANCEL',

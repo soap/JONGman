@@ -7,7 +7,18 @@ Requirements
 ============
 
 JONGman 3.0.0 requires 
-+ Joomla! 3.x
-+ PHP 5.3.1 (PHP 5.4.x, 5.5.x tested)
++ Joomla! 3.x (3.4.1 recommended
++ PHP PHP 5.4.x (5.5 recommended)
 
-JONGman 3.0.0 can be run on Joomla 3.2.x/3.3.x
+JONGman 3.0.0 can be run on Joomla 3.1.x to 3.4.1
+
+Feature List
+============
++ Fully open source software on Joomla 3.x
++ Visualized reservation items on calendar
++ Click and drag reservation
++ Flexible time slots setting for resources grouping as a schedule
++ Minim and maximum duration reservation for each resource
++ Quota system base on schedule, resource and user group
++ Custom field support using JForm for reservation data
++ Reservation approval system options; JONGman itself or JWorkflow
