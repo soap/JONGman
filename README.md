@@ -7,7 +7,7 @@ Requirements
 ============
 
 JONGman 3.0.0 requires 
-+ Joomla! 3.x
-+ PHP 5.3.1 (PHP 5.4.x, 5.5.x tested)
++ Joomla! 3.x (3.4.1 recommended
++ PHP PHP 5.4.x (5.5 recommended)
 
-JONGman 3.0.0 can be run on Joomla 3.2.x/3.3.x
+JONGman 3.0.0 can be run on Joomla 3.1.x to 3.4.1
