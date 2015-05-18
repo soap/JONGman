@@ -35,7 +35,7 @@ class JongmanViewQuota extends JViewLegacy
 	 * @return  void
 	 * @since   1.0
 	 */
-	public function display()
+	public function display($tp=NULL)
 	{
 		JHtml::stylesheet( 'administrator/components/com_jongman/assets/css/jongman.css' );
 		// Intialiase variables.
@@ -50,7 +50,7 @@ class JongmanViewQuota extends JViewLegacy
 		}
 
 		$this->addToolbar();
-		parent::display();
+		parent::display($tp);
 	}
 
 	/**
