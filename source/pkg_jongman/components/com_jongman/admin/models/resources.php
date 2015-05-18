@@ -40,7 +40,8 @@ class JongmanModelResources extends JModelList
 				'schedule_id', 'r.schedule_id', 'schedule_title',
 				'published', 'r.published',
 				'access', 'r.access', 'access_level',
-				'ordering', 'r.ordering',
+				'r.requires_approval', 'requires_approval',
+				'ordering', 'r.ordering'
 			);
 		}
 
@@ -55,11 +56,13 @@ class JongmanModelResources extends JModelList
 	 *
 	 * @since	1.6
 	 */
-	protected function populateState($ordering = null, $direction = null)
+	protected function populateState($ordering = 'ordering', $direction = 'asc')
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
-
+		$layout = $app->input->getCmd('layout', null);
+		if (!empty($layout)) $this->context = $this->context.'.'.$layout;
+		
 		// Load the filter state.
 		$search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
@@ -78,7 +81,7 @@ class JongmanModelResources extends JModelList
 		$this->setState('params', $params);
 
 		// List state information.
-		parent::populateState('r.title', 'asc');
+		parent::populateState($ordering, $direction);
 	}
 
     /**
@@ -95,16 +98,17 @@ class JongmanModelResources extends JModelList
 
 		// Select the required fields from the table.
 		$query->select(
+				$this->getState(
+				'list.select',
 				'r.id AS id, r.title AS title, r.alias AS alias, r.schedule_id, '.
-                'r.requires_approval, ' .
+                'r.requires_approval as requires_approval, ' .
                 //'r.min_reservation as min_reservation, r.max_reservation as max_reservation,'.
                 //'r.min_notice_duration as min_notice_duration,'.
                 //'r.max_notice_duration as max_notice_duration,'.
-                //'r.need_approval as need_approval,'.
                 
 				'r.checked_out AS checked_out,'.
 				'r.checked_out_time AS checked_out_time,'.
-				'r.ordering, r.published as published, r.params'
+				'r.ordering as ordering, r.published as published, r.params')
 		);
 		$query->from('`#__jongman_resources` AS r');
         
@@ -150,16 +154,13 @@ class JongmanModelResources extends JModelList
 		}
 
 		// Add the list ordering clause.
-		$orderCol	= $this->getState('list.ordering', 'title');
+		$orderCol	= $this->getState('list.ordering', 'ordering');
 		$orderDirn	= $this->getState('list.direction', 'asc');
-		if ($orderCol == 'ordering' || $orderCol == 'title') {
-			$orderCol = 'title '.$orderDirn.', ordering';
-		}
         if (empty($orderCol)) {
-            $orderCol = 'title';
+            $orderCol = 'ordering';
         }
 		$query->order($db->escape($orderCol.' '.$orderDirn));
-
+		
 		return $query;
 	}
 

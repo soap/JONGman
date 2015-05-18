@@ -7,13 +7,14 @@
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
-$user		= JFactory::getUser();
+
 JHtml::_('bootstrap.tooltip');
+$user		= JFactory::getUser();
 $listOrder	= $this->state->get('list.ordering');
 $listDirn	= $this->state->get('list.direction');
-$saveOrder	= $listOrder == 'r.ordering';
 $archived	= $this->state->get('filter.published') == 2 ? true : false;
 $trashed	= $this->state->get('filter.published') == -2 ? true : false;
+$saveOrder	= $listOrder == 'ordering';
 
 if ($saveOrder)
 {
@@ -43,13 +44,13 @@ if ($saveOrder)
 			<thead>
 				<tr>
 					<th width="1%" class="nowrap center hidden-phone">
-						<?php echo JHtml::_('searchtools.sort', '', 'r.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
+						<?php echo JHtml::_('searchtools.sort', '', 'ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
 					</th>
 					<th width="1%" class="hidden-phone">
 						<?php echo JHtml::_('grid.checkall'); ?>
 					</th>
 					<th width="1%" style="min-width:55px" class="nowrap center">
-						<?php echo JHtml::_('grid.sort', 'JSTATUS', 'a.published', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('grid.sort', 'JSTATUS', 'r.published', $listDirn, $listOrder); ?>
 					</th>
 					<th class="center">
 						<?php echo JHtml::_('grid.sort',  'COM_JONGMAN_HEADING_NAME', 'title', $listDirn, $listOrder); ?>
@@ -67,10 +68,10 @@ if ($saveOrder)
                     	<?php echo JText::_('COM_JONGMAN_HEADING_MAX_NOTICE_TIME'); ?>
                 	</th>                
                 	<th width="5%">
-                    	<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_NEED_APPROVAL', 'need_approval', $listDirn, $listOrder); ?>
+                    	<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_NEED_APPROVAL', 'r.requires_approval', $listDirn, $listOrder); ?>
                 	</th>
                 	<th width="10%">
-                		<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ACCESS', 'access', $listDirn, $listOrder); ?>
+                		<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ACCESS', 'r.access', $listDirn, $listOrder); ?>
                 	</th>
 					<th width="1%" class="nowrap center">
 						<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'id', $listDirn, $listOrder); ?>
@@ -79,7 +80,7 @@ if ($saveOrder)
 			</thead>
 			<tbody>
 		<?php foreach ($this->items as $i => $item) :
-			$ordering	= ($listOrder == 'ordering');
+			$ordering	= ($listOrder == 'r.ordering');
 			$canCreate	= $user->authorise('core.create', 'com_jongman');
 			$canEdit	= $user->authorise('core.edit', 'com_jongman');
 			$canCheckin	= $user->authorise('core.manage',	'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;

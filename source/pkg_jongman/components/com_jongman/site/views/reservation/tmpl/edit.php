@@ -121,13 +121,13 @@ JHtml::_('behavior.keepalive');
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
-	<?php //if ($this->item->custom_fields) : ?>
+	<?php if ($this->customFields) : ?>
 		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'customfields', JText::_('COM_JONGMAN_RESERVATION_CUSTOMFIELD_FIELDSET', true)); ?>
 			<div class="row-fluid form-horizontal-desktop">
 			<?php echo $this->loadTemplate('customfields'); ?>
 			</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
-	<?php //endif; ?>
+	<?php endif; ?>
 	<?php echo JHtml::_('bootstrap.endTabSet');?>
 
 	<?php echo $this->form->getInput('schedule_id')?>

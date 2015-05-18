@@ -1,4 +1,4 @@
-
+--
 --
 -- Table structure for table `#__jongman_blackouts`
 --
@@ -78,6 +78,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_layouts` (
   `modified_by` int(11) NOT NULL,
   `checked_out` int(11) NOT NULL DEFAULT '0',
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `ordering` int(11) NOT NULL DEFAULT '0',
   `access` int(11) NOT NULL DEFAULT '1',
   `language` varchar(10) NOT NULL DEFAULT '*',
   PRIMARY KEY (`id`)

@@ -80,11 +80,13 @@ $canEditOwn	= ($user->authorise('core.edit.own', $asset_name) && $this->item->cr
 				<?php echo $this->loadTemplate('workflow')?>
 				</div>
 			<?php  echo JHtml::_('bootstrap.endTab'); ?>
+			<?php if ($this->customFields) : ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'customfields', JText::_('COM_JONGMAN_RESERVATION_CUSTOMFIELD_FIELDSET', true)); ?>
 				<div class="span12">
 				<?php echo $this->loadTemplate('customfields')?>
 				</div>
 			<?php  echo JHtml::_('bootstrap.endTab'); ?>
+			<?php endif?>
 		<?php echo JHtml::_('bootstrap.endTabSet');?>
 	</div>
 	<hr />
