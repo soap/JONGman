@@ -17,10 +17,12 @@ class JongmanViewReservationitem extends JViewLegacy
 		jimport('workflow.framework');
 		
 		$this->item 		= $this->get("Item");
+		$this->form			= $this->get("Form");
 		$this->state 		= $this->get("State");
 		$this->params 		= $this->state->get("params");
 		$this->logs			= $this->get("Logs");
 		$this->transitions	= $this->get("Transitions");
+		$this->customFields = count($this->form->getFieldsets('reservation_custom_fields')) > 0;
 		
 		$this->workflowToolbar 	= $this->getWorkflowToolbar();
 		// Check for errors.
