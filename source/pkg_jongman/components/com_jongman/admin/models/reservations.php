@@ -24,7 +24,7 @@ class JongmanModelReservations extends JModelList
 	{
 		if (empty($config['filter_fields'])) {
 			$config['filter_fields'] = array(
-				'id', 'a.id',
+				'id', 'a.id', 'instance_id',
 				'title', 'r.title', 
 				'resource_title', 'schedule_title',
 				'r.owner_id', 'owner',
@@ -113,7 +113,8 @@ class JongmanModelReservations extends JModelList
 		
 		$query->select('r.alias as alias, r.title as title, ' .
 			'r.checked_out, r.checked_out_time, ' .
-			'r.state, r.access, r.created, r.schedule_id');
+			'r.state, r.access, r.created, r.schedule_id, r.id as reservation_id');
+		
 		$query->join('INNER','#__jongman_reservations AS r ON r.id=a.reservation_id');
 		
 		// Join over the users for the checked out user.
