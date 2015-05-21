@@ -58,7 +58,7 @@ class JongmanTableBlackoutInstance extends JTable
 			return false;
 		}
 		
-		if (trim($this->enddate_date) === '') {
+		if (trim($this->end_date) === '') {
 			$this->setError(JText::_('COM_JONGMAN_ERROR_BLACKOUTINSTANCE_END_DATE'));
 			return false;
 		}
