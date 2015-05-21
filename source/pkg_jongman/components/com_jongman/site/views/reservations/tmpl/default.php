@@ -141,7 +141,25 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 								</script>
 							</div>	
 							<?php else:?>
-								<?php echo JHtml::_('jgrid.published', $item->state, $i, 'reservations.', $canChange, 'cb'); ?>
+							<div class="btn-group">
+							<?php 
+								$states = array(1 => array('unapprove', 'COM_JONGMAN_APPROVED', 'COM_JONGMAN_RESERVATION_UNAPPROVE_ITEM', 'COM_JONGMAN_APPROVED', true, 'publish', 'publish'),
+											0 => array('approve', 'COM_JONGMAN_UNAPPROVED', 'COM_JONGMAN_RESERVATION_APPROVE_ITEM', 'COM_JONGMAN_UNAPPROVED', true, 'unpublish', 'unpublish'),
+											-1 => array('approve', 'COM_JONGMAN_PENDING', 'COM_JONGMAN_RESERVATION_APPROVE_ITEM', 'COM_JONGMAN_APPROVED', true, 'pending', 'pending'));
+						
+									echo JHtml::_('jgrid.state',$states, $item->state, $i, 'reservations.', $canChange); 
+									// Create dropdown items
+								if ($item->state == -1) {
+									JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_RESERVATION_APPROVE'), 'published', 'cb' . $i, 'reservations.approve');
+									JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_RESERVATION_UNAPPROVE'),'unpublished', 'cb' . $i, 'reservations.unapprove');
+								}else if ($item->state == 1) {
+									JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_RESERVATION_UNAPPROVE'),'unpublished', 'cb' . $i, 'reservations.unapprove');
+								}
+							
+								// Render dropdown list
+								echo JHtml::_('actionsdropdown.render', $this->escape($item->title));
+							?>
+							</div>
 							<?php endif;?>
 						</td>
 						<td>
