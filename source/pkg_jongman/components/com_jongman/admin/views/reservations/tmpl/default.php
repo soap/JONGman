@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 JHtml::_('behavior.tooltip');
 
 $user		= JFactory::getUser();
+$dbo 		= JFactory::getDbo();
 $listOrder	= $this->escape($this->state->get('list.ordering'));
 $listDirn	= $this->escape($this->state->get('list.direction'));
 ?>
@@ -41,7 +42,7 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 				<th width="1%" class="hidden-phone">
 					<?php echo JHtml::_('grid.checkall'); ?>
 				</th>
-				<th width="5%">
+				<th width="10%">
 					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_STATE', 'r.state', $listDirn, $listOrder); ?>
 				</th>
 				<th>
@@ -90,6 +91,20 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 				</td>
 				<td class="center">
+					<?php if ($this->workflow) :?>
+							<?php  $date = ($item->workflow_state->modified==$dbo->getNullDate() ? $item->workflow_state->created : $item->workflow_state->modified);?>
+							<div class="btn-group" id="reserv_<?php echo $item->reservation_id?>">
+								<button data-toggle="dropdown" class="dropdown-toggle btn btn-micro">
+									<span class="caret"></span>
+									<span class="element-invisible">JACTIONS</span>
+								</button>
+								<span class="pull-right"><?php echo JHtml::_('rfhtml.label.state', $item->workflow_state->title, $date)?></span>	
+								<ul class="dropdown-menu"></ul>	
+								<script type="text/javascript">
+									WFWorkflow.loadWorkflowState('<?php echo JURi::root()?>index.php', 'com_jongman.reservation', jQuery('#reserv_<?php echo $item->reservation_id?>'), '<?php echo $item->reservation_id?>');
+								</script>
+							</div>	
+					<?php else:?>
 					<div class="btn-group">
 						<?php 
 							$states = array(1 => array('unapprove', 'COM_JONGMAN_APPROVED', 'COM_JONGMAN_RESERVATION_UNAPPROVE_ITEM', 'COM_JONGMAN_APPROVED', true, 'publish', 'publish'),
@@ -109,6 +124,7 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 							echo JHtml::_('actionsdropdown.render', $this->escape($item->title));
 						?>
 					</div>
+					<?php endif;?>
 				</td>
 				<td>
 					<?php if ($item->checked_out) : ?>

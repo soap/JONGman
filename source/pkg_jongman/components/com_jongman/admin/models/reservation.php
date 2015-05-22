@@ -126,6 +126,22 @@ class JongmanModelReservation extends JModelAdmin
 		}
 		parent::preprocessForm($form, $data, $group);
 	}
+	
+	public function approve($cid, $value)
+	{
+		$user = JFactory::getUser();
+		$reservationAction = RFReservationAction::Approve;
+		$factory = new RFFactoryReservationPersistence();
+		$persistenceService = $factory->create($reservationAction);
+		$handler = RFReservationHandler::create($reservationAction, $persistenceService, $user);
+		
+		$model = new RFReservationModelApproval($this, $persistenceService, $handler, $auth, ServiceLocator::GetServer()->GetUserSession());
+		$presenter->PageLoad();
+		
+		
+		return array();	
+	}
+	
 	/**
 	 * Prepare and sanitise the table prior to saving.
 	 *
@@ -134,10 +150,10 @@ class JongmanModelReservation extends JModelAdmin
 	 * @return  boolean  True if successful, otherwise false and the error is set.
 	 * @since   2.0
 	 */
-	protected function prepareTable(&$table)
+	protected function prepareTable($table)
 	{
-		jimport('joomla.filter.output');
 
 	}
+	
 }
 

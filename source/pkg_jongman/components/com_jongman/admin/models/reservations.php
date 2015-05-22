@@ -84,6 +84,7 @@ class JongmanModelReservations extends JModelList
 		$endDate = $this->getUserStateFromRequest($this->context.'.filter.end_date', 'filter_end_date', null);
 		$this->setState('filter.end_date', $endDate);
 		
+	
 		// Load the parameters.
 		$params = JComponentHelper::getParams('com_jongman');
 		$this->setState('params', $params);		
@@ -196,8 +197,19 @@ class JongmanModelReservations extends JModelList
 	public function getItems()
 	{
 		$items = parent::getItems();
-		
 		if ($items === false) return false;
+		
+		$timezone = JongmanHelper::getUserTimezone();
+		
+		$params = $this->getState('params');
+		if ($params === null) {
+			// $params === null as this class get called with ignore_request = true
+			$app = JFactory::getApplication();
+			$params = $app->getParams();
+			$this->setState('params', $params);
+		}
+			
+		$workflow = (bool)($this->getState('params')->get('approvalSystem') == 2);
 		
 		$dbo = $this->getDbo();
 		$query = $dbo->getQuery(true);
@@ -208,10 +220,20 @@ class JongmanModelReservations extends JModelList
 				->join('LEFT','#__jongman_resources AS r on r.id=a.resource_id')
 				->where('reservation_id = '.(int)$item->reservation_id);
 			$dbo->setQuery($query);
+			
 			$items[$i]->resources = implode(',', $dbo->loadColumn());
+			if ($workflow) {
+				$items[$i]->participant_list = array();
+				$items[$i]->invitee_list = array();
+				$items[$i]->reservation_length = RFDateRange::create($items[$i]->start_date, $items[$i]->end_date, $timezone);
+				if ($workflow) {
+					$items[$i]->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $items[$i]->reservation_id);
+				}else{
+					$items[$i]->workflow_state = new stdClass();
+				}
+			}
 		}
 		
 		return $items;
-	}
-	
+	}				
 }
