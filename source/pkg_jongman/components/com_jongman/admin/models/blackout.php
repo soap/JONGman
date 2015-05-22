@@ -11,6 +11,15 @@ jimport('joomla.application.component.modeladmin');
  */
 class JongmanModelBlackout extends JModelAdmin
 {
+	protected $blackoutRepository;
+	protected $reservationViewRepository;
+	
+	public function __construct($config = array())
+	{
+		$this->blackoutRepository = new RFBlackoutRepository();
+		$this->reservationViewRepository = new RFReservationViewRepository();
+		parent::__construct($config);
+	}
 	/**
 	 * Method to get the Blackout form.
 	 *
@@ -48,16 +57,25 @@ class JongmanModelBlackout extends JModelAdmin
 	{
 		if ($result = parent::getItem($pk)) {
 			
+			$user = JFactory::getUser();
+			
 			jimport('joomla.utilities.date');
-			$tz	= new DateTimeZone(JFactory::getApplication()->getCfg('offset'));
+			$tz = new Datetimezone(JongmanHelper::getUserTimezone($user->get('id')));
 			
 			if (empty($result->id)) {
 				$date = new JDate();
 				$date->setTimezone($tz);
+				$result->start_date = $date->toSql(false);
+				$result->end_date = $date->toSql(false);
 				$result->created = $date->toSql(false);
 				$result->modified = $this->_db->getNullDate();
 				$result->checked_out = 0;
 				$result->checked_out_time = $this->_db->getNullDate();
+				$result->repeat_type = 'none'; 
+				$result->repeat_options = new JRegistry();
+				$result->repeat_options->set('repeat_interval', '1');
+			}else{
+				$result->repeat_options = new JRegistry($result->repeat_options);
 			}
 
 			if (intval($result->created)) {
@@ -192,5 +210,252 @@ class JongmanModelBlackout extends JModelAdmin
  			// Put array back together, comma delimited.
  			$this->metakey = implode(', ', $newKeys);
 		}
+	}
+	
+	public function save($data)
+	{
+		$timezone = JongmanHelper::getUserTimezone();
+		if (empty($data['id'])) {
+			// save new blackout data 
+			
+			$resourceIds = array();
+			if ($data['all_resources'])
+			{
+				$scheduleId = $this->getBlackoutScheduleId();
+				$resources = $this->resourceRepository->getScheduleResources($scheduleId);
+				foreach ($resources as $resource)
+				{
+					$resourceIds[] = $resource->GetId();
+				}
+			}
+			else
+			{
+				$resourceIds[] = $data['resource_id'];
+			}
+			
+			$startDate = $data['start_date'];
+			$startTime = $data['start_time'];
+			$endDate = $data['end_date'];
+			$endTime = $data['end_time'];
+			
+			$blackoutDate = RFDateRange::create($startDate . ' ' . $startTime, $endDate . ' ' . $endTime, $timezone);
+			
+			$title = $data['title'];
+			$conflictAction = $data['conflic_action'];
+			
+			$repeatType = isset($data['repeat_type']) ? $data['repeat_type'] : 'none';
+			$repeatInterval = isset($input['repeat_interval']) ? $input['repeat_interval'] : null;
+			$weekDays = isset($data['repeat_days']) ? $data['repeat_days'] : null;
+			$monthlyType = isset($data['repeat_monthly_type']) ? $data['repeat_monthly_type'] : 'none';
+			
+			if (isset($data['repeat_terminated'])) {
+				$terminated = RFDate::parse($data['repeat_terminated'], $timezone);
+				$terminated->setTime(new RFTime(0, 0, 0, $timezone));
+			}
+			
+			$repeatOptions = JongmanHelper::getRepeatOptions($repeatType, $repeatInterval, $terminated, $weekDays, $monthlyType);
+			
+			//$repeatOptionsFactory = new RFFactoryRepeatOptions();
+			//$repeatOptions = $repeatOptionsFactory->createFromComposite($this->page, $timzeone);
+			
+			$result = $this->addBlackout($blackoutDate, $resourceIds, $title, RFReservationConflictResolution::create($conflictAction), $repeatOptions);		
+
+			if ($result->wasSuccessful()) {
+				return true;
+			}else{
+				$this->setError($result->message());
+				return false;
+			}
+		}else{
+			// update existing blackout data
+			
+			$id = $data['instance_id'];
+			$scope = $data['update_scope'];
+			
+			$startDate = $data['start_date'];
+			$startTime = $data['start_time'];
+			$endDate = $data['end_date'];
+			$endTime = $data['end_time'];
+			$blackoutDate = RFDateRange::create($startDate . ' ' . $startTime, $endDate . ' ' . $endTime, $timezon);
+			
+			$title = $data['title'];
+			$conflictAction = $data['conflict_action'];
+			
+			$repeatOptionsFactory = new RepeatOptionsFactory();
+			$repeatOptions = $repeatOptionsFactory->CreateFromComposite($this->page, $session->Timezone);
+			
+			$result = $updateBlackout($id, $blackoutDate, $resourceIds, $title, ReservationConflictResolution::create($conflictAction), $repeatOptions, $scope);
+			
+			//$this->page->ShowUpdateResult($result->WasSuccessful(), $result->Message(), $result->ConflictingReservations(), $result->ConflictingBlackouts(), $session->Timezone);
+			if ($result->wasSuccessful()) {
+				return true;
+			}else{
+				$this->setError($result->message());
+				return false;
+			}	
+		}	
+	}
+
+	public function delete(&$pks)
+	{
+		$id = $pks[0];
+		//$scope = ;
+		
+		//Log::Debug('Deleting blackout. BlackoutId=%s, DeleteScope=%s', $id, $scope);
+		
+		$this->eleteBlackout($id, $scope);		
+	}
+	/**
+	 * Save new blackout series to database (this is method of Manage Blackout Service)
+	 * @param RFDateRange $blackoutDate
+	 * @param unknown $resourceIds
+	 * @param unknown $title
+	 * @param IReservationConflictResolution $reservationConflictResolution
+	 * @param IRepeatOptions $repeatOptions
+	 * @return RFBlackoutDateTimeValidationResult|RFBlackoutValidationResult
+	 */
+	protected function addBlackout(RFDateRange $blackoutDate, $resourceIds, $title, IReservationConflictResolution $reservationConflictResolution, IRepeatOptions $repeatOptions)
+	{
+		if (!$blackoutDate->getEnd()->greaterThan($blackoutDate->getBegin()))
+		{
+			return new RFBlackoutValidationResultDatetime();
+		}
+
+		$userId = JFactory::getUser()->get('id');
+
+		$blackoutSeries = RFBlackoutSeries::create($userId, $title, $blackoutDate);
+		$blackoutSeries->repeats($repeatOptions);
+		
+
+		foreach ($resourceIds as $resourceId)
+		{
+			$blackoutSeries->addResourceId($resourceId);
+		}
+
+		$conflictingBlackouts = $this->getConflictingBlackouts($blackoutSeries);
+
+		$conflictingReservations = array();
+		if (empty($conflictingBlackouts))
+		{
+			$conflictingReservations = $this->getConflictingReservations($blackoutSeries, $reservationConflictResolution);
+		}
+
+		$blackoutValidationResult = new RFBlackoutValidationResult($conflictingBlackouts, $conflictingReservations);
+
+		if ($blackoutValidationResult->canBeSaved())
+		{
+			$this->blackoutRepository->add($blackoutSeries);
+		}
+
+		return $blackoutValidationResult;
+	}
+	
+	protected function updateBlackout($blackoutInstanceId, RFDateRange $blackoutDate, $resourceIds, $title, IReservationConflictResolution $reservationConflictResolution, IRepeatOptions $repeatOptions, $scope)
+	{
+		if (!$blackoutDate->getEnd()->greaterThan($blackoutDate->getBegin()))
+		{
+			return new RFBlackoutDateTimeValidationResult();
+		}
+	
+		$userId = JFactory::getUser()->get('id');
+	
+		$blackoutSeries = $this->loadBlackout($blackoutInstanceId, $userId);
+	
+		if ($blackoutSeries == null)
+		{
+			return new RFBlackoutSecurityValidationResult();
+		}
+	
+		$blackoutSeries->update($userId, $scope, $title, $blackoutDate, $repeatOptions, $resourceIds);
+	
+		$conflictingBlackouts = $this->getConflictingBlackouts($blackoutSeries);
+	
+		$conflictingReservations = array();
+		if (empty($conflictingBlackouts))
+		{
+			$conflictingReservations = $this->getConflictingReservations($blackoutSeries, $reservationConflictResolution);
+		}
+	
+		$blackoutValidationResult = new RFBlackoutValidationResult($conflictingBlackouts, $conflictingReservations);
+	
+		if ($blackoutValidationResult->canBeSaved())
+		{
+			$this->blackoutRepository->update($blackoutSeries);
+		}
+	
+		return $blackoutValidationResult;
+	}
+	
+	protected function deleteBlackout($blackoutId, $updateScope)
+	{
+		if ($updateScope == RFSeriesUpdateScope::FullSeries)
+		{
+			$this->blackoutRepository->deleteSeries($blackoutId);
+		}
+		else
+		{
+			$this->blackoutRepository->delete($blackoutId);
+		}
+	}
+	
+	
+	/**
+	 * @param RFBlackoutSeries $blackoutSeries
+	 * @param IReservationConflictResolution $reservationConflictResolution
+	 * @return array|RFReservationItemView[]
+	 */
+	private function getConflictingReservations($blackoutSeries, $reservationConflictResolution)
+	{
+		$conflictingReservations = array();
+	
+		$blackouts = $blackoutSeries->allBlackouts();
+		foreach ($blackouts as $blackout)
+		{
+			$existingReservations = $this->reservationViewRepository->getReservationList($blackout->startDate(), $blackout->endDate());
+	
+			foreach ($existingReservations as $existingReservation)
+			{
+				if ($blackoutSeries->containsResource($existingReservation->resourceId) && $blackout->date()->overlaps($existingReservation->date))
+				{
+					if (!$reservationConflictResolution->handle($existingReservation))
+					{
+						$conflictingReservations[] = $existingReservation;
+					}
+				}
+			}
+		}
+	
+		return $conflictingReservations;
+	}
+	
+	/**
+	 * @param RFBlackoutSeries $blackoutSeries
+	 * @return array|RFBlackoutItemView[]
+	 */
+	private function getConflictingBlackouts($blackoutSeries)
+	{
+		$conflictingBlackouts = array();
+	
+		$blackouts = $blackoutSeries->allBlackouts();
+		foreach ($blackouts as $blackout)
+		{
+			$existingBlackouts = $this->reservationViewRepository->getBlackoutsWithin($blackout->Date());
+	
+			foreach ($existingBlackouts as $existingBlackout)
+			{
+				if ($existingBlackout->seriesId == $blackoutSeries->Id())
+				{
+					continue;
+				}
+	
+				if ($blackoutSeries->containsResource($existingBlackout->resourceId) && $blackout->date()->overlaps($existingBlackout->date))
+				{
+	
+					$conflictingBlackouts[] = $existingBlackout;
+				}
+			}
+		}
+	
+		return $conflictingBlackouts;
 	}
 }

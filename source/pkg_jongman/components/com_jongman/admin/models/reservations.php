@@ -204,8 +204,7 @@ class JongmanModelReservations extends JModelList
 		$params = $this->getState('params');
 		if ($params === null) {
 			// $params === null as this class get called with ignore_request = true
-			$app = JFactory::getApplication();
-			$params = $app->getParams();
+			$params = JComponentHelper::getParams('com_jongman');
 			$this->setState('params', $params);
 		}
 			

@@ -27,7 +27,10 @@ class JongmanViewBlackout extends JViewLegacy
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
-
+		
+		JHtml::_('script', 'com_jongman/jongman/reservation.js', false, true);
+		JHtml::_('script', 'com_jongman/jongman/date-helper.js', false, true);
+		JHtml::_('script', 'com_jongman/jongman/recurrence.js', false, true);
 		$this->addToolbar();
 		
 		parent::display($tpl);

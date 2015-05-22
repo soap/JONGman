@@ -6,35 +6,49 @@
 		name="compat" 
 		label="COM_JONGMAN_CONFIG_COMPAT_LABEL" 
 		description="COM_JONGMAN_CONFIG_COMPAT_DESC">
-       <field name="jongman_css" type="list" default="1" 
+       <field name="jongman_css" 
+      		type="radio" 
+      		class="btn-group btn-group-yesno"
+      		default="1" 
        		label="COM_JONGMAN_CONFIG_CSS_LABEL" 
        		description="COM_JONGMAN_CONFIG_CSS_DESC">
 		    <option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
         <field 
-        	name="bootstrap_css" type="list" default="" 
+        	name="bootstrap_css" 
+        	type="radio" 
+        	default=""
+        	class="btn-group btn-group-yesno" 
         	label="COM_JONGMAN_CONFIG_BOOTSTRAP_CSS_LABEL" 
         	description="COM_JONGMAN_CONFIG_BOOTSTRAP_CSS_DESC">
 		    <option value="">JAUTO</option>
 		    <option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
-        <field name="bootstrap_js" type="list" default="" 
+        <field name="bootstrap_js" 
+        	type="radio" default="" 
+        	class="btn-group btn-group-yesno"
         	label="COM_JONGMAN_CONFIG_BOOTSTRAP_JS_LABEL" 
         	description="COM_JONGMAN_CONFIG_BOOTSTRAP_JS_DESC">
 		    <option value="">JAUTO</option>
             <option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
-        <field name="jquery_site" type="list" default="" 
+        <field name="jquery_site" 
+        	type="radio" 
+        	default=""
+        	class="btn-group btn-group-yesno" 
         	label="COM_JONGMAN_CONFIG_JQUERY_SITE_LABEL" 
         	description="COM_JONGMAN_CONFIG_JQUERY_DESC">
 		    <option value="">JAUTO</option>
             <option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
-        <field name="jquery_admin" type="list" default="" 
+        <field name="jquery_admin" 
+        	type="radio" 
+        	default=""
+        	class="btn-group btn-group-yesno" 
         	label="COM_JONGMAN_CONFIG_JQUERY_ADMIN_LABEL" 
         	description="COM_JONGMAN_CONFIG_JQUERY_DESC">
 		    <option value="">JAUTO</option>
@@ -65,8 +79,8 @@
 			description="COM_JONGMAN_CONFIG_HEADER_DATEFORMAT_DESC" />
 		<field
 			name="bottomNavigation" 
-			type="list"
-			class="inputbox"
+			type="radio"
+			class="btn-group btn-group-yesno"
 			default="0"
 			label="COM_JONGMAN_CONFIG_BOTTOM_NAVIGATION_LABEL"
 			description="COM_JONGMAN_CONFIG_BOTTOM_NAVIGATION_DESC"
@@ -88,9 +102,9 @@
 			
 		<field
 			name="proxyReservation" 
-			type="list"
+			type="radio"
 			default="0"
-			class="inputbox"
+			class="btn-group btn-group-yesno"
 			label="COM_JONGMAN_CONFIG_PROXY_RESERVATION_LABEL"
 			description="COM_JONGMAN_CONFIG_PROXY_RESERVATION_DESC"
 			>
@@ -99,8 +113,8 @@
 		</field>
 		<field
 			name="privateReservation" 
-			type="list"
-			class="inputbox"
+			type="radio"
+			class="btn-group btn-group-yesno"
 			default="1"
 			label="COM_JONGMAN_CONFIG_PRIVATE_RESERVATION_LABEL"
 			description="COM_JONGMAN_CONFIG_PRIVATE_RESERVATION_DESC"
@@ -132,8 +146,8 @@
 			description="COM_JONGMAN_CONFIG_RESERVATION_BAR_TEXT_LENGTH_DESC" />		
 		<field
 			name="startTimeContraint"
-			type="list"
-			class="inputbox"
+			type="radio" 
+			class="btn-group btn-group-yesno"
 			defualt="none"
 			label="COM_JONGMAN_CONFIG_RESERVATION_STARTTIME_CONSTRAINT_LABEL"
 			description="COM_JONGMAN_CONFIG_RESERVATION_STARTTIME_CONSTRAINT_DESC">
@@ -155,7 +169,7 @@
 		description="COM_JONGMAN_CONFIG_LOGGING_DESC">
 		<field
 			name="logging_enabled"
-			type="list"
+			type="radio"
 			default="0"
 			label="COM_JONGMAN_CONFIG_LOGGING_ENABLED_LABEL">
 			<option value="0">JNO</option>

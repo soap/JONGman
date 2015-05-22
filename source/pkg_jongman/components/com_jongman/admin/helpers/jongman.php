@@ -196,6 +196,37 @@ class JongmanHelper {
 		return $timezone;
 	}
 	
+	
+	/**
+	 * @param string $repeatType must be option in RepeatType enum
+	 * @param int $interval
+	 * @param RFDate $terminationDate
+	 * @param array $weekdays
+	 * @param string $monthlyType
+	 * @return IRepeatOptions
+	 */
+	public static function getRepeatOptions($repeatType, $interval, $terminationDate, $weekdays, $monthlyType)
+	{
+		switch ($repeatType) {
+			case 'daily':
+				return new RFReservationRepeatDaily($interval, $terminationDate);
+				break;
+			case 'weekly' :
+				return new RFReservationRepeatWeekly($interval, $terminationDate, $weekdays);
+				break;
+			case 'monthly' :
+				$class = 'RFReservationRepeat'.ucfirst($input['repeat_monthly_type']);
+				return new $class($interval, $terminationDate);
+				break;
+			case 'yearly' :
+				return new RFReservationRepeatYearly($interval, $terminationDate);
+				break;
+		}
+	
+		return new RFReservationRepeatNone();
+	}
+	
+	
     public static function getVersion() 
     {
     	$manifest = JFactory::getXML(JPATH_COMPONENT_ADMINISTRATOR.'/jongman.xml' ); 

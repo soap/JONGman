@@ -1,6 +1,5 @@
 <?php
 defined('_JEXEC') or die;
-
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
@@ -40,7 +39,7 @@ JHtml::_('jmhtml.script.form');
 		
 		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', JText::_('COM_JONGMAN_BLACKOUT_DETAILS', true)); ?>
 		<div class="row-fluid">
-			<div class="span9">
+			<div class="span8">
 				<div class="row-fluid form-horizontal-desktop">
 					<div class="span6">
 						<?php echo $this->form->renderField('start_date'); ?>
@@ -76,9 +75,10 @@ JHtml::_('jmhtml.script.form');
 					</div>
 				</div>
 			</div>
-			<div class="span3">
-				<?php echo JLayoutHelper::render('joomla.edit.global', $this); ?>
+			<div class="span4">
+				<?php echo $this->loadTemplate('repeatoptions')?>
 			</div>
+
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
@@ -88,17 +88,12 @@ JHtml::_('jmhtml.script.form');
 				<?php echo JLayoutHelper::render('joomla.edit.publishingdata', $this); ?>
 			</div>
 			<div class="span6">
-				<?php echo JLayoutHelper::render('joomla.edit.metadata', $this); ?>
+				<?php echo JLayoutHelper::render('joomla.edit.global', $this); ?>
 			</div>
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
-
+		<?php $this->show_options = 0?>
 		<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
-
-		<?php if (isset($assoc)) : ?>
-			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'associations', JText::_('JGLOBAL_FIELDSET_ASSOCIATIONS', true)); ?>
-			<?php echo JHtml::_('bootstrap.endTab'); ?>
-		<?php endif; ?>
 
 		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 	</div>
