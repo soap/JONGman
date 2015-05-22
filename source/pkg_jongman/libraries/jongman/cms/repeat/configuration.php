@@ -51,7 +51,7 @@ class RFRepeatConfiguration
 	{
 	}
 
-	private function SetTerminationDate($terminationDateString)
+	private function setTerminationDate($terminationDateString)
 	{
 		if (!empty($terminationDateString))
 		{
@@ -59,7 +59,7 @@ class RFRepeatConfiguration
 		}
 	}
 
-	private function SetWeekdays($weekdays)
+	private function setWeekdays($weekdays)
 	{
 		if (!empty($weekdays))
 		{
