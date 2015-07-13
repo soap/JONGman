@@ -76,10 +76,11 @@
 			
 		<field name="description"
 			type="editor" 
+			hide="pagebreak,readmore"
 			label="COM_JONGMAN_FIELD_RESERVATION_DESCRIPTION_LABEL"
-			description="COM_JONGMAN_FIELD_RESERVATION_DESCRIPTION_DESC"
-			rows="10" cols="40" filter="JComponentHelper::filterText" buttons="true"
-			class="span12" />
+			description="COM_JONGMAN_FIELD_RESERVATION_DESCRIPTION_DESC" 
+			filter="JComponentHelper::filterText" buttons="true"
+			class="inputbox" />
 			
 	</fieldset>
 	<fieldset name="period">

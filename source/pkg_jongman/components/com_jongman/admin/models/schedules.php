@@ -32,8 +32,8 @@ class JongmanModelSchedules extends JModelList
 	{
 		if (empty($config['filter_fields'])) {
 			$config['filter_fields'] = array(
-				'id', 's.id',
-				'name', 's.name',
+				'id', 's.id', 
+				'name', 's.name','s.default',
 				'alias', 's.alias', 'view_days',
 				'checked_out', 's.checked_out',
 				'checked_out_time', 's.checked_out_time',
@@ -95,7 +95,7 @@ class JongmanModelSchedules extends JModelList
 		// Select the required fields from the table.
 		$query->select(
 				's.id AS id, s.name AS name, s.alias AS alias,'.
-                's.time_format as time_format,'.
+                's.time_format as time_format, s.default,'.
                 's.weekday_start, '.
                 's.view_days AS view_days, s.layout_id, '.
 				's.checked_out AS checked_out,'.

@@ -47,6 +47,7 @@ class JongmanViewReservation extends JViewLegacy
 		$this->toolbar	= $this->getToolbar();
 
 		$this->customFields = count($this->form->getFieldsets('reservation_custom_fields')) > 0;
+		$this->editorFields = $this->getEditorFields();
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
@@ -139,5 +140,24 @@ class JongmanViewReservation extends JViewLegacy
 		}	
 		
         return RFToolbar::render();	
+	}
+	
+	protected function getEditorFields($form = null)
+	{
+		if ($form === null) $form = $this->get("Form");
+		$result = array();
+		
+		$fieldSets = $form->getFieldsets('reservation_custom_fields');
+
+		foreach($fieldSets as $fieldSet) {
+
+			foreach ($form->getFieldset($fieldSet->name) as $field) {
+				if ($field->type == 'Editor') {
+					$result[] = $field;
+				}
+			}
+		}
+		
+		return $result;
 	}
 }

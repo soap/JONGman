@@ -77,11 +77,36 @@ class RFResourceRepository implements IResourceRepository
 	}
 	
 	/**
-	 * @return array|BookableResource[] array of all resources
+	 * @return array|RFResourceBookable[] array of all resources
 	*/
-	public function getResourceList()
+	public function getResourceList($includeInaccessibleResources = true, $user = null)
 	{
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
 		
+		$query->select('a.*')
+			->from('#__jongman_resources AS a');
+		
+		if ($user === null) {
+			$user = JFactory::getUser();
+		}
+		
+		if (!$includeInaccessibleResources) {
+			$query->where('a.published=1');
+			$viewLevels = join(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN ('.$viewLevels.')');
+		}
+		
+		$db->setQuery($query);
+		$rows = $db->loadObjectList();
+		
+		$resources = array();
+		foreach($rows as $row) {
+			$resource = RFResourceBookable::create($row);
+			$resources[] = $resource;
+		}
+		
+		return $resources;
 	}
 	/**
 	 * @param int $pageNumber

@@ -61,8 +61,11 @@ class RFReservationViewRepository implements IReservationViewRepository
 		$query->select('bs.*, bs.created_by AS owner_id, bi.id as instance_id, bi.start_date, bi.end_date, bi.blackout_id')
 			->from('#__jongman_blackout_instances AS bi')
 			->join('INNER', '#__jongman_blackouts AS bs ON bi.blackout_id = bs.id')
+			->select('bsr.resource_id')
 			->join('INNER', '#__jongman_blackout_resources AS bsr ON  bi.blackout_id = bsr.blackout_id')
+			->select('r.title AS resource_name, r.schedule_id AS schedule_id')
 			->join('INNER', '#__jongman_resources AS r ON bsr.resource_id = r.id')
+			->select('u.name as author_name')
 			->join('INNER', '#__users AS u ON u.id = bs.created_by')
 			->where('
 			(
@@ -81,7 +84,7 @@ class RFReservationViewRepository implements IReservationViewRepository
 		$blackouts = array();
 		foreach ($rows as $row)
 		{
-			$blackouts[] = RFBlackoutItemView::populate($row);
+			$blackouts[] = RFBlackoutItem::populate($row);
 		}
 		
 		return $blackouts;		

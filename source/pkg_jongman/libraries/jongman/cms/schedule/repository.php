@@ -31,7 +31,9 @@ class RFScheduleRepository implements IScheduleRepository
 		$query = $dbo->getQuery(true);
 		
 		$query->select('s.*')
-			->from('#__jongman_schedules AS s');
+			->from('#__jongman_schedules AS s')
+			->select('l.timezone as timezone')
+			->join('LEFT', '#__jongman_layouts AS l on l.id=s.layout_id');
 		$dbo->setQuery($query);
 		$rows = $dbo->loadObjectList();
 		

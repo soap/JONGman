@@ -3,7 +3,6 @@
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
-
 ?>
 <script type="text/javascript">
 	// Attach a behaviour to the submit button to check validation.
@@ -12,6 +11,11 @@ JHtml::_('behavior.keepalive');
 		var form = document.id('reservation-form');
 		if (task == 'reservation.cancel' || task == 'instance.cancel' || document.formvalidator.isValid(form)) {
 			<?php echo $this->form->getField('description')->save() ?>
+			<?php 
+			foreach($this->editorFields as $k => $field) :
+				echo $field->save();
+			endforeach;
+			?>
 			Joomla.submitform(task, form);
 		}
 		else {
@@ -123,7 +127,7 @@ JHtml::_('behavior.keepalive');
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 	<?php if ($this->customFields) : ?>
 		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'customfields', JText::_('COM_JONGMAN_RESERVATION_CUSTOMFIELD_FIELDSET', true)); ?>
-			<div class="row-fluid form-horizontal-desktop">
+			<div class="row-fluid form-vertical">
 			<?php echo $this->loadTemplate('customfields'); ?>
 			</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>

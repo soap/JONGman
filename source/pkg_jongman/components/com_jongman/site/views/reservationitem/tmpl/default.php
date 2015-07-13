@@ -13,6 +13,8 @@ $nulldate = JFactory::getDBO()->getNullDate();
 $asset_name = 'com_jongman.reservation.'.$this->item->id;
 $canEdit	= ($user->authorise('core.edit', $asset_name));
 $canEditOwn	= ($user->authorise('core.edit.own', $asset_name) && $this->item->created_by == $uid);
+$params = new JRegistry();
+$params->set('show_icons', 1);
 ?>
 <div id="jongman" class="item-page view-task">
 	<?php if ($this->params->get('show_page_heading', 1)) : ?>
@@ -20,9 +22,9 @@ $canEditOwn	= ($user->authorise('core.edit.own', $asset_name) && $this->item->cr
     <?php endif; ?>
 
     <div class="btn-toolbar btn-toolbar-top">
-        <?php echo $this->toolbar;?>
+        <?php echo $this->toolbar;?> 
     </div>
-
+	<?php echo JHtml::_('icons.print_popup', $this->item, $params); ?>
     <div class="page-header">
 	    <h2><?php echo $this->escape($item->title); ?></h2>
 	</div>
@@ -69,7 +71,7 @@ $canEditOwn	= ($user->authorise('core.edit.own', $asset_name) && $this->item->cr
 			<?php endif; ?>
     	</dl>
     	<legend><?php echo JText::_('COM_JONGMAN_RESERVATION_DESCRIPTION')?></legend>
-        <?php echo htmlspecialchars($item->description); ?>
+        <?php echo $item->description; ?>
         <div class="clearfix"></div>
 	</div>
 	<div class="row-fluid">

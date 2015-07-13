@@ -17,9 +17,6 @@ $filter_in  = ($this->state->get('filter.isset') ? 'in ' : '');
 
 $datetimeFormat = $this->params->get('datetimeFormat');
 
-$print_url = JongmanHelperRoute::getReservationsRoute()
-. '&tmpl=component&layout=print';
-$print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,location=no,directories=no,status=no,menubar=no';
 ?>
 <div id="jongman" class="category-list<?php echo $this->pageclass_sfx;?> view-tasks PrintArea all">
 	<div class="clearfix"></div>
@@ -28,9 +25,6 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 			<div class="grid">
 				<div class="btn-toolbar btn-toolbar-top">
                 	<?php echo $this->toolbar;?>
-					<a class="btn button" id="print_btn" href="javascript:void(0);" onclick="window.open('<?php echo JRoute::_($print_url);?>', 'print', '<?php echo $print_opt; ?>')">
-                	    <?php echo JText::_('COM_JONGMAN_PRINT'); ?>
-                	</a>
 				</div>
 				<div class="clearfix"></div>
 				<div class="<?php echo $filter_in;?>collapse" id="filters">

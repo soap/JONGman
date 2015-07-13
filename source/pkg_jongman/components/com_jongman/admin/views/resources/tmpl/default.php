@@ -180,8 +180,8 @@ if ($saveOrder)
                     	<?php echo JHtml::_('jgrid.state', 
                         	array(
                                 	//task, text, active title, inactive title, tip, active class, inactive class
-                            	1=> array('resetapproval',	'JPUBLISHED',	'COM_JONGMAN_RESOURCE_RESET_APPROVAL',	'JPUBLISHED',	false,	'publish',		'unpublish'),
-                            	0=> array('setapproval',	'JUNPUBLISHED',	'COM_JONGMAN_RESOURCE_SET_APPROVAL',	'JUNPUBLISHED',	false,	'unpublish',	'publish')      
+                            	1=> array('resetapproval',	'JPUBLISHED',	'COM_JONGMAN_RESOURCE_RESET_APPROVAL',	'JPUBLISHED',	false,	'publish',		'publish'),
+                            	0=> array('setapproval',	'JUNPUBLISHED',	'COM_JONGMAN_RESOURCE_SET_APPROVAL',	'JUNPUBLISHED',	false,	'unpublish',	'unpublish')      
                             ),
                         	$item->requires_approval, $i, 
                         	'resources.',         

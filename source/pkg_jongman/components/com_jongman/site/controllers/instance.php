@@ -20,6 +20,18 @@ class JongmanControllerInstance extends JControllerForm
 		JFactory::getApplication()->input->set('layout', null);
 	}
 	
+	public function edit($key=null, $urlVar=null)
+	{
+		$this->setReturnPage();
+		if (!parent::edit($key, $urlVar)) {
+				
+			$returnPage = $this->getReturnPage(true);
+			if (!empty($returnPage)) {
+				$this->setRedirect(JRoute::_($returnPage, false));
+			}
+		}
+	}
+	
 	public function allowEdit($data = array(), $key = 'id') 
 	{
 		$user = JFactory::getUser();
@@ -57,7 +69,7 @@ class JongmanControllerInstance extends JControllerForm
 		return true;
 	}
 	
-	public function view()
+	public function view($key='reference_number', $urlVar='ref')
 	{
 		$app   = JFactory::getApplication();
 		$model = $this->getModel();
@@ -78,21 +90,38 @@ class JongmanControllerInstance extends JControllerForm
 		}
 		
 		// Get the previous record id (if any) and the current record id.
-		$recordId = (int) (count($cid) ? $cid[0] : $this->input->getInt($urlVar));
+		if ((int)count($cid)) {
+			$urlVar = 'id';
+			$recordId = $cid[0];
+		}else{
+			if ($urlVar == 'ref') {
+				$referenceNumber = $this->input->getCmd($urlVar);
+				$table->load(array('reference_number'=>$referenceNumber));
+				$recordId = $table->id;
+				$urlVar = 'id';
+			}else{
+				$recordId =  $this->input->getInt($urlVar);
+			}
+		}
 		
+		$this->setReturnPage();
 		// Access check.
 		if (!$this->allowView(array($key => $recordId), $key))
 		{
 			$this->setError(JText::_('COM_JONGMAN_ERROR_VIEW_NOT_PERMITTED'));
 			$this->setMessage($this->getError(), 'error');
-		
-			$this->setRedirect(
-					JRoute::_(
+
+			$return = $this->getReturnPage(true);
+			if (!empty($return)) {
+				$this->setRedirect(JRoute::_($return, false));
+			}else{
+				$this->setRedirect(
+						JRoute::_(
 							'index.php?option=' . $this->option . '&view=' . $this->view_list
 							. $this->getRedirectToListAppend(), false
-					)
-			);
-		
+						)
+				);
+			}
 			return false;
 		}
 		
@@ -148,13 +177,17 @@ class JongmanControllerInstance extends JControllerForm
 			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $recordId));
 			$this->setMessage($this->getError(), 'error');
 
-			$this->setRedirect(
-				JRoute::_(
-					'index.php?option=' . $this->option . '&view=' . $this->view_list
-					. $this->getRedirectToListAppend(), false
-				)
-			);
-
+			$return = $this->getReturnPage(true);
+			if (!empty($return)) {
+				$this->setRedirect(JRoute::_($return, false));
+			}else{
+				$this->setRedirect(
+					JRoute::_(
+						'index.php?option=' . $this->option . '&view=' . $this->view_list
+						. $this->getRedirectToListAppend(), false
+					)
+				);
+			}
 			return false;
 		}
 
@@ -166,14 +199,18 @@ class JongmanControllerInstance extends JControllerForm
 		{
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_SAVE_NOT_PERMITTED'));
 			$this->setMessage($this->getError(), 'error');
-
-			$this->setRedirect(
-				JRoute::_(
-					'index.php?option=' . $this->option . '&view=' . $this->view_list
-					. $this->getRedirectToListAppend(), false
-				)
-			);
-
+			
+			$return = $this->getReturnPage(true);
+			if (!empty($return)) {
+				$this->setRedirect(JRoute::_($return, false));
+			}else{
+				$this->setRedirect(
+					JRoute::_(
+						'index.php?option=' . $this->option . '&view=' . $this->view_list
+						. $this->getRedirectToListAppend(), false
+					)
+				);
+			}
 			return false;
 		}
 
@@ -295,20 +332,112 @@ class JongmanControllerInstance extends JControllerForm
 		// Clear the record id and data from the session.
 		$this->releaseEditId($context, $recordId);
 		$app->setUserState($context . '.data', null);
-
-		// Redirect to the list screen.
-		$this->setRedirect(
-			JRoute::_(
-				'index.php?option=' . $this->option . '&view=' . $this->view_list
-				. $this->getRedirectToListAppend(), false
-			)
-		);
-
+		
+		$return = $this->getReturnPage(true);
+		if (!empty($return)) {
+			$this->setRedirect(JRoute::_($return, false));
+		}else{
+			// Redirect to the list screen.
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . '&view=' . $this->view_list
+					. $this->getRedirectToListAppend(), false
+				)
+			);
+		}
 		// Invoke the postSave method to allow for the child class to access the model.
 		$this->postSaveHook($model, $validData);
 
 		return true;
 	}		
+	
+
+	/**
+	 * Method to cancel an edit.
+	 * @param   string  $key  The name of the primary key of the URL variable.
+	 * @return  boolean  True if access level checks pass, false otherwise.
+	 */
+	public function cancel($key = null)
+	{
+		$app = JFactory::getApplication();
+		if ($app->input->getCmd('view') != 'reservationitem') {
+			JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		}
+		// Initialise variables.
+		$model = $this->getModel();
+		$table = $model->getTable();
+		$checkin = property_exists($table, 'checked_out');
+		$context = "$this->option.edit.$this->context";
+	
+		if (empty($key))
+		{
+			$key = $table->getKeyName();
+		}
+	
+		$recordId = JRequest::getInt($key);
+	
+		// Attempt to check-in the current record.
+		if ($recordId)
+		{
+			// Check we are holding the id in the edit list.
+			if (!$this->checkEditId($context, $recordId))
+			{
+				// Somehow the person just went to the form - we don't allow that.
+				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $recordId));
+				$this->setMessage($this->getError(), 'error');
+				
+				$return = $this->getReturnPage(true);
+				if (!empty($return)) {
+					$this->setRedirect(JRoute::_($return, false));
+				}else{
+					$this->setRedirect(
+							JRoute::_(
+								'index.php?option=' . $this->option . '&view=' . $this->view_list
+								. $this->getRedirectToListAppend(), false
+							)
+					);
+				}
+				return false;
+			}
+	
+			if ($checkin)
+			{
+				if ($model->checkin($recordId) === false)
+				{
+					// Check-in failed, go back to the record and display a notice.
+					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError()));
+					$this->setMessage($this->getError(), 'error');
+	
+					$this->setRedirect(
+							JRoute::_(
+									'index.php?option=' . $this->option . '&view=' . $this->view_item
+									. $this->getRedirectToItemAppend($recordId, $key), false
+							)
+					);
+	
+					return false;
+				}
+			}
+		}
+	
+		// Clean the session data and redirect.
+		$this->releaseEditId($context, $recordId);
+		$app->setUserState($context . '.data', null);
+	
+		$return = $this->getReturnPage(true);
+		if (empty($return)) {
+			$this->setRedirect(
+					JRoute::_(
+							'index.php?option=' . $this->option . '&view=' . $this->view_list
+							. $this->getRedirectToListAppend(), false
+					)
+			);
+		}else{
+			$this->setRedirect(JRoute::_($return, false));
+		}
+	
+		return true;
+	}	
 	
 	public function delete()
 	{
@@ -344,14 +473,18 @@ class JongmanControllerInstance extends JControllerForm
 			// Somehow the person just went to the form and tried to save it. We don't allow that.
 			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $recordId));
 			$this->setMessage($this->getError(), 'error');
-		
-			$this->setRedirect(
-				JRoute::_(
+			
+			$return = $this->getReturnPage(true);
+			if (!empty($return)) {
+				$this->setRedirect(JRoute::_($return, false));	
+			}else{
+				$this->setRedirect(
+					JRoute::_(
 						'index.php?option=' . $this->option . '&view=' . $this->view_list
 						. $this->getRedirectToListAppend(), false
-				)
-			);
-		
+					)
+				);
+			}
 			return false;
 		}
 		
@@ -364,13 +497,17 @@ class JongmanControllerInstance extends JControllerForm
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_DELETE_NOT_PERMITTED'));
 			$this->setMessage($this->getError(), 'error');
 		
-			$this->setRedirect(
-				JRoute::_(
+			$return = $this->getReturnPage(true);
+			if (!empty($return)) {
+				$this->setRedirect(JRoute::_($return, false));
+			}else{
+				$this->setRedirect(
+					JRoute::_(
 						'index.php?option=' . $this->option . '&view=' . $this->view_list
 						. $this->getRedirectToListAppend(), false
-				)
-			);
-		
+					)
+				);
+			}
 			return false;
 		}
 		
@@ -479,14 +616,18 @@ class JongmanControllerInstance extends JControllerForm
 		$this->releaseEditId($context, $recordId);
 		$app->setUserState($context . '.data', null);
 		
-		// Redirect to the list screen.
-		$this->setRedirect(
-			JRoute::_(
-				'index.php?option=' . $this->option . '&view=' . $this->view_list
-				. $this->getRedirectToListAppend(), false
-			)
-		);
-		
+		$return = $this->getReturnPage(true);
+		if (!empty($return)) {
+			$this->setRedirect(JRoute::_($return, false));
+		}else{
+			// Redirect to the list screen.
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . '&view=' . $this->view_list
+					. $this->getRedirectToListAppend(), false
+				)
+			);
+		}
 		return true;
 	}
 	
@@ -504,4 +645,37 @@ class JongmanControllerInstance extends JControllerForm
 		return $append;	
 	}
 	
+	protected function setReturnPage()
+	{
+		$app = JFactory::getApplication();
+		$return = $app->input->get('return', null, 'base64');
+		if (empty($return)) {
+			$referer = getenv("HTTP_REFERER");
+			if (empty($referer)) return false;
+				
+			$return = base64_encode($referer);
+		}
+	
+		$app->setUserState('com_jongman.reservation.return_page', $return);
+		return true;
+	}
+	
+	protected function clearReturnPage()
+	{
+		$app = JFactory::getApplication();
+		$app->setUserState('com_jongman.reservation.return_page', null);
+	}
+	
+	protected function getReturnPage($clear = false)
+	{
+		$app = JFactory::getApplication();
+		$return = $app->input->get('return', null, 'base64');
+		if (empty($return)) {
+			$return = $app->getUserState('com_jongman.reservation.return_page');
+		}
+	
+		if ($clear) $this->clearReturnPage();
+	
+		return base64_decode($return);
+	}
 }

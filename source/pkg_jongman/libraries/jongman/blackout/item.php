@@ -85,8 +85,8 @@ class RFBlackoutItem implements IReservedItem
 	 */
 	public function __construct(
 		$instanceId,
-		JMDate $startDate,
-		JMDate $endDate,
+		RFDate $startDate,
+		RFDate $endDate,
 		$resourceId,
 		$ownerId,
 		$scheduleId,
@@ -109,42 +109,43 @@ class RFBlackoutItem implements IReservedItem
 		$this->lastName = $lastName;
 		$this->resourceName = $resourceName;
 		$this->seriesId = $seriesId;
-		$this->date = new DateRange($startDate, $endDate);
+		
+		$this->date = new RFDateRange($startDate, $endDate);
 	}
 
 	/**
 	 * @static
 	 * @param $row
-	 * @return BlackoutItemView
+	 * @return RFBlackoutItem
 	 */
 	public static function populate($row)
 	{
-		return new BlackoutItem($row[ColumnNames::BLACKOUT_INSTANCE_ID],
-									Date::FromDatabase($row[ColumnNames::BLACKOUT_START]),
-									Date::FromDatabase($row[ColumnNames::BLACKOUT_END]),
-									$row[ColumnNames::RESOURCE_ID],
-									$row[ColumnNames::USER_ID],
-									$row[ColumnNames::SCHEDULE_ID],
-									$row[ColumnNames::BLACKOUT_TITLE],
-									$row[ColumnNames::BLACKOUT_DESCRIPTION],
-									$row[ColumnNames::FIRST_NAME],
-									$row[ColumnNames::LAST_NAME],
-									$row[ColumnNames::RESOURCE_NAME],
-									$row[ColumnNames::BLACKOUT_SERIES_ID]);
+		return new RFBlackoutItem($row->instance_id,
+									RFDate::fromDatabase($row->start_date),
+									RFDate::fromDatabase($row->end_date),
+									$row->resource_id,
+									$row->owner_id,
+									$row->schedule_id,
+									$row->title,
+									$row->description,
+									$row->author_name,
+									'',
+									$row->resource_name,
+									$row->blackout_id);
 	}
 
 	/**
-	 * @return Date
+	 * @return RFDate
 	 */
-	public function GetStartDate()
+	public function getStartDate()
 	{
 		return $this->startDate;
 	}
 
 	/**
-	 * @return Date
+	 * @return RFDate
 	 */
-	public function GetEndDate()
+	public function getEndDate()
 	{
 		return $this->endDate;
 	}
@@ -152,7 +153,7 @@ class RFBlackoutItem implements IReservedItem
 	/**
 	 * @return int
 	 */
-	public function GetResourceId()
+	public function getResourceId()
 	{
 		return $this->resourceId;
 	}
@@ -160,17 +161,17 @@ class RFBlackoutItem implements IReservedItem
 	/**
 	 * @return int
 	 */
-	public function GetId()
+	public function getId()
 	{
 		return $this->instanceId;
 	}
 
 	/**
-	 * @param Date $date
+	 * @param RFDate $date
 	 * @return bool
 	 */
-	public function OccursOn(Date $date)
+	public function occursOn(RFDate $date)
 	{
-		return $this->date->OccursOn($date);
+		return $this->date->occursOn($date);
 	}
 }

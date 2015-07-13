@@ -11,9 +11,9 @@ class RFBlackoutListItem extends RFReservationListItem
 	 * @param int $span
 	 * @return IReservationSlot
 	 */
-	public function buildSlot(SchedulePeriod $start, SchedulePeriod $end, JMDate $displayDate, $span)
+	public function buildSlot(RFSchedulePeriod $start, RFSchedulePeriod $end, RFDate $displayDate, $span)
 	{
-		return new BlackoutSlot($start, $end, $displayDate, $span, $this->item);
+		return new RFBlackoutSlot($start, $end, $displayDate, $span, $this->item);
 	}
 }
 ?>
