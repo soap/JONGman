@@ -4,7 +4,7 @@
  * @copyright 2011 Prasit Gebsaap
  */
 defined('_JEXEC') or die;
-JHtml::_('behavior.tooltip');
+JHtml::_('bootstrap.tooltip');
 
 $user		= JFactory::getUser();
 $dbo		= JFactory::getDbo();
@@ -16,6 +16,7 @@ $trashed	= $this->state->get('filter.published') == -2 ? true : false;
 $filter_in  = ($this->state->get('filter.isset') ? 'in ' : '');
 
 $datetimeFormat = $this->params->get('datetimeFormat');
+$attribs = array('class'=>'input-small btn-group');
 
 ?>
 <div id="jongman" class="category-list<?php echo $this->pageclass_sfx;?> view-tasks PrintArea all">
@@ -50,6 +51,20 @@ $datetimeFormat = $this->params->get('datetimeFormat');
                             	<?php echo JHtml::_('select.options', $this->owners, 'value', 'text', $this->state->get('filter.owner_id'));?>
                         	</select>
                     	</div>
+                    	<?php if ($this->workflow) :?>
+                    	<div class="filter-state btn-group">
+                        	<select id="filter_workflow_state_id" name="filter_workflow_state_id" class="inputbox input-medium" onchange="this.form.submit()">
+                            	<option value=""><?php echo JText::_('COM_JONGMAN_OPTION_SELECT_WORKFLOW_STATE');?></option>
+                            	<?php echo JHtml::_('select.options', $this->workflowStates, 'id', 'title', $this->state->get('filter.workflow_state_id'));?>
+                        	</select>
+                    	</div>
+                    	<?php endif?>
+                    	<div class="filter-start-date btn-group">
+                    		<?php echo JHtml::_('calendar', $this->state->get('filter.start_date'), 'filter_start_date', 'start_date', '%Y-%m-%d', $attribs)?>
+                    	</div>
+                    	<div class="filter-end-date btn-group">
+                    		<?php echo JHtml::_('calendar', $this->state->get('filter.end_date'), 'filter_end_date', 'end_date', '%Y-%m-%d', $attribs)?>
+                    	</div>                    	
                     	<div class="clearfix"> </div>
 					</div>
             	</div>
@@ -121,7 +136,7 @@ $datetimeFormat = $this->params->get('datetimeFormat');
 							<?php echo JHtml::_('grid.id', $i, $item->instance_id); ?>
 						</td>
 						<td>
-							<?php if ($this->workflow) :?>
+							<?php if ($this->workflow && ($item->workflow_enabled)) :?>
 							<?php  $date = ($item->workflow_state->modified==$dbo->getNullDate() ? $item->workflow_state->created : $item->workflow_state->modified);?>
 							<div class="btn-group" id="reserv_<?php echo $item->reservation_id?>">
 								<button data-toggle="dropdown" class="dropdown-toggle btn btn-micro">
@@ -148,10 +163,12 @@ $datetimeFormat = $this->params->get('datetimeFormat');
 									JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_RESERVATION_UNAPPROVE'),'unpublished', 'cb' . $i, 'reservations.unapprove');
 								}else if ($item->state == 1) {
 									JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_RESERVATION_UNAPPROVE'),'unpublished', 'cb' . $i, 'reservations.unapprove');
+								}else if ($item->state == 0) {
+									JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_RESERVATION_APPROVE'), 'published', 'cb' . $i, 'reservations.approve');
 								}
 							
 								// Render dropdown list
-								echo JHtml::_('actionsdropdown.render', $this->escape($item->title));
+								echo JHtml::_('actionsdropdown.render', $this->escape($item->reservation_title));
 							?>
 							</div>
 							<?php endif;?>

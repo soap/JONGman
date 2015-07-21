@@ -4,7 +4,7 @@ $today = RFDate::now()->toTimezone(RFApplicationHelper::getUserTimezone());
 $calendarTimeFormat = 'h:mmt';
 $calendarDateFormat = 'd/M';
 $url = 'index.php?option=com_jongman&task=instance.view&itemId='.JFactory::getApplication()->input->getInt('Itemid');
-$reservable = ((JFactory::getUser()->get('id') > 0) && ($this->resourceId > 0) ) ? 'true' : 'false';
+$reservable = ((JFactory::getUser()->get('id') > 0) && ( ($this->resourceId > 0) || ($this->scheduleId > 0)) ) ? 'true' : 'false';
 ?>
 <div clas="calendar-container container">
 	<div id="calendar" class=""></div>
@@ -26,17 +26,17 @@ jQuery(document).ready(function() {
 	<?php 
 		if (count($this->calendar->getReservations()) > 0) :		
 			foreach ($this->calendar->getReservations() as $reservation) :?>
-			reservations.push({
-				id: '<?php echo $reservation->referenceNumber?>',
-				title: '<?php echo $reservation->displayTitle?>',
-				start: '<?php echo $reservation->startDate->format('Y-m-d H:i:s');?>',
-				end: '<?php echo $reservation->endDate->format('Y-m-d H:i:s');?>',
-				url: '<?php echo $url.'&ref='.$reservation->referenceNumber; ?>',
-				allDay: false,
-				color: '<?php echo $reservation->color; ?>',
-				textColor: '<?php echo $reservation->textColor; ?>',
-				className: '<?php echo $reservation->class; ?>'
-			});
+				reservations.push({
+					id: '<?php echo $reservation->referenceNumber?>',
+					title: '<?php echo $reservation->displayTitle?>',
+					start: '<?php echo $reservation->startDate->format('Y-m-d H:i:s');?>',
+					end: '<?php echo $reservation->endDate->format('Y-m-d H:i:s');?>',
+					url: '<?php echo $url.'&id='.$reservation->seriesId; ?>',
+					allDay: false,
+					color: '<?php echo $reservation->color; ?>',
+					textColor: '<?php echo $reservation->textColor; ?>',
+					className: '<?php echo $reservation->class; ?>'
+				});
 	<?php 
 			endforeach;
 		endif;

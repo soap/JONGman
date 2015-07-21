@@ -2,7 +2,7 @@
 $filters = $this->filters;
 $groupName = '';
 ?>
-<div id="filter">
+<div id="filter" class="row-fluid">
 	<?php if ($groupName) : ?>
 	<span class="groupName">{$GroupName}</span>
 	<?php else: ?>

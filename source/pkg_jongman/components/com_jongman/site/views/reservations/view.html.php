@@ -56,6 +56,8 @@ class JongmanViewReservations extends JViewLegacy
 			$doc->addScript(JUri::root(true).'/media/com_workflow/workflow/js/pnotify.custom.min.js');
 			$doc->addScript(JUri::root(true).'/media/com_workflow/workflow/js/jquery.blockUI.js');
 			$doc->addStyleSheet(JUri::root(true).'/media/com_workflow/workflow/css/pnotify.custom.min.css');
+			
+			$this->workflowStates = $this->getWorkflowStates();
 		}
 		$doc->addStyleDeclaration(JUri::root(true).'/media/com_jongman/jongman/css/styles.css');
 		// Check for errors.
@@ -127,6 +129,14 @@ class JongmanViewReservations extends JViewLegacy
         return RFToolbar::render();
     }
 	
+    protected function getWorkflowStates()
+    {
+    	jimport('workflow.framework');
+    	$wfStates = WFApplicationHelper::getStatesByContext('com_jongman.reservation');
+    	
+    	return (empty($wfStates) ? false : $wfStates);
+    }
+    
 	protected function getSortOptions()
 	{
 		
