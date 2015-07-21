@@ -51,7 +51,43 @@ class RFReservationViewRepository implements IReservationViewRepository
 	
 	public function getBlackoutsWithin(RFDateRange $dateRange, $scheduleId = null)
 	{
+		if ($scheduleId == null) $scheduleId = -1;
+		$dbo = JFactory::getDbo();
+		$query = $dbo->getQuery(true);
 		
+		$startDate = $dbo->quote($dateRange->getBegin()->toDatabase());
+		$endDate = $dbo->quote($dateRange->getEnd()->toDatabase());
+		
+		$query->select('bs.*, bs.created_by AS owner_id, bi.id as instance_id, bi.start_date, bi.end_date, bi.blackout_id')
+			->from('#__jongman_blackout_instances AS bi')
+			->join('INNER', '#__jongman_blackouts AS bs ON bi.blackout_id = bs.id')
+			->select('bsr.resource_id')
+			->join('INNER', '#__jongman_blackout_resources AS bsr ON  bi.blackout_id = bsr.blackout_id')
+			->select('r.title AS resource_name, r.schedule_id AS schedule_id')
+			->join('INNER', '#__jongman_resources AS r ON bsr.resource_id = r.id')
+			->select('u.name as author_name')
+			->join('INNER', '#__users AS u ON u.id = bs.created_by')
+			->where('
+			(
+				(bi.start_date >='.$startDate.' AND bi.start_date <= '.$endDate.')
+				OR
+				(bi.end_date >= '.$startDate.' AND bi.end_date <= '.$endDate.')
+				OR
+				(bi.start_date <= '.$startDate.' AND bi.end_date >='.$endDate.')
+			)');
+		$query->where('('.$scheduleId.' = -1 OR r.schedule_id = '.$scheduleId.')');
+		$query->order('bi.start_date ASC');
+		$dbo->setQuery($query);
+		
+		$rows = $dbo->loadObjectList();
+		
+		$blackouts = array();
+		foreach ($rows as $row)
+		{
+			$blackouts[] = RFBlackoutItem::populate($row);
+		}
+		
+		return $blackouts;		
 	}
 	
 	public function getAccessoriesWithin(RFDateRange $dateRange)

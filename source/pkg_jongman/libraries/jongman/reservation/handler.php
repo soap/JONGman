@@ -60,7 +60,7 @@ class RFReservationHandler implements IReservationHandler
 	}
 
 	/**
-	 * @param ReservationSeries $reservationSeries
+	 * @param RFReservationSeries $reservationSeries
 	 * @param IReservationSaveResultsView $view
 	 * @return bool if the reservation was handled or not
 	 */

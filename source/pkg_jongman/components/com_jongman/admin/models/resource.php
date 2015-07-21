@@ -117,10 +117,10 @@ class JongmanModelResource extends JModelAdmin
 			}
 		}
 		
-		$params = new JRegistry($table->params);
-		
-		$params->set('need_approval', $value);
-		$table->params = $params->toString();
+		//$params = new JRegistry($table->params);
+		//$params->set('need_approval', $value);
+		//$table->params = $params->toString();
+		$table->requires_approval = $value;
 		if (!$table->store()) {
 			$this->setError($table->getError());
 			return false;			

@@ -1,7 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 
-class BlackoutSeries
+class RFBlackoutSeries
 {
 	/**
 	 * @var int
@@ -61,7 +61,7 @@ class BlackoutSeries
 	 */
 	public function __construct($userId, $title)
 	{
-		$this->withRepeatOptions(new RFRepeatNone());
+		$this->withRepeatOptions(new RFReservationRepeatNone());
 		$this->ownerId = $userId;
 		$this->title = $title;
 	}
@@ -74,7 +74,7 @@ class BlackoutSeries
 	 */
 	public static function create($userId, $title, RFDateRange $blackoutDate)
 	{
-		$series = new BlackoutSeries($userId, $title);
+		$series = new RFBlackoutSeries($userId, $title);
 		$series->addBlackout(new RFBlackout($blackoutDate));
 		$series->setCurrentBlackout($blackoutDate);
 		return $series;
@@ -299,7 +299,7 @@ class BlackoutSeries
 	public static function fromRow($row)
 	{
 		$series = new RFBlackoutSeries($row->created_by, $row->title);
-		$series->withId($row->blackout_id);
+		$series->withId($row->id);
 		$series->setCurrentBlackout(new RFDateRange(RFDate::fromDatabase($row->start_date), RFDate::fromDatabase($row->end_date)));
 		$series->withCurrentBlackoutId($row->instance_id);
 		$configuration = RFRepeatConfiguration::create($row->repeat_type, $row->repeat_options);
@@ -313,7 +313,7 @@ class BlackoutSeries
 	}
 
 	/**
-	 * @return Blackout
+	 * @return RFBlackout
 	 */
 	public function currentBlackout()
 	{
@@ -321,7 +321,7 @@ class BlackoutSeries
 	}
 
 	/**
-	 * @param DateRange $date
+	 * @param RFDateRange $date
 	 * @return string
 	 */
 	private function toKey(RFDateRange $date)
@@ -330,7 +330,7 @@ class BlackoutSeries
 	}
 
 	/**
-	 * @return BlackoutResource[]
+	 * @return RFBlackoutResource[]
 	 */
 	public function resources()
 	{

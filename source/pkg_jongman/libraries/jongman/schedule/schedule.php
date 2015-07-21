@@ -190,16 +190,16 @@ class RFSchedule implements ISchedule
 	public static function fromRow($row)
 	{
 		$schedule = new RFSchedule($row->id,
-				$row->title,
-				false,
+				$row->name,
+				$row->default,
 				$row->weekday_start,
 				$row->view_days,
 				$row->timezone,
 				$row->layout_id);
 		
-		$schedule->withSubscription($row->allow_calendar_subscription);
-		$schedule->withPublicId($row->public_id);
-		$schedule->setAdminGroupId($row->admin_group_id);
+		if (isset($row->allow_calendar_subscription)) $schedule->withSubscription($row->allow_calendar_subscription);
+		if (isset($row->public_id)) $schedule->withPublicId($row->public_id);
+		if (isset($row->admin_group_id)) $schedule->setAdminGroupId($row->admin_group_id);
 
 		return $schedule;
 	}

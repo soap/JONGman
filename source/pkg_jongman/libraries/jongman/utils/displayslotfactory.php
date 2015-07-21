@@ -94,6 +94,7 @@ class RFDisplaySlotFactory
 	{
 		$html 	= array();
 		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"unreservable slot\">";
+		$html[] = "{$slot->label()}";
 		$html[] = "</td>";
 		
 		return implode("", $html);

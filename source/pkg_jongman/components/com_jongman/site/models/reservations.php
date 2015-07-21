@@ -215,8 +215,8 @@ class JongmanModelReservations extends JModelList
 		}
 		
 		$resourceId = $this->getState('filter.resource_id');
-		if (!empty($scheduleId)) {
-			$query->where('rs.id = '.(int)$scheduleId);
+		if (!empty($resourceId)) {
+			$query->where('rs.id = '.(int)$resourceId);
 		}
 		
  		$userId = $this->getState('filter.user_id');
@@ -245,7 +245,7 @@ class JongmanModelReservations extends JModelList
 		$orderDirn	= $this->state->get('list.direction', 'ASC');
 
 		$query->order($db->escape($orderCol.' '.$orderDirn));
-		
+
 		return $query;
 	}
 	
@@ -267,6 +267,7 @@ class JongmanModelReservations extends JModelList
 			$items[$i]->invitee_list = array();
 			$items[$i]->reservation_length = RFDateRange::create($items[$i]->start_date, $items[$i]->end_date, $timezone);
 			if ($workflow) {
+				jimport('workflow.application.helper');
 				$items[$i]->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $items[$i]->reservation_id);
 			}else{
 				$items[$i]->workflow_state = new stdClass();

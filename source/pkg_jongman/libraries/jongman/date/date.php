@@ -29,7 +29,7 @@ class RFDate
 	{
 		$this->initTimezone($timezone);
 		if (empty($this->timezone)) {
-			
+			$this->timezone = 'UTC';	
 		}
 		$this->date = new DateTime($timestring, new DateTimeZone($this->timezone));
 		$this->timestring = $this->date->format(self::SHORT_FORMAT);
@@ -42,7 +42,7 @@ class RFDate
 		$this->timezone = $timezone;
 		if (empty($timezone))
 		{
-			$tz = JongmanHelper::getUserTimezone();
+			$tz = RFApplicationHelper::getUserTimezone();
 			$this->timezone = $tz ;
 		}
 	}
@@ -198,6 +198,7 @@ class RFDate
 		{
 			return RFDateNull::getInstance();
 		}
+		
 		return RFDate::parse($databaseValue, 'UTC');
 	}
 

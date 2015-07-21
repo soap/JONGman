@@ -15,19 +15,13 @@ class JongmanViewCpanel extends JViewLegacy
 		JHtml::stylesheet( 'administrator/components/com_jongman/assets/css/jongman.css' );
 		JHtml::_('behavior.tooltip');
 		
-        $this->is_j25     = version_compare(JVERSION, '3', 'lt');
 		$this->version = JongmanHelper::getVersion();
 		$libVersion 	= new JMVersion();
 		$this->libVersion = $libVersion->getShortVersion();
 		
 	   	if ($this->getLayout() !== 'modal') {
             $this->addToolbar();
-
-            // Add the sidebar (Joomla 3 and up)
-            if (!$this->is_j25) {
-                $this->addSidebar();
-                $this->sidebar = JHtmlSidebar::render();
-            }
+            $this->sidebar = JHtmlSidebar::render();
         }
 		parent::display($tpl);
 	}
@@ -44,9 +38,4 @@ class JongmanViewCpanel extends JViewLegacy
 		
 		JToolBarHelper::help( 'screen.jongman', true );
 	}
-	
-    protected function addSidebar()
-    {
-        JHtmlSidebar::setAction('index.php?option=com_pfprojects&view=projects');
-    }	
 }

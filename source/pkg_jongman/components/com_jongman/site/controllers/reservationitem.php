@@ -16,13 +16,17 @@ class JongmanControllerReservationitem extends JControllerForm
 	
 	public function cancel($key=NULL)
 	{
-		$this->setRedirect(
-				JRoute::_(
-						'index.php?option=' . $this->option . '&view=' . $this->view_list
-						. $this->getRedirectToListAppend(), false
-				)
-		);
-		
+		$return = $this->getReturnPage(true);
+		if (!empty($return)) {
+			$this->setRedirect(JRoute::_($return, false));
+		}else{
+			$this->setRedirect(
+					JRoute::_(
+							'index.php?option=' . $this->option . '&view=' . $this->view_list
+							. $this->getRedirectToListAppend(), false
+					)
+			);
+		}
 		return true;		
 	}
 	
@@ -79,4 +83,38 @@ class JongmanControllerReservationitem extends JControllerForm
 	{
 		return true;
 	}
+	
+	protected function setReturnPage()
+	{
+		$app = JFactory::getApplication();
+		$return = $app->input->get('return', null, 'base64');
+		if (empty($return)) {
+			$referer = getenv("HTTP_REFERER");
+			if (empty($referer)) return false;
+				
+			$return = base64_encode($referer);
+		}
+	
+		$app->setUserState('com_jongman.reservation.return_page', $return);
+		return true;
+	}
+	
+	protected function clearReturnPage()
+	{
+		$app = JFactory::getApplication();
+		$app->setUserState('com_jongman.reservation.return_page', null);
+	}
+	
+	protected function getReturnPage($clear = false)
+	{
+		$app = JFactory::getApplication();
+		$return = $app->input->get('return', null, 'base64');
+		if (empty($return)) {
+			$return = $app->getUserState('com_jongman.reservation.return_page');
+		}
+	
+		if ($clear) $this->clearReturnPage();
+	
+		return base64_decode($return);
+	}	
 }

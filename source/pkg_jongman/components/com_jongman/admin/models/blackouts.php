@@ -45,14 +45,14 @@ class JongmanModelBlackouts extends JModelList
 		$query->select( $this->getState('list.select', 'a.*') );
 		$query->from('#__jongman_blackout_instances AS a');
 		
-		$query->select('bs.title, bs.description, bs.repeat_type, bs.repeat_options');
+		$query->select('bs.alias, bs.state as state, bs.owner_id, bs.title, bs.description, bs.repeat_type, bs.repeat_options, bs.checked_out, bs.checked_out_time');
 		$query->join('INNER', '#__jongman_blackouts AS bs ON a.blackout_id=bs.id');
 		
 		$query->join('INNER', '#__jongman_blackout_resources AS bsr ON a.blackout_id=bsr.blackout_id');
 		
 		$query->select('r.schedule_id');
 		$query->join('INNER', '#__jongman_resources AS r ON bsr.resource_id=r.id');
-
+		$query->select('sc.name as schedule_name');
 		$query->join('INNER', '#__jongman_schedules AS sc ON r.schedule_id=sc.id');
 
 		// Join over the users for the checked out user.

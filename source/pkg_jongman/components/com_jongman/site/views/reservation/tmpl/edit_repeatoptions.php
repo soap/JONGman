@@ -1,15 +1,15 @@
 <?php
 defined('_JEXEC') or die;
-JText::script("COM_JONGMAN_HOURS_1");
-JText::script("COM_JONGMAN_HOURS_MORE");
-JText::script("COM_JONGMAN_DAYS_1");
-JText::script("COM_JONGMAN_DAYS_MORE");
-JText::script("COM_JONGMAN_WEEKS_1");
-JText::script("COM_JONGMAN_WEEKS_MORE");
-JText::script("COM_JONGMAN_MONTHS_1");
-JText::script("COM_JONGMAN_MONTHS_MORE");
-JText::script("COM_JONGMAN_YEARS_1");
-JText::script("COM_JONGMAN_YEARS_MORE");
+JText::script("COM_JONGMAN_DURATION_HOURS_1");
+JText::script("COM_JONGMAN_DURATION_HOURS_MORE");
+JText::script("COM_JONGMAN_DURATION_DAYS_1");
+JText::script("COM_JONGMAN_DURATION_DAYS_MORE");
+JText::script("COM_JONGMAN_DURATION_WEEKS_1");
+JText::script("COM_JONGMAN_DURATION_WEEKS_MORE");
+JText::script("COM_JONGMAN_DURATION_MONTHS_1");
+JText::script("COM_JONGMAN_DURATION_MONTHS_MORE");
+JText::script("COM_JONGMAN_DURATION_YEARS_1");
+JText::script("COM_JONGMAN_DURATION_YEARS_MORE");
 ?>
 
 <div class="control-group" id="repeatOptions">

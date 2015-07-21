@@ -188,11 +188,18 @@ class JongmanModelReservationitem extends JModelItem
 	public function getItem($referenceNumber=null)
 	{
 		if (empty($referenceNumber)) {
-			$pk = JFactory::getApplication()->input->getInt('id');
-		
-			$table = JTable::getInstance('Instance', 'JongmanTable');
-			$table->load($pk);
-			$referenceNumber = $table->reference_number;
+			$pk = JFactory::getApplication()->input->getInt('id', null);
+			if (!empty($pk)) {
+				$table = JTable::getInstance('Instance', 'JongmanTable');
+				$table->load($pk);
+				$referenceNumber = $table->reference_number;
+			}else{
+				$referenceNumber = JFactory::getApplication()->input->getCmd('ref', null);
+				if (empty($referenceNumber)) {
+					
+				}
+			} 
+
 		}
 
 		/* This $pk is an instance id */

@@ -8,9 +8,15 @@ foreach ($fieldSets as $fieldSet) :
     <legend><?php echo JText::_($fieldSet->label) ?></legend>
 	<?php foreach ($this->form->getFieldset($fieldSet->name) as $field) : ?>
     <div class="control-group">
-		<?php echo trim($field->title); ?>
-        <div class="controls">
-			<?php echo $field->input; ?>
+		<span class="label label-info"><?php echo trim($field->title); ?></span>
+        <div class="controls well">
+        	<?php 
+        	if ($field->type != 'Editor') :
+				echo nl2br(htmlspecialchars($field->value)); 
+			else:
+				echo $field->value;
+			endif; 
+			?>
         </div>
     </div>
 	<?php endforeach; ?>

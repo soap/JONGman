@@ -58,13 +58,14 @@ class JongmanModelSchedule extends JModelItem {
 		if (!isset($this->_item[$pk])) {
 			$db = $this->getDbo();
 			$query = $db->getQuery(true);
-			$query->select("a.*, l.timezone")
+			$query->select("a.*, l.timezone as timezone")
 				->from("#__jongman_schedules AS a")
 				->join('LEFT', '#__jongman_layouts as l ON l.id=a.layout_id')
-				->where("a.id = ".$pk);
+				->where("a.id = ".(int)$pk);
 			$db->setQuery($query);
 			
 			$this->_item[$pk] = $db->loadObject();
+
 			if (isset($this->_item[$pk]->params)) {
 				if (is_string($this->_item[$pk]->params)) {
 					$params = new JRegistry($this->_item[$pk]->params);
@@ -312,7 +313,8 @@ class JongmanModelSchedule extends JModelItem {
 		}
 		
 		$list = new RFReservationListing($tz);
-		if (empty($resItems)) return $list;
+		
+		//if (empty($resItems)) return $list;
 		
 		foreach($resItems as $item) {
 			//add reservation first
@@ -320,8 +322,14 @@ class JongmanModelSchedule extends JModelItem {
 			$list->add($reservationItem);	
 		}
 		
-		//then blackout later 
-
+		$reservationViewRepository = new RFReservationViewRepository();
+		
+		$blackoutItems = $reservationViewRepository->getBlackoutsWithin($dateRange);
+		
+		foreach($blackoutItems as $item) {
+			$list->addBlackout($item);
+		}
+		
 		return $list;
 	}
 	
@@ -337,7 +345,7 @@ class JongmanModelSchedule extends JModelItem {
 		$dateRange = $this->getScheduleDates();
 		// load reservation data from database
 		$reservationList = $this->getReservationList($dateRange, $pk, null, null, $tz);
-		
+
 		$layout = new RFLayoutDaily($reservationList, $scheduleLayout);
 		
 		return $layout;

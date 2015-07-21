@@ -51,6 +51,7 @@ class JongmanViewReservations extends JViewLegacy
 		$this->items		= $this->get('Items');
 		$this->pagination	= $this->get('Pagination');
 		$this->state		= $this->get('State');
+		$this->params     	= $this->state->get('params');
         $this->is_j25     	= version_compare(JVERSION, '3', 'lt');
         if (!$this->is_j25) {
         	$this->filterForm    = $this->get('FilterForm');
@@ -58,6 +59,17 @@ class JongmanViewReservations extends JViewLegacy
 			$this->sidebar = JHtmlSidebar::render();	
         } 
         
+        $this->workflow   	= ($this->params->get('approvalSystem')==2);
+        $doc = JFactory::getDocument();
+        if ($this->workflow) {
+        	JHtml::_('jquery.ui');
+        	jimport('workflow.framework');
+        
+        	$doc->addScript(JUri::root(true).'/media/com_workflow/workflow/js/statetransitions.js');
+        	$doc->addScript(JUri::root(true).'/media/com_workflow/workflow/js/pnotify.custom.min.js');
+        	$doc->addScript(JUri::root(true).'/media/com_workflow/workflow/js/jquery.blockUI.js');
+        	$doc->addStyleSheet(JUri::root(true).'/media/com_workflow/workflow/css/pnotify.custom.min.css');
+        }
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));

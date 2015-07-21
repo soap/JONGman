@@ -51,7 +51,6 @@ JLoader::registerprefix('RF', JPATH_PLATFORM . '/jongman/database', false, true)
 
 //discover classes prefixed by RF in the folder
 JLoader::discover('RF', JPATH_PLATFORM . '/jongman/utils');
-JLoader::register('RFReservationStartTimeContraint', JPATH_PLATFORM.'/jongman/utils/starttimeconstraint.php');
 JLoader::register('RFReservationExistingSeries', JPATH_PLATFORM.'/jongman/reservation/existingseries.php');
 JLoader::register('RFFactory', JPATH_PLATFORM.'/jongman/factory.php');
 

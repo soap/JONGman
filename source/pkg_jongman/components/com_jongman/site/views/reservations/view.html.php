@@ -56,6 +56,8 @@ class JongmanViewReservations extends JViewLegacy
 			$doc->addScript(JUri::root(true).'/media/com_workflow/workflow/js/pnotify.custom.min.js');
 			$doc->addScript(JUri::root(true).'/media/com_workflow/workflow/js/jquery.blockUI.js');
 			$doc->addStyleSheet(JUri::root(true).'/media/com_workflow/workflow/css/pnotify.custom.min.css');
+			
+			$this->workflowStates = $this->getWorkflowStates();
 		}
 		$doc->addStyleDeclaration(JUri::root(true).'/media/com_jongman/jongman/css/styles.css');
 		// Check for errors.
@@ -95,12 +97,46 @@ class JongmanViewReservations extends JViewLegacy
     {
         $access = JongmanHelper::getActions();
         $state  = $this->get('State');
-
+        
+        RFToolbar::button(
+        	'COM_JONGMAN_ACTION_NEW',
+        	'reservation.add',
+        	false,
+        	array('access' => $access->get('core.create'))
+        );
+       
+        $options = array();
+        /*
+        if ($access->get('core.edit.state')) {
+        	$options[] = array('text' => 'COM_JONGMAN_ACTION_PUBLISH',   'task' => $this->getName() . '.publish');
+        	$options[] = array('text' => 'COM_JONGMAN_ACTION_UNPUBLISH', 'task' => $this->getName() . '.unpublish');
+        	$options[] = array('text' => 'COM_JONGMAN_ACTION_ARCHIVE',   'task' => $this->getName() . '.archive');
+        	$options[] = array('text' => 'COM_JONGMAN_ACTION_CHECKIN',   'task' => $this->getName() . '.checkin');
+        }
+        
+        if ($state->get('filter.published') == -2 && $access->get('core.delete')) {
+        	$options[] = array('text' => 'COM_JONGMAN_ACTION_DELETE', 'task' => $this->getName() . '.delete');
+        }
+        elseif ($access->get('core.edit.state')) {
+        	$options[] = array('text' => 'COM_JONGMAN_ACTION_TRASH', 'task' => $this->getName() . '.trash');
+        }
+        */
+        if (count($options)) {
+        	PFToolbar::listButton($options);
+        }
         RFToolbar::filterButton($this->state->get('filter.isset'));
 
         return RFToolbar::render();
     }
 	
+    protected function getWorkflowStates()
+    {
+    	jimport('workflow.framework');
+    	$wfStates = WFApplicationHelper::getStatesByContext('com_jongman.reservation');
+    	
+    	return (empty($wfStates) ? false : $wfStates);
+    }
+    
 	protected function getSortOptions()
 	{
 		
