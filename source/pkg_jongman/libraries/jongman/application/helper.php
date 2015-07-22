@@ -194,4 +194,32 @@ abstract class RFApplicationHelper
 
 		return null;
 	}
+	
+	/**
+	 * @return string timezone string
+	 */
+	public static function getUserTimezone($uid = null, $default=null)
+	{
+		if ($uid === null) {
+			$user = JFactory::getUser();
+		}else{
+			$user = JFactory::getUser($uid);
+		}
+		
+		if ($default === null) {
+			$default = JFactory::getConfig()->get('offset', 'UTC');
+		}
+		
+		$timezone = $user->getParam('timezone', $default);
+		
+		return $timezone;
+	}
+	
+	/**
+	 * @return string timezone string
+	 */
+	public static function getServerTimezone()
+	{
+		return JFactory::getConfig()->get('offset', 'UTC');
+	}
 }

@@ -4,7 +4,7 @@ defined('_JEXEC') or die;
 class RFBlackout
 {
 	/**
-	 * @var DateRange
+	 * @var RFDateRange
 	 */
 	protected $date;
 
@@ -14,7 +14,7 @@ class RFBlackout
 	protected $id;
 
 	/**
-	 * @param DateRange $blackoutDate
+	 * @param RFDateRange $blackoutDate
 	 */
 	public function __construct($blackoutDate)
 	{
@@ -22,7 +22,7 @@ class RFBlackout
 	}
 
 	/**
-	 * @return DateRange
+	 * @return RFDateRange
 	 */
 	public function date()
 	{
@@ -30,7 +30,7 @@ class RFBlackout
 	}
 
 	/**
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function startDate()
 	{
@@ -38,7 +38,7 @@ class RFBlackout
 	}
 
 	/**
-	 * @return Date
+	 * @return RFDate
 	 */
 	public function endDate()
 	{

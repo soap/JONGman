@@ -40,9 +40,10 @@ interface IResourceRepository
 	public function delete(RFResourceBookable $resource);
 
 	/**
-	 * @return array|BookableResource[] array of all resources
+	 * @return array|RFResourceBookable[] array of all resources
+	 * @In used
 	*/
-	public function getResourceList();
+	public function getResourceList($includeInaccessibleResources = true, $user=null);
 
 	/**
 	 * @param int $pageNumber

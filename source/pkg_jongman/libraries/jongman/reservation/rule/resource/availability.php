@@ -74,7 +74,7 @@ class RFReservationRuleResourceAvailability implements IReservationValidationRul
 		$format = 'Y-m-d H:i';
 		
 		$dates = array();
-		$timezone = JongmanHelper::getUserTimezone();
+		$timezone = RFApplicationHelper::getUserTimezone();
 		/** @var IReservedItemView $conflict */
 		foreach($conflicts as $conflict)
 		{

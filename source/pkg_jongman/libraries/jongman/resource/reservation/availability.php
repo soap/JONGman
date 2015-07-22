@@ -24,7 +24,7 @@ class RFResourceReservationAvailability implements IResourceAvailabilityStrategy
 	public function getItemsBetween(RFDate $startDate, RFDate $endDate)
 	{
 		$model = JModelLegacy::getInstance('Reservations', 'JongmanModel', array('ignore_request'=>true));
-		$tz = JongmanHelper::getUserTimezone();
+		$tz = RFApplicationHelper::getUserTimezone();
 		$model->setState('filter.start_date', $startDate->toTimezone($tz)->format('Y-m-d H:i:s'));
 		$model->setState('filter.end_date', $endDate->toTimezone($tz)->format('Y-m-d H:i:s'));
 		$model->setState('filter.type', 1);
