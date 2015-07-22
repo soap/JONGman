@@ -29,6 +29,19 @@ class JongmanControllerReservation extends JControllerForm
 		$this->registerTask('updatefuture', 'save');
 	}
 	
+	public function add()
+	{
+		$this->setReturnPage();
+		if (!parent::add()) {
+			
+			$returnPage = $this->getReturnPage(true);	
+			if (!empty($returnPage)) {
+				$this->setRedirect(JRoute::_($returnPage, false));
+			}
+		}	
+	}
+	
+	/** Not used */
 	public function edit($key = null, $urlVar = null)
 	{
 		$input = JFactory::getApplication()->input;
@@ -103,13 +116,18 @@ class JongmanControllerReservation extends JControllerForm
 		// Clean the session data and redirect.
 		$this->releaseEditId($context, $recordId);
 		$app->setUserState($context . '.data', null);
-
-		$this->setRedirect(
-			JRoute::_(
-				'index.php?option=' . $this->option . '&view=' . $this->view_list
-				. $this->getRedirectToListAppend(), false
-			)
-		);
+		
+		$return = $this->getReturnPage(true);
+		if (empty($return)) {
+ 			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . '&view=' . $this->view_list
+					. $this->getRedirectToListAppend(), false
+				)
+ 			);
+		}else{
+			$this->setRedirect(JRoute::_($return, false));
+		}
 
 		return true;
 	}
@@ -168,13 +186,18 @@ class JongmanControllerReservation extends JControllerForm
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_SAVE_NOT_PERMITTED'));
 			$this->setMessage($this->getError(), 'error');
 
-			$this->setRedirect(
-				JRoute::_(
-					'index.php?option=' . $this->option . '&view=' . $this->view_list
-					. $this->getRedirectToListAppend(), false
-				)
-			);
-
+			$return = $this->getReturnPage(true);
+			if (empty($return)) {
+	
+				$this->setRedirect(
+					JRoute::_(
+						'index.php?option=' . $this->option . '&view=' . $this->view_list
+						. $this->getRedirectToListAppend(), false
+					)
+				);
+			}else{
+				$this->setRedirect(JRoute::_($return, false));
+			}
 			return false;
 		}
 
@@ -211,7 +234,7 @@ class JongmanControllerReservation extends JControllerForm
 				}
 			}
 			//revert time to UTC
-			$tz = JongmanHelper::getUserTimezone();
+			$tz = RFApplicationHelper::getUserTimezone();
 			$data['start_time'] = JDate::getInstance($data['start_time'], $tz)->format('H:i:s', false);
 			$data['end_time'] = JDate::getInstance($data['end_time'], $tz)->format('H:i:s', false); 
 			// Save the data in the session.
@@ -256,15 +279,21 @@ class JongmanControllerReservation extends JControllerForm
 		// Clear the record id and data from the session.
 		$this->releaseEditId($context, $recordId);
 		$app->setUserState($context . '.data', null);
-
+		
 		// Redirect to the list screen.
-		$this->setRedirect(
-			JRoute::_(
-				'index.php?option=' . $this->option . '&view=' . $this->view_list
-				. $this->getRedirectToListAppend(), false
-			)
-		);
+		$return = $this->getReturnPage(true);
+		if (!empty($return)) {
 
+			$this->setRedirect($return);
+		}else{
+			
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . '&view=' . $this->view_list
+					. $this->getRedirectToListAppend(), false
+				)
+			);
+		}
 		// Invoke the postSave method to allow for the child class to access the model.
 		$this->postSaveHook($model, $validData);
 
@@ -287,8 +316,9 @@ class JongmanControllerReservation extends JControllerForm
 	
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id') 
 	{
+		$app = JFactory::getApplication();
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
-		$input = JFactory::getApplication()->input;
+		$input = $app->input;
 		
 		$resource_id = $input->getInt('rid', null);
 		$schedule_id = $input->getInt('sid', null);
@@ -304,6 +334,13 @@ class JongmanControllerReservation extends JControllerForm
 		
 		if ($schedule_id !== null) {
 			$append .= '&schedule_id='.$schedule_id;
+		}else{
+			$task = $this->getTask();
+			$view = $input->getCmd('view');
+			if ( ($task == 'add') && in_array($view, array('reservations', 'schedule')) ) {
+				$schedule_id = $input->getCmd('id');
+				$append .= '&schedule_id='.$schedule_id;
+			}
 		}
 		
 		if ($start_date !== null) {
@@ -341,10 +378,37 @@ class JongmanControllerReservation extends JControllerForm
 		
 	}
 	
-	protected function getReturnPage()
+	protected function setReturnPage()
 	{
-		$return = JRequest::getVar('return', null, 'default', 'base64');
-
+		$app = JFactory::getApplication();
+		$return = $app->input->get('return', null, 'base64');	
+		if (empty($return)) {
+			$referer = getenv("HTTP_REFERER");
+			if (empty($referer)) return false;
+			
+			$return = base64_encode($referer);
+		}
+		
+		$app->setUserState('com_jongman.reservation.return_page', $return);
+		return true;
+	}
+	
+	protected function clearReturnPage()
+	{
+		$app = JFactory::getApplication();
+		$app->setUserState('com_jongman.reservation.return_page', null);
+	}
+	
+	protected function getReturnPage($clear = false)
+	{
+		$app = JFactory::getApplication();
+		$return = $app->input->get('return', null, 'base64');
+		if (empty($return)) {
+			$return = $app->getUserState('com_jongman.reservation.return_page');
+		}
+		
+		if ($clear) $this->clearReturnPage();
+		
         return base64_decode($return);
 	}
 }

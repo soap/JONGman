@@ -4,7 +4,7 @@
  * @copyright 2011 Prasit Gebsaap
  */
 defined('_JEXEC') or die;
-JHtml::_('behavior.tooltip');
+JHtml::_('bootstrap.tooltip');
 
 $user		= JFactory::getUser();
 $dbo		= JFactory::getDbo();
@@ -16,10 +16,8 @@ $trashed	= $this->state->get('filter.published') == -2 ? true : false;
 $filter_in  = ($this->state->get('filter.isset') ? 'in ' : '');
 
 $datetimeFormat = $this->params->get('datetimeFormat');
+$attribs = array('class'=>'input-small btn-group');
 
-$print_url = JongmanHelperRoute::getReservationsRoute()
-. '&tmpl=component&layout=print';
-$print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,location=no,directories=no,status=no,menubar=no';
 ?>
 <div id="jongman" class="category-list<?php echo $this->pageclass_sfx;?> view-tasks PrintArea all">
 	<div class="clearfix"></div>
@@ -28,9 +26,6 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 			<div class="grid">
 				<div class="btn-toolbar btn-toolbar-top">
                 	<?php echo $this->toolbar;?>
-					<a class="btn button" id="print_btn" href="javascript:void(0);" onclick="window.open('<?php echo JRoute::_($print_url);?>', 'print', '<?php echo $print_opt; ?>')">
-                	    <?php echo JText::_('COM_JONGMAN_PRINT'); ?>
-                	</a>
 				</div>
 				<div class="clearfix"></div>
 				<div class="<?php echo $filter_in;?>collapse" id="filters">
@@ -56,6 +51,20 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
                             	<?php echo JHtml::_('select.options', $this->owners, 'value', 'text', $this->state->get('filter.owner_id'));?>
                         	</select>
                     	</div>
+                    	<?php if ($this->workflow) :?>
+                    	<div class="filter-state btn-group">
+                        	<select id="filter_workflow_state_id" name="filter_workflow_state_id" class="inputbox input-medium" onchange="this.form.submit()">
+                            	<option value=""><?php echo JText::_('COM_JONGMAN_OPTION_SELECT_WORKFLOW_STATE');?></option>
+                            	<?php echo JHtml::_('select.options', $this->workflowStates, 'id', 'title', $this->state->get('filter.workflow_state_id'));?>
+                        	</select>
+                    	</div>
+                    	<?php endif?>
+                    	<div class="filter-start-date btn-group">
+                    		<?php echo JHtml::_('calendar', $this->state->get('filter.start_date'), 'filter_start_date', 'start_date', '%Y-%m-%d', $attribs)?>
+                    	</div>
+                    	<div class="filter-end-date btn-group">
+                    		<?php echo JHtml::_('calendar', $this->state->get('filter.end_date'), 'filter_end_date', 'end_date', '%Y-%m-%d', $attribs)?>
+                    	</div>                    	
                     	<div class="clearfix"> </div>
 					</div>
             	</div>
@@ -127,7 +136,7 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 							<?php echo JHtml::_('grid.id', $i, $item->instance_id); ?>
 						</td>
 						<td>
-							<?php if ($this->workflow) :?>
+							<?php if ($this->workflow && ($item->workflow_enabled)) :?>
 							<?php  $date = ($item->workflow_state->modified==$dbo->getNullDate() ? $item->workflow_state->created : $item->workflow_state->modified);?>
 							<div class="btn-group" id="reserv_<?php echo $item->reservation_id?>">
 								<button data-toggle="dropdown" class="dropdown-toggle btn btn-micro">
@@ -141,7 +150,27 @@ $print_opt = 'width=1024,height=600,resizable=yes,scrollbars=yes,toolbar=no,loca
 								</script>
 							</div>	
 							<?php else:?>
-								<?php echo JHtml::_('jgrid.published', $item->state, $i, 'reservations.', $canChange, 'cb'); ?>
+							<div class="btn-group">
+							<?php 
+								$states = array(1 => array('unapprove', 'COM_JONGMAN_STATE_APPROVED', 'COM_JONGMAN_RESERVATION_UNAPPROVE_ITEM', 'COM_JONGMAN_STATE_APPROVED', true, 'publish', 'publish'),
+											0 => array('approve', 'COM_JONGMAN_STATE_REJECTED', 'COM_JONGMAN_RESERVATION_APPROVE_ITEM', 'COM_JONGMAN_STATE_REJECTED', true, 'unpublish', 'unpublish'),
+											-1 => array('approve', 'COM_JONGMAN_STATE_PENDING', 'COM_JONGMAN_RESERVATION_APPROVE_ITEM', 'COM_JONGMAN_STATE_APPROVED', true, 'pending', 'pending'));
+						
+									echo JHtml::_('jgrid.state',$states, $item->state, $i, 'reservations.', $canChange); 
+									// Create dropdown items
+								if ($item->state == -1) {
+									JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_RESERVATION_APPROVE'), 'published', 'cb' . $i, 'reservations.approve');
+									JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_RESERVATION_REJECT'), 'unpublished', 'cb' . $i, 'reservations.reject');
+								}else if ($item->state == 1) {
+									JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_RESERVATION_REJECT'),'unpublished', 'cb' . $i, 'reservations.reject');
+								}else if ($item->state == 0) {
+									JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_RESERVATION_APPROVE'), 'published', 'cb' . $i, 'reservations.approve');
+								}
+							
+								// Render dropdown list
+								echo JHtml::_('actionsdropdown.render', $this->escape($item->reservation_title));
+							?>
+							</div>
 							<?php endif;?>
 						</td>
 						<td>

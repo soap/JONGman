@@ -188,11 +188,18 @@ class JongmanModelReservationitem extends JModelItem
 	public function getItem($referenceNumber=null)
 	{
 		if (empty($referenceNumber)) {
-			$pk = JFactory::getApplication()->input->getInt('id');
-		
-			$table = JTable::getInstance('Instance', 'JongmanTable');
-			$table->load($pk);
-			$referenceNumber = $table->reference_number;
+			$pk = JFactory::getApplication()->input->getInt('id', null);
+			if (!empty($pk)) {
+				$table = JTable::getInstance('Instance', 'JongmanTable');
+				$table->load($pk);
+				$referenceNumber = $table->reference_number;
+			}else{
+				$referenceNumber = JFactory::getApplication()->input->getCmd('ref', null);
+				if (empty($referenceNumber)) {
+					
+				}
+			} 
+
 		}
 
 		/* This $pk is an instance id */
@@ -263,7 +270,25 @@ class JongmanModelReservationitem extends JModelItem
 		 	$this->setError($dispatcher->getError());
 		 	return false;
 		}
-		 
+
+		$app = JFactory::getApplication();
+		$params = $app->getParams();
+		
+		$workflow = (bool)($params->get('approvalSystem') == 2);
+		if ($workflow) {
+			jimport('workflow.framework');
+			if (WFApplicationHelper::isWorkflowEnabled('com_jongman.reservation', $item->reservation_id)) {
+				$item->workflow_enabled = true;
+				$item->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $item->reservation_id);
+			}else{
+				$item->workflow_enabled = false;
+				$item->workflow_state = new StdClass();
+			}
+		}else{
+			$item->workflow_enabled = false;
+			$item->workflow_state = new StdClass();
+		}
+				
 		$this->_item[$referenceNumber] = $item;
 		return $this->_item[$referenceNumber];			
 	}
@@ -296,6 +321,10 @@ class JongmanModelReservationitem extends JModelItem
 	 */
 	public function getTransitions()
 	{
+		if ($this->getState('params')->get('approvalSystem'==1)) {
+			return array();
+		} 
+
 		$item = $this->getItem();
 		
 		JTable::addIncludePath(JPATH_ADMINISTRATOR.'components/com_workflow/tables');
@@ -315,6 +344,11 @@ class JongmanModelReservationitem extends JModelItem
 	 */
 	public function getLogs()
 	{
+		if ($this->getState('params')->get('approvalSystem')==1) {
+			return array();
+		}
+		
+		jimport('workflow.framework');
 		$item = $this->getItem();
 		return WFApplicationHelper::getTransitionLogs('com_jongman.reservation', $item->reservation_id);
 	}

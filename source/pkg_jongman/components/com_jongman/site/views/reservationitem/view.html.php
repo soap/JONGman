@@ -13,26 +13,33 @@ jimport('joomla.application.component.view');
 class JongmanViewReservationitem extends JViewLegacy
 {
 	public function display($tpl = null)
-	{
-		jimport('workflow.framework');
-		
+	{		
 		$this->item 		= $this->get("Item");
 		$this->form			= $this->get("Form");
 		$this->state 		= $this->get("State");
 		$this->params 		= $this->state->get("params");
 		$this->logs			= $this->get("Logs");
-		$this->transitions	= $this->get("Transitions");
+		
 		$this->customFields = count($this->form->getFieldsets('reservation_custom_fields')) > 0;
 		
-		$this->workflowToolbar 	= $this->getWorkflowToolbar();
+		if ($this->params->get('approvalSystem')==2) {
+			jimport('workflow.framework');
+			$this->transitions	= $this->get("Transitions");
+			$this->workflowToolbar 	= $this->getWorkflowToolbar();
+		}
+		
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
-		
+		$app = JFactory::getApplication();
+		$this->print 		= $app->input->getBool('print');
 		$this->toolbar		= $this->getToolbar();
 		
+		if ($this->print) {
+			$this->_prepareDocument();
+		}
 		parent::display($tpl);
 	}
 	
@@ -74,5 +81,14 @@ class JongmanViewReservationitem extends JViewLegacy
 		}
 		 
 		return WFToolbar::render();
+	}
+	
+	protected function _prepareDocument()
+	{
+		JHtml::_('stylesheet', 'com_jongman/jongman/report.css', false, true, false, false, false);
+		if ($this->print)
+		{
+			$this->document->setMetaData('robots', 'noindex, nofollow');
+		}
 	}
 }

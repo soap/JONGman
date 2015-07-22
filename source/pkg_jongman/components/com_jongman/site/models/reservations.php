@@ -215,8 +215,8 @@ class JongmanModelReservations extends JModelList
 		}
 		
 		$resourceId = $this->getState('filter.resource_id');
-		if (!empty($scheduleId)) {
-			$query->where('rs.id = '.(int)$scheduleId);
+		if (!empty($resourceId)) {
+			$query->where('rs.id = '.(int)$resourceId);
 		}
 		
  		$userId = $this->getState('filter.user_id');
@@ -226,7 +226,7 @@ class JongmanModelReservations extends JModelList
  			$query->where('a.id IN (SELECT reservation_instance_id FROM #__jongman_reservation_users WHERE user_id = '.(int)$userId.' AND user_level='.$userLevel.')');
  		}
 		
-		$userTz = JongmanHelper::getUserTimezone();
+		$userTz = RFApplicationHelper::getUserTimezone();
 		$startDate = $this->getState('filter.start_date');
 		$endDate = $this->getState('filter.end_date');
 		
@@ -245,14 +245,14 @@ class JongmanModelReservations extends JModelList
 		$orderDirn	= $this->state->get('list.direction', 'ASC');
 
 		$query->order($db->escape($orderCol.' '.$orderDirn));
-		
+
 		return $query;
 	}
 	
 	public function getItems()
 	{
 		$items = parent::getItems();
-		$timezone = JongmanHelper::getUserTimezone();
+		$timezone = RFApplicationHelper::getUserTimezone();
 		
 		$params = $this->getState('params');
 		if ($params === null) {
@@ -267,6 +267,7 @@ class JongmanModelReservations extends JModelList
 			$items[$i]->invitee_list = array();
 			$items[$i]->reservation_length = RFDateRange::create($items[$i]->start_date, $items[$i]->end_date, $timezone);
 			if ($workflow) {
+				jimport('workflow.application.helper');
 				$items[$i]->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $items[$i]->reservation_id);
 			}else{
 				$items[$i]->workflow_state = new stdClass();

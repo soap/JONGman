@@ -1,4 +1,3 @@
-<form action="<?php echo htmlspecialchars(JFactory::getURI()->toString()); ?>" method="post" name="adminForm" id="adminForm" class="form-validate form-inline">
 	<div class="btn-toolbar btn-toolbar-top">
 		<?php echo $this->workflowToolbar; ?>
 	</div>
@@ -57,7 +56,5 @@
            	</tbody>
 		</table>
 	</div>
-	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="transition_id" value="" />	
 	<!--  input type="hidden" name="return" value="<?php //echo base64_encode($this->return_page);?>" /-->		 
-</form>

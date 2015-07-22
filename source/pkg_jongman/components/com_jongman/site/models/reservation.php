@@ -113,7 +113,7 @@ class JongmanModelReservation extends JModelAdmin
 		$dispatcher = JDispatcher::getInstance();
 		$app = JFactory::getApplication();
 		$user = JFactory::getUser();
-		$tz = JongmanHelper::getUserTimezone();
+		$tz = RFApplicationHelper::getUserTimezone();
 		$data = JFactory::getApplication()->getUserState($this->option.'.edit.'.$this->getName().'.data', array());
 		if (empty($pk)){
 			if (empty($data)) {
@@ -244,7 +244,7 @@ class JongmanModelReservation extends JModelAdmin
 		$input = $validData;
 		$input['start_date'] = $input['start_date'].' '.$input['start_time'];
 		$input['end_date'] = $input['end_date'].' '.$input['end_time'];
-		$tz = JongmanHelper::getUserTimezone();
+		$tz = RFApplicationHelper::getUserTimezone();
 		
 		$repeatType = isset($input['repeat_type']) ? $input['repeat_type'] : null;
 		$repeatInterval = isset($input['repeat_interval']) ? $input['repeat_interval'] : null;

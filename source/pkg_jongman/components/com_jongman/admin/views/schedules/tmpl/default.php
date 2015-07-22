@@ -45,7 +45,7 @@ $trashed	= $this->state->get('filter.published') == -2 ? true : false;
 					<?php echo JHtml::_('grid.checkall'); ?>
 				</th>
 				<th width="1%" style="min-width:55px" class="nowrap center">
-					<?php echo JHtml::_('grid.sort', 'JSTATUS', 'a.published', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'JSTATUS', 's.published', $listDirn, $listOrder); ?>
 				</th>
 				<th class="center">
 					<?php echo JHtml::_('grid.sort',  'COM_JONGMAN_HEADING_NAME', 'title', $listDirn, $listOrder); ?>
@@ -105,6 +105,7 @@ $trashed	= $this->state->get('filter.published') == -2 ? true : false;
 					<td class="center">
 						<div class="btn-group">
 							<?php echo JHtml::_('jgrid.published', $item->published, $i, 'schedules.', $canChange, 'cb'); ?>
+							<?php echo JHtml::_('jgrid.isdefault', $item->default, $i, 'schedules.', $canChange)?> 
 							<?php
 							// Create dropdown items
 							$action = $archived ? 'unarchive' : 'archive';
