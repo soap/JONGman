@@ -241,6 +241,7 @@ abstract class RFToolbar
         $html[] = addslashes(JText::_($text));
         $html[] = '</a>';
 
+        JHtml::_('behavior.core');
         return implode("", $html);
     }
 
@@ -289,6 +290,7 @@ abstract class RFToolbar
         $html[] = '</a>';
         $html[] = '</li>';
 
+        JHtml::_('behavior.core');
         return implode("", $html);
     }
 }
