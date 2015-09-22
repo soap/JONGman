@@ -14,7 +14,7 @@ class RFReservationViewRepository implements IReservationViewRepository
 		$config = array('ignore_request'=>true);
 		
 		$model = JModelLegacy::getInstance('Reservations', 'JongmanModel', $config);
-		$tz = JongmanHelper::getUserTimezone();
+		$tz = RFApplicationHelper::getUserTimezone();
 		$model->setState('filter.start_date', $startDate->toTimezone($tz)->format('Y-m-d H:i:s'));
 		$model->setState('filter.end_date', $endDate->toTimezone($tz)->format('Y-m-d H:i:s'));
 		

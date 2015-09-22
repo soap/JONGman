@@ -111,8 +111,11 @@ class RFReservationRepository implements IReservationRepository
 					'modified' => RFDate::now(),
 					'modified_by' =>$user->id, 
 					'state' => $reservationSeries->statusId(), 
-					'owner_id' => $reservationSeries->userId());
+					'owner_id' => $reservationSeries->userId(),
+					'customer_id' => $reservationSeries->getCustomerId()
+			);
 
+			// Sav reservation data to database using JTable 
 			$reservationTable->save($reservationData);
 
 			/*
@@ -227,12 +230,12 @@ class RFReservationRepository implements IReservationRepository
 		foreach ($events as $event)
 		{
 			$command = $this->getReservationCommand($event, $existingReservationSeries);
+
 			if ($command != null)
 			{
 				$command->execute($database);
 			}
 		}
-		
 	}
 
 	/// LOAD BY ID HELPER FUNCTIONS
@@ -563,14 +566,14 @@ class RFReservationEventMapper
 		return new RFEventCommandInstanceUpdated($event->getInstance(), $series);
 	}
 
-	private function buildRemoveResourceCommand(ResourceRemovedEvent $event, RFReservationExistingSeries $series)
+	private function buildRemoveResourceCommand(RFEventResourceRemoved $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommand(new RemoveReservationResourceCommand($series->seriesId(), $event->ResourceId()), $series);
+		return new RFEventCommandResourceRemoved($series->seriesId(), $event->resourceId());
 	}
 
-	private function buildAddResourceCommand(ResourceAddedEvent $event, RFReservationExistingSeries $series)
+	private function buildAddResourceCommand(RFEventResourceAdded $event, RFReservationExistingSeries $series)
 	{
-		return new RFEventCommand(new AddReservationResourceCommand($series->seriesId(), $event->ResourceId(), $event->ResourceLevel()), $series);
+		return new RFEventCommandResourceAdded($series->seriesId(), $event->resourceId(), $event->resourceLevel());
 	}
 
 	private function buildAddAccessoryCommand(AccessoryAddedEvent $event, RFReservationExistingSeries $series)
@@ -607,7 +610,7 @@ class RFReservationEventMapper
 		return new RFEventCommand($query, $series);
 	}
 
-	private function buildOwnerChangedCommand(OwnerChangedEvent $event, RFReservationExistingSeries $series)
+	private function buildOwnerChangedCommand(RFEventOwnerChanged $event, RFReservationExistingSeries $series)
 	{
 		return new RFEventOwnerChangedCommand($event);
 	}

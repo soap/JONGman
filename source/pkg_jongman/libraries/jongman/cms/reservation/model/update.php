@@ -75,8 +75,9 @@ class RFReservationModelUpdate implements IReservationModelUpdate
 				$resource,
 				$this->page->getTitle(),
 				$this->page->getDescription(),
-				$this->user);
-		
+				$this->user,
+				$this->page->getCustomerId());
+
 		$existingSeries->updateDuration($this->getReservationDuration());
 		
 		$roFactory = new RFReservationRepeatOptionsFactory();
@@ -93,11 +94,12 @@ class RFReservationModelUpdate implements IReservationModelUpdate
 		}
 
 		$existingSeries->changeResources($additionalResources);
+		/*
 		$existingSeries->changeParticipants($this->page->getParticipants());
 		$existingSeries->changeInvitees($this->page->getInvitees());
 		$existingSeries->changeAccessories($this->getAccessories());
 		$existingSeries->changeAttributes($this->getAttributes());
-
+		
 		$attachments = $this->page->getAttachments();
 		foreach ($attachments as $attachment)
 		{
@@ -117,12 +119,14 @@ class RFReservationModelUpdate implements IReservationModelUpdate
 				}
 			}
 		}
-
+		*/
+		/*
 		foreach ($this->page->getRemovedAttachmentIds() as $fileId)
 		{
 			$existingSeries->removeAttachment($fileId);
 		}
-
+		*/
+		/*
 		if ($this->page->hasStartReminder())
 		{
 			$existingSeries->addStartReminder(new RFReservationReminder($this->page->getStartReminderValue(), $this->page->getStartReminderInterval()));
@@ -131,7 +135,7 @@ class RFReservationModelUpdate implements IReservationModelUpdate
 		{
 			$existingSeries->removeStartReminder();
 		}
-
+	
 		if ($this->page->hasEndReminder())
 		{
 			$existingSeries->addEndReminder(new RFReservationReminder($this->page->getEndReminderValue(), $this->page->getEndReminderInterval()));
@@ -140,7 +144,7 @@ class RFReservationModelUpdate implements IReservationModelUpdate
 		{
 			$existingSeries->removeEndReminder();
 		}
-		
+		*/
 		return $existingSeries;
 	}
 

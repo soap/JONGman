@@ -121,24 +121,28 @@ class RFBlackoutRepository implements IBlackoutRepository
 		$query->select('bs.*, bi.id as instance_id, bi.start_date, bi.end_date')
 			->from('#__jongman_blackouts AS bs')
 			->join('inner','#__jongman_blackout_instances AS bi ON bi.blackout_id=bs.id')
-			->where('bi.id='.$blackout_id);
+			->where('bi.id='.$blackoutId);
 		
 		$dbo->setQuery($query);
+
 		$blackoutObj = $dbo->loadObject();
 		if ($blackoutObj)
 		{
 			$series = RFBlackoutSeries::fromRow($blackoutObj);
+
 			$query->clear();
 			$query->select('*')
 				->from('#__jongman_blackout_instances AS bi')
-				->where('blackout_id='.$series->Id());
+				->where('blackout_id='.$series->getId());
 			$dbo->setQuery($query);
 			$instanceObjects= $dbo->loadObjectList();
 
 			foreach ($instanceObjects as $instanceObj)
 			{
-				$instance = new RFBlackout(new RFDateRange(RFDate::fromDatabase($instanceObj->start_date, RFDate::fromDatabase($instanceObj->end_date))));
-				$instance->withId($instanceObj->instance_id);
+				$instance = new RFBlackout(
+									new RFDateRange(RFDate::fromDatabase($instanceObj->start_date), RFDate::fromDatabase($instanceObj->end_date) )
+									);
+				$instance->withId($instanceObj->id);
 				$series->addBlackout($instance);
 			}
 
@@ -157,7 +161,7 @@ class RFBlackoutRepository implements IBlackoutRepository
 			foreach ($resourceObjects as $resourceObj)
 			{
 				$series->addResource(new RFBlackoutResource(
-						$resourceObj->resource_id,
+						$resourceObj->id,
 						$resourceObj->title,
 						$resourceObj->schedule_id,
 						'',//$resourceObj->admin_group_id,

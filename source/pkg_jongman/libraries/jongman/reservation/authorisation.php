@@ -1,4 +1,5 @@
 <?php
+defined('_JEXEC') or die;
 
 class RFReservationAuthorization implements IReservationAuthorization
 {
@@ -90,7 +91,7 @@ class RFReservationAuthorization implements IReservationAuthorization
 		}
 		else
 		{
-			$canReserveForUser = $this->authorizationService->CanReserveFor($currentUser, $reservationView->OwnerId);
+			$canReserveForUser = $this->authorizationService->canReserveFor($currentUser, $reservationView->ownerId);
 			if ($canReserveForUser)
 			{
 				return true;
@@ -104,6 +105,7 @@ class RFReservationAuthorization implements IReservationAuthorization
 				}
 			}
 		}
-
+		
 		return false;
 	}
+}

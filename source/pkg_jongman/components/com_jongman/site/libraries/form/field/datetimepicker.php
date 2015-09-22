@@ -56,14 +56,14 @@ class JFormFieldDatetimepicker extends JFormField
 
 	}
 	
-	protected fucntion getJavaScript()
+	protected function getJavaScript()
 	{
-		
+		return '';
 	}
 	
 	
 	protected function getTimeslots()
 	{
-		
+		return true;
 	}
 }

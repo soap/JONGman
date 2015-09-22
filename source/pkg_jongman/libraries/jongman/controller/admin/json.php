@@ -15,7 +15,7 @@ jimport('joomla.application.component.controlleradmin');
  * JSON Admin List Controller
  *
  */
-class JMControllerAdminJson extends JControllerAdmin
+class RFControllerAdminJson extends JControllerAdmin
 {
     public function __construct($config = array())
     {
