@@ -46,6 +46,7 @@ JHtml::_('behavior.keepalive');
 			<div class="span9">
 				<div class="row-fluid form-horizontal-desktop">
 					<div class="span10">
+						<?php echo $this->form->renderField('default'); ?>
 						<?php echo $this->form->renderField('layout_id'); ?>
 						<?php echo $this->form->renderField('weekday_start'); ?>
 						<?php echo $this->form->renderField('view_days'); ?>

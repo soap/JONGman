@@ -171,8 +171,11 @@ function Recurrence(recurOptions, recurElements) {
 		}
 		else {
 			repeatIntervalUnit.text('');
-		}		
+		}
+		
+		if (repeatInterval == null) elements.repeatInterval.val('1'); 
 	}
+	
 	var AdjustTerminationDate = function () {
 		if (terminationDateSetManually) {
 			return;

@@ -11,6 +11,7 @@ jimport('joomla.application.component.controllerform');
  */
 class JongmanControllerBlackout extends JControllerForm
 {
+<<<<<<< HEAD
 
 	protected $context = 'blackout';
 
@@ -26,6 +27,10 @@ class JongmanControllerBlackout extends JControllerForm
 	 * Save new blackout
 	 * @see JControllerForm::save()
 	 */
+=======
+	protected $context = 'blackout';
+	
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 	public function save($key = null, $urlVar = null) {
 		// Check for request forgeries.
 		JSession::checkToken () or jexit ( JText::_ ( 'JINVALID_TOKEN' ) );
@@ -102,7 +107,11 @@ class JongmanControllerBlackout extends JControllerForm
 				}
 			}
 			// revert time to UTC
+<<<<<<< HEAD
 			$tz = RFApplicationHelper::getUserTimezone ();
+=======
+			$tz = JongmanHelper::getUserTimezone ();
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 			
 			$data ['start_time']	= JDate::getInstance ( $data ['start_time'], $tz )->format ( 'H:i:s', false );
 			$data ['end_time'] 		= JDate::getInstance ( $data ['end_time'], $tz )->format ( 'H:i:s', false );
@@ -116,6 +125,7 @@ class JongmanControllerBlackout extends JControllerForm
 			return false;
 		}
 		
+<<<<<<< HEAD
 		switch ($this->getTask()) {
 			case 'savethis': $validData['update_scope'] = 'this'; 
 				break;
@@ -130,6 +140,8 @@ class JongmanControllerBlackout extends JControllerForm
 				break;
 		} 
 		
+=======
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		if (!$model->save ( $validData )) {
 			// Save the data in the session.
 			$app->setUserState ( $context . '.data', $validData );
@@ -143,6 +155,7 @@ class JongmanControllerBlackout extends JControllerForm
 			return false;
 		}
 		
+<<<<<<< HEAD
 		// Redirect the user and adjust session state based on the chosen task.
 		switch ($task)
 		{
@@ -194,10 +207,23 @@ class JongmanControllerBlackout extends JControllerForm
 		// Report success with reference number
 		$this->setMessage ( JText::_( 'COM_JONGMAN_BLACKOUT_SUCCESSFULLY_MADE'));
 		
+=======
+		// Report success with reference number
+		$this->setMessage ( JText::_( 'COM_JONGMAN_BLACKOUT_SUCCESSFULLY_MADE'));
+		
+		// Clear the record id and data from the session.
+		$this->releaseEditId ( $context, $recordId );
+		$app->setUserState ( $context . '.data', null );
+		
+		// Redirect to the list screen.
+		$this->setRedirect ( JRoute::_ ( 'index.php?option=' . $this->option . '&view=' . $this->view_list . $this->getRedirectToListAppend (), false ) );
+		
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		// Invoke the postSave method to allow for the child class to access the model.
 		$this->postSaveHook ( $model, $validData );
 		
 		return true;
+<<<<<<< HEAD
 	}
 
 	/**
@@ -207,4 +233,7 @@ class JongmanControllerBlackout extends JControllerForm
 	{
 		
 	}
+=======
+	}	
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 }

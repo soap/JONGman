@@ -1,5 +1,8 @@
 <?php
+<<<<<<< HEAD
 defined('_JEXEC') or die;
+=======
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 
 class RFReservationAuthorization implements IReservationAuthorization
 {
@@ -108,4 +111,7 @@ class RFReservationAuthorization implements IReservationAuthorization
 
 		return false;
 	}
+<<<<<<< HEAD
 }
+=======
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb

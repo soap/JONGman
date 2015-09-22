@@ -187,3 +187,39 @@ ul.indented li {
 .hidden {
 	display:none;
 }
+
+.watermark {
+	color: #ebebeb;
+	font-style: italic;
+	font-weight: normal;
+}
+
+.dialog {
+	display: none;
+	/*max-height: 600px;*/
+	overflow: auto;
+}
+
+.notification-row {
+	display: table-row;
+	font-size: 12pt;
+	font-weight: normal;
+}
+
+.notification-row div {
+	padding: 5px;
+}
+
+.notification-row.alt {
+	background-color: #ced1c5;
+}
+
+div.notification-type {
+	width: 50%;
+	display: table-cell;
+}
+
+div.notification-status {
+	width: 50%;
+	display: table-cell;
+}

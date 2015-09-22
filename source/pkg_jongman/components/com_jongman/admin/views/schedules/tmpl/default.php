@@ -46,6 +46,12 @@ $trashed	= $this->state->get('filter.published') == -2 ? true : false;
 				</th>
 				<th width="1%" style="min-width:55px" class="nowrap center">
 					<?php echo JHtml::_('grid.sort', 'JSTATUS', 's.published', $listDirn, $listOrder); ?>
+<<<<<<< HEAD
+=======
+				</th>
+				<th width="5%">
+					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_DEFAULT_SCHEDULE', 's.default', $listDirn, $listOrder); ?>
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 				</th>
 				<th class="center">
 					<?php echo JHtml::_('grid.sort',  'COM_JONGMAN_HEADING_NAME', 'title', $listDirn, $listOrder); ?>
@@ -118,6 +124,9 @@ $trashed	= $this->state->get('filter.published') == -2 ? true : false;
 							echo JHtml::_('actionsdropdown.render', $this->escape($item->name));
 							?>
 						</div>
+					</td>
+					<td class="center">
+						<?php echo JHtml::_('jgrid.isdefault', $item->default, $i, 'schedules.', $canChange)?> 
 					</td>
 					<td class="nowrap has-context">
 						<div class="pull-left">

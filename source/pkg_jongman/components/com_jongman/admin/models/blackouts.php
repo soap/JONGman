@@ -52,7 +52,10 @@ class JongmanModelBlackouts extends JModelList
 		
 		$query->select('r.schedule_id');
 		$query->join('INNER', '#__jongman_resources AS r ON bsr.resource_id=r.id');
+<<<<<<< HEAD
 		
+=======
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		$query->select('sc.name as schedule_name');
 		$query->join('INNER', '#__jongman_schedules AS sc ON r.schedule_id=sc.id');
 

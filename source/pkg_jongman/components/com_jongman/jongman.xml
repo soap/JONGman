@@ -9,7 +9,11 @@
     <copyright>GPLv3</copyright>
     <license></license>
     <!--  The version string is recorded in the components table -->
+<<<<<<< HEAD
     <version>3.0.0-rc10</version>
+=======
+    <version>3.0.0-rc5</version>
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
     <!-- The description is optional and defaults to the name -->
     <description>COM_JONGMAN_XML_DESCRIPTION</description>
     <install folder="admin"> <!-- Runs on install -->
@@ -63,7 +67,11 @@
             <menu view="schedules">COM_JONGMAN_SUBMENU_SCHEDULES</menu>
             <menu view="resources">COM_JONGMAN_SUBMENU_RESOURCES</menu>
             <menu view="reservations">COM_JONGMAN_SUBMENU_RESERVATIONS</menu>
+<<<<<<< HEAD
             <menu view="blackouts">COM_JONGMAN_SUBMENU_BLACKOUTS</menu>
+=======
+             <menu view="blackouts">COM_JONGMAN_SUBMENU_BLACKOUTS</menu>
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
             <menu view="quotas">COM_JONGMAN_SUBMENU_QUOTAS</menu>
         </submenu>
         <!-- Administration Main File Copy Section -->

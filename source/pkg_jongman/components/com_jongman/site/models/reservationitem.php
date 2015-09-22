@@ -188,7 +188,11 @@ class JongmanModelReservationitem extends JModelItem
 	public function getItem($referenceNumber=null)
 	{
 		if (empty($referenceNumber)) {
+<<<<<<< HEAD
 			$pk = $this->getState($this->getName() . '.id');
+=======
+			$pk = JFactory::getApplication()->input->getInt('id', null);
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 			if (!empty($pk)) {
 				$table = JTable::getInstance('Instance', 'JongmanTable');
 				$table->load($pk);
@@ -196,9 +200,16 @@ class JongmanModelReservationitem extends JModelItem
 			}else{
 				$referenceNumber = JFactory::getApplication()->input->getCmd('ref', null);
 				if (empty($referenceNumber)) {
+<<<<<<< HEAD
 					JError::raiseWarning(500, 'No primary key provided');	
 				}
 			} 
+=======
+					
+				}
+			} 
+
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		}
 
 		/* This $pk is an instance id */

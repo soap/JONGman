@@ -34,10 +34,16 @@ $saveOrder	= $listOrder=='ordering';
 						<?php echo JHtml::_('grid.checkall'); ?>
 					</th>
 					<th width="1%" style="min-width:55px" class="nowrap center">
-						<?php echo JHtml::_('grid.sort', 'JSTATUS', 'a.published', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('grid.sort', 'JSTATUS', 'a.state', $listDirn, $listOrder); ?>
 					</th>
 					<th class="center">
 						<?php echo JHtml::_('grid.sort',  'JGLOBAL_TITLE', 'title', $listDirn, $listOrder); ?>
+					</th>
+					<th class="center">
+						<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_START_DATE', 'a.start_date', $listDirn, $listOrder); ?>
+					</th>
+					<th class="center">
+						<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_END_DATE', 'a.end_date', $listDirn, $listOrder); ?>
 					</th>
                 	<th width="10%" class="center">
                 		<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ACCESS', 'access', $listDirn, $listOrder); ?>
@@ -55,7 +61,7 @@ $saveOrder	= $listOrder=='ordering';
 			$canCheckin	= $user->authorise('core.manage',	'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
 			$canChange	= $user->authorise('core.edit.state', 'com_jongman') && $canCheckin;            
 			?>
-				<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->catid?>">
+				<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->owner_id?>">
 					<td class="order nowrap center hidden-phone">
 					<?php
 						$iconClass = '';
@@ -81,17 +87,17 @@ $saveOrder	= $listOrder=='ordering';
 					</td>
 					<td class="center">
 						<div class="btn-group">
-							<?php echo JHtml::_('jgrid.published', $item->published, $i, 'blackouts.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
+							<?php echo JHtml::_('jgrid.published', $item->state, $i, 'blackouts.', $canChange, 'cb'); ?>
 							<?php
 							// Create dropdown items
-							$action = $archived ? 'unarchive' : 'archive';
-							JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'blackouts');
+							//$action = $archived ? 'unarchive' : 'archive';
+							//JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'blackouts');
 
-							$action = $trashed ? 'untrash' : 'trash';
-							JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'blackouts');
+							//$action = $trashed ? 'untrash' : 'trash';
+							//JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'blackouts');
 
 							// Render dropdown list
-							echo JHtml::_('actionsdropdown.render', $this->escape($item->name));
+							//echo JHtml::_('actionsdropdown.render', $this->escape($item->title));
 							?>
 						</div>
 					</td>
@@ -102,9 +108,9 @@ $saveOrder	= $listOrder=='ordering';
 							<?php endif; ?>
 							<?php if ($canEdit || $canEditOwn) : ?>
 								<a href="<?php echo JRoute::_('index.php?option=com_jongman&task=blackout.edit&id='.(int) $item->id); ?>">
-									<?php echo $this->escape($item->name); ?></a>
+									<?php echo $this->escape($item->title); ?></a>
 							<?php else : ?>
-									<?php echo $this->escape($item->name); ?>
+									<?php echo $this->escape($item->title); ?>
 							<?php endif; ?>
 							<span class="small">
 								<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias));?>
@@ -113,7 +119,13 @@ $saveOrder	= $listOrder=='ordering';
 								<?php echo $item->schedule_name; ?>
 							</div>
 						</div>
-					</td>                             
+					</td>  
+					<td>
+						<?php echo JHtml::date($item->start_date, 'Y-m-d H:i', true) ;?>
+					</td>
+					<td>
+						<?php echo JHtml::date($item->end_date, 'Y-m-d H:i', true) ;?>
+					</td>                           
                 	<td class="center">
                 		<?php echo $item->access_level?>
                 	</td>

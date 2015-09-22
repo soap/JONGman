@@ -123,9 +123,14 @@ class JongmanViewReservations extends JViewLegacy
         }
         */
         if (count($options)) {
+<<<<<<< HEAD
         	RFToolbar::listButton($options);
         }
         
+=======
+        	PFToolbar::listButton($options);
+        }
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
         RFToolbar::filterButton($this->state->get('filter.isset'));
 
         return RFToolbar::render();

@@ -4,6 +4,7 @@ div.bordered {
 	outline: 1px solid black;
 }
 
+<<<<<<< HEAD
 td.signature  {
 	height: 80px;
 	background-repeat: no-repeat;
@@ -13,4 +14,8 @@ td.signature  {
 td.signature img {
 	align: center;
 	vertical-align: middle;
+=======
+td.signature {
+	height: 100px;
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 }

@@ -4,8 +4,12 @@
  * @copyright 2011 Prasit Gebsaap
  */
 defined('_JEXEC') or die;
+<<<<<<< HEAD
 JHtml::_('behavior.framework');
 //JHtml::_('behavior.tooltip');
+=======
+JHtml::_('bootstrap.tooltip');
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 
 $user		= JFactory::getUser();
 $dbo		= JFactory::getDbo();
@@ -64,7 +68,11 @@ $attribs = array('class'=>'input-small btn-group');
                     	<div class="filter-end-date btn-group">
                     		<?php echo JHtml::_('calendar', $this->state->get('filter.end_date'), 'filter_end_date', 'end_date', '%Y-%m-%d', $attribs)?>
                     	</div>                    	
+<<<<<<< HEAD
                     	<div class="clearfix"/>
+=======
+                    	<div class="clearfix"> </div>
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 					</div>
             	</div>
            	<?php if (empty($this->items)) : ?>

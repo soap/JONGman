@@ -27,7 +27,11 @@ $params->set('show_icons', 1);
     <div class="btn-toolbar btn-toolbar-top">
         <?php echo $this->toolbar;?> 
     </div>
+<<<<<<< HEAD
 	<?php //echo JHtml::_('icons.print_popup', $this->item, $params); ?>
+=======
+	<?php echo JHtml::_('icons.print_popup', $this->item, $params); ?>
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
     <div class="page-header">
 	    <h2><?php echo $this->escape($item->title); ?></h2>
 	</div>

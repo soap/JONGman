@@ -42,21 +42,21 @@ JHtml::_('behavior.keepalive');
 <form action="<?php echo JRoute::_('index.php?option=com_jongman&layout=edit&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="resource-form" class="form-validate">
 	
 	<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
-	<div class="form-horizontal">
+	<div class="form-vertical">
 		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'details')); ?>
 		
 		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', JText::_('COM_JONGMAN_DETAILS', true)); ?>
 		<div class="row-fluid">
 			<div class="span9">
-				<div class="row-fluid form-horizontal-desktop">
-					<div class="span8">
+				<div class="row-fluid">
+					<div class="span6">
 						<?php echo $this->form->renderField('schedule_id')?>
 						<?php echo $this->form->renderField('location')?>
 						<?php echo $this->form->renderField('contact_info')?>
 						
 					</div>
-					<div class="span2">
-						<?php echo $this->form->renderField('need_approval')?>
+					<div class="span6">
+						<?php echo $this->form->renderField('requires_approval')?>
 						<?php echo $this->form->renderField('allow_multi')?>
 					</div>
 				</div>

@@ -199,7 +199,11 @@ class JongmanModelReservations extends JModelList
 		$items = parent::getItems();
 		if ($items === false) return false;
 		
+<<<<<<< HEAD
 		$timezone = RFApplicationHelper::getUserTimezone();
+=======
+		$timezone = JongmanHelper::getUserTimezone();
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		
 		$params = $this->getState('params');
 		if ($params === null) {
@@ -222,11 +226,15 @@ class JongmanModelReservations extends JModelList
 			
 			$items[$i]->resources = implode(',', $dbo->loadColumn());
 			if ($workflow) {
+<<<<<<< HEAD
 				jimport('workflow.framework');
+=======
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 				$items[$i]->participant_list = array();
 				$items[$i]->invitee_list = array();
 				$items[$i]->reservation_length = RFDateRange::create($items[$i]->start_date, $items[$i]->end_date, $timezone);
 				if ($workflow) {
+<<<<<<< HEAD
 					if (WFApplicationHelper::isWorkflowEnabled('com_jongman.reservation', $items[$i]->reservation_id)) {
 						$items[$i]->workflow_enabled = true;
 						$items[$i]->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $items[$i]->reservation_id);
@@ -236,6 +244,10 @@ class JongmanModelReservations extends JModelList
 					}
 				}else{
 					$items[$i]->workflow_enabled = false;
+=======
+					$items[$i]->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $items[$i]->reservation_id);
+				}else{
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 					$items[$i]->workflow_state = new stdClass();
 				}
 			}

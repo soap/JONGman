@@ -66,10 +66,17 @@
 			type="radio"
 			class="btn-group btn-group-yesno"
 			default="show"
+<<<<<<< HEAD
 			label="COM_JONGMAN_FIELD_CONFLICT_ACTION_LABEL"
 			description="COM_JONGMAN_FIELD_CONFLICT_ACTION_DESC">
 			<option value="show">COM_JONGMAN_OPTION_CONFLICT_ACTION_SHOW</option>
 			<option value="delete">COM_JONGMAN_OPTION_CONFLICT_ACTION_DELETE</option>	
+=======
+			label=""
+			description="">
+			<option value="show">COM_JONGMAN_OPTION_CONFLICT_ACTION_SHOW</option>
+			<option value="delete">COM_JONGMAN_OPTION_CONFLICT_ACTION_SHOW</option>	
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		</field>
 			
 		<field name="note"

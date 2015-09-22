@@ -200,7 +200,11 @@ abstract class JHtmlIcons
 			}
 			else
 			{
+<<<<<<< HEAD
 				$text = '<i class="icon-print glyphicon glyphicon-print"></i>'.JText::_('JGLOBAL_PRINT');
+=======
+				$text = '<span class="icon-print"></span>' . JText::_('JGLOBAL_PRINT');
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 			}
 		}
 		else
@@ -211,6 +215,7 @@ abstract class JHtmlIcons
 		$attribs['title']   = JText::_('JGLOBAL_PRINT');
 		$attribs['onclick'] = "window.open(this.href,'win2','" . $status . "'); return false;";
 		$attribs['rel']     = 'nofollow';
+<<<<<<< HEAD
 		$attribs['class'] = 'btn btn-info hasTooltip';
 		
 		return JHtml::_('link', JRoute::_($url), $text, $attribs);
@@ -260,6 +265,12 @@ abstract class JHtmlIcons
 	
 		return JHtml::_('link', JRoute::_($url), $text, $attribs);
 	}
+=======
+
+		return JHtml::_('link', JRoute::_($url), $text, $attribs);
+	}
+
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 	/**
 	 * Method to generate a link to print an article
 	 *

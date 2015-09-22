@@ -40,7 +40,11 @@ class JongmanViewCalendar extends JViewLegacy
 		$prev 				= $this->calendar->getPreviousDate();
 		$next 				= $this->calendar->getNextDate();
 		$calendarType 		= $this->calendar->getType();
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		$this->prevLink = RFCalendarUrl::create($prev, $calendarType);
 		$this->nextLink = RFCalendarUrl::create($next, $calendarType);
 		

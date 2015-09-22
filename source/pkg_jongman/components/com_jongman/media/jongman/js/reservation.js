@@ -103,7 +103,7 @@ function Reservation(opts) {
 		if (parseFloat(rounded.RoundedHours) > 1) {
 			hourSuffix = '_MORE';
 		}
-		elements.durationDays.text(rounded.RoundedDays + ' ' + Joomla.JText._('COM_JONGMAN_DAYS'+daySuffix));
-		elements.durationHours.text(rounded.RoundedHours + ' ' + Joomla.JText._('COM_JONGMAN_HOURS'+hourSuffix));
+		elements.durationDays.text(rounded.RoundedDays + ' ' + Joomla.JText._('COM_JONGMAN_DURATION_DAYS'+daySuffix));
+		elements.durationHours.text(rounded.RoundedHours + ' ' + Joomla.JText._('COM_JONGMAN_DURATION_HOURS'+hourSuffix));
 	};
 }

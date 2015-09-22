@@ -93,7 +93,11 @@ JHtml::_('jmhtml.script.form');
 			</div>
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
+<<<<<<< HEAD
 		<?php $this->show_options = 1; $this->ignore_fieldsets = array('repeat_options');?>
+=======
+		<?php $this->show_options = 0?>
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
 		<?php echo JHtml::_('bootstrap.endTabSet'); ?>

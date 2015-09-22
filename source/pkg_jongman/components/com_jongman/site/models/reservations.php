@@ -269,7 +269,7 @@ class JongmanModelReservations extends JModelList
 		$orderDirn	= $this->getState('list.direction', 'DESC');
 
 		$query->order($db->escape($orderCol.' '.$orderDirn));
-		
+
 		return $query;
 	}
 	
@@ -296,6 +296,7 @@ class JongmanModelReservations extends JModelList
 			
 			if ($workflow) {
 				jimport('workflow.application.helper');
+<<<<<<< HEAD
 				if (WFApplicationHelper::isWorkflowEnabled('com_jongman.reservation', $items[$i]->reservation_id)) {
 					$items[$i]->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $items[$i]->reservation_id);
 					$items[$i]->workflow_enabled = true;
@@ -306,6 +307,9 @@ class JongmanModelReservations extends JModelList
 					$items[$i]->workflow_enabled = false;
 					$items[$i]->workflow_state = new stdClass();
 				}
+=======
+				$items[$i]->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $items[$i]->reservation_id);
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 			}else{
 				$items[$i]->workflow_enabled = false;
 				$items[$i]->workflow_state = new stdClass();

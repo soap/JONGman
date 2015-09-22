@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 JHtml::_('behavior.tooltip');
 
 $user		= JFactory::getUser();
+$dbo 		= JFactory::getDbo();
 $listOrder	= $this->escape($this->state->get('list.ordering'));
 $listDirn	= $this->escape($this->state->get('list.direction'));
 ?>
@@ -41,8 +42,8 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 				<th width="1%" class="hidden-phone">
 					<?php echo JHtml::_('grid.checkall'); ?>
 				</th>
-				<th width="5%">
-					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_STATE', 'a.state', $listDirn, $listOrder); ?>
+				<th width="10%">
+					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_STATE', 'r.state', $listDirn, $listOrder); ?>
 				</th>
 				<th>
 					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_TITLE', 'title', $listDirn, $listOrder); ?>
@@ -54,10 +55,10 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_RESOURCE', 'resource_title', $listDirn, $listOrder); ?>				
 				</th>	
 				<th width="10%">
-					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_START_DATE', 'start_date', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_START_DATE', 'a.start_date', $listDirn, $listOrder); ?>
 				</th>	
 				<th width="10%">
-					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_END_DATE', 'end_date', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_END_DATE', 'a.end_date', $listDirn, $listOrder); ?>
 				</th>							
 				<th width="10%">
 					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_OWNER', 'owner', $listDirn, $listOrder); ?>
@@ -72,7 +73,7 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 					<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_CREATED_DATE', 'r.created', $listDirn, $listOrder); ?>
 				</th>
 				<th width="1%" class="nowrap">
-					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 're.id', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
 				</th>
 			</tr>
 		</thead>
@@ -90,9 +91,40 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 				</td>
 				<td class="center">
+					<?php if ($this->workflow) :?>
+							<?php  $date = ($item->workflow_state->modified==$dbo->getNullDate() ? $item->workflow_state->created : $item->workflow_state->modified);?>
+							<div class="btn-group" id="reserv_<?php echo $item->reservation_id?>">
+								<button data-toggle="dropdown" class="dropdown-toggle btn btn-micro">
+									<span class="caret"></span>
+									<span class="element-invisible">JACTIONS</span>
+								</button>
+								<span class="pull-right"><?php echo JHtml::_('rfhtml.label.state', $item->workflow_state->title, $date)?></span>	
+								<ul class="dropdown-menu"></ul>	
+								<script type="text/javascript">
+									WFWorkflow.loadWorkflowState('<?php echo JURi::root()?>index.php', 'com_jongman.reservation', jQuery('#reserv_<?php echo $item->reservation_id?>'), '<?php echo $item->reservation_id?>');
+								</script>
+							</div>	
+					<?php else:?>
 					<div class="btn-group">
-						<?php echo JHtml::_('jgrid.published', $item->state, $i, 'reservations.', $canChange); ?>
+						<?php 
+							$states = array(1 => array('unapprove', 'COM_JONGMAN_APPROVED', 'COM_JONGMAN_RESERVATION_UNAPPROVE_ITEM', 'COM_JONGMAN_APPROVED', true, 'publish', 'publish'),
+								0 => array('approve', 'COM_JONGMAN_UNAPPROVED', 'COM_JONGMAN_RESERVATION_APPROVE_ITEM', 'COM_JONGMAN_UNAPPROVED', true, 'unpublish', 'unpublish'),
+								-1 => array('approve', 'COM_JONGMAN_PENDING', 'COM_JONGMAN_RESERVATION_APPROVE_ITEM', 'COM_JONGMAN_APPROVED', true, 'pending', 'pending'));
+						
+							echo JHtml::_('jgrid.state',$states, $item->state, $i, 'reservations.', $canChange); 
+							// Create dropdown items
+							if ($item->state == -1) {
+								JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_RESERVATION_APPROVE'), 'published', 'cb' . $i, 'reservations.approve');
+								JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_RESERVATION_UNAPPROVE'),'unpublished', 'cb' . $i, 'reservations.unapprove');
+							}else if ($item->state == 1) {
+								JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_RESERVATION_UNAPPROVE'),'unpublished', 'cb' . $i, 'reservations.unapprove');
+							}
+							
+							// Render dropdown list
+							echo JHtml::_('actionsdropdown.render', $this->escape($item->title));
+						?>
 					</div>
+					<?php endif;?>
 				</td>
 				<td>
 					<?php if ($item->checked_out) : ?>

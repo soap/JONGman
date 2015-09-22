@@ -32,7 +32,11 @@ class JongmanViewReservationitem extends JViewLegacy
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
+<<<<<<< HEAD
 		
+=======
+		$app = JFactory::getApplication();
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		$this->print 		= $app->input->getBool('print');
 		$this->toolbar		= $this->getToolbar();
 		
@@ -93,6 +97,7 @@ class JongmanViewReservationitem extends JViewLegacy
 	protected function _prepareDocument()
 	{
 		JHtml::_('stylesheet', 'com_jongman/jongman/report.css', false, true, false, false, false);
+<<<<<<< HEAD
 		if ($this->print || $this->format == 'pdf')
 		{
 			$this->document->setMetaData('robots', 'noindex, nofollow');
@@ -156,4 +161,11 @@ class JongmanViewReservationitem extends JViewLegacy
 		
 		return false;
 	}
+=======
+		if ($this->print)
+		{
+			$this->document->setMetaData('robots', 'noindex, nofollow');
+		}
+	}
+>>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 }

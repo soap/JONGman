@@ -27,6 +27,9 @@ class JongmanViewResource extends JViewLegacy
 		$this->item		= $this->get('Item');
 		$this->state	= $this->get('State');
         $this->canDo	= JongmanHelper::getActions();
+        //hide advanced tab from display if no field exists
+        if (count($this->form->getFieldset('advanced')) == 0) $this->ignore_fieldsets = array('advanced');
+        
         $this->addToolbar();
         parent::display($tpl);
     }

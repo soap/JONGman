@@ -58,7 +58,7 @@ class JongmanTableBlackoutInstance extends JTable
 			return false;
 		}
 		
-		if (trim($this->enddate_date) === '') {
+		if (trim($this->end_date) === '') {
 			$this->setError(JText::_('COM_JONGMAN_ERROR_BLACKOUTINSTANCE_END_DATE'));
 			return false;
 		}
@@ -66,32 +66,4 @@ class JongmanTableBlackoutInstance extends JTable
 		return true;
 	}
 
-	/**
-	 * Overload the store method for the Weblinks table.
-	 *
-	 * @param   boolean  $updateNulls  Toggle whether null values should be updated.
-	 *
-	 * @return  boolean  True on success, false on failure.
-	 * @since   3.0
-	 */
-	public function store($updateNulls = false)
-	{
-		// Initialiase variables.
-		$date	= JFactory::getDate()->toSql();
-		$userId	= JFactory::getUser()->get('id');
-
-		if (empty($this->id)) {
-			// New record.
-			$this->created		= $date;
-			$this->created_by	= $userId;
-		} 
-		else {
-			// Existing record.
-			$this->modified	= $date;
-			$this->modified_by	= $userId;
-		}
-
-		// Attempt to store the data.
-		return parent::store($updateNulls);
-	}
 }

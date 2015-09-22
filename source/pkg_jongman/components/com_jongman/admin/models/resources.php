@@ -144,7 +144,7 @@ class JongmanModelResources extends JModelList
 
 		// Filter by a single or group of categories.
 		$scheduleId = $this->getState('filter.schedule_id');
-		if (is_numeric($scheduleId)) {
+		if (is_numeric($scheduleId) && ($scheduleId != 0)) {
 			$query->where('r.schedule_id = '.(int) $scheduleId);
 		}
 		else if (is_array($scheduleId)) {
