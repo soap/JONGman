@@ -18,7 +18,7 @@ jimport('jongman.controller.form.json');
  * JONGman Blackout Form Controller
  *
  */
-class JongmanControllerBlackout extends JMControllerFormJson
+class JongmanControllerBlackout extends RFControllerFormJson
 {
 
 }

@@ -5,26 +5,26 @@ jQuery.fn.bindResourceDetails = function (resourceId, options)
 	bindResourceDetails(jQuery(this));
 
 	function getDiv()
+	{
+		if (jQuery('#resourceDetailsDiv').length <= 0)
 		{
-			if (jQuery('#resourceDetailsDiv').length <= 0)
-			{
-				return jQuery('<div id="resourceDetailsDiv"/>').appendTo('body');
-			}
-			else
-			{
-				return jQuery('#resourceDetailsDiv');
-			}
+			return jQuery('<div id="resourceDetailsDiv"/>').appendTo('body');
 		}
+		else
+		{
+			return jQuery('#resourceDetailsDiv');
+		}
+	}
 
-		function hideDiv()
+	function hideDiv()
+	{
+		var tag = getDiv();
+		var timeoutId = setTimeout(function ()
 		{
-			var tag = getDiv();
-			var timeoutId = setTimeout(function ()
-			{
-				tag.hide();
-			}, 500);
-			tag.data('timeoutId', timeoutId);
-		}
+			tag.hide();
+		}, 500);
+		tag.data('timeoutId', timeoutId);
+	}
 
 	function bindResourceDetails(resourceNameElement)
 	{

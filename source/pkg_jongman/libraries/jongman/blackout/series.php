@@ -90,6 +90,7 @@ class RFBlackoutSeries
 	 */
 	public function update($ownerId, $scope, $title, $blackoutDate, $repeatOptions, $resourceIds)
 	{
+		var_dump($scope);
 		$this->ownerId = $ownerId;
 		$this->title = $title;
 		$this->resourceIds = array();
@@ -98,7 +99,7 @@ class RFBlackoutSeries
 			$this->addResourceId($rid);
 		}
 
-		if ($scope == RFSeriesUpdateScope::ThisInstance)
+		if ($scope == RFReservationSeriesUpdatescope::THISINSTANCE)
 		{
 			$this->blackouts = array();
 			$this->addBlackout(new RFBlackout($blackoutDate));
@@ -128,7 +129,7 @@ class RFBlackoutSeries
 			$this->repeats($repeatOptions);
 		}
 
-		$this->isNew = $scope == RFSeriesUpdateScope::ThisInstance;
+		$this->isNew = $scope == RFReservationSeriesUpdatescope::THISINSTANCE;
 	}
 
 	private function getEarliestDate(RFDateRange $blackoutDate)

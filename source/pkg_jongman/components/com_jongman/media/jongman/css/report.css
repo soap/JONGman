@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+
+div.bordered {
+	outline: 1px solid black;
+}
+
+td.signature  {
+	height: 80px;
+	background-repeat: no-repeat;
+	background-position: center;	
+}
+
+td.signature img {
+	align: center;
+	vertical-align: middle;
+}

@@ -1,4 +1,5 @@
 <?php
+defined('_JEXEC') or die;
 
 class RFReservationAuthorization implements IReservationAuthorization
 {
@@ -107,3 +108,4 @@ class RFReservationAuthorization implements IReservationAuthorization
 
 		return false;
 	}
+}

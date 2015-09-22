@@ -1,17 +1,21 @@
 <?php
-//JHtml::addIncludePath(JPATH_COMPONENT.'helpers/html');
+defined('_JEXEC') or die;
 JHtml::_('behavior.tooltip');
-JHtml::_('behavior.formvalidation');
+JHtml::_('behavior.formvalidator'); // Joomla 3.4 upward
 JHtml::_('behavior.keepalive');
-
 ?>
 <script type="text/javascript">
-	// Attach a behaviour to the submit button to check validation.
+	// Attach a behavior to the submit button to check validation.
 	Joomla.submitbutton = function(task)
 	{
 		var form = document.id('reservation-form');
 		if (task == 'reservation.cancel' || task == 'instance.cancel' || document.formvalidator.isValid(form)) {
 			<?php echo $this->form->getField('description')->save() ?>
+			<?php 
+			foreach($this->editorFields as $k => $field) :
+				echo $field->save();
+			endforeach;
+			?>
 			Joomla.submitform(task, form);
 		}
 		else {
@@ -41,9 +45,9 @@ JHtml::_('behavior.keepalive');
 			<?php echo $this->title?>
 		</div>
 	</div>
+	<div class="row-fluid">	
 	<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'details')); ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', JText::_('COM_JONGMAN_RESERVARION_DETAILS', true)); ?>
-	<div class="row-fluid">	
 		<div class="span7 form-horizontal">
 			<div class="control-group">
 				<div class="control-label">
@@ -70,7 +74,14 @@ JHtml::_('behavior.keepalive');
 					<?php echo $this->form->getInput('owner_id'); ?>
 				</div>
 			</div>
-						
+			<div class="control-group">
+				<div class="control-label">
+					<?php echo $this->form->getLabel('customer_id'); ?>
+				</div>
+				<div class="controls">
+					<?php echo $this->form->getInput('customer_id'); ?>
+				</div>
+			</div>						
 			<div class="control-group">
 				<div class="control-label">
 					<?php echo $this->form->getLabel('resource_id'); ?>
@@ -109,7 +120,6 @@ JHtml::_('behavior.keepalive');
 		<div class="span5 form-horizontal">
 			<?php echo $this->loadTemplate('repeatoptions')?>
 		</div>
-	</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'description', JText::_('COM_JONGMAN_RESERVATION_DESCRIPTION', true)); ?>
 		<div class="control-grouop form-inline">
@@ -123,7 +133,7 @@ JHtml::_('behavior.keepalive');
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 	<?php if ($this->customFields) : ?>
 		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'customfields', JText::_('COM_JONGMAN_RESERVATION_CUSTOMFIELD_FIELDSET', true)); ?>
-			<div class="row-fluid form-horizontal-desktop">
+			<div class="row-fluid form-vertical">
 			<?php echo $this->loadTemplate('customfields'); ?>
 			</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
@@ -131,7 +141,7 @@ JHtml::_('behavior.keepalive');
 	<?php echo JHtml::_('bootstrap.endTabSet');?>
 
 	<?php echo $this->form->getInput('schedule_id')?>
-	
+	</div>
 	<input type="hidden" name="schedule_id" value="<?php echo $this->item->schedule_id?>" />
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="cid[]" value="<?php echo $this->item->instance_id?>" />

@@ -2,14 +2,14 @@
 <extension type="component" version="3.0.0" method="upgrade">
     <name>COM_JONGMAN</name>
     <!-- The following elements are optional and free of formatting constraints -->
-    <creationDate>April 2014</creationDate>
+    <creationDate>July 2015</creationDate>
     <author>Prasit Gebsaap</author>
     <authorEmail>prasit.gebsaap@gmail.com</authorEmail>
     <authorUrl>http://www.joomlant.org</authorUrl>
     <copyright>GPLv3</copyright>
     <license></license>
     <!--  The version string is recorded in the components table -->
-    <version>3.0.0-rc5</version>
+    <version>3.0.0-rc10</version>
     <!-- The description is optional and defaults to the name -->
     <description>COM_JONGMAN_XML_DESCRIPTION</description>
     <install folder="admin"> <!-- Runs on install -->
@@ -30,11 +30,14 @@
         </schemas>
     </update>
     <media destination="com_jongman" folder="media">
+    	<folder>administrator</folder>
+        <folder>bootstrap</folder>
+    	<folder>fullcalendar</folder>
     	<folder>images</folder>
     	<folder>jongman</folder>
     	<folder>jquery</folder>
-    	<folder>bootstrap</folder>
     	<folder>mooGrowl</folder>
+    	<folder>select2</folder>
     	<filename>index.html</filename>
     </media>
     <!-- Site Main File Copy Section -->
@@ -46,6 +49,7 @@
         <folder>controllers</folder>
         <folder>helpers</folder>        
         <folder>language</folder>
+        <folder>layouts</folder>
         <folder>libraries</folder>
         <folder>models</folder>
         <folder>views</folder>
@@ -59,7 +63,7 @@
             <menu view="schedules">COM_JONGMAN_SUBMENU_SCHEDULES</menu>
             <menu view="resources">COM_JONGMAN_SUBMENU_RESOURCES</menu>
             <menu view="reservations">COM_JONGMAN_SUBMENU_RESERVATIONS</menu>
-             <menu view="blackouts">COM_JONGMAN_SUBMENU_BLACKOUTS</menu>
+            <menu view="blackouts">COM_JONGMAN_SUBMENU_BLACKOUTS</menu>
             <menu view="quotas">COM_JONGMAN_SUBMENU_QUOTAS</menu>
         </submenu>
         <!-- Administration Main File Copy Section -->

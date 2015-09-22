@@ -35,12 +35,14 @@ class JongmanController extends JControllerLegacy
 		$view	= JRequest::getWord('view','cpanel');
 		$layout = JRequest::getWord('layout', 'default');
 
-        $view_list = array('cpanel', 'layouts', 'schedules', 'resources', 'quotas', 'reservations', 'blackouts');
+        $view_list = array('cpanel', 'layouts', 'schedules', 'resources', 'quotas', 'reservations', 'blackouts', 'customers');
         if (in_array($view, $view_list) ){
             // Load the submenu.
             JongmanHelper::addSubmenu(JRequest::getWord('view', $this->default_view));    
         }
-		JHtml::_('stylesheet', 'com_jongman/jongman/toolbar.css', false, true, false, false, false);							
+        
+		JHtml::_('stylesheet', 'com_jongman/jongman/toolbar.css', false, true, false, false, false);		
+		JHtml::_('stylesheet', 'com_jongman/administrator/styles.css', false, true, false, false, false);
         
 		
 		parent::display();

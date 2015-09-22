@@ -106,7 +106,12 @@ abstract class RFApplicationHelper
 		return true;
 	}
 
-
+	/**
+	 * Find menu item link for specific needles
+	 * @param string $needles
+	 * @param string $com_view
+	 * @return NULL
+	 */
 	public static function itemRoute($needles = null, $com_view = null)
 	{
 		$app       = JFactory::getApplication();
@@ -134,6 +139,7 @@ abstract class RFApplicationHelper
 			self::$routes[$com_name] = array();
 
 			$component = JComponentHelper::getComponent($com_name);
+			// get all menu items of specified component
 			$items     = $menus->getItems('component_id', $component->id);
 
 			foreach ($items as $item)

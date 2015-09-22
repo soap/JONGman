@@ -64,6 +64,13 @@ class JongmanHelper {
 			'index.php?option=com_jongman&view=blackouts',
 			$vName == 'blackouts'
 		);
+		
+		call_user_func(
+			array($class, 'addEntry'),
+			JText::_('COM_JONGMAN_SUBMENU_CUSTOMERS'),
+			'index.php?option=com_jongman&view=customers',
+			$vName == 'customers'
+		);
 		             
     }
     
@@ -153,8 +160,8 @@ class JongmanHelper {
 			);
 	}
 	
-    public static function quickIconButton( $link, $image, $text )
-	{
+    public static function quickIconButton_( $link, $image, $text )
+	{	
 		$lang		= JFactory::getLanguage();
 		$path = 'media/com_jongman/images/';
         
@@ -169,6 +176,16 @@ class JongmanHelper {
         return $button;
     } 
 
+    public static function quickIconButton( $link, $image, $text) 
+    {
+    	$path = 'media/com_jongman/images/';
+    	$imgUrl = JUri::root().$path;
+    	return '<div class="thumbnails jm-icon">'
+    			.'<a class="thumbnail jm-icon-inside" href="'.$link.'">'
+    			.JHtml::_('image', $imgUrl . $image, $text )
+    			.'<br /><span>'.$text.'</span></a></div>'. "\n";
+    }
+    
     public static function quickIcon($link, $image, $text)
     {
     	$html	= array();
@@ -195,6 +212,37 @@ class JongmanHelper {
 		
 		return $timezone;
 	}
+	
+	
+	/**
+	 * @param string $repeatType must be option in RepeatType enum
+	 * @param int $interval
+	 * @param RFDate $terminationDate
+	 * @param array $weekdays
+	 * @param string $monthlyType
+	 * @return IRepeatOptions
+	 */
+	public static function getRepeatOptions($repeatType, $interval, $terminationDate, $weekdays, $monthlyType)
+	{
+		switch ($repeatType) {
+			case 'daily':
+				return new RFReservationRepeatDaily($interval, $terminationDate);
+				break;
+			case 'weekly' :
+				return new RFReservationRepeatWeekly($interval, $terminationDate, $weekdays);
+				break;
+			case 'monthly' :
+				$class = 'RFReservationRepeat'.ucfirst($input['repeat_monthly_type']);
+				return new $class($interval, $terminationDate);
+				break;
+			case 'yearly' :
+				return new RFReservationRepeatYearly($interval, $terminationDate);
+				break;
+		}
+	
+		return new RFReservationRepeatNone();
+	}
+	
 	
     public static function getVersion() 
     {

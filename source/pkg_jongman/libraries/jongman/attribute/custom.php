@@ -1,5 +1,4 @@
 <?php
-<?php
 /**
  Copyright 2012-2014 Nick Korbel
 

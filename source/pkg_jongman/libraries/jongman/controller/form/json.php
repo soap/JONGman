@@ -17,7 +17,7 @@ jimport('joomla.application.component.controllerform');
  * JSON Admin Form Controller
  *
  */
-class JMControllerFormJson extends JControllerForm
+class RFControllerFormJson extends JControllerForm
 {
     /**
      * Method to run batch operations.

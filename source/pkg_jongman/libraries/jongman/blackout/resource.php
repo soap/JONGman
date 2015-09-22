@@ -1,4 +1,6 @@
 <?php
+defined('_JEXEC') or die;
+jimport('jongman.base.iresource');
 
 class RFBlackoutResource implements IResource
 {

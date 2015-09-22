@@ -61,6 +61,13 @@ class JongmanTableReservation extends JTable
 			$registry->loadArray($array['params']);
 			$array['params'] = (string) $registry;
 		}
+		
+		if (isset($array['attribs']) && is_array($array['attribs'])) {
+			$registry = new JRegistry();
+			$registry->loadArray($array['attribs']);
+			$array['attribs'] = (string) $registry;
+		}
+		
 		return parent::bind($array, $ignore);
 	}
 	

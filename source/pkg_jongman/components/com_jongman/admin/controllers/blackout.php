@@ -11,8 +11,21 @@ jimport('joomla.application.component.controllerform');
  */
 class JongmanControllerBlackout extends JControllerForm
 {
+
 	protected $context = 'blackout';
+
+	public function __construct($config=array())
+	{
+		parent::__construct($config);
+		$this->registerTask('savethis', 'save');
+		$this->registerTask('applythis', 'save');
+			
+	}
 	
+	/**
+	 * Save new blackout
+	 * @see JControllerForm::save()
+	 */
 	public function save($key = null, $urlVar = null) {
 		// Check for request forgeries.
 		JSession::checkToken () or jexit ( JText::_ ( 'JINVALID_TOKEN' ) );
@@ -89,7 +102,7 @@ class JongmanControllerBlackout extends JControllerForm
 				}
 			}
 			// revert time to UTC
-			$tz = RFApplicationHelper::getUserTimezone();
+			$tz = RFApplicationHelper::getUserTimezone ();
 			
 			$data ['start_time']	= JDate::getInstance ( $data ['start_time'], $tz )->format ( 'H:i:s', false );
 			$data ['end_time'] 		= JDate::getInstance ( $data ['end_time'], $tz )->format ( 'H:i:s', false );
@@ -102,6 +115,20 @@ class JongmanControllerBlackout extends JControllerForm
 			
 			return false;
 		}
+		
+		switch ($this->getTask()) {
+			case 'savethis': $validData['update_scope'] = 'this'; 
+				break;
+			case 'savefull': $validData['update_scope'] = 'full';
+				break;
+			case 'applythis': $validData['update_scope'] = 'this';
+				break;
+			case 'applyfull': $validData['update_scope'] = 'full';
+				break;
+			default:
+					$validData['update_scope'] = 'this';
+				break;
+		} 
 		
 		if (!$model->save ( $validData )) {
 			// Save the data in the session.
@@ -116,19 +143,68 @@ class JongmanControllerBlackout extends JControllerForm
 			return false;
 		}
 		
+		// Redirect the user and adjust session state based on the chosen task.
+		switch ($task)
+		{
+			case 'apply':
+				// Set the record data in the session.
+				$recordId = $model->getState($this->context . '.id');
+				$this->holdEditId($context, $recordId);
+				$app->setUserState($context . '.data', null);
+				$model->checkout($recordId);
+		
+				// Redirect back to the edit screen.
+				$this->setRedirect(
+						JRoute::_(
+								'index.php?option=' . $this->option . '&view=' . $this->view_item
+								. $this->getRedirectToItemAppend($recordId, $urlVar), false
+						)
+				);
+				break;
+		
+			case 'save2new':
+				// Clear the record id and data from the session.
+				$this->releaseEditId($context, $recordId);
+				$app->setUserState($context . '.data', null);
+		
+				// Redirect back to the edit screen.
+				$this->setRedirect(
+						JRoute::_(
+								'index.php?option=' . $this->option . '&view=' . $this->view_item
+								. $this->getRedirectToItemAppend(null, $urlVar), false
+						)
+				);
+				break;
+		
+			default:
+				// Clear the record id and data from the session.
+				$this->releaseEditId($context, $recordId);
+				$app->setUserState($context . '.data', null);
+		
+				// Redirect to the list screen.
+				$this->setRedirect(
+						JRoute::_(
+								'index.php?option=' . $this->option . '&view=' . $this->view_list
+								. $this->getRedirectToListAppend(), false
+						)
+				);
+				break;
+		}
+		
 		// Report success with reference number
 		$this->setMessage ( JText::_( 'COM_JONGMAN_BLACKOUT_SUCCESSFULLY_MADE'));
-		
-		// Clear the record id and data from the session.
-		$this->releaseEditId ( $context, $recordId );
-		$app->setUserState ( $context . '.data', null );
-		
-		// Redirect to the list screen.
-		$this->setRedirect ( JRoute::_ ( 'index.php?option=' . $this->option . '&view=' . $this->view_list . $this->getRedirectToListAppend (), false ) );
 		
 		// Invoke the postSave method to allow for the child class to access the model.
 		$this->postSaveHook ( $model, $validData );
 		
 		return true;
-	}	
+	}
+
+	/**
+	 * Save existing blackout
+	 */
+	public function update()
+	{
+		
+	}
 }

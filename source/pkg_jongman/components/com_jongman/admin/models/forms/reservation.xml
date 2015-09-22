@@ -50,7 +50,14 @@
 				size="40"
 				label="COM_JONGMAN_FIELD_RESERVATION_RESERVED_FOR_LABEL"
 				description="COM_JONGMAN_FIELD_RESERVATION_RESERVED_FOR_DESC" />
-				
+			
+			<field 
+				name="customer_id"
+				type="customer"
+				size="40"
+				label="COM_JONGMAN_FIELD_RESERVATION_CUSTOMER_LABEL"
+				description="COM_JONGMAN_FIELD_RESERVATION_CUSTOMER_DESC" />
+					
 			<field name="state"
 				type="list"
 				label="JPUBLISHED"
@@ -154,4 +161,13 @@
 				label="COM_JONGMAN_FIELD_RESERVATION_REPEAT_UNTIL_DATE_LABEL"
 				description="COM_JONGMAN_FIELD_RESERVATION_REPEAT_UNTIL_DATE_DESC" />
 		</fieldset>
+		<fields name="attribs">
+			<fieldset name="attribs" label="COM_JONGMAN_FIELDSET_ATTRIBS_LABEL">
+				<field name="approver_uid" label="COM_JONGMAN_FIELD_ATTRIBS_APPROVER"
+					type="text" class="inputbox" />
+				<field name="approval_date" label="COM_JONGMAN_FIELD_ATTRIBS_APPROVAL_DATE_LABEL" />
+				<field name="ack_uid" label="COM_JONGMAN_FIELD_ATTRIBS_ACK_USER_LABEL" />
+				<field name="ack_date" label="COM_JONGMAN_FIELD_ATTRIBS_ACK_USER_DATE_LABEL" />
+			</fieldset>
+		</fields>
 </form>

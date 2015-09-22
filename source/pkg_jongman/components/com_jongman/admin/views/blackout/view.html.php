@@ -27,7 +27,10 @@ class JongmanViewBlackout extends JViewLegacy
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
-
+		
+		JHtml::_('script', 'com_jongman/jongman/reservation.js', false, true);
+		JHtml::_('script', 'com_jongman/jongman/date-helper.js', false, true);
+		JHtml::_('script', 'com_jongman/jongman/recurrence.js', false, true);
 		$this->addToolbar();
 		
 		parent::display($tpl);
@@ -52,21 +55,27 @@ class JongmanViewBlackout extends JViewLegacy
 			JText::_(
 				'COM_JONGMAN_'.
 				($checkedOut
-					? 'VIEW_Blackout'
+					? 'VIEW_BLACKOUT'
 					: ($isNew ? 'ADD_BLACKOUT' : 'EDIT_BLACKOUT')).'_TITLE'
 			)
 		);
 
-		// If not checked out, can save the item.
-		if (!$checkedOut && $canDo->get('core.edit')) {
-			JToolBarHelper::apply('blackout.apply', 'JTOOLBAR_APPLY');
+		if ($isNew) {
 			JToolBarHelper::save('blackout.save', 'JTOOLBAR_SAVE');
-			JToolBarHelper::custom('blackout.save2new', 'save-new.png', null, 'JTOOLBAR_SAVE_AND_NEW', false);
-		}
+			JToolBarHelper::apply('blackout.apply', 'JTOOLBAR_APPLY');
+		}else{
+			// If not checked out, can update the item.
+			if (!$checkedOut && $canDo->get('core.edit')) {
+				if ($this->item->repeat_type === 'none') {
+					JToolBarHelper::apply('blackout.savethis', 'JTOOLBAR_APPLY');
+					JToolBarHelper::save('blackout.applythis', 'JTOOLBAR_SAVE');
+				}else{
+					JToolBarHelper::apply('blackout.savefull', 'JTOOLBAR_APPLY');
+					JToolBarHelper::save('blackout.applyfull', 'JTOOLBAR_SAVE');
+				}
 
-		// If an existing item, can save to a copy.
-		if (!$isNew && $canDo->get('core.create')) {
-			JToolBarHelper::custom('blackout.save2copy', 'save-copy.png', null, 'JTOOLBAR_SAVE_AS_COPY', false);
+				//JToolBarHelper::custom('blackout.update2new', 'save-new.png', null, 'JTOOLBAR_SAVE_AND_NEW', false);
+			}	
 		}
 
 		if (empty($this->item->id))  {

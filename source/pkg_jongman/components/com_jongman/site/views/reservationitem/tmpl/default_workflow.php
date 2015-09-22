@@ -13,8 +13,8 @@
 		<textarea id="comment" class="input-xxlarge" name="comment"></textarea>
 	</div>
 	<hr />	
-	<div>
-		<table class="table table-striped table-bordered table-hover">
+	<div class="table-responsive">
+		<table class="table table-striped table-bordered table-hover table-condensed">
 			<caption><strong><?php echo JText::_('COM_WORKFLOW_HEADING_TRANSITION_LOGS')?></strong></caption>
         	<thead>
         		<tr>

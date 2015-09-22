@@ -188,7 +188,7 @@ class JongmanModelReservationitem extends JModelItem
 	public function getItem($referenceNumber=null)
 	{
 		if (empty($referenceNumber)) {
-			$pk = JFactory::getApplication()->input->getInt('id', null);
+			$pk = $this->getState($this->getName() . '.id');
 			if (!empty($pk)) {
 				$table = JTable::getInstance('Instance', 'JongmanTable');
 				$table->load($pk);
@@ -196,10 +196,9 @@ class JongmanModelReservationitem extends JModelItem
 			}else{
 				$referenceNumber = JFactory::getApplication()->input->getCmd('ref', null);
 				if (empty($referenceNumber)) {
-					
+					JError::raiseWarning(500, 'No primary key provided');	
 				}
 			} 
-
 		}
 
 		/* This $pk is an instance id */
@@ -210,14 +209,14 @@ class JongmanModelReservationitem extends JModelItem
 		$query->select('a.id, a.start_date, a.end_date, a.reference_number, a.reservation_id')
 			->from('#__jongman_reservation_instances AS a');
 			
-		$query->select('r.title, r.created, r.created_by, r.description, r.owner_id, r.access')
+		$query->select('r.title, r.customer_id, r.created, r.created_by, r.description, r.owner_id, r.access, r.attribs')
 			->join('INNER', '#__jongman_reservations AS r ON r.id=a.reservation_id');
 			
 		$query->select('own.name as owner_name')
 			->join('LEFT', '#__users AS own ON own.id=r.owner_id');
 		
 		$query->select('ua.name as author')
-		->join('LEFT', '#__users AS ua ON ua.id=r.created_by');
+			->join('LEFT', '#__users AS ua ON ua.id=r.created_by');
 
 		$query->where('a.reference_number='.$this->_db->quote($referenceNumber));
 		
@@ -227,12 +226,37 @@ class JongmanModelReservationitem extends JModelItem
 		
 		$item->users = array();
 		$item->params = new JRegistry();
+		$item->attribs = new JRegistry($item->attribs);
 		$item->resources = $this->getResources($item->reservation_id);
+		$item->customer = $this->getCustomer($item->customer_id);
 		
 		// Compute selected asset permissions.
 		$user   = JFactory::getUser();
 		$uid    = $user->get('id');
-		$access = JongmanHelper::getActions($item->reservation_id);
+		
+		$app = JFactory::getApplication();
+		$params = $app->getParams();
+		
+		$workflow = (bool)($params->get('approvalSystem') == 2);
+		if ($workflow) {
+			jimport('workflow.framework');
+			if (WFApplicationHelper::isWorkflowEnabled('com_jongman.reservation', $item->reservation_id)) {
+				$item->workflow_enabled = true;
+				$item->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $item->reservation_id);
+			}else{
+				$item->workflow_enabled = false;
+				$item->workflow_state = new StdClass();
+			}
+		}else{
+			$item->workflow_enabled = false;
+			$item->workflow_state = new StdClass();
+		}
+		
+		if (!$item->workflow_enabled) {
+			$access = JongmanHelper::getActions($item->reservation_id);
+		}else{
+			$access = WFApplicationHelper::getActions('com_jongman.reservation', $item->reservation_id);	
+		}
 		
 		$view_access = true;
 		
@@ -253,13 +277,29 @@ class JongmanModelReservationitem extends JModelItem
 			}
 			elseif (!empty($uid) &&  $access->get('core.edit.own')) {
 				// Check for a valid user and that they are the owner.
-				if ($uid == $item->created_by) {
+				if (($uid == $item->created_by) || ($uid == $item->owner_id)) {
 					$item->params->set('access-edit', true);
 				}
 			}
 		
 			// Check edit state permission.
 			$item->params->set('access-change', $access->get('core.edit.state'));
+		}
+		
+		if (!$view_access) {
+			$item->params->set('access-delete', false);
+		}
+		else {
+			// Check general edit permission first.
+			if ($access->get('core.delete')) {
+				$item->params->set('access-delete', true);
+			}
+			elseif (!empty($uid) &&  $access->get('core.delete.own')) {
+				// Check for a valid user and that they are the owner.
+				if (($uid == $item->created_by) || ($uid == $item->owner_id)) {
+					$item->params->set('access-delete', true);
+				}
+			}
 		}
 		
 		$dispatcher = JEventDispatcher::getInstance();
@@ -270,25 +310,7 @@ class JongmanModelReservationitem extends JModelItem
 		 	$this->setError($dispatcher->getError());
 		 	return false;
 		}
-
-		$app = JFactory::getApplication();
-		$params = $app->getParams();
 		
-		$workflow = (bool)($params->get('approvalSystem') == 2);
-		if ($workflow) {
-			jimport('workflow.framework');
-			if (WFApplicationHelper::isWorkflowEnabled('com_jongman.reservation', $item->reservation_id)) {
-				$item->workflow_enabled = true;
-				$item->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $item->reservation_id);
-			}else{
-				$item->workflow_enabled = false;
-				$item->workflow_state = new StdClass();
-			}
-		}else{
-			$item->workflow_enabled = false;
-			$item->workflow_state = new StdClass();
-		}
-				
 		$this->_item[$referenceNumber] = $item;
 		return $this->_item[$referenceNumber];			
 	}
@@ -314,6 +336,23 @@ class JongmanModelReservationitem extends JModelItem
 				
 	}
 	
+	public function getCustomer($customerId = null) 
+	{
+		if ($customerId === null) {
+			return false;
+		}
+		
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('*')
+			->from('#__jongman_customers')
+			->where('id ='.$customerId);
+		
+		$db->setQuery($query);
+		$customer = $db->loadObject();
+		
+		return $customer;
+	}
 	/**
 	 * 
 	 * @return Ambigous <multitype:, string>
@@ -321,11 +360,9 @@ class JongmanModelReservationitem extends JModelItem
 	 */
 	public function getTransitions()
 	{
-		if ($this->getState('params')->get('approvalSystem'==1)) {
-			return array();
-		} 
-
 		$item = $this->getItem();
+		
+		if (!$item->workflow_enabled) return array();
 		
 		JTable::addIncludePath(JPATH_ADMINISTRATOR.'components/com_workflow/tables');
 		$wfInstance = JTable::getInstance('Instance', 'WorkflowTable');
@@ -344,12 +381,8 @@ class JongmanModelReservationitem extends JModelItem
 	 */
 	public function getLogs()
 	{
-		if ($this->getState('params')->get('approvalSystem')==1) {
-			return array();
-		}
-		
-		jimport('workflow.framework');
 		$item = $this->getItem();
+		if (!$item->workflow_enabled) return array();
 		return WFApplicationHelper::getTransitionLogs('com_jongman.reservation', $item->reservation_id);
 	}
 }

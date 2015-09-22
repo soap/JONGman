@@ -35,7 +35,7 @@ $params->set('show_icons', 1);
     <?php //echo $item->event->beforeDisplayContent;?>
 
 	<div class="item-description">
-		<dl>
+		<dl class="dl-horizontal">
 	        <dt class="start-title">
         		<?php echo JText::_('COM_JONGMAN_GRID_HEADING_RESOURCE');?>:
         	</dt>
@@ -44,6 +44,14 @@ $params->set('show_icons', 1);
         		 	<?php echo $item->resources[0]->resource_title; ?>
         		 </div>
         	</dd>
+        <?php if ($item->customer != false) : ?>
+        	<dt>
+        		<?php echo JText::_('COM_JONGMAN_GRID_HEADING_CUSTOMER')?>:
+        	</dt>
+        	<dd>
+        		<?php echo $this->escape($item->customer->name)?>
+        	</dd>
+        <?php endif;?>
   		<?php if($item->start_date != $nulldate): ?>
         	<dt class="start-title">
         		<?php echo JText::_('COM_JONGMAN_GRID_HEADING_START_DATE');?>:
@@ -91,16 +99,16 @@ $params->set('show_icons', 1);
 	</div>
 	<div class="row-fluid">
 		<form action="<?php echo htmlspecialchars(JFactory::getURI()->toString()); ?>" method="post" name="adminForm" id="adminForm" class="form-validate form-inline">
-			<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'workflow')); ?>
+			<?php echo JHtml::_('bootstrap.startTabSet', 'reservation', array('active' => 'workflow')); ?>
 				<?php if ($item->workflow_enabled) : ?>
-				<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'workflow', JText::_('COM_JONGMAN_RESERVARION_WORKLOW', true)); ?>
+				<?php echo JHtml::_('bootstrap.addTab', 'reservation', 'workflow', JText::_('COM_JONGMAN_RESERVARION_WORKLOW', true)); ?>
 					<div class="span12">
 					<?php echo $this->loadTemplate('workflow')?>
 					</div>
 				<?php echo JHtml::_('bootstrap.endTab'); ?>
 				<?php endif;?>
 				<?php if ($this->customFields) : ?>
-				<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'customfields', JText::_('COM_JONGMAN_RESERVATION_CUSTOMFIELD_FIELDSET', true)); ?>
+				<?php echo JHtml::_('bootstrap.addTab', 'reservation', 'customfields', JText::_('COM_JONGMAN_RESERVATION_CUSTOMFIELD_FIELDSET', true)); ?>
 					<div class="span12">
 					<?php echo $this->loadTemplate('customfields')?>
 					</div>

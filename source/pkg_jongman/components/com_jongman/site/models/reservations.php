@@ -26,27 +26,32 @@ class JongmanModelReservations extends JModelList
 	{
 		if (empty($config['filter_fields'])) {
 			$config['filter_fields'] = array(
-				'id', 'a.id',
-				'title', 'a.title',
-				'alias', 'a.alias',
+				'a.id', 'r.id', 
+				'title', 'r.title',
+				'r.alias', 'a.alias', 'a.reference_number',
 				'checked_out', 'a.checked_out',
 				'checked_out_time', 'a.checked_out_time',
 				'a.start_date', 'a.end_date', 
-				'published', 'a.published',
+				'r.owner_id', 'r.created_by',
+				'r.state', 'r.state',
 				'access', 'a.access', 'access_level',
 				'ordering', 'a.ordering',
 				'language', 'a.language',
-				'created', 'a.created',
-				'created_by', 'a.created_by',
-				'modified', 'a.modified',
-				'modified_by', 'a.modified_by',
+				'created', 'r.created',
+				'modified', 'r.modified',
+				'modified_by', 'r.modified_by',
 			);
 		}
 		
 		if (isset($config['context'])) {
 			$this->context = $config['context'];
 		}
+		
+		$app = JFactory::getApplication();
+		// Adjust the context to support modal layouts.
+		$layout = $app->input->getCmd('layout');
 
+		if ($layout && $layout != 'print') $this->context .= '.' . $layout;
 		parent::__construct($config);
 	}
 
@@ -61,8 +66,11 @@ class JongmanModelReservations extends JModelList
 	 * @return  void
 	 * @since   1.0
 	 */
-	protected function populateState($ordering = 'a.start_date', $direction = 'asc')
+	protected function populateState($ordering = 'a.start_date', $direction = 'DESC')
 	{
+		// Set list state ordering defaults.
+		parent::populateState($ordering, $direction);
+		
 		// Initialise variables.
 		$app = JFactory::getApplication();
 		
@@ -75,7 +83,7 @@ class JongmanModelReservations extends JModelList
 		
 		// View Layout
 		$this->setState('layout', $layout);
-		if ($layout && $layout != 'print') $this->context .= '.' . $layout;
+		//if ($layout && $layout != 'print') $this->context .= '.' . $layout;
 
 		$search = $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
@@ -92,7 +100,7 @@ class JongmanModelReservations extends JModelList
 		$end_date = $app->getUserStateFromRequest($this->context.'.filter.end_date', 'filter_end_date', '');
 		$this->setState('filter.end_date', $end_date);		
 		
-		$schedule_id = $app->getUserStateFromRequest($this->context.'.filter.schedule_id', 'filter_schedule_id', 0, 'int');
+		$schedule_id = $app->getUserStateFromRequest($this->context.'.filter.schedule_id', 'id', 0, 'int');
 		$this->setState('filter.schedule_id', $schedule_id);
 		
 		$resource_id = $app->getUserStateFromRequest($this->context.'.filter.resource_id', 'filter_resource_id', 0, 'int');
@@ -110,14 +118,17 @@ class JongmanModelReservations extends JModelList
 		$user_level = $app->getUserStateFromRequest($this->context.'.filter.user_level', 'filter_user_level', 1, 'int');
 		$this->setState('filter.user_level', $user_level);
 		
+		$workflow_state_id = $app->getUserStateFromRequest($this->context.'.filter.workflow_state_id', 'filter_workflow_state_id', null, 'int');
+		$this->setState('filter.workflow_state_id', $workflow_state_id);
+		
 		// Filter - Is set
 		$this->setState('filter.isset',
 				(is_numeric($state) || !empty($search) || is_numeric($owner_id) ||
-						is_numeric($resource_id))
+						is_numeric($resource_id) || is_numeric($workflow_state_id))
 		);
 
 		// Set list state ordering defaults.
-		parent::populateState($ordering, $direction);
+		//parent::populateState($ordering, $direction);
 	}
 
 	/**
@@ -142,8 +153,9 @@ class JongmanModelReservations extends JModelList
 		$query->from('#__jongman_reservation_instances AS a');
 		
 		$query->select('r.id as reservation_id, r.alias, r.title as reservation_title, ' . 
+				'r.repeat_type, r.repeat_options, '.
 				'r.description as reservation_description, ' .
-				'r.owner_id, 0 as user_level, ' .
+				'r.owner_id, 0 as user_level, r.customer_id, ' .
 				'r.checked_out, r.checked_out_time, r.schedule_id, ' .
 				'r.state, r.created');		
 		$query->join('INNER','#__jongman_reservations AS r ON r.id=a.reservation_id');
@@ -174,6 +186,25 @@ class JongmanModelReservations extends JModelList
 		$query->select('ag.title AS access_level');
 		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = r.access');
 
+		$workflowStateId = $this->getState('filter.workflow_state_id');
+		
+		if ($workflowStateId) {
+			$itemIds = $this->getItemIdsByWorkflowState($workflowStateId);
+			if (empty($itemIds)) {
+				$query->where('r.id = -1');	// no record so we simulate it
+			}else{
+				$query->where('r.id IN ('.implode(',', $itemIds).')');
+			}	
+		}else{		
+			// Filter by published state	
+			$published = $this->getState('filter.state');
+			if (is_numeric($published)) {
+				$query->where('r.state = ' . (int) $published);
+			} else if ($published === '') {
+				$query->where('(r.state = -1 OR r.state = 0 OR r.state = 1)');
+			}
+		}
+		
 		// Filter by search in title
 		$search = $this->getState('filter.search');
 		if (!empty($search)) {
@@ -188,14 +219,6 @@ class JongmanModelReservations extends JModelList
 		// Filter by access level.
 		if ($access = $this->getState('filter.access')) {
 			$query->where('r.access = ' . (int) $access);
-		}
-
-		// Filter by published state
-		$published = $this->getState('filter.state');
-		if (is_numeric($published)) {
-			$query->where('r.state = ' . (int) $published);
-		} else if ($published === '') {
-			$query->where('(r.state = -1 OR r.state = 0 OR r.state = 1)');
 		}
 
 		// Filter by a type id (reservation or blackout)
@@ -240,12 +263,13 @@ class JongmanModelReservations extends JModelList
 				'(a.start_date <= '.$start_date.' AND a.end_date >='.$end_date.'))'
 				);	
 		}
+		
 		// Add the list ordering clause.
-		$orderCol	= $this->state->get('list.ordering', 'a.start_date');
-		$orderDirn	= $this->state->get('list.direction', 'ASC');
+		$orderCol	= $this->getState('list.ordering', 'a.start_date');
+		$orderDirn	= $this->getState('list.direction', 'DESC');
 
 		$query->order($db->escape($orderCol.' '.$orderDirn));
-
+		
 		return $query;
 	}
 	
@@ -253,6 +277,7 @@ class JongmanModelReservations extends JModelList
 	{
 		$items = parent::getItems();
 		$timezone = RFApplicationHelper::getUserTimezone();
+		$user = JFactory::getUser();
 		
 		$params = $this->getState('params');
 		if ($params === null) {
@@ -262,19 +287,72 @@ class JongmanModelReservations extends JModelList
 			$this->setState('params', $params);
 		}
 		$workflow = (bool)($this->getState('params')->get('approvalSystem') == 2);
+		$workflowStateId = $this->getState('filter.workflow_state_id');
 		foreach($items as $i => $item) {
 			$items[$i]->participant_list = array();
 			$items[$i]->invitee_list = array();
 			$items[$i]->reservation_length = RFDateRange::create($items[$i]->start_date, $items[$i]->end_date, $timezone);
+			$mine = $items[$i]->owner_id == $user->id;
+			
 			if ($workflow) {
 				jimport('workflow.application.helper');
-				$items[$i]->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $items[$i]->reservation_id);
+				if (WFApplicationHelper::isWorkflowEnabled('com_jongman.reservation', $items[$i]->reservation_id)) {
+					$items[$i]->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $items[$i]->reservation_id);
+					$items[$i]->workflow_enabled = true;
+					
+					$actions = WFApplicationHelper::getActions('com_jongman.reservation', $items[$i]->reservation_id);		
+					
+				}else{
+					$items[$i]->workflow_enabled = false;
+					$items[$i]->workflow_state = new stdClass();
+				}
 			}else{
+				$items[$i]->workflow_enabled = false;
 				$items[$i]->workflow_state = new stdClass();
+				$actions = RFApplicationHelper::getActions('com_jongman.resource.'.$items[$i]->resource_id);
+				
 			}
+
+			$items[$i]->access_delete = false;
+			if ($actions->get('core.delete') || ($actions->get('core.delete.own') && $mine)) {
+				$items[$i]->access_delete = true;
+			}
+				
+			$items[$i]->access_change = false;
+			if ($actions->get('core.edit') || ($actions->get('core.edit.own') && $mine)) {
+				$items[$i]->access_change = true;
+			}
+			
+			/* 
+			 * @internal Buggy for pagination: Replaced by those in getListQuery
+			 */
+			
+			//filter by workflow state
+			/*
+			if (!empty($workflowStateId) && $workflowStateId > 0) {
+				if ($items[$i]->workflow_enabled == false) {
+					unset($items[$i]);
+				}else if ($items[$i]->workflow_state->id != $workflowStateId) {
+					unset($items[$i]);
+				}
+			}*/
+			
 		}
-		
 		return $items;
+	}
+	
+	protected function getItemIdsByWorkflowState($workflowStateId = null, $context='com_jongman.reservation' )
+	{
+		if ($workflowStateId === null) return array();
+		$dbo = JFactory::getDbo();
+		$query = $dbo->getQuery(true);
+		$query->select('item_id')
+			->from('#__wf_instances')
+			->where('workflow_state_id='.(int)$workflowStateId)
+			->where('context='.$dbo->quote($context));
+		$dbo->setQuery($query);
+		
+		return $dbo->loadColumn();
 	}
 	
 	/**
@@ -286,11 +364,10 @@ class JongmanModelReservations extends JModelList
 		$db     = $this->getDbo();
 		$query  = $db->getQuery(true);
 		$user   = JFactory::getUser();
-		//$access = PFtasksHelper::getActions();
 	
 		// Return empty array if no project is select
-		$schedule = (int) $this->getState('filter.schedule');
-	
+		$schedule = (int) $this->getState('filter.schedule_id');
+
 		if ($schedule <= 0) {
 			// Make an exception if we are logged in...
 			if ($user->id) {
@@ -312,19 +389,20 @@ class JongmanModelReservations extends JModelList
 		$query->join('INNER', '#__jongman_reservations AS a ON a.owner_id = u.id');
 	
 		// Implement View Level Access
-		if (!$user->authorise('core.admin', 'com_pftasks')) {
-			$groups = implode(',', $user->getAuthorisedViewLevels());
-			$query->where('a.access IN (' . $groups . ')');
+		if (!$user->authorise('core.admin', 'com_jongman')) {
+			//$groups = implode(',', $user->getAuthorisedViewLevels());
+			//$query->where('a.access IN (' . $groups . ')');
 		}
 	
 		// Filter fields
 		$filters = array();
-		$filters['a.schedule'] = array('INT-NOTZERO', $this->getState('filter.schedule'));
+		$filters['a.schedule_id'] = array('INT-NOTZERO', $this->getState('filter.schedule_id'));
 	
-		if (!$access->get('core.edit.state') && !$access->get('core.edit')) {
-			$filters['a.state'] = array('STATE', '1');
+		if ($this->getState('params')->get('approvalSystem') !=2) {
+			if (!$access->get('core.edit.state') && !$access->get('core.edit')) {
+				$filters['a.state'] = array('STATE', '1');
+			}
 		}
-	
 		// Apply Filter
 		RFQueryHelper::buildFilter($query, $filters);
 	
@@ -340,4 +418,15 @@ class JongmanModelReservations extends JModelList
 		return $items;
 	}
 	
+	protected function getStoreId($id = '')
+	{
+		$id .= ':'.$this->getState('filter.schedule_id');
+		$id .= ':'.$this->getState('filter.resource_id');
+		$id .= ':'.$this->getState('filter.start_date');
+		$id .= ':'.$this->getState('filter.end_date');
+		$id .= ':'.$this->getState('filter.workflow_state_id');
+		
+		return parent::getStoreId($id);
+		
+	}
 }

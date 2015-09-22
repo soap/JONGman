@@ -82,6 +82,7 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 		$result->repeat_options = new JRegistry($series->getRepeatOptions()->configurationString());
 			
 		$result->owner_id = $series->userId();
+		$result->customer_id = $series->getCustomerId();
 		$result->id = $table->id;
 		$result->reservation_id = $table->reservation_id;
 		$result->checked_out = 0;
@@ -186,6 +187,7 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 		$model = new RFReservationModelUpdate($this, $persistenceService, $handler, $resourceRepository, $user);
 		
 		$reservationSeries = $model->buildReservation();
+		
 		$model->handleReservation($reservationSeries);
 		
 		if (!$this->_saveresult) {
@@ -229,6 +231,42 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 		return true;
 	}
 	
+	/**
+	 * @since 3.0.0
+	 * @see JModelAdmin::delete()
+	 */
+	public function deleteById($id, $scope='deleteinstance')
+	{
+		//we have to build validData from DB!!
+		$this->validData = array();
+		
+		$item = $this->getItem($id);
+		$this->validData = (array)$item;
+		$this->validData['updatescope'] = $scope;
+		
+		$user = JFactory::getUser();
+		$reservationAction = RFReservationAction::Delete;
+	
+		$persistenceFactory = new RFFactoryReservationPersistence();
+		$persistenceService = $persistenceFactory->create($reservationAction);
+	
+		$handler = $this->getHandler($reservationAction);
+	
+		$model = new RFReservationModelDelete($this,
+				$persistenceService,
+				$handler,
+				$user);
+	
+		$reservationSeries = $model->buildReservation();
+		$model->handleReservation($reservationSeries);
+	
+		if (!$this->_saveresult) {
+			// error already set in $this->setErrors(), get called in RFReservationModelDelete class
+			return false;
+		}
+	
+		return true;
+	}
 	
 	/**
 	 * 
@@ -351,6 +389,7 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 							$repeatConfig->get('repeat_days', array()),  
 							$repeatConfig->get('repeat_monthly_type'));
 		
+		$existingSeries->withCustomer($reservation->customer_id);
 		$existingSeries->withRepeatOptions($repeatOptions);
 		$existingSeries->withId($instance->reservation_id);
 		$existingSeries->withTitle($reservation->title);
@@ -686,6 +725,8 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 	 */
 	public function getRepeatType()
 	{
+		if (!isset($this->validData['repeat_type'])) return 'none';
+		
 		return $this->validData['repeat_type'];
 	}
 	
@@ -695,6 +736,8 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 	*/
 	public function getRepeatInterval()
 	{
+		if (!isset($this->validData['repeat_interval']))  return 1;
+		
 		return $this->validData['repeat_interval'];
 	}
 	
@@ -744,6 +787,11 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 		return $this->validData['owner_id'];	
 	}
 	
+	
+	public function getCustomerId()
+	{
+		return $this->validData['customer_id'];
+	}
 	/**
 	 * @return int
 	 */

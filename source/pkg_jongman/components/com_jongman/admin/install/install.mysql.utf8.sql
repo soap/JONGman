@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_blackouts` (
   `alias` varchar(50) NOT NULL,
   `repeat_type` varchar(10) NOT NULL,
   `repeat_options` text NOT NULL,
+  `owner_id` int(11) unsigned NOT NULL,
   `created_by` int(11) unsigned NOT NULL COMMENT 'reserved by (user id)',
   `created` datetime NOT NULL COMMENT 'change from created',
   `modified_by` int(11) unsigned NOT NULL DEFAULT '0',
@@ -58,6 +59,57 @@ CREATE TABLE IF NOT EXISTS `#__jongman_blackout_resources` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='multiple resources per reservation' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
+
+--
+-- Table structure for table `#__jongman_customers`
+--
+
+DROP TABLE IF EXISTS `#__jongman_customers`;
+CREATE TABLE IF NOT EXISTS `#__jongman_customers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `address` text,
+  `suburb` varchar(100) DEFAULT NULL,
+  `state` varchar(100) DEFAULT NULL,
+  `country` varchar(100) DEFAULT NULL,
+  `postcode` varchar(100) DEFAULT NULL,
+  `telephone` varchar(255) DEFAULT NULL,
+  `fax` varchar(255) DEFAULT NULL,
+  `misc` mediumtext,
+  `image` varchar(255) DEFAULT NULL,
+  `email_to` varchar(255) DEFAULT NULL,
+  `published` tinyint(1) NOT NULL DEFAULT '0',
+  `checked_out` int(10) unsigned NOT NULL DEFAULT '0',
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `ordering` int(11) NOT NULL DEFAULT '0',
+  `params` text NOT NULL,
+  `access` int(10) unsigned NOT NULL DEFAULT '0',
+  `mobile` varchar(255) NOT NULL DEFAULT '',
+  `webpage` varchar(255) NOT NULL DEFAULT '',
+  `sortname1` varchar(255) NOT NULL,
+  `sortname2` varchar(255) NOT NULL,
+  `sortname3` varchar(255) NOT NULL,
+  `language` char(7) NOT NULL,
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created_by` int(10) unsigned NOT NULL DEFAULT '0',
+  `created_by_alias` varchar(255) NOT NULL DEFAULT '',
+  `modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_by` int(10) unsigned NOT NULL DEFAULT '0',
+  `metakey` text NOT NULL,
+  `metadesc` text NOT NULL,
+  `metadata` text NOT NULL,
+  `publish_up` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `version` int(10) unsigned NOT NULL DEFAULT '1',
+  `hits` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `idx_access` (`access`),
+  KEY `idx_checkout` (`checked_out`),
+  KEY `idx_state` (`published`),
+  KEY `idx_createdby` (`created_by`),
+  KEY `idx_language` (`language`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Table structure for table `#__jongman_layouts`
@@ -127,11 +179,13 @@ CREATE TABLE IF NOT EXISTS `#__jongman_reservations` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `schedule_id` int(11) NOT NULL,
   `owner_id` int(11) NOT NULL,
+  `customer_id` int(11) NULL,
   `title` varchar(200) NOT NULL,
   `description` text NOT NULL,
   `alias` varchar(50) NOT NULL,
   `repeat_type` varchar(10) NOT NULL,
   `repeat_options` text NOT NULL,
+  `attribs` text NULL,
   `created_by` int(11) unsigned NOT NULL COMMENT 'reserved by (user id)',
   `created` datetime NOT NULL COMMENT 'change from created',
   `modified_by` int(11) unsigned NOT NULL DEFAULT '0',
@@ -259,6 +313,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_schedules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `alias` varchar(100) NOT NULL,
   `name` varchar(100) NOT NULL,
+  `default` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',  
   `day_start` int(11) NOT NULL DEFAULT '480' COMMENT 'time start, default = 8:00',
   `day_end` int(11) NOT NULL DEFAULT '1200' COMMENT 'time end for reservation, default=20:00',
   `time_span` smallint(3) DEFAULT NULL,
