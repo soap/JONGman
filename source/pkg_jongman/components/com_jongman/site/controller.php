@@ -30,6 +30,13 @@ class JongmanController extends JControllerLegacy
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{	
+		$view = $this->input->getCmd('view', null);
+		if ($view === null) {
+			$this->setMessage(JText::_('COM_JONGMAN_ERROR_DIRECT_ACCESS_NOT_ALLOW'), 'warning');	
+			$this->setRedirect('index.php');
+			return;
+		}
+		
 		$this->_init();
 		$params = JComponentHelper::getParams('com_jongman');
 		$jongman_css = $params->get('jongman_css', '1');
@@ -37,8 +44,8 @@ class JongmanController extends JControllerLegacy
 			JHtml::_('stylesheet', 'com_jongman/jongman/jongman.css', false, true, false, false, false);
 		}
 		
-		$view = JFactory::getApplication()->input->getCmd('view', null);
 		$layout = JFactory::getApplication()->input->getCmd('layout', null);
+	
 		if (empty($layout) && $view == 'schedule') {
 			$layout = 'calendar';
 			JFactory::getApplication()->input->set('layout', 'calendar');
@@ -50,10 +57,17 @@ class JongmanController extends JControllerLegacy
 				JHtml::_('stylesheet', 'com_jongman/jongman/schedule.css', false, true, false, false, false);
 				JHtml::_('stylesheet', 'com_jongman/jongman/calendar.css', false, true, false, false, false);
 				JHtml::_('stylesheet', 'com_jongman/jongman/popup-reservation.css', false, true, false, false, false);
+				JHtml::_('script', 'com_jongman/jquery/jquery.ui.selectable.1.11.1.js', false, true);
 				JHtml::_('script', 'com_jongman/jongman/resource-popup.js', false, true);						
 				JHtml::_('script', 'com_jongman/jongman/schedule.js', false, true);						
 			}
 		}
+		
+		if (in_array($view, array('reservations', 'calendar'))) {
+			JHtml::_('script', 'com_jongman/jquery/jquery.qtip.js', false, true);
+			JHtml::_('stylesheet', 'com_jongman/jquery/jquery.qtip.css', false, true, false, false, false);
+		}
+		
 		if ($view == 'reservation') {
 			JHtml::_('stylesheet', 'com_jongman/jongman/front-reservation.css', false, true, false, false, false);
 			JHtml::_('script', 'com_jongman/jongman/reservation.js', false, true);
@@ -89,10 +103,7 @@ class JongmanController extends JControllerLegacy
 		 if (!$is_j25) {
 		 	JHtml::_('bootstrap.framework');
 		 	JHtml::_('jquery.framework');
-		 	JHtml::_('jquery.ui',array('core', 'sortable'));	
-		 	JHtml::_('script', 'com_jongman/jquery/jquery.ui.selectable.1.11.1.js', false, true);
-		 	JHtml::_('script', 'com_jongman/jquery/jquery.qtip.min.js', false, true);
-		 	JHtml::_('stylesheet', 'com_jongman/jongman/jquery.qtip.min.css', false, true, false, false, false);							
+		 	JHtml::_('jquery.ui',array('core', 'sortable'));								
 		 	//JHtml::_('stylesheet', 'com_jongman/jongman/jquery.datetimepicker.css', false, true, false, false, false);
 		 	JHtml::_('script', 'com_jongman/jquery/jquery.datepicker.js', false, true);		
 		 }else{
@@ -106,8 +117,7 @@ class JongmanController extends JControllerLegacy
 				JHtml::_('script', 'com_jongman/jquery/jquery-ui-1.9.0.custom.min.js', false, true);	
 				JHtml::_('script', 'com_jongman/jquery/jquery.ui.selectable.js', false, true);
 				JHtml::_('script', 'com_jongman/jquery/jquery.qtip.min.js', false, true);
-				JHtml::_('script', 'com_jongman/jquery/jquery.noconflict.js', false, true);	
-				JHtml::_('stylesheet', 'com_jongman/jongman/jquery.qtip.min.css', false, true, false, false, false);							
+				JHtml::_('script', 'com_jongman/jquery/jquery.noconflict.js', false, true);							
 			}
 			if ($bootstrap_js) {
 				JHtml::_('script', 'com_jongman/bootstrap/bootstrap.min.js', false, true);	
