@@ -4,6 +4,12 @@ defined('_JEXEC') or die;
 class RFCalendarReservation
 {
 	/**
+	 * 
+	 * @var int
+	 */
+	public $seriesId;
+	
+	/**
 	 * @var RFDate
 	 */
 	public $startDate;
@@ -107,11 +113,11 @@ class RFCalendarReservation
 		{
 			if ($groupSeriesByResource)
 			{
-				if (array_key_exists($reservation->seriesId, $knownSeries))
+				if (array_key_exists($reservation->reservationId, $knownSeries))
 				{
 					continue;
 				}
-				$knownSeries[$reservation->seriesId] = true;
+				$knownSeries[$reservation->reservationId] = true;
 			}
 			$results[] = self::fromView($reservation, $timezone, $user);
 		}
@@ -130,10 +136,11 @@ class RFCalendarReservation
 		$start = $reservation->startDate->toTimezone($timezone);
 		$end = $reservation->endDate->ToTimezone($timezone);
 		$resourceName = $reservation->resourceName;
-		$referenceNumber = $reservation->ReferenceNumber;
+		$referenceNumber = $reservation->referenceNumber;
 
 		$res = new RFCalendarReservation($start, $end, $resourceName, $referenceNumber);
 
+		$res->seriesId = $reservation->reservationId;
 		$res->title = $reservation->title;
 		$res->description = $reservation->description;
 		$res->displayTitle = $factory->Format($reservation, Configuration::Instance()->GetSectionKey(ConfigSection::RESERVATION_LABELS,
@@ -142,11 +149,11 @@ class RFCalendarReservation
 		$res->participant = $reservation->UserLevelId == RFReservationUserLevel::PARTICIPANT;
 		$res->owner = $reservation->UserLevelId == RFReservationUserLevel::OWNER;
 
-		$color = $reservation->UserPreferences->Get(UserPreferences::RESERVATION_COLOR);
+		$color = RFApplicationHelper::getReservationColor($res->seriesId);
 		if (!empty($color))
 		{
 			$res->color = "#$color";
-			$res->textColor = new ContrastingColor($color);
+			$res->textColor = new RFContrastingColor($color);
 		}
 
 		$res->class = self::getClass($reservation);
@@ -173,22 +180,25 @@ class RFCalendarReservation
 		{
 			$resourceMap[$resource->getResourceId()] = $resource->getName();
 		}
-
+		
 		$res = array();
 		foreach ($reservations as $reservation)
 		{
+			
 			if (!array_key_exists($reservation->resourceId, $resourceMap))
 			{
+				
 				continue;
 			}
 
 			if ($groupSeriesByResource)
 			{
-				if (array_key_exists($reservation->seriesId, $knownSeries))
+				if (array_key_exists($reservation->reservationId, $knownSeries))
 				{
+					
 					continue;
 				}
-				$knownSeries[$reservation->seriesId] = true;
+				$knownSeries[$reservation->reservationId] = true;
 			}
 
 			$timezone = RFApplicationHelper::getUserTimezone($user->id);
@@ -197,6 +207,7 @@ class RFCalendarReservation
 			$referenceNumber = $reservation->referenceNumber;
 
 			$cr = new RFCalendarReservation($start, $end, $resourceMap[$reservation->resourceId], $referenceNumber);
+			$cr->seriesId = $reservation->reservationId;
 			$cr->title = $reservation->title;
 			$cr->ownerName = $reservation->fullName; //owner_name;
 			$cr->ownerFirst = $reservation->fullName; //firstName;
@@ -204,7 +215,7 @@ class RFCalendarReservation
 			$cr->displayTitle = $factory->format($reservation);//, Configuration::Instance()->GetSectionKey(ConfigSection::RESERVATION_LABELS,
 					//ConfigKeys::RESERVATION_LABELS_RESOURCE_CALENDAR));
 
-			$color = '';//$reservation->UserPreferences->Get(UserPreferences::RESERVATION_COLOR);
+			$color = RFApplicationHelper::getReservationColor($cr->seriesId);
 			if (!empty($color))
 			{
 				$cr->color = "#$color";
