@@ -82,6 +82,15 @@ class RFReservationExistingSeries extends RFReservationSeries
 	}
 
 	/**
+	 * 
+	 * @param int $customerId
+	 */
+	public function withCustomer($customerId)
+	{
+		$this->customerId = $customerId;
+	}
+	
+	/**
 	 * @internal
 	 */
 	public function withPrimaryResource(RFResourceBookable $resource)
@@ -216,8 +225,9 @@ class RFReservationExistingSeries extends RFReservationSeries
 	 * @param string $title
 	 * @param string $description
 	 * @param JUser $updatedBy
+	 * @paran int $customerId
 	 */
-	public function update($userId, $resource, $title, $description, JUser $updatedBy)
+	public function update($userId, $resource, $title, $description, JUser $updatedBy, $customerId=null)
 	{
 		if ($this->resource->getId() != $resource->getId())
 		{
@@ -230,13 +240,14 @@ class RFReservationExistingSeries extends RFReservationSeries
 			$this->addEvent(new RFEventOwnerChanged($this, $this->userId(), $userId));
 		}
 
+		$this->customerId = $customerId;
 		$this->userId = $userId;
 		$this->resource = $resource;
 		$this->title = $title;
 		$this->description = $description;
 		$this->bookedBy = $updatedBy;
 	}
-
+	
 	/**
 	 * @param RFDateRange $reservationDate
 	 */
