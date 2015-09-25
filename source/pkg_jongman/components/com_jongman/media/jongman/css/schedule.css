@@ -70,7 +70,7 @@ td.reservable, div.reservable {
 	color: #333;
 }
 
-td.reserved, div.reserved {
+td.reserved, div.reserved, a.fc-event.reserved {
 	background-color: #408AD2;
 	color: #E0E0E0;
 }
@@ -79,11 +79,11 @@ td.reserved {
     padding-left: 1px;
 }
 
-td.reserved.hilite {
+td.reserved.hilite, a.fc-event.reserved.hilite {
 	background-color: #59A8EF;
 }
 
-td.reserved.mine, div.reserved.mine {
+td.reserved.mine, div.reserved.mine, a.fc-event.mine {
 	background-color: #6F9BAE;
 }
 
@@ -92,15 +92,15 @@ td.reserved.mine.hilite {
 	color: #ffffff;
 }
 
-td.reserved.participating, div.reserved.participating {
+td.reserved.participating, div.reserved.participating, a.fc-event.participating {
 	background-color: #875cae;
 }
 
-td.reserved.participating.hilite {
+td.reserved.participating.hilite, a.fc-event.participating.hilite {
 	background-color: #a979d1;
 }
 
-td.reserved.pending, div.reserved.pending {
+td.reserved.pending, div.reserved.pending, a.fc-event.reserved.pending {
 	background-color: #ffb540;
 	color: #ffffff;
 }
