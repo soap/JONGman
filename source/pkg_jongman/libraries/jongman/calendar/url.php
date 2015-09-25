@@ -12,12 +12,22 @@ class RFCalendarUrl
 		$app = JFactory::getApplication();
 		$input  = $app->input;
 		$resourceId = $input->getInt('rid');
-		$scheduleId = $input->getInt('sid');
-
-		$url = JRoute::_($app->getMenu()->getActive()->link, false);
+		$scheduleId = $input->getInt('sid'); 
+	
+		$menu = $app->getMenu()->getActive();
+		
+		if ($menu === null) {
+			$itemId = $input->getCmd('Itemid');
+			if (!empty($itemId)) {
+				$menu = $app->getMenu()->getItem((int)$itemId);
+			}else{
+				
+			}
+		}
+		
+		$url = JRoute::_($menu->link, false);
 		$format =  $url.'&dd=%d&mm=%d&yy=%d&caltype=%s&rid=%s&sid=%s';
 		$this->url = sprintf($format, $day, $month, $year, $type, $resourceId, $scheduleId);
-		//var_dump($this->url);
 	}
 
 	/**
