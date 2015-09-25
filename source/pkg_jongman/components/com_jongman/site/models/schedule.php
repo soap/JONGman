@@ -309,12 +309,12 @@ class JongmanModelSchedule extends JModelItem {
 		$resItems = $rModel->getItems();
 
 		if (empty($tz)) {
-			$tz = JongmanHelper::getUserTimezone();
+			$tz = RFApplicationHelper::getUserTimezone();
 		}
 		
 		$list = new RFReservationListing($tz);
 		
-		//if (empty($resItems)) return $list;
+		if (empty($resItems)) return $list;
 		
 		foreach($resItems as $item) {
 			//add reservation first
