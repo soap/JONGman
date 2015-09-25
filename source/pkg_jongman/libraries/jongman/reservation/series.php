@@ -16,6 +16,7 @@ class RFReservationSeries extends JObject
 	protected $statusId; 
 	protected $userId; // reservation owner 's user id
 	
+	protected $customerId;
 	/**
 	 * @var RFResourceBookable
 	 */
@@ -80,6 +81,7 @@ class RFReservationSeries extends JObject
 		$this->userId = (int) $data['owner_id'];
 		$this->resource = $data['resource'];
 		$this->bookedBy = JFactory::getUser();
+		if (isset($data['customer_id'])) $this->customerId = $data['customer_id'];
 		$userTz = JFactory::getUser($this->userId)->getParam('timezone'); 
 		$this->setDuration( 
 			new RFDateRange(RFDate::parse($data['start_date'], $userTz), RFDate::parse($data['end_date'], $userTz))
@@ -279,6 +281,16 @@ class RFReservationSeries extends JObject
 		return $this->bookedBy;
 	}
 	
+	
+	public function customerId()
+	{
+		return $this->getCustomerId();
+	}
+	
+	public function getCustomerId()
+	{
+		return $this->customerId;
+	}
 	/**
 	 * 
 	 * set reservation status, calculate from resource property and user right
