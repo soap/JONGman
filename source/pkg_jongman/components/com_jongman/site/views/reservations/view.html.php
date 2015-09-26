@@ -40,14 +40,18 @@ class JongmanViewReservations extends JViewLegacy
 		// Initialise variables.
 		$app				= JFactory::getApplication();
 		$doc 				= JFactory::getDocument();
+		$this->state		= $this->get('State');
 		$this->items		= $this->get('Items');
 		$this->pagination	= $this->get('Pagination');
-		$this->state		= $this->get('State');
 		$this->params     	= $this->state->get('params');
 		$this->owners		= $this->get('Owners');
 
+		$this->filterForm    = $this->get('FilterForm');
+		$this->activeFilters = $this->get('ActiveFilters');
+		
 		$this->workflow   	= ($this->params->get('approvalSystem')==2);
 		
+		JHtml::_('stylesheet', 'com_jongman/jongman/style.css', false, true, false, false, false);
 		if ($this->workflow) {
 			JHtml::_('jquery.ui');
 			jimport('workflow.framework');
@@ -59,7 +63,7 @@ class JongmanViewReservations extends JViewLegacy
 			
 			$this->workflowStates = $this->getWorkflowStates();
 		}
-		$doc->addStyleDeclaration(JUri::root(true).'/media/com_jongman/jongman/css/styles.css');
+		
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
@@ -122,10 +126,9 @@ class JongmanViewReservations extends JViewLegacy
         }
         */
         if (count($options)) {
-        	PFToolbar::listButton($options);
+        	RFToolbar::listButton($options);
         }
-        RFToolbar::filterButton($this->state->get('filter.isset'));
-
+        
         return RFToolbar::render();
     }
 	

@@ -4,7 +4,8 @@
  * @copyright 2011 Prasit Gebsaap
  */
 defined('_JEXEC') or die;
-JHtml::_('bootstrap.tooltip');
+JHtml::_('behavior.framework');
+//JHtml::_('behavior.tooltip');
 
 $user		= JFactory::getUser();
 $dbo		= JFactory::getDbo();
@@ -26,48 +27,11 @@ $attribs = array('class'=>'input-small btn-group');
 			<div class="grid">
 				<div class="btn-toolbar btn-toolbar-top">
                 	<?php echo $this->toolbar;?>
-				</div>
+				
 				<div class="clearfix"></div>
-				<div class="<?php echo $filter_in;?>collapse" id="filters">
-                	<div class="btn-toolbar">
-                    	<div class="filter-search btn-group pull-left">
-                        	<input type="text" name="filter_search" placeholder="<?php echo JText::_('JSEARCH_FILTER'); ?>" id="filter_search" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" />
-                    	</div>
-                    	<div class="filter-search-buttons btn-group pull-left">
-                        	<button type="submit" class="btn" rel="tooltip" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>">
-                            	<span aria-hidden="true" class="icon-search"></span>
-                        	</button>
-                        	<button type="button" class="btn" rel="tooltip" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>" onclick="document.id('filter_search').value='';this.form.submit();">
-                           	<span aria-hidden="true" class="icon-remove"></span>
-                        	</button>
-                    	</div>
+				<?php echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this)); ?>
+				</div>
 
-                    	<div class="clearfix"> </div>
-                    	<hr />
-
-                    	<div class="filter-author btn-group">
-                        	<select id="filter_owner_id" name="filter_owner_id" class="inputbox input-medium" onchange="this.form.submit()">
-                            	<option value=""><?php echo JText::_('JOPTION_SELECT_AUTHOR');?></option>
-                            	<?php echo JHtml::_('select.options', $this->owners, 'value', 'text', $this->state->get('filter.owner_id'));?>
-                        	</select>
-                    	</div>
-                    	<?php if ($this->workflow) :?>
-                    	<div class="filter-state btn-group">
-                        	<select id="filter_workflow_state_id" name="filter_workflow_state_id" class="inputbox input-medium" onchange="this.form.submit()">
-                            	<option value=""><?php echo JText::_('COM_JONGMAN_OPTION_SELECT_WORKFLOW_STATE');?></option>
-                            	<?php echo JHtml::_('select.options', $this->workflowStates, 'id', 'title', $this->state->get('filter.workflow_state_id'));?>
-                        	</select>
-                    	</div>
-                    	<?php endif?>
-                    	<div class="filter-start-date btn-group">
-                    		<?php echo JHtml::_('calendar', $this->state->get('filter.start_date'), 'filter_start_date', 'start_date', '%Y-%m-%d', $attribs)?>
-                    	</div>
-                    	<div class="filter-end-date btn-group">
-                    		<?php echo JHtml::_('calendar', $this->state->get('filter.end_date'), 'filter_end_date', 'end_date', '%Y-%m-%d', $attribs)?>
-                    	</div>                    	
-                    	<div class="clearfix"> </div>
-					</div>
-            	</div>
            	<?php if (empty($this->items)) : ?>
 				<div class="alert alert-no-items">
 					<?php echo JText::_('COM_JONGMAN_NO_MATCHING_RESULTS'); ?>
@@ -84,22 +48,22 @@ $attribs = array('class'=>'input-small btn-group');
 							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_STATE', 'r.state', $listDirn, $listOrder); ?>
 						</th>
 						<th>
-							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_TITLE', 'reservation_title', $listDirn, $listOrder); ?>
+							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_TITLE', 'r.title', $listDirn, $listOrder); ?>
 						</th>
 						<th width="10%">
 							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_RESOURCE_NAME', 'resource_name', $listDirn, $listOrder); ?>
 						</th>
 						<th width="10%">
-							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_RESERVED_FOR', 'reserved_for', $listDirn, $listOrder); ?>
+							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_RESERVED_FOR', 'r.owner_id', $listDirn, $listOrder); ?>
 						</th>
 						<th width="10%">
-							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_START_DATETIME', 'start_date', $listDirn, $listOrder); ?>
+							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_START_DATETIME', 'a.start_date', $listDirn, $listOrder); ?>
 						</th>
 						<th width="10%">
-							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_END_DATETIME', 'end_date', $listDirn, $listOrder); ?>
+							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_END_DATETIME', 'a.end_date', $listDirn, $listOrder); ?>
 						</th>
 						<th width="10%">
-							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_RESERVED_BY', 'reserved_by', $listDirn, $listOrder); ?>
+							<?php echo JHtml::_('grid.sort', 'COM_JONGMAN_HEADING_RESERVATION_RESERVED_BY', 'r.created_by', $listDirn, $listOrder); ?>
 						</th>
 						<th width="1%" class="nowrap">
 							<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'r.id', $listDirn, $listOrder); ?>
@@ -187,6 +151,17 @@ $attribs = array('class'=>'input-small btn-group');
 							<?php
 								// Create dropdown items
 								JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_VIEW'), '', 'cb'.$i, 'instance.view');
+								if ($item->repeat_type === 'none'){ 
+									if ($item->access_delete) {
+										JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_DELETE'),  '-minus', 'cb'.$i, 'instances.deleteinstance');
+									}
+								}else{
+									if ($item->access_delete) {
+										JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_DELETE_FUTURE'),  '-minus', 'cb'.$i, 'instances.deletefuture');
+										JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_JONGMAN_ACTION_DELETE_FULL'),  '-minus', 'cb'.$i, 'instances.deletefull');
+									}
+								}
+								
 								// Render dropdown list
 								echo JHtml::_('actionsdropdown.render', $this->escape($item->reservation_title));
 							?>
@@ -232,11 +207,11 @@ $attribs = array('class'=>'input-small btn-group');
 	PNotify.prototype.options.styling = "bootstrap2"; //jqueryui
 	var stack_bar_top = {"dir1": "down", "dir2": "right", "push": "top", "spacing1": 0, "spacing2": 0};
 </script>
-<div id="transition-dialog" style="display:none; cursor: default">
-	<div class="modal-dialog">
+<div id="transition-dialog" class="dialog" role="dialog" style="display:none; cursor: default">
+	<div class="modal-dialog" role="document">
 		<div class="modal-content">
-			<div class="modal-header">			
-				<button type="button" class="close" aria-hidden="true" onclick="jQuery.unblockUI();">×</button>
+			<div class="modal-header row">			
+				<button type="button" class="close" aria-hidden="true" onclick="jQuery.unblockUI();"></button>
 				<h4 class="modal-title">You are about to make a transition</h4>
 			</div>
 			<div class="modal-body">
