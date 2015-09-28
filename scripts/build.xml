@@ -106,6 +106,7 @@
 				<copy todir="${repo.folder}/${package.name}/modules/${element.name}" haltonerror="false">
 					<fileset dir="${source.dir}">
 						<include name="**/*"/>
+						<exclude name="**/*.bak"/>
 					</fileset>
 				</copy>
 			</then>
@@ -130,6 +131,7 @@
 				<copy todir="${repo.folder}/${package.name}/plugins/${element.name}" haltonerror="false">
 					<fileset dir="${source.dir}">
 						<include name="**/*"/>
+						<exclude name="**/*.bak"/>
 					</fileset>
 				</copy>
 			</then>
@@ -150,11 +152,13 @@
 		<copy todir="${repo.folder}/${package.name}/components/${element.name}/site" haltonerror="false">
 			<fileset dir="${project.root}/components/${element.dir}">
 				<include name="**/*"/>
+				<exclude name="**/*.bak"/>
 			</fileset>
 		</copy>
 		<copy todir="${repo.folder}/${package.name}/components/${element.name}/admin" haltonerror="false">
 			<fileset dir="${project.root}/administrator/components/${element.dir}">
 				<include name="**/*"/>
+				<exclude name="**/*.bak"/>
 			</fileset>
 		</copy>
 		<!-- Move the manifest to the parent directory -->
@@ -179,6 +183,7 @@
 		<copy todir="${repo.folder}/${package.name}/libraries/${element.dir}" haltonerror="false" overwrite="true">
 			<fileset dir="${project.root}/libraries/${element.dir}">
 				<include name="**/*"/>
+				<exclude name="**/*.bak"/>
 			</fileset>
 		</copy>
 		<copy todir="${repo.folder}/${package.name}/libraries/${element.dir}" haltonerror="false" overwrite="true">
@@ -208,6 +213,7 @@
 				<copy todir="${repo.folder}/${package.name}/templates/${element.name}" haltonerror="false">
 					<fileset dir="${source.dir}">
 						<include name="**/*"/>
+						<exclude name="**/*.bak"/>
 					</fileset>
 				</copy>
 			</then>
@@ -226,6 +232,7 @@
 					<copy todir="${repo.folder}/${package.name}/${subfolder}/${element.name}/media" haltonerror="false">
 						<fileset dir="${project.root}/media/${element.name}">
 							<include name="**/*"/>
+							<exclude name="**/*.bak"/>
 						</fileset>
 					</copy>
 				</then>
@@ -296,6 +303,7 @@
 		<copy todir="${build.folder}/${package.name}/tmp" haltonerror="false">
 			<fileset dir="${repo.folder}/${package.name}">
 				<include name="**/*"/>
+				<exclude name="**/*.bak"/>
 				<exclude name="**/.svn" />
 			</fileset>
 		</copy>
@@ -308,7 +316,8 @@
 	<target name="zip_package">
 		<zip destfile="${build.folder}/${package.name}_${build.version}_${build.datetime}.zip">
 			<fileset dir="${build.folder}/${package.name}/tmp">
-				<include name="**/**" />	
+				<include name="**/**" />
+				<exclude name="**/*.bak"/>		
 			</fileset>
 		</zip>
 	</target>
@@ -494,4 +503,3 @@
     ******************************************************************************************************  -->
 
 </project>
-
