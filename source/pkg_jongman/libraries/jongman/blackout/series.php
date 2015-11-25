@@ -54,6 +54,8 @@ class RFBlackoutSeries
 	protected $isNew = true;
 
 	protected $currentBlackoutInstanceId;
+	
+	protected $state = 1;
 
 	/**
 	 * @param int $userId
@@ -90,10 +92,10 @@ class RFBlackoutSeries
 	 */
 	public function update($ownerId, $scope, $title, $blackoutDate, $repeatOptions, $resourceIds)
 	{
-		var_dump($scope);
 		$this->ownerId = $ownerId;
 		$this->title = $title;
 		$this->resourceIds = array();
+		
 		foreach($resourceIds as $rid)
 		{
 			$this->addResourceId($rid);
@@ -132,6 +134,22 @@ class RFBlackoutSeries
 		$this->isNew = $scope == RFReservationSeriesUpdatescope::THISINSTANCE;
 	}
 
+	public function getState()
+	{
+		return $this->state;	
+	}
+	
+	public function publish($value, $userId=null)
+	{
+		if ($this->state == $value) return true;
+
+		if ($value == 1) {
+			
+		}else{
+			$this->state = $value;
+		}
+	}
+	
 	private function getEarliestDate(RFDateRange $blackoutDate)
 	{
 		$earliestDate = $blackoutDate;
@@ -274,6 +292,11 @@ class RFBlackoutSeries
 	public function withId($id)
 	{
 		$this->seriesId = $id;
+	}
+	
+	public function withState($value) 
+	{
+		$this->state = $value;
 	}
 
 	public function withRepeatOptions(IRepeatOptions $repeatOptions)

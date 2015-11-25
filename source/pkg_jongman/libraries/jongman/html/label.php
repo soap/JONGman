@@ -113,6 +113,89 @@ abstract class RFhtmlLabel
 		return implode('', $html);
 	}
 
+	/**
+	 * Returns a daterang as literal label
+	 *
+	 * @param     string    $date       The date range
+	 * @param     string    $compact    If set to true, will only show the amount of days
+	 *
+	 * @return    string                The label html
+	 */
+	public static function daterange($startDate, $endDate, $compact = false, $options = array())
+	{
+		static $format = null;
+		static $time_offset = null;
+	 
+		if (is_null($format)) {
+			$params = JComponentHelper::getParams('com_jongman');
+			$format = $params->get('datetimeFormat');
+	
+			if (!$format) {
+				$format = JText::_('DATE_FORMAT_LC1');
+			}
+		}
+	
+		if (is_null($time_offset)) {
+			$config = JFactory::getConfig();
+			$user   = JFactory::getUser();
+	
+			$time_offset = $user->getParam('timezone', $config->get('offset'));
+		}
+	
+		if (!isset($options['tz'])) {
+			$options['tz'] = true;
+		}
+	
+		$string = RFDate::relative($startDate, $options['tz']);
+		if ($string == false) return '';
+	
+		if ($options['tz']) {
+			// Get a date object based on UTC.
+			$dateObj  = JFactory::getDate($startDate, 'UTC');
+			$now_date = JFactory::getDate('now', 'UTC');
+	
+			// Set the correct time zone based on the user configuration.
+			$dateObj->setTimeZone(new DateTimeZone($time_offset));
+			$now_date->setTimeZone(new DateTimeZone($time_offset));
+	
+			$timestamp = strtotime($dateObj->calendar('Y-m-d H:i:s', true));
+			$now       = strtotime($now_date->format('Y-m-d H:i:s', true, false));
+		}
+		else {
+			$timestamp = strtotime($startDate);
+			$now = time();
+		}
+	
+		$remaining = $timestamp - $now;
+		$is_past   = ($remaining <= 0) ? true : false;
+		$tooltip   = JHtml::_('date', $startDate, $format, ($options['tz'] ? false : true));
+		$tooltip  .= ' - '.JHtml::_('date', $endDate, $format, ($options['tz'] ? false : true));		
+		if ($compact) {
+			$days   = round($remaining / 86400);
+	
+			if ($days == 0) {
+				$string = '0';
+			}
+			else {
+				$string = ($is_past ? '' : '+') . $days;
+			}
+		}
+	
+		$past_class   = (isset($options['past-class'])   ? $options['past-class']   : 'label-important');
+		$past_icon    = (isset($options['past-icon'])    ? $options['past-icon']    : 'warning');
+		$future_class = (isset($options['future-class']) ? $options['future-class'] : 'label-success');
+		$future_icon  = (isset($options['future-icon'])  ? $options['future-icon']  : 'calendar');
+	
+	
+		$html = array();
+		$html[] = '<span class="label ' . ($is_past ? $past_class : $future_class);
+		$html[] = ' hasTooltip" rel="tooltip" title="' . $tooltip . '" style="cursor: help">';
+		$html[] = '<span aria-hidden="true" class="icon-' . ($is_past ? $past_icon : $future_icon) . '"></span> ';
+		$html[] = $string;
+		$html[] = '</span>';
+	
+		return implode('', $html);
+	}
 
 	/**
 	 * Returns the author of an item as label
@@ -135,18 +218,18 @@ abstract class RFhtmlLabel
 			return '';
 		}
 
-		$tooltip = $string . '::' . JHtml::_('date', $date, ($format ? $format : JText::_('DATE_FORMAT_LC1')));
+		$tooltip = $string . '<br />' . JHtml::_('date', $date, ($format ? $format : JText::_('DATE_FORMAT_LC1')));
 
 		$html = array();
-		$html[] = '<span class="label hasTip" title="' . $tooltip . '" style="cursor: help">';
-		$html[] = '<i class="icon-user"></i> ';
+		$html[] = '<span class="label label-info hasTooltip" title="' . $tooltip . '" style="cursor: help">';
+		$html[] = '<i class="icon-user glyphicon glyphicon-user"></i> ';
 		$html[] = htmlspecialchars($name, ENT_COMPAT, 'UTF-8');
 		$html[] = '</span>';
 
 		return implode('', $html);
 	}
 
-	public static function state($name = null, $date = null, $format = null)
+	public static function state($name = null, $date = null, $format = null, $color='')
 	{
 		if (!$name || !$date) {
 			return '';
@@ -158,10 +241,16 @@ abstract class RFhtmlLabel
 			return '';
 		}
 	
-		$tooltip = $string . '::' . JHtml::_('date', $date, ($format ? $format : JText::_('DATE_FORMAT_LC1')));
+		$tooltip = $string . '<br />' . JHtml::_('date', $date, ($format ? $format : JText::_('DATE_FORMAT_LC1')));
 	
 		$html = array();
-		$html[] = '<span class="label label-info hasTip" title="' . $tooltip . '" style="cursor: help">';
+		if (!empty($color)) {
+			$bgColor = self::hex2rgb($color);
+			$html[] = '<span class="label hasTooltip" title="' . $tooltip . '" style="cursor: help; background-color: rgb('.implode(',', $bgColor).')">';
+		}else{
+			$html[] = '<span class="label label-info hasTooltip" title="' . $tooltip . '" style="cursor: help">';
+		}
+		
 		//$html[] = '<i class="icon-tasks icon-white"></i> ';
 		$html[] = htmlspecialchars($name, ENT_COMPAT, 'UTF-8');
 		$html[] = '</span>';
@@ -247,5 +336,23 @@ abstract class RFhtmlLabel
 		}
 
 		return implode('', $html);
+	}
+	
+	private static function hex2rgb($hex) 
+	{
+		$hex = str_replace("#", "", $hex);
+
+		if(strlen($hex) == 3) {
+			$r = hexdec(substr($hex,0,1).substr($hex,0,1));
+			$g = hexdec(substr($hex,1,1).substr($hex,1,1));
+			$b = hexdec(substr($hex,2,1).substr($hex,2,1));
+		}else{
+			$r = hexdec(substr($hex,0,2));
+			$g = hexdec(substr($hex,2,2));
+			$b = hexdec(substr($hex,4,2));
+		}
+		$rgb = array($r, $g, $b);
+
+		return $rgb; // returns an array with the rgb values
 	}
 }

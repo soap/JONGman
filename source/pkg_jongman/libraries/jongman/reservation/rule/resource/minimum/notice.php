@@ -23,7 +23,8 @@ class RFReservationRuleResourceMinimumNotice implements IReservationValidationRu
 				/* @var $instance RFReservation */
 				foreach ($reservationSeries->getInstances() as $instance)
 				{
-					if ($instance->startDate()->greaterThan($minStartDate))
+					// reservation cannot be less than min notice time
+					if ($instance->startDate()->lessThan($minStartDate))
 					{
 						$this->__message = JText::sprintf("COM_JONGMAN_ERROR_RULE_MIN_NOTICE", $minStartDate->format("Y-m-d H:i:s"));
 						return new RFReservationRuleResult(false, $this->__message);

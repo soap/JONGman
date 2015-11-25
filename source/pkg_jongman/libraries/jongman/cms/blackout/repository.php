@@ -28,7 +28,7 @@ interface IBlackoutRepository
 	 * @param int $blackoutId
 	 * @return RFBlackoutSeries
 	*/
-	public function loadByBlackoutId($blackoutId);
+	public function loadByInstanceId($instanceId);
 }
 
 class RFBlackoutRepository implements IBlackoutRepository
@@ -54,6 +54,12 @@ class RFBlackoutRepository implements IBlackoutRepository
 		return $seriesId;
 	}
 
+	/**
+	 * 
+	 * @param RFBlackoutSeries $blackoutSeries
+	 * @return unknown
+	 * @todo improve this method based on Joomla Model save method (add event support by plugin etc)
+	 */
 	private function addSeries (RFBlackoutSeries $blackoutSeries)
 	{
 		$dbo = JFactory::getDbo();
@@ -62,7 +68,10 @@ class RFBlackoutRepository implements IBlackoutRepository
 		$data = array('owner_id' => $blackoutSeries->ownerId(), 
 					'title' => $blackoutSeries->title(), 
 					'repeat_type' => $blackoutSeries->repeatType(), 
-					'repeat_options'=> $blackoutSeries->repeatConfigurationString());
+					'repeat_options'=> $blackoutSeries->repeatConfigurationString(),
+					'alias' => JFilterOutput::stringURLSafe(JUserHelper::genRandomPassword()),
+					'state' => $blackoutSeries->getState()
+			);
 		$table->bind($data);
 		$table->check();
 		$table->store();
@@ -113,7 +122,7 @@ class RFBlackoutRepository implements IBlackoutRepository
 	 * @param int $blackoutId
 	 * @return RFBlackoutSeries
 	 */
-	public function loadByBlackoutId($blackoutId)
+	public function loadByInstanceId($instanceId)
 	{
 		$dbo = JFactory::getDbo();
 		$query = $dbo->getQuery(true);
@@ -121,46 +130,28 @@ class RFBlackoutRepository implements IBlackoutRepository
 		$query->select('bs.*, bi.id as instance_id, bi.start_date, bi.end_date')
 			->from('#__jongman_blackouts AS bs')
 			->join('inner','#__jongman_blackout_instances AS bi ON bi.blackout_id=bs.id')
-<<<<<<< HEAD
-			->where('bi.id='.$blackoutId);
+			->where('bi.id='.$instanceId);
 		
 		$dbo->setQuery($query);
 
-=======
-			->where('bi.id='.$blackout_id);
-		
-		$dbo->setQuery($query);
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		$blackoutObj = $dbo->loadObject();
 		if ($blackoutObj)
 		{
 			$series = RFBlackoutSeries::fromRow($blackoutObj);
-<<<<<<< HEAD
 
 			$query->clear();
 			$query->select('*')
 				->from('#__jongman_blackout_instances AS bi')
 				->where('blackout_id='.$series->getId());
-=======
-			$query->clear();
-			$query->select('*')
-				->from('#__jongman_blackout_instances AS bi')
-				->where('blackout_id='.$series->Id());
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 			$dbo->setQuery($query);
 			$instanceObjects= $dbo->loadObjectList();
 
 			foreach ($instanceObjects as $instanceObj)
 			{
-<<<<<<< HEAD
 				$instance = new RFBlackout(
 									new RFDateRange(RFDate::fromDatabase($instanceObj->start_date), RFDate::fromDatabase($instanceObj->end_date) )
 									);
 				$instance->withId($instanceObj->id);
-=======
-				$instance = new RFBlackout(new RFDateRange(RFDate::fromDatabase($instanceObj->start_date, RFDate::fromDatabase($instanceObj->end_date))));
-				$instance->withId($instanceObj->instance_id);
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 				$series->addBlackout($instance);
 			}
 
@@ -179,11 +170,7 @@ class RFBlackoutRepository implements IBlackoutRepository
 			foreach ($resourceObjects as $resourceObj)
 			{
 				$series->addResource(new RFBlackoutResource(
-<<<<<<< HEAD
 						$resourceObj->id,
-=======
-						$resourceObj->resource_id,
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 						$resourceObj->title,
 						$resourceObj->schedule_id,
 						'',//$resourceObj->admin_group_id,
@@ -217,6 +204,7 @@ class RFBlackoutRepository implements IBlackoutRepository
 			$instance->start_date = $start->toDatabase();
 			$instance->end_date = $end->toDatabase(); 
 			$table->store();
+			
 		}
 		else
 		{

@@ -57,7 +57,7 @@ abstract class RFToolbar
         $html = array();
         $html[] = '<div class="btn-group pull-right">';
         $html[] = '<a data-toggle="collapse" data-target="' . $target . '" class="btn' . $class . '">';
-        $html[] = '<span aria-hidden="true" class="icon-filter"></span> ' . JText::_('JSEARCH_FILTER');
+        $html[] = '<span aria-hidden="true" class="icon-filter"></span> ' . JText::_('COM_JONGMAN_ACTION_SEARCH_FILTER');
         $html[] = '</a>';
         $html[] = '</div>';
 
@@ -207,6 +207,7 @@ abstract class RFToolbar
 
     protected static function renderButton($text, $task = '', $list = false, $options = array())
     {
+    	JHtml::_('behavior.core');
         $html  = array();
         $class = (isset($options['class']) ? $options['class'] : 'btn-info');
         $href  = (isset($options['href'])  ? $options['href']  : 'javascript:void(0);');
@@ -241,13 +242,13 @@ abstract class RFToolbar
         $html[] = addslashes(JText::_($text));
         $html[] = '</a>';
 
-        JHtml::_('behavior.core');
         return implode("", $html);
     }
 
 
     protected static function renderListItem($text, $task = '', $list = false, $options = array())
     {
+    	JHtml::_('behavior.core');
         $html  = array();
         $href  = (isset($options['href']) ? $options['href']  : 'javascript:void(0);');
         $icon  = (isset($options['icon']) ? $options['icon']  : '');
@@ -290,7 +291,6 @@ abstract class RFToolbar
         $html[] = '</a>';
         $html[] = '</li>';
 
-        JHtml::_('behavior.core');
         return implode("", $html);
     }
 }

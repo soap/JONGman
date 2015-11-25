@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class CustomAttributeTypes
+class RFCustomAttributeTypes
 {
 	const SINGLE_LINE_TEXTBOX = 1;
 	const MULTI_LINE_TEXTBOX = 2;
@@ -26,7 +26,7 @@ class CustomAttributeTypes
 	const CHECKBOX = 4;
 }
 
-class CustomAttributeCategory
+class RFCustomAttributeCategory
 {
 	const RESERVATION = 1;
 	const USER = 2;
@@ -35,7 +35,7 @@ class CustomAttributeCategory
 	const RESOURCE_TYPE = 5;
 }
 
-class CustomAttribute
+class RFCustomAttribute
 {
 	/**
 	 * @var int

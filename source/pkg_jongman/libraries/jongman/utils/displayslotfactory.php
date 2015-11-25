@@ -23,7 +23,7 @@ class RFDisplaySlotFactory
 		}else{
 			$class = '';
 		}
-		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"reserved {$class} mine clickres slot\" resid=\"{$slot->getInstanceId()}\">";
+		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"reserved {$class} mine clickres slot\" resid=\"{$slot->getReferenceNumber()}\">";
 		$html[] = $slot->label();
 		$html[] = "</td>";
 		
@@ -38,7 +38,7 @@ class RFDisplaySlotFactory
 		}else{
 			$class = '';
 		}
-		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"reserved {$class} clickres slot\" resid=\"{$slot->getInstanceId()}\">";
+		$html[] = "<td colspan=\"{$slot->periodSpan()}\" class=\"reserved {$class} clickres slot\" resid=\"{$slot->getReferenceNumber()}\">";
 		$html[] = $slot->label();
 		$html[] = "</td>";
 		

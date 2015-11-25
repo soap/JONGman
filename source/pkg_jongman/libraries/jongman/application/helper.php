@@ -106,12 +106,7 @@ abstract class RFApplicationHelper
 		return true;
 	}
 
-	/**
-	 * Find menu item link for specific needles
-	 * @param string $needles
-	 * @param string $com_view
-	 * @return NULL
-	 */
+
 	public static function itemRoute($needles = null, $com_view = null)
 	{
 		$app       = JFactory::getApplication();
@@ -139,7 +134,6 @@ abstract class RFApplicationHelper
 			self::$routes[$com_name] = array();
 
 			$component = JComponentHelper::getComponent($com_name);
-			// get all menu items of specified component
 			$items     = $menus->getItems('component_id', $component->id);
 
 			foreach ($items as $item)
@@ -160,7 +154,7 @@ abstract class RFApplicationHelper
 				}
 			}
 		}
-
+		
 		if ($needles) {
 			foreach ($needles as $view => $ids)
 			{
@@ -176,7 +170,7 @@ abstract class RFApplicationHelper
 		}
 		else {
 			$active = $menus->getActive();
-
+			
 			if ($active && $active->component == $com_name) {
 				if ($com_view) {
 					if (isset(self::$routes[$com_name][$view_name][0])) {
@@ -227,5 +221,54 @@ abstract class RFApplicationHelper
 	public static function getServerTimezone()
 	{
 		return JFactory::getConfig()->get('offset', 'UTC');
+	}
+	
+	public static function getActions($asset=null)
+	{
+		if ($asset === null) {
+			$asset = 'com_jongman';
+		}
+		
+		$user = JFactory::getUser();
+		$result = new JObject();
+		
+    	$actions = array(
+    		'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.state', 'core.delete', 'core.edit.own', 'core.delete.own'
+    	);
+		
+		foreach ($actions as $action) {
+			$result->set($action, $user->authorise($action, $asset));
+		}
+		
+		return $result;
+	}
+	
+	public static function getReturnPage($vName=null)
+	{
+		$app = JFactory::getApplication();
+		
+		if ($vName === null) {
+			$vName = $app->input->getCmd('view', null);
+		}
+		
+		$return = $app->getUserStateFromRequest('com_jongman.'.$vName.'.return_page', 'return_page');
+		if (empty($return)) return false;
+		
+		return base64_decode($return);
+	}
+	
+	public static function getReservationColor($seriesId)
+	{
+		$params = JComponentHelper::getParams('com_jongman');
+		$workflowEnabled = $params->get('approvalSystem')==2;
+
+		if (!$workflowEnabled) return '';
+		$state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $seriesId );
+		$color = '';
+		if($state) {
+			$color = $state->color;
+			if ($color[0]== '#') $color = ltrim($state->color, '#');
+		}
+		return $color;
 	}
 }
