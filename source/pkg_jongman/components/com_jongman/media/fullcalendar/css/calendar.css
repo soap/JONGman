@@ -95,6 +95,13 @@ ul.jqtree-tree .jqtree-toggler {
 	top: 10%;
 }
 
+#calendarFilter {
+	text-align: center;
+    float: none;
+    margin: 0 auto;
+    background-color: #ffffff;
+}
+
 #resourceGroupsContainer {
 	background-color: #fff;
 	padding:10px;

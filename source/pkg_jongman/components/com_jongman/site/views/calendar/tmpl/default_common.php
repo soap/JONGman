@@ -3,10 +3,11 @@ $displayDate = $this->displayDate;
 $today = RFDate::now()->toTimezone(RFApplicationHelper::getUserTimezone());
 $calendarTimeFormat = 'h:mmt';
 $calendarDateFormat = 'd/M';
-$url = 'index.php?option=com_jongman&task=instance.view&itemId='.JFactory::getApplication()->input->getInt('Itemid');
+$Itemid = JFactory::getApplication()->input->getInt('Itemid');
+//$url = 'index.php?option=com_jongman&task=instance.view&itemId='.JFactory::getApplication()->input->getInt('Itemid');
 $reservable = ((JFactory::getUser()->get('id') > 0) && ( ($this->resourceId > 0) || ($this->scheduleId > 0)) ) ? 'true' : 'false';
 ?>
-<div clas="calendar-container container">
+<div class="calendar-container">
 	<div id="calendar" class=""></div>
 
 	<div id="dayDialog" class="dialog">
@@ -31,7 +32,7 @@ jQuery(document).ready(function() {
 					title: '<?php echo $reservation->displayTitle?>',
 					start: '<?php echo $reservation->startDate->format('Y-m-d H:i:s');?>',
 					end: '<?php echo $reservation->endDate->format('Y-m-d H:i:s');?>',
-					url: '<?php echo $url.'&id='.$reservation->seriesId; ?>',
+					url: '<?php echo JRoute::_('index.php?option=com_jongman&task=instance.view&id='.$reservation->seriesId, false ); ?>',
 					allDay: false,
 					color: '<?php echo $reservation->color; ?>',
 					textColor: '<?php echo $reservation->textColor; ?>',
@@ -43,21 +44,21 @@ jQuery(document).ready(function() {
 	?>
 
 	var options = {
-					view: '<?php echo $this->viewMode?>',
-					year: '<?php echo $displayDate->year()?>',
-					month: '<?php echo $displayDate->month()?>',
-					date: '<?php echo $displayDate->day()?>',
-					dayClickUrl: '<?php echo JRoute::_('index.php?option=com_jongman&view=calendar&caltype=day&sid='.$this->scheduleId.'&rid='.$this->resourceId, false)?>',
-					dayNames: aDayNames,
-					dayNamesShort: aDayNamesShort,
-					monthNames: aMonthNames,
-					monthNamesShort: aMonthNamesShort,
-					timeFormat: '<?php echo $calendarTimeFormat?>',
-					dayMonth: '<?php echo $calendarDateFormat?>',
-					firstDay: '<?php echo $this->firstDay?>',
-					reservationUrl: '<?php echo JRoute::_('index.php?option=com_jongman&task=reservation.add&sid='.$this->scheduleId.'&rid='.$this->resourceId, false)?>',
-					reservable: <?php echo $reservable?>
-				};
+		view: '<?php echo $this->viewMode?>',
+		year: '<?php echo $displayDate->year()?>',
+		month: '<?php echo $displayDate->month()?>',
+		date: '<?php echo $displayDate->day()?>',
+		dayClickUrl: '<?php echo JRoute::_('index.php?option=com_jongman&view=calendar&caltype=day&sid='.$this->scheduleId.'&rid='.$this->resourceId, false)?>',
+		dayNames: aDayNames,
+		dayNamesShort: aDayNamesShort,
+		monthNames: aMonthNames,
+		monthNamesShort: aMonthNamesShort,
+		timeFormat: '<?php echo $calendarTimeFormat?>',
+		dayMonth: '<?php echo $calendarDateFormat?>',
+		firstDay: <?php echo $this->firstDay?>,
+		reservationUrl: '<?php echo JRoute::_('index.php?option=com_jongman&task=reservation.add&sid='.$this->scheduleId.'&rid='.$this->resourceId, false)?>',
+		reservable: <?php echo $reservable?>
+	};
 
 	var calendar = new Calendar(options, reservations);
 	calendar.init();

@@ -80,6 +80,10 @@ class JDocumentPdf extends JDocumentHTML
 		$this->pdf->SetFont("thsarabun", "", 12, true);
 	} 
 	
+	public function setName($name)
+	{
+		$this->name = $name;
+	}
 	/**
 	 * Returns the document name
 	 * @return	string
@@ -128,7 +132,12 @@ class JDocumentPdf extends JDocumentHTML
 	public function render($cache = false, $params = array())
 	{	
 		$pdf = $this->pdf;
-		$pdf->setHeaderData('' , 0, $this->getTitle(), $this->getHeader());
+		if ($this->getHeader()) {
+			$pdf->setPrintHeader(true);
+			$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+			$pdf->setHeaderFont(array('thsarabun', '', 10));
+			$pdf->setHeaderData('' , 0, $this->getTitle(), $this->getHeader());
+		}
 		$pdf->SetTextColor(100, 100, 100);
 		
 		$data = parent::render();
@@ -139,10 +148,10 @@ class JDocumentPdf extends JDocumentHTML
 		$pdf->AddPage();
 		
 		$pdf->writeHTML($data, true, false, true, false, '');
-
+		
 		JResponse::setHeader('Content-type', 'application/pdf', true);// Because of cache
 		JResponse::setHeader('Content-disposition', 'inline; filename="'.$this->getName().'.pdf"', true);
-		return $pdf->Output($this->getName(), 'I');
+		return $pdf->Output($this->getName().'.pdf', 'I');
 	}
 	
 

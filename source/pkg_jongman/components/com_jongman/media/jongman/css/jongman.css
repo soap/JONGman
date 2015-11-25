@@ -1,23 +1,101 @@
 @CHARSET "UTF-8";
 
-/* Avoid using the width divs. They are here for 3PD Extensions if needed
- * Use the specific layout divs listed after. See also the th.width entries */
-div.jm-width-1 { width: 1%;}
-div.jm-width-3 { width: 3%;}
-div.jm-width-5 { width: 5%;}
-div.jm-width-10 { width: 10%;}
-div.jm-width-20 { width: 20%;}
-div.jm-width-30 { width: 30%;}
-div.jm-width-35 { width: 35%; }
-div.jm-width-40 { width: 40%;}
-div.jm-width-45 { width: 45%;}
-div.jm-width-50 { width: 50%;}
-div.jm-width-55 { width: 55%;}
-div.jm-width-60 { width: 60%; }
-div.jm-width-65 { width: 65%;}
-div.jm-width-70 { width: 70%;}
-div.jm-width-80 { width: 80%;}
-div.jm-width-100 { width: 100%;}
+input.inputbox  {
+    background-color:#fff;
+    font-size: 16px !important;
+}
+.reservation-list {
+	background-color: #fff;
+}
+
+.filter-author .filter-state .filter-start-date .filter-end-date {
+	margin-left: 2px;
+	margin-top: 5px;
+}
+
+
+#filter-search {
+	background-color:#fff !important;
+}
+
+.bs-callout {
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+}
+.bs-callout h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+.bs-callout p:last-child {
+    margin-bottom: 0;
+}
+.bs-callout code {
+    border-radius: 3px;
+}
+.bs-callout+.bs-callout {
+    margin-top: -5px;
+}
+.bs-callout-default {
+    border-left-color: #777;
+}
+.bs-callout-default h4 {
+    color: #777;
+}
+.bs-callout-primary {
+    border-left-color: #428bca;
+}
+.bs-callout-primary h4 {
+    color: #428bca;
+}
+.bs-callout-success {
+    border-left-color: #5cb85c;
+}
+.bs-callout-success h4 {
+    color: #5cb85c;
+}
+.bs-callout-danger {
+    border-left-color: #d9534f;
+}
+.bs-callout-danger h4 {
+    color: #d9534f;
+}
+.bs-callout-warning {
+    border-left-color: #f0ad4e;
+}
+.bs-callout-warning h4 {
+    color: #f0ad4e;
+}
+.bs-callout-info {
+    border-left-color: #5bc0de;
+}
+.bs-callout-info h4 {
+    color: #5bc0de;
+}
+
+/* enable tooltip on disabled btn class for twitter bootstrap*/
+.btn.disabled {
+    pointer-events: auto;
+}
+
+.nav-tabs{
+  background-color:#f6f6f6;
+}
+.tab-content{
+    padding:5px
+}
+.nav-tabs > li > a{
+  border: medium solid; 
+  border-top-left-radius: 20px; 
+  border-top-right-radius: 20px; 
+}
+.nav-tabs > li > a:hover{
+  background-color: #303136 !important;
+  color:#fff;
+}
+
 .clr { clear: both; }
 .clrlft { clear: left; }
 .clrrt { clear: right; }
@@ -222,4 +300,22 @@ div.notification-type {
 div.notification-status {
 	width: 50%;
 	display: table-cell;
+}
+
+.pagination {
+	height: auto !important;
+	margin: 11px 0;	
+}
+
+ul.pagination {
+	/* display: inline-block !important;*/
+	height: auto !important;
+}
+
+div.counter, div.filters, span.display-limit{
+	height: auto;
+}
+
+div.input-append {
+	margin-bottom: 0px;
 }

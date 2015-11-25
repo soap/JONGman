@@ -14,15 +14,15 @@ $assoc = JLanguageAssociations::isEnabled();
 JFactory::getDocument()->addScriptDeclaration('
 	Joomla.submitbutton = function(task)
 	{
-		if (task == "contact.cancel" || document.formvalidator.isValid(document.getElementById("contact-form")))
+		if (task == "customer.cancel" || document.formvalidator.isValid(document.getElementById("customer-form")))
 		{
-			Joomla.submitform(task, document.getElementById("contact-form"));
+			Joomla.submitform(task, document.getElementById("customer-form"));
 		}
 	};
 ');
 ?>
 
-<form action="<?php echo JRoute::_('index.php?option=com_jongman&view=customer&layout=edit&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="contact-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_jongman&view=customer&layout=edit&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="customer-form" class="form-validate">
 
 	<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
 
@@ -61,7 +61,7 @@ JFactory::getDocument()->addScriptDeclaration('
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-		<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+		<?php //echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
 		<?php if ($assoc) : ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'associations', JText::_('JGLOBAL_FIELDSET_ASSOCIATIONS', true)); ?>

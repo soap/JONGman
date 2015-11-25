@@ -1,8 +1,8 @@
 <?php
 defined('_JEXEC') or die;
-jimport('joomla.application.component.controllerform');
+jimport('jongman.controller.form');
 
-class JongmanControllerInstance extends JControllerForm
+class JongmanControllerInstance extends RFControllerForm
 {
 	protected $view_list = 'schedule';
 	
@@ -22,16 +22,21 @@ class JongmanControllerInstance extends JControllerForm
 	
 	public function edit($key=null, $urlVar=null)
 	{
-		$this->setReturnPage();
+		$this->setReturnPage('com_jongman.reservation.return_page');
 		if (!parent::edit($key, $urlVar)) {
 				
-			$returnPage = $this->getReturnPage(true);
+			$returnPage = $this->getReturnPage(null, true);
 			if (!empty($returnPage)) {
 				$this->setRedirect(JRoute::_($returnPage, false));
 			}
 		}
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @todo validate if it is workflow enable item, then use state based action control
+	 * @see JControllerForm::allowEdit()
+	 */
 	public function allowEdit($data = array(), $key = 'id') 
 	{
 		$user = JFactory::getUser();
@@ -69,13 +74,15 @@ class JongmanControllerInstance extends JControllerForm
 		return true;
 	}
 	
-	public function view($key='reference_number', $urlVar='ref')
+	public function view($key=null, $urlVar='id')
 	{
 		$app   = JFactory::getApplication();
 		$model = $this->getModel();
 		$table = $model->getTable();
 		$cid   = $this->input->post->get('cid', array(), 'array');
 		$context = "$this->option.view.$this->context";
+	
+		$this->setReturnPage('com_jongman.reservationitem.return_page');
 		
 		// Determine the name of the primary key for the data.
 		if (empty($key))
@@ -91,17 +98,9 @@ class JongmanControllerInstance extends JControllerForm
 		
 		// Get the previous record id (if any) and the current record id.
 		if ((int)count($cid)) {
-			$urlVar = 'id';
 			$recordId = $cid[0];
 		}else{
-			if ($urlVar == 'ref') {
-				$referenceNumber = $this->input->getCmd($urlVar);
-				$table->load(array('reference_number'=>$referenceNumber));
-				$recordId = $table->id;
-				$urlVar = 'id';
-			}else{
-				$recordId =  $this->input->getInt($urlVar);
-			}
+			$recordId =  $this->input->getInt($urlVar);
 		}
 		
 		$this->setReturnPage();
@@ -111,7 +110,7 @@ class JongmanControllerInstance extends JControllerForm
 			$this->setError(JText::_('COM_JONGMAN_ERROR_VIEW_NOT_PERMITTED'));
 			$this->setMessage($this->getError(), 'error');
 
-			$return = $this->getReturnPage(true);
+			$return = $this->getReturnPage(null, true);
 			if (!empty($return)) {
 				$this->setRedirect(JRoute::_($return, false));
 			}else{
@@ -135,8 +134,7 @@ class JongmanControllerInstance extends JControllerForm
 							. $this->getRedirectToItemAppend($recordId, $urlVar), false
 					)
 			);
-		
-			return true;		
+		return true;		
 	}
 	/**
 	 * save only existing reservation instance
@@ -177,7 +175,7 @@ class JongmanControllerInstance extends JControllerForm
 			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $recordId));
 			$this->setMessage($this->getError(), 'error');
 
-			$return = $this->getReturnPage(true);
+			$return = $this->getReturnPage('com_jongman.reservation.return_page', true);
 			if (!empty($return)) {
 				$this->setRedirect(JRoute::_($return, false));
 			}else{
@@ -200,7 +198,7 @@ class JongmanControllerInstance extends JControllerForm
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_SAVE_NOT_PERMITTED'));
 			$this->setMessage($this->getError(), 'error');
 			
-			$return = $this->getReturnPage(true);
+			$return = $this->getReturnPage('com_jongman.reservation.return_page', true);
 			if (!empty($return)) {
 				$this->setRedirect(JRoute::_($return, false));
 			}else{
@@ -333,7 +331,7 @@ class JongmanControllerInstance extends JControllerForm
 		$this->releaseEditId($context, $recordId);
 		$app->setUserState($context . '.data', null);
 		
-		$return = $this->getReturnPage(true);
+		$return = $this->getReturnPage('com_jongman.reservation.return_page', true);
 		if (!empty($return)) {
 			$this->setRedirect(JRoute::_($return, false));
 		}else{
@@ -351,7 +349,204 @@ class JongmanControllerInstance extends JControllerForm
 		return true;
 	}		
 	
-
+	public function delete()
+	{
+		// Check for request forgeries.
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+	
+		// Initialise variables.
+		$app   = JFactory::getApplication();
+		$lang  = JFactory::getLanguage();
+		$model = $this->getModel();
+		$table = $model->getTable();
+		$data	 = JRequest::getVar('jform', array(), 'post', 'array');
+		$checkin = property_exists($table, 'checked_out');
+		$context = "$this->option.edit.$this->context";
+		$task = $this->getTask();
+	
+		// Determine the name of the primary key for the data.
+		if (empty($key))
+		{
+			$key = $table->getKeyName();
+		}
+	
+		// To avoid data collisions the urlVar may be different from the primary key.
+		if (empty($urlVar))
+		{
+			$urlVar = $key;
+		}
+	
+		$recordId = JRequest::getInt($urlVar);
+	
+		if (!$this->checkEditId($context, $recordId))
+		{
+			// Somehow the person just went to the form and tried to save it. We don't allow that.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $recordId));
+			$this->setMessage($this->getError(), 'error');
+				
+			$return = $this->getReturnPage(null, true);
+			if (!empty($return)) {
+				$this->setRedirect(JRoute::_($return, false));
+			}else{
+				$this->setRedirect(
+						JRoute::_(
+								'index.php?option=' . $this->option . '&view=' . $this->view_list
+								. $this->getRedirectToListAppend(), false
+						)
+				);
+			}
+			return false;
+		}
+	
+		// Populate the row id from the session.
+		$data[$key] = $recordId;
+	
+		// Access check.
+		if (!$this->allowDelete($data, $key))
+		{
+			$this->setError(JText::_('JLIB_APPLICATION_ERROR_DELETE_NOT_PERMITTED'));
+			$this->setMessage($this->getError(), 'error');
+	
+			$return = $this->getReturnPage(null, true);
+			if (!empty($return)) {
+				$this->setRedirect(JRoute::_($return, false));
+			}else{
+				$this->setRedirect(
+						JRoute::_(
+								'index.php?option=' . $this->option . '&view=' . $this->view_list
+								. $this->getRedirectToListAppend(), false
+						)
+				);
+			}
+			return false;
+		}
+	
+		switch ($this->getTask()) {
+			case 'deleteinstance':
+				$updatescope = 'this';
+				break;
+			case 'deletefull':
+				$updatescope = 'full';
+				break;
+			case 'deletefuture':
+				$updatescope = 'future';
+				break;
+			default:
+				$updatescope = 'this';
+				break;
+		}
+	
+		// pass for validate usage
+		$data['updatescope'] = $updatescope;
+	
+		// Test whether the data is valid, no need here
+		$validData = $data;
+	
+		// Check for validation errors.
+		if ($validData === false)
+		{
+			// Get the validation messages.
+			$errors = $model->getErrors();
+	
+			// Push up to three validation messages out to the user.
+			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++)
+			{
+				if ($errors[$i] instanceof Exception){
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
+				}
+				else {
+					$app->enqueueMessage($errors[$i], 'warning');
+				}
+			}
+				
+			$tz = RFApplicationHelper::getUserTimezone();
+			$data['start_time'] = JDate::getInstance($data['start_time'], $tz)->format('H:i:s', false);
+			$data['end_time'] = JDate::getInstance($data['end_time'], $tz)->format('H:i:s', false);
+	
+			// Save the data in the session.
+			$app->setUserState($context . '.data', $data);
+	
+			// Redirect back to the edit screen.
+			$this->setRedirect(
+					JRoute::_(
+					'index.php?option=' . $this->option . '&view=' . $this->view_item
+					. $this->getRedirectToItemAppend($recordId, $urlVar), false
+					)
+					);
+	
+			return false;
+		}
+	
+		// checkin before attempt to delete
+		if ($checkin && $model->checkin($validData[$key]) === false)
+		{
+			// Save the data in the session.
+			$app->setUserState($context . '.data', $validData);
+		
+			// Check-in failed, so go back to the record and display a notice.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError()));
+			$this->setMessage($this->getError(), 'error');
+						
+			$this->setRedirect(
+						JRoute::_(
+								'index.php?option=' . $this->option . '&view=' . $this->view_item
+								. $this->getRedirectToItemAppend($recordId, $urlVar), false
+						)
+				);
+					
+			return false;
+		}
+	
+		if (!$model->delete($validData))
+		{
+			// Save the data in the session.
+			$app->setUserState($context . '.data', $validData);
+	
+			// Redirect back to the edit screen.
+			$this->setError(JText::sprintf('COM_JONGMAN_RESERVATION_ERROR_DELETE_FAILED', $model->getError()));
+			$this->setMessage($this->getError(), 'error');
+	
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . '&view=' . $this->view_item
+					. $this->getRedirectToItemAppend($recordId, $urlVar), false
+					)
+			);
+			return false;
+		}
+				
+		$this->setMessage(
+			JText::_(
+				($lang->hasKey($this->text_prefix .'_DELETE_SUCCESS') ? $this->text_prefix : 'JLIB_APPLICATION') . '_DELETE_SUCCESS'
+			)
+		);
+	
+		// Clear the record id and data from the session.
+		$this->releaseEditId($context, $recordId);
+		$app->setUserState($context . '.data', null);
+	
+		// this delete action always comes from edit view
+		if ($this->getReturnPage('com_jongman.reservation.return_page')) {
+			$return = $this->getReturnPage('com_jongman.reservation.return_page', true);
+		}else{
+			$itemId = RFApplicationHelper::itemRoute(null, 'com_jongman.calendar');
+			$return = 'index.php?option=com_jongman&view=calendar&Itemid='.$itemId;
+		}
+	
+		if (!empty($return)) {
+			$this->setRedirect(JRoute::_($return, false));
+		}else{
+			// Redirect to the list screen.
+			$this->setRedirect(
+					JRoute::_(
+						'index.php?option=' . $this->option . '&view=' . $this->view_list
+						. $this->getRedirectToListAppend(), false
+					)
+			);
+		}
+		return true;
+	}
+		
 	/**
 	 * Method to cancel an edit.
 	 * @param   string  $key  The name of the primary key of the URL variable.
@@ -386,7 +581,7 @@ class JongmanControllerInstance extends JControllerForm
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $recordId));
 				$this->setMessage($this->getError(), 'error');
 				
-				$return = $this->getReturnPage(true);
+				$return = $this->getReturnPage(null, true);
 				if (!empty($return)) {
 					$this->setRedirect(JRoute::_($return, false));
 				}else{
@@ -424,7 +619,7 @@ class JongmanControllerInstance extends JControllerForm
 		$this->releaseEditId($context, $recordId);
 		$app->setUserState($context . '.data', null);
 	
-		$return = $this->getReturnPage(true);
+		$return = $this->getReturnPage(null, true);
 		if (empty($return)) {
 			$this->setRedirect(
 					JRoute::_(
@@ -438,198 +633,7 @@ class JongmanControllerInstance extends JControllerForm
 	
 		return true;
 	}	
-	
-	public function delete()
-	{
-		// Check for request forgeries.
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-		
-		// Initialise variables.
-		$app   = JFactory::getApplication();
-		$lang  = JFactory::getLanguage();
-		$model = $this->getModel();
-		$table = $model->getTable();
-		$data  = JRequest::getVar('jform', array(), 'post', 'array');
-		$checkin = property_exists($table, 'checked_out');
-		$context = "$this->option.edit.$this->context";
-		$task = $this->getTask();
-		
-		// Determine the name of the primary key for the data.
-		if (empty($key))
-		{
-			$key = $table->getKeyName();
-		}
-		
-		// To avoid data collisions the urlVar may be different from the primary key.
-		if (empty($urlVar))
-		{
-			$urlVar = $key;
-		}
-		
-		$recordId = JRequest::getInt($urlVar);
 
-		if (!$this->checkEditId($context, $recordId))
-		{
-			// Somehow the person just went to the form and tried to save it. We don't allow that.
-			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $recordId));
-			$this->setMessage($this->getError(), 'error');
-			
-			$return = $this->getReturnPage(true);
-			if (!empty($return)) {
-				$this->setRedirect(JRoute::_($return, false));	
-			}else{
-				$this->setRedirect(
-					JRoute::_(
-						'index.php?option=' . $this->option . '&view=' . $this->view_list
-						. $this->getRedirectToListAppend(), false
-					)
-				);
-			}
-			return false;
-		}
-		
-		// Populate the row id from the session.
-		$data[$key] = $recordId;
-		
-		// Access check.
-		if (!$this->allowDelete($data, $key))
-		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_DELETE_NOT_PERMITTED'));
-			$this->setMessage($this->getError(), 'error');
-		
-			$return = $this->getReturnPage(true);
-			if (!empty($return)) {
-				$this->setRedirect(JRoute::_($return, false));
-			}else{
-				$this->setRedirect(
-					JRoute::_(
-						'index.php?option=' . $this->option . '&view=' . $this->view_list
-						. $this->getRedirectToListAppend(), false
-					)
-				);
-			}
-			return false;
-		}
-		
-		switch ($this->getTask()) {
-			case 'deleteinstance':
-				$updatescope = 'this';
-				break;
-			case 'deletefull':
-				$updatescope = 'full';
-				break;
-			case 'deletefuture':
-				$updatescope = 'future';
-				break;
-			default:
-				$updatescope = 'this';
-				break;
-		}
-		
-		// pass for validate usage
-		$data['updatescope'] = $updatescope;
-		
-		// Test whether the data is valid, no need here
-		$validData = $data;
-
-		// Check for validation errors.
-		if ($validData === false)
-		{
-			// Get the validation messages.
-			$errors = $model->getErrors();
-		
-			// Push up to three validation messages out to the user.
-			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++)
-			{
-				if ($errors[$i] instanceof Exception)
-				{
-					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
-				}
-				else {
-					$app->enqueueMessage($errors[$i], 'warning');
-				}
-			}
-			
-			$tz = RFApplicationHelper::getUserTimezone();
-			$data['start_time'] = JDate::getInstance($data['start_time'], $tz)->format('H:i:s', false);
-			$data['end_time'] = JDate::getInstance($data['end_time'], $tz)->format('H:i:s', false);
-		
-			// Save the data in the session.
-			$app->setUserState($context . '.data', $data);
-		
-			// Redirect back to the edit screen.
-			$this->setRedirect(
-				JRoute::_(
-					'index.php?option=' . $this->option . '&view=' . $this->view_item
-					. $this->getRedirectToItemAppend($recordId, $urlVar), false
-				)
-			);
-		
-			return false;
-		}
-		
-		// checkin before attempt to delete
-		if ($checkin && $model->checkin($validData[$key]) === false) 
-		{
-			// Save the data in the session.
-			$app->setUserState($context . '.data', $validData);
-			
-			// Check-in failed, so go back to the record and display a notice.
-			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError()));
-			$this->setMessage($this->getError(), 'error');
-			
-			$this->setRedirect(
-					JRoute::_(
-							'index.php?option=' . $this->option . '&view=' . $this->view_item
-							. $this->getRedirectToItemAppend($recordId, $urlVar), false
-					)
-			);
-			
-			return false;
-		}
-
-		if (!$model->delete($validData))
-		{
-			// Save the data in the session.
-			$app->setUserState($context . '.data', $validData);
-		
-			// Redirect back to the edit screen.
-			$this->setError(JText::sprintf('COM_JONGMAN_RESERVATION_ERROR_DELETE_FAILED', $model->getError()));
-			$this->setMessage($this->getError(), 'error');
-		
-			$this->setRedirect(
-				JRoute::_(
-					'index.php?option=' . $this->option . '&view=' . $this->view_item
-					. $this->getRedirectToItemAppend($recordId, $urlVar), false
-				)
-			);
-			return false;
-		}
-			
-		$this->setMessage(
-			JText::_(
-				($lang->hasKey($this->text_prefix .'_DELETE_SUCCESS') ? $this->text_prefix : 'JLIB_APPLICATION') . '_DELETE_SUCCESS'
-			)
-		);
-		
-		// Clear the record id and data from the session.
-		$this->releaseEditId($context, $recordId);
-		$app->setUserState($context . '.data', null);
-		
-		$return = $this->getReturnPage(true);
-		if (!empty($return)) {
-			$this->setRedirect(JRoute::_($return, false));
-		}else{
-			// Redirect to the list screen.
-			$this->setRedirect(
-				JRoute::_(
-					'index.php?option=' . $this->option . '&view=' . $this->view_list
-					. $this->getRedirectToListAppend(), false
-				)
-			);
-		}
-		return true;
-	}
 	
 	protected function getRedirectToListAppend()
 	{
@@ -645,37 +649,14 @@ class JongmanControllerInstance extends JControllerForm
 		return $append;	
 	}
 	
-	protected function setReturnPage()
+	protected function checkEditId($context, $id)
 	{
-		$app = JFactory::getApplication();
-		$return = $app->input->get('return', null, 'base64');
-		if (empty($return)) {
-			$referer = getenv("HTTP_REFERER");
-			if (empty($referer)) return false;
-				
-			$return = base64_encode($referer);
+		$task = $this->getTask();
+		if (in_array($task, array('delete', 'deleteinstance', 'deletefull', 'deletefuture'))) {
+			if ($id) $this->releaseEditId($context, $recordId);	
+			return true;
 		}
-	
-		$app->setUserState('com_jongman.reservation.return_page', $return);
-		return true;
-	}
-	
-	protected function clearReturnPage()
-	{
-		$app = JFactory::getApplication();
-		$app->setUserState('com_jongman.reservation.return_page', null);
-	}
-	
-	protected function getReturnPage($clear = false)
-	{
-		$app = JFactory::getApplication();
-		$return = $app->input->get('return', null, 'base64');
-		if (empty($return)) {
-			$return = $app->getUserState('com_jongman.reservation.return_page');
-		}
-	
-		if ($clear) $this->clearReturnPage();
-	
-		return base64_decode($return);
+		
+		return parent::checkEditId($context, $id);
 	}
 }

@@ -18,7 +18,7 @@ jimport('jongman.controller.form.json');
  * Jongman Quota Form Controller
  *
  */
-class JongmanControllerQuota extends JMControllerFormJson
+class JongmanControllerQuota extends RFControllerFormJson
 {
 
 }

@@ -49,7 +49,7 @@ class JFormFieldJongmanSelectResource extends JFormFieldListReloadable {
         }
 		// Get the field options.
 		$options = (array) $this->getOptions();
-       	
+       
 		// Return if no options are available.
         if (count($options) == 0) {
             $this->form->setValue($this->element['name'], null, '');

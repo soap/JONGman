@@ -20,8 +20,10 @@ class JFormFieldResource extends JFormFieldList {
     
     protected $schedule;
     protected $quota;
+    protected $requireSchedule = false;
 
-    public function getInput() {
+    public function getInput() 
+    {
         // Initialize variables.
 		$html = array();
 		$attr = '';
@@ -34,12 +36,14 @@ class JFormFieldResource extends JFormFieldList {
         $attr .= $this->multiple                                 ? ' multiple="multiple"'                                   : '';
         $attr .= $this->element['onchange']                      ? ' onchange="' .(string) $this->element['onchange'] . '"' : '';
 		
+        $requireSchedule = ($this->element['require_schedule']=='true' || $this->element['require_schedule']=='yes');
+        $this->requireSchedule = $requireSchedule;
         $schedule = (int) $this->form->getValue('schedule_id');
         
-		if (empty($schedule)) {
+		if (empty($schedule) && $requireSchedule) {
 			$app = JFactory::getApplication();
 			$view = $app->input->getCmd('view');
-			$schedule = $app->getUserStateFromRequest('com_jongman.'.$view.'.filter.schedule', 'filter_schedule');
+			$schedule = $app->getUserStateFromRequest('com_jongman.'.$view.'.filter.schedule_id', 'filter_schedule_id');
 		}
 		
 		$quota = (string) $this->element['quota'];
@@ -49,13 +53,13 @@ class JFormFieldResource extends JFormFieldList {
 		$this->quota = ($quota == 'true' || $quota == '1');
 		$layout = JFactory::getApplication()->input->getCmd('layout');
 		if ($layout === 'edit') {
-			if (!$schedule && !$quota) {
+			if ((!$schedule && $requireSchedule)  && !$quota) {
             	// Cant get list without at least a schedule id.
             	$this->form->setValue($this->element['name'], null, '');
             	return '<span class="readonly">' . JText::_('COM_JONGMAN_FIELD_SCHEDULE_REQ') . '</span>' . $hidden;
 			}
         }else {
-        	if (!$schedule) {
+        	if (!$schedule && $requireSchedule) {
  				return '<span class="readonly"></span>';
         	}
         }
@@ -74,7 +78,7 @@ class JFormFieldResource extends JFormFieldList {
     protected function getOptions() {
 
 		$staticOptions = (array) parent::getOptions();
-		
+		$user = JFactory::getUser();
         $dbo = JFactory::getDbo();
         $query = $dbo->getQuery(true);
         $query->select('id as value, title as text')
@@ -83,14 +87,19 @@ class JFormFieldResource extends JFormFieldList {
         	$query->where('schedule_id = '.$this->schedule);
         $query->order('title asc');
         		
-        if (!JFactory::getApplication()->isAdmin()) {
+        if (JFactory::getApplication()->isSite()) {
         	$query->where('published = 1');
         }
+        
+        if (!$user->authorise('core.admin', 'com_jongman')) {
+        	$viewLevels = implode(', ', $user->getAuthorisedViewLevels());
+        	$query->where('a.access IN ('.$viewLevels.')');
+        }
+        
         $dbo->setQuery($query);
         
         $options = $dbo->loadObjectList();
         return array_merge(
         	$staticOptions, $options);
-    }    
-    
+    }       
 }

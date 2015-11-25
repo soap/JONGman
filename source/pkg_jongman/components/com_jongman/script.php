@@ -88,7 +88,7 @@ class com_jongmanInstallerScript
 		$msgError	= '';
 		$msgSuccess	= '';
 		
-		self::installPdfView($sccFile, $errFile);
+		//self::installPdfView($sccFile, $errFile);
 		
 		if (!empty($sccFile)) {
 			$msgSuccess .= '<br />' . implode("<br />", $sccFile);

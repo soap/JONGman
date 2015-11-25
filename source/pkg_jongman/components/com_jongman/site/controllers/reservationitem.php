@@ -1,8 +1,6 @@
 <?php
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controllerform');
-
+jimport('jongman.controller.form');
 /**
  * Reservationitem Subcontroller.
  *
@@ -10,13 +8,13 @@ jimport('joomla.application.component.controllerform');
  * @subpackage  Site
  * @since       1.0
  */
-class JongmanControllerReservationitem extends JControllerForm
+class JongmanControllerReservationitem extends RFControllerForm
 {
 	protected $view_list = 'reservations';
 	
 	public function cancel($key=NULL)
 	{
-		$return = $this->getReturnPage(true);
+		$return = $this->getReturnPage('com_jongman.reservationitem.return_page', true);
 		if (!empty($return)) {
 			$this->setRedirect(JRoute::_($return, false));
 		}else{
@@ -39,6 +37,11 @@ class JongmanControllerReservationitem extends JControllerForm
 		$comment = $app->input->get('comment', '', 'string');
 		$context = "$this->option.$this->context";
 		
+		$model = $this->getModel();
+		$table = $model->getTable();
+		/**
+		 * @todo $table is undefined
+		 */
 		$data = array('id' => $id, 'transition_id'=>$transitionId, 'table'=>$table);
 		if (!$this->allowTransition($data, $key))
 		{
@@ -84,37 +87,4 @@ class JongmanControllerReservationitem extends JControllerForm
 		return true;
 	}
 	
-	protected function setReturnPage()
-	{
-		$app = JFactory::getApplication();
-		$return = $app->input->get('return', null, 'base64');
-		if (empty($return)) {
-			$referer = getenv("HTTP_REFERER");
-			if (empty($referer)) return false;
-				
-			$return = base64_encode($referer);
-		}
-	
-		$app->setUserState('com_jongman.reservation.return_page', $return);
-		return true;
-	}
-	
-	protected function clearReturnPage()
-	{
-		$app = JFactory::getApplication();
-		$app->setUserState('com_jongman.reservation.return_page', null);
-	}
-	
-	protected function getReturnPage($clear = false)
-	{
-		$app = JFactory::getApplication();
-		$return = $app->input->get('return', null, 'base64');
-		if (empty($return)) {
-			$return = $app->getUserState('com_jongman.reservation.return_page');
-		}
-	
-		if ($clear) $this->clearReturnPage();
-	
-		return base64_decode($return);
-	}	
 }

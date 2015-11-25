@@ -52,14 +52,18 @@ class JongmanViewReservations extends JViewLegacy
 		$this->pagination	= $this->get('Pagination');
 		$this->state		= $this->get('State');
 		$this->params     	= $this->state->get('params');
-        $this->is_j25     	= version_compare(JVERSION, '3', 'lt');
-        if (!$this->is_j25) {
-        	$this->filterForm    = $this->get('FilterForm');
-			$this->activeFilters = $this->get('ActiveFilters');
-			$this->sidebar = JHtmlSidebar::render();	
-        } 
-        
-        $this->workflow   	= ($this->params->get('approvalSystem')==2);
+       	$this->owners		= $this->get('Owners');
+       	
+       	$this->workflow   	= ($this->params->get('approvalSystem')==2);
+     
+       	$this->filterForm    = $this->get('FilterForm');
+		$this->activeFilters = $this->get('ActiveFilters');
+		
+		if ($this->workflow) {
+			$this->filterForm->removeField('state', 'filter');
+		}
+		$this->sidebar = JHtmlSidebar::render();	 
+		
         $doc = JFactory::getDocument();
         if ($this->workflow) {
         	JHtml::_('jquery.ui');
@@ -97,17 +101,12 @@ class JongmanViewReservations extends JViewLegacy
 		$canDo	= JongmanHelper::getActions();
 
 		JToolBarHelper::title(JText::_('COM_JONGMAN_RESERVATIONS_TITLE'), 'reservations.png');
-		// TODO display when reservation function in backend is completed
-		return;
 		
 		if ($canDo->get('core.create')) {
 			JToolBarHelper::addNew('reservation.add', 'JTOOLBAR_NEW');
 		}
 
-		if ($canDo->get('core.edit')) {
-			JToolBarHelper::editList('reservation.edit', 'JTOOLBAR_EDIT');
-		}
-
+		/*
 		if ($canDo->get('core.edit.state')) {
 			JToolBarHelper::divider();
 			JToolBarHelper::checkin('reservations.checkin', 'JTOOLBAR_CHECKIN');
@@ -115,10 +114,25 @@ class JongmanViewReservations extends JViewLegacy
 			JToolBarHelper::unpublishList('reservations.unpublish', 'JTOOLBAR_UNPUBLISH');
 
 		}
-
-		if ($canDo->get('core.delete')) {
-			JToolBarHelper::deleteList('', 'reservations.delete','JTOOLBAR_DELETE');
+		*/
+		$repeatTypeFilter = $state->get('filter.repeat_type');
+		if ($canDo->get('core.delete') && (!empty($repeatTypeFilter))) {
+			if ($state->get('filter.repeat_type') == 'none') {
+				JToolBarHelper::deleteList('', 'reservations.deletefull','JTOOLBAR_DELETE');
+			}else{
+				JToolBarHelper::deleteList('', 'reservations.deleteinstance','COM_JONGMAN_TOOLBAR_DELETE_THIS');
+				JToolBarHelper::deleteList('', 'reservations.deletefull','COM_JONGMAN_TOOLBAR_DELETE_FULL');
+				JToolBarHelper::deleteList('', 'reservations.deletefuture','COM_JONGMAN_TOOLBAR_DELETE_FUTURE');
+			}
 		} 
 
+	}
+	
+	protected function getWorkflowStates()
+	{
+		jimport('workflow.framework');
+		$wfStates = WFApplicationHelper::getStatesByContext('com_jongman.reservation');
+		 
+		return (empty($wfStates) ? false : $wfStates);
 	}
 }

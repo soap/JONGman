@@ -24,7 +24,7 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
     </div>
     <div id="j-main-container" class="span10">
     <?php else : ?>
-    	<div id="j-main-container">
+    <div id="j-main-container">
     <?php
     endif;
     //Search Toolbar
@@ -81,24 +81,24 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 		<?php foreach ($this->items as $i => $item) :
 			$item->max_ordering = 0; //??
 			$ordering	= ($listOrder == 'a.ordering');
-			$canCreate	= $user->authorise('core.create',		'com_jongman');
-			$canEdit	= $user->authorise('core.edit',			'com_jongman.reservation.'.$item->id);
+			$canCreate	= $user->authorise('core.create', 'com_jongman');
+			$canEdit	= $item->access_change; //$user->authorise('core.edit',			'com_jongman.reservation.'.$item->reservation_id);
 			$canCheckin	= $user->authorise('core.manage',		'com_checkin') || $item->checked_out == $user->get('id') || $item->checked_out == 0;
-			$canChange	= $user->authorise('core.edit.state',	'com_jongman.reservation.'.$item->id) && $canCheckin;
+			$canChange	= $item->access_change; //$user->authorise('core.edit.state',	'com_jongman.reservation.'.$item->reservation_id) && $canCheckin;
 			?>
 			<tr class="row<?php echo $i % 2; ?> sortable-group-id="<?php echo $item->schedule_id?>">
 				<td class="center">
-					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+					<?php echo JHtml::_('grid.id', $i, $item->instance_id); ?>
 				</td>
 				<td class="center">
-					<?php if ($this->workflow) :?>
+					<?php if ($this->workflow && $item->workflow_enabled)  :?>
 							<?php  $date = ($item->workflow_state->modified==$dbo->getNullDate() ? $item->workflow_state->created : $item->workflow_state->modified);?>
 							<div class="btn-group" id="reserv_<?php echo $item->reservation_id?>">
 								<button data-toggle="dropdown" class="dropdown-toggle btn btn-micro">
 									<span class="caret"></span>
 									<span class="element-invisible">JACTIONS</span>
 								</button>
-								<span class="pull-right"><?php echo JHtml::_('rfhtml.label.state', $item->workflow_state->title, $date)?></span>	
+								<span class="pull-right"><?php echo JHtml::_('rfhtml.label.state', $item->workflow_state->title, $date, null, $item->workflow_state->color)?></span>	
 								<ul class="dropdown-menu"></ul>	
 								<script type="text/javascript">
 									WFWorkflow.loadWorkflowState('<?php echo JURi::root()?>index.php', 'com_jongman.reservation', jQuery('#reserv_<?php echo $item->reservation_id?>'), '<?php echo $item->reservation_id?>');
@@ -130,8 +130,8 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 					<?php if ($item->checked_out) : ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'reservations.', $canCheckin); ?>
 					<?php endif; ?>
-					<?php if ($canCreate || $canEdit) : ?>
-					<a href="<?php echo JRoute::_('index.php?option=com_jongman&task=reservation.edit&id='.$item->id);?>">
+					<?php if ((!$this->workflow && $canCreate) || $canEdit) : ?>
+					<a href="<?php echo JRoute::_('index.php?option=com_jongman&task=reservation.edit&id='.$item->instance_id);?>">
 						<?php echo $this->escape(JString::substr($item->title, 0, 50)); ?></a>
 					<?php else : ?>
 						<?php echo $this->escape(JString::substr($item->title, 0, 50)); ?>
@@ -165,14 +165,13 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 					<?php echo JHtml::_('date', $item->created, JText::_('DATE_FORMAT_LC4')); ?>
 				</td>
 				<td class="center">
-					<?php echo (int) $item->id; ?>
+					<?php echo (int) $item->instance_id; ?>
 				</td>
 			</tr>
 		<?php endforeach; ?>
 		</tbody>
 	</table>
 <?php endif; ?>
-	<?php if (!$this->is_j25) : echo $this->pagination->getListFooter(); endif; ?>
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="boxchecked" value="0" />
 	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />

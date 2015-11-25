@@ -60,11 +60,7 @@ class JongmanModelBlackout extends JModelAdmin
 			$user = JFactory::getUser();
 			
 			jimport('joomla.utilities.date');
-<<<<<<< HEAD
 			$tz = new Datetimezone(RFApplicationHelper::getUserTimezone($user->get('id')));
-=======
-			$tz = new Datetimezone(JongmanHelper::getUserTimezone($user->get('id')));
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 			
 			if (empty($result->id)) {
 				$date = new JDate();
@@ -79,7 +75,14 @@ class JongmanModelBlackout extends JModelAdmin
 				$result->repeat_options = new JRegistry();
 				$result->repeat_options->set('repeat_interval', '1');
 			}else{
-<<<<<<< HEAD
+				$date = new JDate($result->start_date);
+				$result->start_date = $date->format('Y-m-d');
+				$result->start_time = $date->format('H:i:s');
+		
+				$date = new JDate($result->end_date);
+				$result->end_date = $date->format('Y-m-d');
+				$result->end_time = $date->format('H:i:s');
+				
 				// load existing item using blackout instance id
 				// so we need data from blackout series
 				$blackoutSeries = JTable::getInstance('Blackout', 'JongmanTable');
@@ -100,11 +103,7 @@ class JongmanModelBlackout extends JModelAdmin
 				$result->access			= $blackoutSeries->access;
 				$result->state			= $blackoutSeries->state;			
 				$resources = $this->getResources($result->blackout_id);
-				$result->resource_id = $resources[0];
-				
-=======
-				$result->repeat_options = new JRegistry($result->repeat_options);
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
+				$result->resource_id = $resources[0];				
 			}
 			
 			if (intval($result->created)) {
@@ -241,7 +240,6 @@ class JongmanModelBlackout extends JModelAdmin
 		}
 	}
 	
-<<<<<<< HEAD
 	protected function getResources($blackoutId)
 	{
 		$query = $this->_db->getQuery(true);
@@ -263,16 +261,8 @@ class JongmanModelBlackout extends JModelAdmin
 		$timezone = RFApplicationHelper::getUserTimezone();
 		if (empty($data['id'])) {
 			// save new blackout data 			
-=======
-	public function save($data)
-	{
-		$timezone = JongmanHelper::getUserTimezone();
-		if (empty($data['id'])) {
-			// save new blackout data 
-			
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 			$resourceIds = array();
-			if ($data['all_resources'])
+			if (isset($data['all_resources']) && $data['all_resources'])
 			{
 				$scheduleId = $this->getBlackoutScheduleId();
 				$resources = $this->resourceRepository->getScheduleResources($scheduleId);
@@ -286,6 +276,7 @@ class JongmanModelBlackout extends JModelAdmin
 				$resourceIds[] = $data['resource_id'];
 			}
 			
+			$state = $data['published'];
 			$startDate = $data['start_date'];
 			$startTime = $data['start_time'];
 			$endDate = $data['end_date'];
@@ -294,7 +285,7 @@ class JongmanModelBlackout extends JModelAdmin
 			$blackoutDate = RFDateRange::create($startDate . ' ' . $startTime, $endDate . ' ' . $endTime, $timezone);
 			
 			$title = $data['title'];
-			$conflictAction = $data['conflic_action'];
+			$conflictAction = $data['conflict_action'];
 			
 			$repeatType = isset($data['repeat_type']) ? $data['repeat_type'] : 'none';
 			$repeatInterval = isset($input['repeat_interval']) ? $input['repeat_interval'] : null;
@@ -311,7 +302,7 @@ class JongmanModelBlackout extends JModelAdmin
 			//$repeatOptionsFactory = new RFFactoryRepeatOptions();
 			//$repeatOptions = $repeatOptionsFactory->createFromComposite($this->page, $timzeone);
 			
-			$result = $this->addBlackout($blackoutDate, $resourceIds, $title, RFReservationConflictResolution::create($conflictAction), $repeatOptions);		
+			$result = $this->addBlackout($blackoutDate, $resourceIds, $title, RFReservationConflictResolution::create($conflictAction), $repeatOptions, $state);		
 
 			if ($result->wasSuccessful()) {
 				return true;
@@ -321,29 +312,21 @@ class JongmanModelBlackout extends JModelAdmin
 			}
 		}else{
 			// update existing blackout data
-<<<<<<< HEAD
 			$id = $data['id']; // this is blackout instance id
-			$scope = isset($data['update_scope'])?$data['update_scope'] : 'this';
-=======
-			
-			$id = $data['instance_id'];
-			$scope = $data['update_scope'];
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
+			$scope = isset($data['update_scope']) ? $data['update_scope'] : 'full';
 			
 			$startDate = $data['start_date'];
 			$startTime = $data['start_time'];
 			$endDate = $data['end_date'];
 			$endTime = $data['end_time'];
-<<<<<<< HEAD
+			$resourceIds = array($data['resource_id']);
+			$state = $data['published'];
+			
 			$blackoutDate = RFDateRange::create($startDate . ' ' . $startTime, $endDate . ' ' . $endTime, $timezone);
-=======
-			$blackoutDate = RFDateRange::create($startDate . ' ' . $startTime, $endDate . ' ' . $endTime, $timezon);
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 			
 			$title = $data['title'];
 			$conflictAction = $data['conflict_action'];
 			
-<<<<<<< HEAD
 			$terminationDate = RFDate::parse($data['repeat_terminated'], $timezone);
 			
 			$repeatOptionsFactory = new RFReservationRepeatOptionsFactory();
@@ -351,13 +334,7 @@ class JongmanModelBlackout extends JModelAdmin
 						$data['repeat_interval'], $terminationDate, $data['weekdays'], $data['monthly_type']
 					);
 			
-			$result = $this->updateBlackout($id, $blackoutDate, $resourceIds, $title, RFReservationConflictResolution::create($conflictAction), $repeatOptions, $scope);
-=======
-			$repeatOptionsFactory = new RepeatOptionsFactory();
-			$repeatOptions = $repeatOptionsFactory->CreateFromComposite($this->page, $session->Timezone);
-			
-			$result = $updateBlackout($id, $blackoutDate, $resourceIds, $title, ReservationConflictResolution::create($conflictAction), $repeatOptions, $scope);
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
+			$result = $this->updateBlackout($id, $blackoutDate, $resourceIds, $title, RFReservationConflictResolution::create($conflictAction), $repeatOptions, $scope, $state);
 			
 			//$this->page->ShowUpdateResult($result->WasSuccessful(), $result->Message(), $result->ConflictingReservations(), $result->ConflictingBlackouts(), $session->Timezone);
 			if ($result->wasSuccessful()) {
@@ -376,12 +353,84 @@ class JongmanModelBlackout extends JModelAdmin
 		
 		//Log::Debug('Deleting blackout. BlackoutId=%s, DeleteScope=%s', $id, $scope);
 		
-		$this->eleteBlackout($id, $scope);		
+		$this->deleteBlackout($id, $scope);		
 	}
-<<<<<<< HEAD
 	
-=======
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
+	/**
+	 * Retreive blackout ids from instance ids
+	 * @param unknown $pks
+	 */
+	protected function getBlackoutIds($pks)
+	{
+		if (!is_array($pks)) $pks = array($pks);
+		$query = $this->_db->getQuery(true);
+		
+		$query->select('blackout_id')->from('#__jongman_blackout_instances')
+			->where('id IN ('.implode(',', $pks).')');
+		$this->_db->setQuery($query);
+		
+		return $this->_db->loadColumn();
+	} 
+	
+	/**
+	 * @internal if we publish, conflict should be validated 
+	 * @todo validate conflict if publish
+	 * @see JModelAdmin::publish()
+	 */
+	public function publish(&$pks, $value = 1)
+	{
+		$dispatcher = JEventDispatcher::getInstance();
+		$user = JFactory::getUser();
+		$table = $this->getTable('Blackout', 'JongmanTable');
+		$pks = $this->getBlackoutIds($pks);
+		
+		// Include the plugins for the change of state event.
+		JPluginHelper::importPlugin($this->events_map['change_state']);
+	
+		// Access checks.
+		foreach ($pks as $i => $pk)
+		{
+			$table->reset();
+	
+			if ($table->load($pk))
+			{
+				if (!$this->canEditState($table))
+				{
+					// Prune items that you can't change.
+					unset($pks[$i]);
+					JLog::add(JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'), JLog::WARNING, 'jerror');
+	
+					return false;
+				}
+			}
+		}
+	
+		// Attempt to change the state of the records.
+		if (!$table->publish($pks, $value, $user->get('id')))
+		{
+			$this->setError($table->getError());
+	
+			return false;
+		}
+	
+		$context = $this->option . '.' . $this->name;
+	
+		// Trigger the change state event.
+		$result = $dispatcher->trigger($this->event_change_state, array($context, $pks, $value));
+	
+		if (in_array(false, $result, true))
+		{
+			$this->setError($table->getError());
+	
+			return false;
+		}
+	
+		// Clear the component's cache
+		$this->cleanCache();
+	
+		return true;
+	}
+	
 	/**
 	 * Save new blackout series to database (this is method of Manage Blackout Service)
 	 * @param RFDateRange $blackoutDate
@@ -391,7 +440,7 @@ class JongmanModelBlackout extends JModelAdmin
 	 * @param IRepeatOptions $repeatOptions
 	 * @return RFBlackoutDateTimeValidationResult|RFBlackoutValidationResult
 	 */
-	protected function addBlackout(RFDateRange $blackoutDate, $resourceIds, $title, IReservationConflictResolution $reservationConflictResolution, IRepeatOptions $repeatOptions)
+	protected function addBlackout(RFDateRange $blackoutDate, $resourceIds, $title, IReservationConflictResolution $reservationConflictResolution, IRepeatOptions $repeatOptions, $state=1)
 	{
 		if (!$blackoutDate->getEnd()->greaterThan($blackoutDate->getBegin()))
 		{
@@ -402,8 +451,8 @@ class JongmanModelBlackout extends JModelAdmin
 
 		$blackoutSeries = RFBlackoutSeries::create($userId, $title, $blackoutDate);
 		$blackoutSeries->repeats($repeatOptions);
+		$blackoutSeries->publish($state);
 		
-
 		foreach ($resourceIds as $resourceId)
 		{
 			$blackoutSeries->addResourceId($resourceId);
@@ -421,7 +470,6 @@ class JongmanModelBlackout extends JModelAdmin
 
 		if ($blackoutValidationResult->canBeSaved())
 		{
-<<<<<<< HEAD
 			$seriesId = $this->blackoutRepository->add($blackoutSeries);
 			
 			$query = $this->_db->getQuery(true);
@@ -432,16 +480,14 @@ class JongmanModelBlackout extends JModelAdmin
 			$this->_db->setQuery($query);
 			$instanceId = $this->_db->loadResult();
 			
+			// this update will be used by controller 
 			$this->setState($this->getName().'.id', $instanceId);
-=======
-			$this->blackoutRepository->add($blackoutSeries);
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		}
 
 		return $blackoutValidationResult;
 	}
 	
-	protected function updateBlackout($blackoutInstanceId, RFDateRange $blackoutDate, $resourceIds, $title, IReservationConflictResolution $reservationConflictResolution, IRepeatOptions $repeatOptions, $scope)
+	protected function updateBlackout($blackoutInstanceId, RFDateRange $blackoutDate, $resourceIds, $title, IReservationConflictResolution $reservationConflictResolution, IRepeatOptions $repeatOptions, $scope, $state=1)
 	{
 		if (!$blackoutDate->getEnd()->greaterThan($blackoutDate->getBegin()))
 		{
@@ -450,24 +496,16 @@ class JongmanModelBlackout extends JModelAdmin
 	
 		$userId = JFactory::getUser()->get('id');
 	
-<<<<<<< HEAD
-		$blackoutSeries = $this->blackoutRepository->loadByBlackoutId($blackoutInstanceId);
+		$blackoutSeries = $this->blackoutRepository->loadByInstanceId($blackoutInstanceId);
 		
-=======
-		$blackoutSeries = $this->loadBlackout($blackoutInstanceId, $userId);
-	
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		if ($blackoutSeries == null)
 		{
 			return new RFBlackoutSecurityValidationResult();
 		}
 	
 		$blackoutSeries->update($userId, $scope, $title, $blackoutDate, $repeatOptions, $resourceIds);
-<<<<<<< HEAD
+		$blackoutSeries->publish($state);
 		
-=======
-	
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		$conflictingBlackouts = $this->getConflictingBlackouts($blackoutSeries);
 	
 		$conflictingReservations = array();
@@ -488,7 +526,7 @@ class JongmanModelBlackout extends JModelAdmin
 	
 	protected function deleteBlackout($blackoutId, $updateScope)
 	{
-		if ($updateScope == RFSeriesUpdateScope::FullSeries)
+		if ($updateScope ==  RFReservationSeriesUpdatescope::FULLSERIES)
 		{
 			$this->blackoutRepository->deleteSeries($blackoutId);
 		}

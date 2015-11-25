@@ -88,7 +88,7 @@ class JongmanViewBlackouts extends JViewLegacy
 			JToolBarHelper::archiveList('blackout.archive','JTOOLBAR_ARCHIVE');
 		}
 
-		if ($state->get('filter.published') == -2 && $canDo->get('core.delete')) {
+		if ($state->get('filter.state') == -2 && $canDo->get('core.delete')) {
 			JToolBarHelper::deleteList('', 'blackouts.delete','JTOOLBAR_EMPTY_TRASH');
 		} 
 		else if ($canDo->get('core.edit.state')) {

@@ -53,13 +53,11 @@
     </fieldset>
     
     <fieldset name="accesscontrol">
-	
 		<field name="asset_id" type="hidden" filter="unset" /> 
-	
 		<field
 			name="rules"
 			type="rules"
-			label="JFIELD_RULES_LABEL"
+			label="COM_JONGMAN_FIELD_RULES_LABEL"
 			decription="COM_JONGMAN_FIELD_RESOURCE_RESERVATION_RULES_DESC"
 			translate_label="false"
 			filter="rules"

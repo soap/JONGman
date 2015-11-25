@@ -56,6 +56,9 @@ class JongmanModelReservations extends JModelList
 	 */
 	protected function populateState($ordering = 'r.title', $direction = 'asc')
 	{
+		// Set list state ordering defaults.
+		parent::populateState($ordering, $direction);
+		
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
 
@@ -81,15 +84,27 @@ class JongmanModelReservations extends JModelList
 		$startDate = $this->getUserStateFromRequest($this->context.'.filter.start_date', 'filter_start_date', null);
 		$this->setState('filter.start_date', $startDate);
 		
-		$endDate = $this->getUserStateFromRequest($this->context.'.filter.end_date', 'filter_end_date', null);
-		$this->setState('filter.end_date', $endDate);
+		$end_date = $app->getUserStateFromRequest($this->context.'.filter.end_date', 'filter_end_date', null);
+		if (!empty($start_date)) {
+			$tz = RFApplicationHelper::getUserTimezone();
+			$startDate = new RFDate($start_date, $tz);
+			if (empty($end_date)) $end_date = $start_date;
+			$endDate = new RFDate($end_date, $tz);
+			if ($endDate->lessThan($startDate) || $endDate->equals($startDate)) { 
+				$endDate = $startDate;
+				$end_date = $endDate->addDays(1)->format('Y-m-d');
+				$app->setUserState($this->context.'.filter.end_date', $end_date);
+			}
+		}
 		
-	
+		$workflow_state_id = $app->getUserStateFromRequest($this->context.'.filter.workflow_state_id', 'filter_workflow_state_id', null, 'int');
+		$this->setState('filter.workflow_state_id', $workflow_state_id);
+		
+		$repeatType = $this->getUserStateFromRequest($this->context.'.filter.repeat_type', 'filter_repeat_type', null);
+		$this->setState('filter.repeat_type', $repeatType);
 		// Load the parameters.
 		$params = JComponentHelper::getParams('com_jongman');
 		$this->setState('params', $params);		
-		// Set list state ordering defaults.
-		parent::populateState($ordering, $direction);
 	}
 
 	/**
@@ -108,7 +123,7 @@ class JongmanModelReservations extends JModelList
 		$query->select(
 			$this->getState(
 				'list.select', 
-				'a.id, a.start_date, a.end_date, a.reference_number, a.reservation_id')
+				'a.id as instance_id, a.start_date, a.end_date, a.reference_number, a.reservation_id')
 		);
 		$query->from('#__jongman_reservation_instances AS a');
 		
@@ -137,6 +152,7 @@ class JongmanModelReservations extends JModelList
 		$query->select('sc.name AS schedule_title');
 		$query->join('LEFT', '#__jongman_schedules AS sc ON sc.id=r.schedule_id');
 		
+		$query->select('rr.resource_id as resource_id');
 		$query->join('LEFT', '#__jongman_reservation_resources AS rr ON r.id=rr.reservation_id AND resource_level=1');	
 		
 		$query->select('rs.title as resource_title');
@@ -166,11 +182,11 @@ class JongmanModelReservations extends JModelList
 			$query->where('a.reservation_id IN 
 				(SELECT reservation_id FROM #__jongman_reservation_resources WHERE resource_id='.(int)$resourceId.')');
 		}
-		
-		$state = $this->getState('filter.state');
-		if (is_numeric($state)) {
-			$query->where('r.state = '.(int)$state);			
-		} 
+
+		$repeatType = $this->getState('filter.repeat_type');
+		if (!empty($repeatType)) {
+			$query->where('r.repeat_type='.$db->quote($repeatType));
+		}
 		
 		$timezone = RFApplicationHelper::getUserTimezone();
 		$startDate = $this->getState('filter.start_date');
@@ -185,6 +201,24 @@ class JongmanModelReservations extends JModelList
 			$query->where('a.end_date <='.$db->quote($end_date));				
 		}
 		
+		$workflowStateId = $this->getState('filter.workflow_state_id');
+		
+		if ($workflowStateId) {
+			$itemIds = $this->getItemIdsByWorkflowState($workflowStateId);
+			if (empty($itemIds)) {
+				$query->where('r.id = -1');	// no record so we simulate it
+			}else{
+				$query->where('r.id IN ('.implode(',', $itemIds).')');
+			}
+		}else{
+			// Filter by published state
+			$published = $this->getState('filter.state');
+			if (is_numeric($published)) {
+				$query->where('r.state = ' . (int) $published);
+			} else if ($published === '') {
+				$query->where('(r.state = -1 OR r.state = 0 OR r.state = 1)');
+			}
+		}
 		// Add the list ordering clause.
 		$orderCol	= $this->state->get('list.ordering', 'a.reference_number');
 		$orderDirn	= $this->state->get('list.direction', 'asc');
@@ -198,12 +232,8 @@ class JongmanModelReservations extends JModelList
 	{
 		$items = parent::getItems();
 		if ($items === false) return false;
-		
-<<<<<<< HEAD
+		$user = JFactory::getUser();
 		$timezone = RFApplicationHelper::getUserTimezone();
-=======
-		$timezone = JongmanHelper::getUserTimezone();
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 		
 		$params = $this->getState('params');
 		if ($params === null) {
@@ -213,7 +243,9 @@ class JongmanModelReservations extends JModelList
 		}
 			
 		$workflow = (bool)($this->getState('params')->get('approvalSystem') == 2);
-		
+		if ($workflow) {
+			jimport('workflow.framework');
+		}
 		$dbo = $this->getDbo();
 		$query = $dbo->getQuery(true);
 		foreach($items as $i => $item) {
@@ -226,33 +258,159 @@ class JongmanModelReservations extends JModelList
 			
 			$items[$i]->resources = implode(',', $dbo->loadColumn());
 			if ($workflow) {
-<<<<<<< HEAD
-				jimport('workflow.framework');
-=======
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 				$items[$i]->participant_list = array();
 				$items[$i]->invitee_list = array();
 				$items[$i]->reservation_length = RFDateRange::create($items[$i]->start_date, $items[$i]->end_date, $timezone);
-				if ($workflow) {
-<<<<<<< HEAD
-					if (WFApplicationHelper::isWorkflowEnabled('com_jongman.reservation', $items[$i]->reservation_id)) {
-						$items[$i]->workflow_enabled = true;
-						$items[$i]->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $items[$i]->reservation_id);
-					}else{
-						$items[$i]->workflow_enabled = false;
-						$items[$i]->workflow_state = new stdClass();
-					}
+				if (WFApplicationHelper::isWorkflowEnabled('com_jongman.reservation', $items[$i]->reservation_id)) {
+					$items[$i]->workflow_enabled = true;
+					$items[$i]->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $items[$i]->reservation_id);
+					$actions = WFApplicationHelper::getActions('com_jongman.reservation', $items[$i]->reservation_id);
 				}else{
 					$items[$i]->workflow_enabled = false;
-=======
-					$items[$i]->workflow_state = WFApplicationHelper::getStateByContext('com_jongman.reservation', $items[$i]->reservation_id);
-				}else{
->>>>>>> f260c473c4627674d709964076fdcb5b4545f5fb
 					$items[$i]->workflow_state = new stdClass();
+					$actions = RFApplicationHelper::getActions('com_jongman.resource.'.$items[$i]->resource_id);
 				}
+			}else{
+				$items[$i]->workflow_enabled = false;
+				$items[$i]->workflow_state = new stdClass();
+				$actions = RFApplicationHelper::getActions('com_jongman.resource.'.$items[$i]->resource_id);	
+			}
+			
+			$mine = $items[$i]->owner_id == $user->id;
+			$items[$i]->access_delete = false;
+			if ($actions->get('core.delete') || ($actions->get('core.delete.own') && $mine)) {
+				$items[$i]->access_delete = true;
+			}
+			
+			$items[$i]->access_change = false;
+			if ($actions->get('core.edit') || ($actions->get('core.edit.own') && $mine)) {
+				$items[$i]->access_change = true;
 			}
 		}
 		
 		return $items;
-	}				
+	}
+	
+	/**
+	 * Get filtered resources
+	 * @return array
+	 */
+	public function getResources()
+	{
+		$db 	= $this->getDbo();
+		$query 	= $db->getQuery();
+		
+		$user 	= JFactory::getUser();
+		
+		// Return empty array if no project is select
+		$schedule = (int) $this->getState('filter.schedule_id');
+		
+		$query->select('r.id AS value, r.title AS text')
+			->from('#__jongman_resources');
+		if ($schedule > 0) {
+			$query->where('r.schedule_id='.$schedule);
+		}
+		
+		$db->setQuery($query);
+		return (array)$db->loadObjectList();
+		 
+	}
+	/**
+	 * Build a list of reservation authors	 *
+	 * @return
+	 */
+	public function getOwners()
+	{
+		$db     = $this->getDbo();
+		$query  = $db->getQuery(true);
+		$user   = JFactory::getUser();
+	
+		// Return empty array if no project is select
+		$schedule = (int) $this->getState('filter.schedule_id');
+	
+		if ($schedule <= 0) {
+			// Make an exception if we are logged in...
+			if ($user->id) {
+				$item = new stdClass();
+				$item->value = $user->id;
+				$item->text  = $user->name;
+	
+				$items = array($item);
+	
+				return $items;
+			}
+	
+			return array();
+		}
+	
+		// Construct the query
+		$query->select('u.id AS value, u.name AS text');
+		$query->from('#__users AS u');
+		$query->join('INNER', '#__jongman_reservations AS a ON a.owner_id = u.id');
+	
+		// Implement View Level Access
+		if (!$user->authorise('core.admin', 'com_jongman')) {
+			//$groups = implode(',', $user->getAuthorisedViewLevels());
+			//$query->where('a.access IN (' . $groups . ')');
+		}
+	
+		// Filter fields
+		$filters = array();
+		$filters['a.schedule_id'] = array('INT-NOTZERO', $this->getState('filter.schedule_id'));
+	
+		if ($this->getState('params')->get('approvalSystem') !=2) {
+			$access = JongmanHelper::getActions('com_jongman');
+			if (!$access->get('core.edit.state') && !$access->get('core.edit')) {
+				$filters['a.state'] = array('STATE', '1');
+			}
+		}
+		// Apply Filter
+		RFQueryHelper::buildFilter($query, $filters);
+	
+		// Group and order
+		$query->group('u.id');
+		$query->order('u.name ASC');
+	
+		// Get the results
+		$db->setQuery((string) $query);
+		$items = (array) $db->loadObjectList();
+	
+		// Return the items
+		return $items;
+	}
+	
+	protected function getStoreId($id = '')
+	{
+		$id .= ':'.$this->getState('filter.schedule_id');
+		$id .= ':'.$this->getState('filter.resource_id');
+		$id .= ':'.$this->getState('filter.start_date');
+		$id .= ':'.$this->getState('filter.end_date');
+		$params = $this->getState('params');
+		if ($params === null) {
+			// $params === null as this class get called with ignore_request = true
+			$params = JComponentHelper::getParams('com_jongman');
+			$this->setState('params', $params);
+		}
+		if ($this->getState('params')->get('approvalSystem')==2) {
+			$id .= ':'.$this->getState('filter.workflow_state_id');
+		}else{
+			$id .= ':'.$this->getState('filter.state');
+		}
+		return parent::getStoreId($id);
+	}
+	
+	protected function getItemIdsByWorkflowState($workflowStateId = null, $context='com_jongman.reservation' )
+	{
+		if ($workflowStateId === null) return array();
+		$dbo = JFactory::getDbo();
+		$query = $dbo->getQuery(true);
+		$query->select('item_id')
+		->from('#__wf_instances')
+		->where('workflow_state_id='.(int)$workflowStateId)
+		->where('context='.$dbo->quote($context));
+		$dbo->setQuery($query);
+	
+		return $dbo->loadColumn();
+	}
+	
 }

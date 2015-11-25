@@ -64,18 +64,52 @@ function JongmanBuildRoute( &$query )
     			$segments[] = $query['id'];
     			unset($query['id']);
     		}	
+    	}else if ($query['view'] == 'reservationitem') {
+    		$segments[] = $query['id'];
+    		unset($query['id']);
+    		if (isset($query['layout'])) {
+    			$segments[] = $query['layout'];
+    			unset($query['layout']);
+    		}
+    	}else if ($query['view'] == 'calendar') {
+    		if (isset($query['caltype'])) {
+    			$segments[] = $query['caltype'];
+    			unset($query['caltype']);
+    		}else{
+    			$segments[] = 'month';
+    		}
+    		if (isset($query['yy']) && !empty($query['yy'])) {
+    			if (isset($query['dd'])) {
+    				$segments[] = $query['dd'];
+    				unset($query['dd']);
+    			}
+    			if (isset($query['mm'])) {
+    				$segments[] = $query['mm'];
+    				unset($query['mm']);
+    			}
+    			if (isset($query['yy'])) {
+    				$segments[] = $query['yy'];
+    				unset($query['yy']);
+    			}
+    		}
+    		if (isset($query['sid'])) {
+    			$segments[] = $query['sid'];
+    			unset($query['sid']);
+    		}
+    		if (isset($query['rid'])) {
+    			$segments[] = $query['rid'];
+    			unset($query['rid']);
+    		}
     	}
         unset($query['view']);
     }
-    
-    
     
     return $segments;   
 }
 
 function JongmanParseRoute( &$segments )
 {
-    $vars	= array();
+	$vars	= array();
     $count	= count($segments);
 	switch($segments[0]) {
 		case 'schedule':
@@ -117,8 +151,40 @@ function JongmanParseRoute( &$segments )
 				$vars['id'] = $segments[1];
 			}
 			break;
+		case 'reservationitem' :
+			$vars['view'] = 'reservationitem';
+			$vars['id'] = $segments[1];
+			if ($count == 3){
+				$vars['layout'] = $segments[2];
+			} 
+			break;
+		case 'calendar':
+			$vars['view'] = 'calendar';
+			$vars['caltype'] = $segments[1];
+				
+			if ($count == 3) {
+				$vars['sid'] = $segments[2];
+			}
+			if ($count == 4) {
+				$vars['sid'] = $segments[2];
+				$vars['rid'] = $segments[3];
+			}
+			
+			if ($count >= 5) {
+				if (isset($segments[2])) $vars['dd'] = $segments[2];
+				if (isset($segments[3])) $vars['mm'] = $segments[3];
+				if (isset($segments[4])) $vars['yy'] = $segments[4];
+			}
+			if ($count == 6) {
+				$vars['sid'] = $segments[5];
+			}
+			if ($count == 7) {	
+				$vars['sid'] = $segments[5];
+				$vars['rid'] = $segments[6];
+			}
+			break;	
 	}
-    
+
     return $vars;        
 }
 

@@ -384,3 +384,5 @@ INSERT INTO `#__jongman_time_blocks` (`id`, `label`, `end_label`, `availability_
 (18, NULL, NULL, 1, 1, '16:00:00', '16:30:00', NULL),
 (19, NULL, NULL, 1, 1, '16:30:00', '17:00:00', NULL),
 (20, NULL, NULL, 2, 1, '17:00:00', '00:00:00', NULL);
+
+

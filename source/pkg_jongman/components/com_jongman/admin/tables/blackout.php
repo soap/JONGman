@@ -11,6 +11,9 @@ jimport('joomla.database.table');
  */
 class JongmanTableBlackout extends JTable
 {
+	protected $_columnAlias = array('published'=>'state');
+	
+	
 	/**
 	 * Constructor.
 	 *
@@ -83,7 +86,7 @@ class JongmanTableBlackout extends JTable
 		} 
 		else {
 			// Existing record.
-			$this->modified	= $date;
+			$this->modified		= $date;
 			$this->modified_by	= $userId;
 		}
 

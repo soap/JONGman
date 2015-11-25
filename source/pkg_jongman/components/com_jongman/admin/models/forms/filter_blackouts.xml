@@ -9,7 +9,7 @@
 			class="js-stools-search-string"
 		/>
 		<field 
-			name="schedule"
+			name="schedule_id"
 			type="schedule"
 			label="COM_JONGMAN_SELECT_SCHEUDLE"
 			description=""
@@ -18,8 +18,9 @@
 			<option value="">COM_JONGMAN_OPTION_SELECT_SCHEDULE</option>
 		</field>
 		<field 
-			name="resource"
+			name="resource_id"
 			type="resource"
+			require_schedule="true"
 			label="COM_JONGMAN_SELECT_RESOURCE"
 			description=""
 			onchange="this.form.submit();"

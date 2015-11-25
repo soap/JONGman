@@ -4,16 +4,18 @@ defined('_JEXEC') or die;
 //JHtml::addIncludePath(JPATH_COMPONENT.'helpers/html');
 JHtml::_('jmhtml.script.form');
 JHtml::_('behavior.tooltip');
-JHtml::_('behavior.formvalidation');
+JHtml::_('behavior.formvalidator');
 JHtml::_('behavior.keepalive');
-?>
-<script type="text/javascript">
-	window.addEvent('domready', function() {
+
+$js =  "window.addEvent('domready', function() {
     	document.formvalidator.setHandler('abovezerodecimal', function (value) {
            		regex=/^[1-9]?[0-9]{0,3}(\.[0-9]{1,2})?/;
                 return regex.test(value);
     	});
-	});
+	});";
+JFactory::getDocument()->addScriptDeclaration($js);
+?>
+<script type="text/javascript">
 	// Attach a behaviour to the submit button to check validation.
 	Joomla.submitbutton = function(task)
 	{

@@ -68,7 +68,7 @@ class JFormFieldModal_Resources extends JFormField {
 			. ' disabled="disabled"' . $attr . ' />';
 		$html[] = '</div>';
 		
-		// Create the user select button.
+		// Create the select button.
 		$html[] = '<div class="button2-left">';
 		$html[] = '  <div class="blank">';
 		if ($this->element['readonly'] != 'true')

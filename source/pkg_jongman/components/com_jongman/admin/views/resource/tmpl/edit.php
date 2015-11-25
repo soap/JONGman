@@ -12,6 +12,9 @@ defined('_JEXEC') or die;
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
+$this->show_options = 1;
+$this->ignore_fieldsets = array('accesscontrol', 'advanced'); //do not display using edit.params layout
+
 ?>
 <script type="text/javascript">
 	// Attach a behaviour to the submit button to check validation.
