@@ -12,6 +12,8 @@ function JongmanBuildRoute( &$query )
    	$segments = array();
 
     if (isset($query['view'])) {
+		// not translate these query
+		
     	$segments[] = $query['view'];
     	if ($query['view'] == 'schedule') {
 			/* We should use slug for schedule id here? */
@@ -100,6 +102,25 @@ function JongmanBuildRoute( &$query )
     			$segments[] = $query['rid'];
     			unset($query['rid']);
     		}
+    	}else if ($query['view'] == 'customer'){
+    		if (isset($query['id'])) {
+    			$segments[] = $query['id'];
+    			unset($query['id']);
+    		}else{
+    			$segments[] = '0';
+    		}
+    		if (isset($query['layout'])) {
+    			$segments[] = $query['layout'];
+    			unset($query['layout']);
+    		}
+    		if (isset($query['tmpl'])) {
+    			$segments[] = $query['tmpl'];
+    			unset($query['tmpl']);
+    		}
+    		if (isset($query['modal'])) {
+    			$segments[] = $query['modal'];
+    			unset($query['modal']);
+    		}
     	}
         unset($query['view']);
     }
@@ -128,9 +149,14 @@ function JongmanParseRoute( &$segments )
 			
 			$vars['view'] = 'reservation';
 			if ($count == 3) {
-				/** edit existing reservation **/
-				$vars['id'] = $segments[1];
-				$vars['layout'] = $segments[2];				
+				/** edit existing reservation or new reservation with only schedule id supplied**/
+				if ($segments[1] == 'edit') {
+					$vars['layout'] = $segments[1];
+					$vars['schedule_id'] = $segments[2];	
+				}else {
+					$vars['id'] = $segments[1];
+					$vars['layout'] = $segments[2];
+				}				
 			}
 			
 			if ($count == 6) {
@@ -182,9 +208,23 @@ function JongmanParseRoute( &$segments )
 				$vars['sid'] = $segments[5];
 				$vars['rid'] = $segments[6];
 			}
-			break;	
+			break;
+		case 'customer' :
+			$vars['view'] = 'customer';
+			if ($count == 2) {
+				$vars['id'] = $segments[1];
+			}else if ($count == 3) {
+				$vars['id'] = $segments[1];
+				$vars['layout'] = $segments[2];
+			}else if ($count >= 4) {
+				$vars['id'] = $segments[1];
+				$vars['layout'] = $segments[2];
+				$vars['tmpl'] = $segments[3];
+			}
+			if (isset($segments[4])) $vars['modal'] = $segments[4];
+ 			break;	
 	}
-
+	
     return $vars;        
 }
 
