@@ -91,7 +91,13 @@ class JFormFieldCustomer2 extends JFormField
 
 		// Prepare field attributes
 		$editLink = 'index.php?option=com_jongman&task=customer.edit&tmpl=component&modal=1&id=';
-		$change = "jQuery('#{$this->id}_edit').attr('href', '{$editLink}'+jQuery('#{$this->id}_id').val());";
+		$changes = array();
+		$changes[] = "var el = jQuery('#{$this->id}_edit');";
+		$changes[] = "el.attr(\"href\", '{$editLink}'+jQuery('#{$this->id}_id').val());";
+		$changes[] = "if (el.attr('disabled')) el.removeAttr('disabled');";
+		//$changes[] = "console.log('customer id changed....disabled attribute is '+el.attr('disabled'));";
+		$change = implode("\n", $changes);
+		
 		$can_change = isset($this->element['readonly']) ? (bool) $this->element['readonly'] : true;
 		if ($can_edit) {
 			$onchange   = isset($this->element['onchange']) ? $change.$this->element['onchange'] : $change;
@@ -131,6 +137,7 @@ class JFormFieldCustomer2 extends JFormField
 		$js[] = "           callback({id:" . $value . ", text: '" . htmlspecialchars($title, ENT_QUOTES) . "'});";
 		$js[] = "        }";
 		$js[] = "    });";
+		// on change for hidden field storing customer id
 		$js[] = "    jQuery('#" . $this->id . "_id').change(function(){" . $onchange . "});";
 		$js[] = "});";
 
@@ -144,12 +151,14 @@ class JFormFieldCustomer2 extends JFormField
 			$newLink = 'index.php?option=com_jongman&task=customer.add&tmpl=component&modal=1';
 			if ($can_add) {
 				$html[] = '<a class="btn btn-sm btn-success modal_' . $this->id . ' btn" title="' . JText::_('COM_JONGMAN_ADD_CUSTOMER') . '"'
-					. ' href="' . JRoute::_($newLink) . '" rel="{handler: \'iframe\', size: {x: 800, y: 500}}">';
+					. ' href="' . JRoute::_($newLink, false) . '" rel="{handler: \'iframe\', size: {x: 800, y: 500}}">';
 				$html[] = JText::_('COM_JONGMAN_ACTION_NEW') . '</a>';
 			}
 			if ($can_edit) {
+				$disabled = '';
+				if ($value == 0) $disabled = ' disabled="true"'; 
 				$html[] = '<a id="'.$this->id.'_edit" class="btn btn-sm btn-success modal_' . $this->id . ' btn" title="' . JText::_('COM_JONGMAN_EDIT_CUSTOMER') . '"'
-					. ' href="' . JRoute::_($editLink.$value) . '" rel="{handler: \'iframe\', size: {x: 800, y: 500}}">';
+					.$disabled. ' href="' . JRoute::_($editLink.$value) . '" rel="{handler: \'iframe\', size: {x: 800, y: 500}}">';
 				$html[] = JText::_('COM_JONGMAN_ACTION_EDIT') . '</a>';
 			}
 			// Add script
