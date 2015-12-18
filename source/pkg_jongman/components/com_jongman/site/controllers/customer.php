@@ -7,6 +7,13 @@ defined('_JEXEC') or die;
 class JongmanControllerCustomer extends JControllerForm
 {
 	
+	public function add()
+	{
+		$input = JFactory::getApplication()->input;
+		$input->set('id', null);
+		parent::add();
+	}
+	
 	public function save($key=null, $urlVar='id')
 	{
 		if (parent::save($key, $urlVar)) {
