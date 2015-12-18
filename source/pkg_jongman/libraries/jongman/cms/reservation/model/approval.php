@@ -1,4 +1,7 @@
 <?php
+defined('_JEXEC') or die;
+jimport('jongman.reservation.view.view');
+jimport('jongman.cms.authorisation.service');
 
 interface IReservationApprovalModel
 {
@@ -33,8 +36,9 @@ class RFReservationModelApproval implements IReservationApprovalModel
 	private $userSession;
 
 	public function __construct(
-			IReservationApprovalPage $page,
-			IUpdateReservationPersistenceService $persistenceService,
+			/*IReservationApprovalPage $page,*/
+			IReservationPage $page, // Use IReservationPage instead as we create it in one place not separate yet
+ 			IUpdateReservationPersistenceService $persistenceService,
 			IReservationHandler $handler,
 			IReservationAuthorization $authorizationService,
 			JUser $userSession)

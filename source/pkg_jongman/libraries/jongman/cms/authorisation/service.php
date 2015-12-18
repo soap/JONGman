@@ -92,7 +92,7 @@ class RFAuthorisationService implements IAuthorisationService
 	 */
 	public function canReserveForOthers(JUser $reserver)
 	{
-		if ($reserver->isAdmin)
+		if ($reserver->authorise('core_admin', 'com_jongman'))
 		{
 			return true;
 		}
@@ -133,7 +133,7 @@ class RFAuthorisationService implements IAuthorisationService
             return true;
         }
 
-        return $user->isInRole(RoleLevel::APPLICATION_ADMIN);
+        return $user->authorise('core.admin', 'com_jongman');
     }
 
     /**
@@ -142,7 +142,7 @@ class RFAuthorisationService implements IAuthorisationService
      */
     public function isResourceAdministrator(JUser $user)
     {
-        return $user->isInRole(RoleLevel::RESOURCE_ADMIN);
+        return $user->authroise('core.admin', 'com_jongman');
     }
 
     /**
@@ -151,7 +151,7 @@ class RFAuthorisationService implements IAuthorisationService
      */
     public function isGroupAdministrator(JUser $user)
     {
-        return $user->IsInRole(RoleLevel::GROUP_ADMIN);
+        return $user->authorise('core.admin', 'com_jongamn');
     }
 
 	/**
@@ -160,7 +160,7 @@ class RFAuthorisationService implements IAuthorisationService
      */
     public function isScheduleAdministrator(JUser $user)
     {
-        return $user->IsInRole(RoleLevel::SCHEDULE_ADMIN);
+        return $user->$user->authorise('core.admin', 'com_jongamn');
     }
 
 	/**
@@ -170,21 +170,21 @@ class RFAuthorisationService implements IAuthorisationService
 	 */
 	private function isAdminFor(JUser $userSession, $otherUserId)
 	{
-		if ($userSession->IsAdmin)
+		if ($userSession->authorise('core.admin'))
 		{
 			return true;
 		}
 
-        if (!$userSession->IsGroupAdmin)
+        if (!$userSession->authorise('core.admin', 'com_jongman'))
         {
             // dont even bother checking if the user isnt a group admin
             return false;
         }
 
-		$user1 = $this->userRepository->LoadById($userSession->UserId);
-		$user2 = $this->userRepository->LoadById($otherUserId);
+		//$user1 = $this->userRepository->LoadById($usefarSession->UserId);
+		//$user2 = $this->userRepository->LoadById($otherUserId);
 
-		return $user1->IsAdminFor($user2);
+		return false;//$user1->IsAdminFor($user2);
 	}
 
     /**
@@ -194,7 +194,7 @@ class RFAuthorisationService implements IAuthorisationService
      */
     public function canEditForResource(JUser $userSession, IResource $resource)
     {
-        if ($userSession->isAdmin)
+        if ($userSession->authorise('core.admin', 'com_jongman'))
         {
             return true;
         }
