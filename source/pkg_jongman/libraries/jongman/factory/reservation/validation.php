@@ -10,7 +10,7 @@ class RFFactoryReservationValidation implements IReservationValidationFactory
 
 	public function __construct()
 	{
-		//$this->creationStrategies[ReservationAction::Approve] = 'CreateUpdateService';
+		$this->creationStrategies[RFReservationAction::Approve] = 'createUpdateService';
 		$this->creationStrategies[RFReservationAction::Create] = 'createAddService';
 		$this->creationStrategies[RFReservationAction::Delete] = 'createDeleteService';
 		$this->creationStrategies[RFReservationAction::Update] = 'createUpdateService';
@@ -24,7 +24,7 @@ class RFFactoryReservationValidation implements IReservationValidationFactory
 			return $this->$createMethod($user);
 		}
 
-		return new NullReservationValidationService();
+		return new RFNullReservationValidationService();
 	}
 
 	private function createAddService($user)

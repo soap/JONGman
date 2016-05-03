@@ -42,7 +42,7 @@ class RFReservationAuthorisation implements IReservationAuthorisation
 	 */
 	private $authorizationService;
 
-	public function __construct(IAuthorizationService $authorizationService)
+	public function __construct(IAuthorisationService $authorizationService)
 	{
 		$this->authorizationService = $authorizationService;
 	}
@@ -71,7 +71,7 @@ class RFReservationAuthorisation implements IReservationAuthorisation
 			}
 		}
 
-		return $currentUser->IsAdmin;	// only admins can edit reservations that have ended
+		return $currentUser->authorise('core.admin','com_jongamn');	// only admins can edit reservations that have ended
 	}
 
 	public function canChangeUsers(JUser $currentUser)

@@ -25,7 +25,8 @@ class RFReservationSeries extends JObject
 	/**
 	 * @var JUser
 	 */
-	protected $bookedBy; // person who place a reservation
+	protected $bookedBy; 	// person who place a reservation
+	protected $updatedBy; 	// person who update a reservation
 	protected $instances = array();
 	
 	protected $_repeatOptions;
@@ -259,6 +260,13 @@ class RFReservationSeries extends JObject
 		return $ids;
 	}
 
+	/**
+	 * @return array|BookableResource[]
+	 */
+	public function additionalResources()
+	{
+		return $this->_additionalResources;
+	}
 	/**
 	 * @return array|RFResourceBookable[]
 	 */

@@ -13,6 +13,11 @@ interface IReservationPage
 	
 	/**
 	 * @return int
+	 */
+	public function getCustomerId();
+
+	/**
+	 * @return int
 	*/
 	public function getResourceId();
 	

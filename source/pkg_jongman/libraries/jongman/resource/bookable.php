@@ -198,7 +198,7 @@ class RFResourceBookable
 		return $this->_contact;
 	}
 
-	public function SetContact($value)
+	public function setContact($value)
 	{
 		$this->_contact = $value;
 	}
@@ -470,7 +470,7 @@ class RFResourceBookable
 	 * @param string $value
 	 * @return void
 	 */
-	public function SetImage($value)
+	public function setImage($value)
 	{
 		$this->_imageName = $value;
 	}
@@ -545,7 +545,7 @@ class RFResourceBookable
 		}
 	}
 
-	public function DisableSubscription()
+	public function disableSubscription()
 	{
 		$this->setIsCalendarSubscriptionAllowed(false);
 	}
@@ -643,7 +643,7 @@ class RFResourceBookable
 	 * @static
 	 * @return BookableResource
 	 */
-	public static function Null()
+	public static function null()
 	{
 		return new RFResourceBookable(null, null, null, null, null, null, null, false, false, false, null, null, null);
 	}

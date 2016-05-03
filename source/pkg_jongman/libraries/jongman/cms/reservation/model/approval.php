@@ -1,4 +1,7 @@
 <?php
+defined('_JEXEC') or die;
+jimport('jongman.reservation.view.view');
+jimport('jongman.cms.authorisation.service');
 
 interface IReservationApprovalModel
 {
@@ -33,10 +36,11 @@ class RFReservationModelApproval implements IReservationApprovalModel
 	private $userSession;
 
 	public function __construct(
-			IReservationApprovalPage $page,
-			IUpdateReservationPersistenceService $persistenceService,
+			/*IReservationApprovalPage $page,*/
+			IReservationPage $page, // Use IReservationPage instead as we create it in one place not separate yet
+ 			IUpdateReservationPersistenceService $persistenceService,
 			IReservationHandler $handler,
-			IReservationAuthorization $authorizationService,
+			IReservationAuthorisation $authorizationService,
 			JUser $userSession)
 	{
 		$this->page = $page;
@@ -50,7 +54,7 @@ class RFReservationModelApproval implements IReservationApprovalModel
 	{
 		$referenceNumber = $this->page->getReferenceNumber();
 
-		//JLog::add('User: %s, Approving reservation with reference number %s', $this->userSession->UserId, $referenceNumber);
+		JLog::add('User: %s, Approving reservation with reference number %s', $this->userSession->id, $referenceNumber);
 
 		$series = $this->persistenceService->loadByReferenceNumber($referenceNumber);
 		if($this->authorization->canApprove(new RFReservationViewAdapter($series), $this->userSession))
@@ -76,17 +80,17 @@ class RFReservationViewAdapter extends RFReservationView
 			$this->additionalResourceIds[] = $resource->getId();
 		}
 
-		foreach($series->addedAttachments() as $attachment)
-		{
+		//foreach($series->addedAttachments() as $attachment)
+		//{
 			//$this->Attachments[] = new RFReservationAttachmentView($attachment->FileId(), $series->SeriesId(), $attachment->FileName());
-		}
+		//}
 
-		foreach($series->attributeValues() as $av)
-		{
-			$this->attributes[] = $av;
-		}
+		//foreach($series->attributeValues() as $av)
+		//{
+		//	$this->attributes[] = $av;
+		//}
 
-		$this->description = $series->description();
+		$this->description = $series->getDescription();
 		$this->endDate = $series->currentInstance()->endDate();
 		$this->ownerId = $series->userId();
 		$this->referenceNumber = $series->currentInstance()->referenceNumber();
@@ -95,9 +99,15 @@ class RFReservationViewAdapter extends RFReservationView
 
 		foreach($series->allResources() as $resource)
 		{
-			$this->resources[] = new RFReservationResourceView($resource->getId(), $resource->getName(), $resource->getAdminGroupId(), $resource->getScheduleId(), $resource->getScheduleAdminGroupId(), $resource->getStatusId());
+			if ($resource->isOnline()) {
+				$resourceStatus = RFResourceStatus::AVAILABLE;
+			}else{
+				$resourceStatus = RFResourceStatus::UNAVAILABLE;
+			}
+			$this->resources[] = new RFResourceReservationView($resource->getId(), $resource->getName(), $resource->getAdminGroupId(), $resource->getScheduleId(), $resource->getScheduleAdminGroupId(), $resourceStatus);
 		}
 
+		
 		$this->scheduleId = $series->scheduleId();
 		$this->seriesId = $series->seriesId();
 		$this->startDate = $series->currentInstance()->startDate();
