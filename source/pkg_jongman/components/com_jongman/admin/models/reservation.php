@@ -20,10 +20,10 @@ jimport('jongman.base.ireservationsaveresultview');
  * @subpackage  Admin
  * @since       2.0
  */
-class JongmanModelReservation extends JModelAdmin implements IReservationPage, IReservationSaveResultView
+class JongmanModelReservation extends JModelAdmin implements IReservationPage, /*, IReservationApprovalPage, */ IReservationSaveResultView
 {
 	protected $validData = array();
-	private $_handler;
+	private $_handler; 
 	private $_saveresult = false;
 	private $_warnings = array();
 	private $_saveSuccessfully = false;
@@ -200,15 +200,18 @@ class JongmanModelReservation extends JModelAdmin implements IReservationPage, I
 	
 	public function approve($cid, $value)
 	{
+		$id = (int) $cid[0];
+		$item = $this->getItem($id);
+		$this->validData['reference_number'] = $item->reference_number;
+		
 		$user = JFactory::getUser();
 		$reservationAction = RFReservationAction::Approve;
 		$factory = new RFFactoryReservationPersistence();
 		$persistenceService = $factory->create($reservationAction);
 		$handler = RFReservationHandler::create($reservationAction, $persistenceService, $user);
-		
-		$model = new RFReservationModelApproval($this, $persistenceService, $handler, $auth, ServiceLocator::GetServer()->GetUserSession());
-		$presenter->PageLoad();
-		
+		$authService = new RFReservationAuthorisation(new RFAuthorisationService($user));
+		$model = new RFReservationModelApproval($this, $persistenceService, $handler, $authService, $user);
+		$model->approve();
 		
 		return array();	
 	}

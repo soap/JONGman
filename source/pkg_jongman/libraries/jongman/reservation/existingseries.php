@@ -73,6 +73,10 @@ class RFReservationExistingSeries extends RFReservationSeries
 		$this->setSeriesId($seriesId);
 	}
 
+	public function withBookedBy($bookedById)
+	{
+		$this->bookedBy = $bookedById;
+	}
 	/**
 	 * @internal
 	 */
@@ -348,7 +352,7 @@ class RFReservationExistingSeries extends RFReservationSeries
 	 */
 	public function delete(JUser $deletedBy)
 	{
-		$this->_bookedBy = $deletedBy;
+		$this->bookedBy = $deletedBy;
 
 		if (!$this->appliesToAllInstances())
 		{
@@ -375,15 +379,29 @@ class RFReservationExistingSeries extends RFReservationSeries
 	 */
 	public function approve(JUser $approvedBy)
 	{
-		$this->_bookedBy = $approvedBy;
+		$this->updatedBy = $approvedBy;
 
-		$this->statusId = RFReservationStatus::Created;
+		$this->statusId = RFReservationStatus::approved;
 
 		//Log::Debug("Approving series %s", $this->SeriesId());
 
 		$this->addEvent(new RFEventSeriesApproved($this));
 	}
 
+	/**
+	 * @param JUser $approvedBy
+	 * @return void
+	 */
+	public function reject(JUser $rejectedBy)
+	{
+		$this->updatedBy = $rejectedBy;
+	
+		$this->statusId = RFReservationStatus::rejected;
+	
+		//Log::Debug("Approving series %s", $this->SeriesId());
+	
+		$this->addEvent(new RFEventSeriesApproved($this));
+	}
 	/**
 	 * @return bool
 	 */

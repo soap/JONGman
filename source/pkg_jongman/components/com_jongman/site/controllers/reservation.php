@@ -3,7 +3,7 @@
  * @version: $Id$
  */
 defined('_JEXEC') or die;
-jimport('joomla.application.component.controllerform');
+jimport('jongman.controller.form');
 
 require_once(JPATH_COMPONENT.'/helpers/reservation.php');
 
@@ -15,9 +15,9 @@ require_once(JPATH_COMPONENT.'/helpers/reservation.php');
  * @license     GNU General Public License version 2 or later; see LICENSE
  * @since       1.0
  */
-class JongmanControllerReservation extends JControllerForm
-{
-	protected $view_list = 'schedule';
+class JongmanControllerReservation extends RFControllerForm {
+
+	protected $view_list = 'reservations';
 	
 	protected $view_item = 'reservation';
 	
@@ -31,14 +31,18 @@ class JongmanControllerReservation extends JControllerForm
 	
 	public function add()
 	{
-		$this->setReturnPage();
+		$this->setReturnPage('com_jongman.reservation.return_page');
+		$app = JFactory::getApplication();
+		$startDate = $app->input->getString('sd', null);
+		//if ($startDate == null) $app->input->set('sd', JFactory::getDate()->format('Y-m-d'));
+		
 		if (!parent::add()) {
-			
-			$returnPage = $this->getReturnPage(true);	
+			$returnPage = $this->getReturnPage('com_jongman.reservation.return_page', true);	
 			if (!empty($returnPage)) {
 				$this->setRedirect(JRoute::_($returnPage, false));
 			}
-		}	
+		}
+			
 	}
 	
 	/** Not used */
@@ -117,7 +121,7 @@ class JongmanControllerReservation extends JControllerForm
 		$this->releaseEditId($context, $recordId);
 		$app->setUserState($context . '.data', null);
 		
-		$return = $this->getReturnPage(true);
+		$return = $this->getReturnPage(null, true);
 		if (empty($return)) {
  			$this->setRedirect(
 				JRoute::_(
@@ -186,7 +190,7 @@ class JongmanControllerReservation extends JControllerForm
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_SAVE_NOT_PERMITTED'));
 			$this->setMessage($this->getError(), 'error');
 
-			$return = $this->getReturnPage(true);
+			$return = $this->getReturnPage(null, true);
 			if (empty($return)) {
 	
 				$this->setRedirect(
@@ -281,10 +285,9 @@ class JongmanControllerReservation extends JControllerForm
 		$app->setUserState($context . '.data', null);
 		
 		// Redirect to the list screen.
-		$return = $this->getReturnPage(true);
+		$return = $this->getReturnPage('com_jongman.reservation.return_page', true);
 		if (!empty($return)) {
-
-			$this->setRedirect($return);
+			$this->setRedirect(JRoute::_($return, false));
 		}else{
 			
 			$this->setRedirect(
@@ -377,38 +380,5 @@ class JongmanControllerReservation extends JControllerForm
 		return $append;
 		
 	}
-	
-	protected function setReturnPage()
-	{
-		$app = JFactory::getApplication();
-		$return = $app->input->get('return', null, 'base64');	
-		if (empty($return)) {
-			$referer = getenv("HTTP_REFERER");
-			if (empty($referer)) return false;
-			
-			$return = base64_encode($referer);
-		}
-		
-		$app->setUserState('com_jongman.reservation.return_page', $return);
-		return true;
-	}
-	
-	protected function clearReturnPage()
-	{
-		$app = JFactory::getApplication();
-		$app->setUserState('com_jongman.reservation.return_page', null);
-	}
-	
-	protected function getReturnPage($clear = false)
-	{
-		$app = JFactory::getApplication();
-		$return = $app->input->get('return', null, 'base64');
-		if (empty($return)) {
-			$return = $app->getUserState('com_jongman.reservation.return_page');
-		}
-		
-		if ($clear) $this->clearReturnPage();
-		
-        return base64_decode($return);
-	}
+
 }

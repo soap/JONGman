@@ -2,6 +2,7 @@
 defined('_JEXEC') or die;
 
 jimport('jongman.base.iuserrepository');
+
 class RFUserRepository implements IUserRepository
 {
 
