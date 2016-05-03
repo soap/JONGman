@@ -140,7 +140,7 @@ class RFReservationView
 	 */
 	public function requiresApproval()
 	{
-		return $this->statusId == RFReservationStatus::Pending;
+		return $this->statusId == RFReservationStatus::pending;
 	}
 
 	/**

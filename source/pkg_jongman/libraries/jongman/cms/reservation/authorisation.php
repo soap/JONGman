@@ -42,7 +42,7 @@ class RFReservationAuthorisation implements IReservationAuthorisation
 	 */
 	private $authorizationService;
 
-	public function __construct(IAuthorizationService $authorizationService)
+	public function __construct(IAuthorisationService $authorizationService)
 	{
 		$this->authorizationService = $authorizationService;
 	}
