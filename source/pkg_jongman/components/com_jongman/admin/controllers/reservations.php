@@ -104,7 +104,7 @@ class JongmanControllerReservations extends JControllerAdmin
 	
 		// Get items to publish from the request.
 		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
-		$data = array('approve' => 1, 'unapprove' => 0);
+		$data = array('approve' => 1, 'unapprove' => -1);
 		$task = $this->getTask();
 		$value = JArrayHelper::getValue($data, $task, 0, 'int');
 	

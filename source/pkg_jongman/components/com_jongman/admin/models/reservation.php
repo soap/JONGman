@@ -200,15 +200,18 @@ class JongmanModelReservation extends JModelAdmin implements IReservationPage, /
 	
 	public function approve($cid, $value)
 	{
+		$id = (int) $cid[0];
+		$item = $this->getItem($id);
+		$this->validData['reference_number'] = $item->reference_number;
+		
 		$user = JFactory::getUser();
 		$reservationAction = RFReservationAction::Approve;
 		$factory = new RFFactoryReservationPersistence();
 		$persistenceService = $factory->create($reservationAction);
 		$handler = RFReservationHandler::create($reservationAction, $persistenceService, $user);
-		$autService = new RFReservationAuthorisation(new RFAuthorisationService($user));
+		$authService = new RFReservationAuthorisation(new RFAuthorisationService($user));
 		$model = new RFReservationModelApproval($this, $persistenceService, $handler, $authService, $user);
-		$presenter->PageLoad();
-		
+		$model->approve();
 		
 		return array();	
 	}
