@@ -1,0 +1,271 @@
+@CHARSET "UTF-8";
+.jm-recur-container
+{
+	background-color: #f3f3f3;
+    border: solid 1px #a1a1a1;
+    padding: 10px;
+    width: 80%;
+}
+
+.jm-recur-container label, .jm-recur-container input
+{
+	display: block;
+   	width: 120px;
+    float: left;
+    margin-bottom: 10px;
+}
+ 
+.jm-recur-container label
+{
+	text-align: right;
+	padding-right: 20px;
+}
+.repeat_until_div label 
+{
+	display: block;
+   	width: 120px;
+    float: left;
+    margin-bottom: 10px;	
+}
+
+/* Button 1 Type */
+.button1,.button1 div {
+	height: 1%;
+	float: right;
+}
+
+.button1 {
+	white-space: nowrap;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.button1 a {
+	display: block;
+	height: 2.2em;
+	float: left;
+	line-height: 2.2em;
+	font-size: 1.2em;
+	font-weight: bold;
+	cursor: default;
+	padding: 0 6px 0 6px;
+	/* add padding if you are using the directional images */
+	/* padding: 0 30px 0 6px; */
+}
+
+.button1 a:hover,.button1 a:focus {
+	text-decoration: none;
+}
+
+	/* Button 2 Type */
+.button2-left,.button2-right {
+	float: left;
+	line-height: 1.5em;
+	font-size: 1.2em;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.button2-left.smallsub,.button2-right.smallsub {
+	line-height: 1.2em;
+	font-size: .9em;
+}
+
+.button2-left a,.button2-right a,.button2-left span,.button2-right span {
+	display: block;
+	float: left;
+	cursor: default;
+}
+
+	/* these are inactive buttons */
+.button2-left span,.button2-right span {
+	cursor: default;
+}
+
+.button2-left .page a,.button2-right .page a,
+.button2-left .page span,.button2-right .page span,
+.button2-left .blank a,.button2-right .blank a,
+.button2-left .blank span,.button2-right .blank span {
+	padding: 0 6px;
+}
+
+.page span,.blank span {
+	font-weight: bold;
+}
+
+.button2-left a:hover,
+.button2-right a:hover,
+.button2-left a:focus,
+.button2-right a:focus {
+	text-decoration: none;
+}
+
+.button2-left a,.button2-left span {
+	padding: 0 24px 0 6px;
+}
+
+.button2-right a,.button2-right span {
+	padding: 0 6px 0 24px;
+}
+
+.button2-left {
+	float: left;
+	margin-left: 5px;
+}
+
+.button2-right {
+	float: left;
+	margin-left: 5px;
+}
+
+/* Fieldset on reservation form */
+fieldset#jm-fs-reservation {
+	margin: 0;
+	padding: 0;
+}
+/* Tab changes for accessibility */
+dl.tabs dt h3 {
+	margin: 0;
+	padding: 0;
+	font-size: 1em;
+	font-weight: normal;
+}
+
+dl.tabs dt h3 a:link {
+	color:#333333;
+	outline:medium none;
+	text-decoration:none;
+}
+
+/* -- TAB STYLES ----------------------------- */
+dl#jm-tabs-reservation, dl.tabs {
+	float: left;
+	margin: 10px 0 -1px 0;
+	z-index: 50;
+}
+
+dl.tabs dt {
+	float: left;
+	padding: 4px 10px;
+	border: 1px solid #ccc;
+	margin-left: 3px;
+	background: #e9e9e9;
+	color: #666;
+}
+
+dl.tabs dt.open {
+	background: #F9F9F9;
+	border-bottom: 1px solid #f9f9f9;
+	z-index: 100;
+	color: #000;
+}
+
+div.current {
+	clear: both;
+	border: 1px solid #ccc;
+	padding: 10px 10px;
+}
+
+div.current dd {
+	padding: 0;
+	margin: 0;
+}
+
+dl#content-pane.tabs {
+	margin: 1px 0 0 0;
+}
+
+div.current label,
+div.current span.faux-label {
+	display: block;
+	min-width: 150px;
+	float: left;
+	clear: left;
+	margin-top: 8px;
+}
+
+div.current fieldset {
+	border: none 0;
+}
+
+div.current fieldset.adminform {
+	border: 1px #ccc solid;
+}
+
+div.current fieldset.radio {
+	float: left;
+}
+
+div.current fieldset.radio input {
+	clear: none;
+	min-width: 15px;
+	float: left;
+	margin: 3px 0 0 2px;
+}
+
+div.current fieldset.radio label {
+	clear: none;
+	min-width: 45px;
+	float: left;
+	margin: 3px 0 0 5px;
+}
+
+div.current fieldset.checkboxes {
+	float: left;
+	clear: right;
+}
+
+div.current fieldset.checkboxes input {
+	clear: left;
+	min-width: 15px;
+	float: left;
+	margin: 3px 0 0 2px;
+}
+
+div.current fieldset.checkboxes label {
+	clear: right;
+	min-width: 45px;
+	margin: 3px 0 0 5px;
+}
+
+div.current input,
+div.current textarea,
+div.current select {
+	clear: none;
+	float: left;
+	margin: 3px 0 0 2px;
+}
+
+div.current select {
+	margin-bottom: 15px;
+}
+
+p.tab-description {
+	font-size: 1.091em;
+	margin-left: 0;
+	margin-top: 5px;
+}
+
+/**
+* Options modal- reservation
+*/
+ul.reservation-option-list,
+ul.reservation-option-list li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+ul.reservation-option-list fieldset {
+	margin: 0;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.durationText {
+	font-size: 13px;
+	font-weight: bold;
+	display: inline;
+	color: #000;
+}

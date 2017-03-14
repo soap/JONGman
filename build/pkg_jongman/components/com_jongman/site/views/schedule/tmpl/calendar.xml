@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+	<layout title="COM_JONGMAN_SCHEDULE_VIEW_CALENDAR_LAYOUT_TITLE">
+		<message>COM_JONGMAN_SCHEDULE_VIEW_CALENDAR_LAYOUT_DESC</message>
+	</layout>   
+	<!-- Add fields to the request variables for the layout. -->
+	<fields name="request">
+		<fieldset name="request"
+		>
+			<field addfieldpath="/administrator/components/com_jongman/models/fields"
+				name="id"
+				type="modal_schedules"
+				label="COM_JONGMAN_FIELD_SELECT_SCHEDULE_LABEL"
+				description="COM_JONGMAN_FIELD_SELECT_SCHEDULE_DESC"
+			/>
+		</fieldset>
+	</fields> 
+	<fields name="params">
+		<fieldset name="basic">
+			<field name="topNavigation" type="list" default="1"
+				label="COM_JONGMAN_PARAM_TOP_NAVIGATTION_LABEL"
+				description="COM_JONGMAN_PARAM_TOP_NAVIGATTION_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+		</fieldset>
+		<fieldset name="advanced">
+		</fieldset>
+	</fields>
+</metadata>
