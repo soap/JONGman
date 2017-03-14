@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fieldset name="details">
+        <field name="id" type="text" default="0"
+            readonly="true" class="readonly"
+			label="JGLOBAL_FIELD_ID_LABEL" description ="JGLOBAL_FIELD_ID_DESC"/>
+        <field name="asset_id" type="hidden" filter="unset" />
+ 
+       <field name="name" type="text" class="inputbox"
+			size="40" label="COM_JONGMAN_FIELD_SCHEDULE_NAME_LABEL"
+			description="COM_JONGMAN_FIELD_SCHEDULE_NAME_DESC"
+			required="true" />
+        <field name="alias" type="text" class="inputbox"
+			size="40" label="JFIELD_ALIAS_LABEL"
+			description="COM_JONGMAN_FIELD_SCHEDULE_ALIAS_DESC"/>
+		
+		<field name="default" type="radio" default="0"
+			label="COM_JONGMAN_FIELD_DEFAULT_LABEL"
+			description="COM_JONGMAN_FIELD_SCHEDULE_DEFAULT_DESC"
+			filter="intval" class="btn-group btn-group-yesno">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+		<field name="layout_id" type="layout" required="true"
+			label="COM_JONGMAN_FIELD_SCHEDULE_LAYOUT_LABEL"
+			description="COM_JONGMAN_FIELD_SCHEDULE_LAYOUT_DESC"
+			/>
+        <field name="view_days" type="list" class="inputbox"
+            label="COM_JONGMAN_FIELD_SCHEDULE_VIEW_DAYS_LABEL"
+            description="COM_JONGMAN_FIELD_SCHEDULE_VIEW_DAYS_DESC"
+            required="true" filter="intval" size="1" default="5" >
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+        </field>
+
+        <field name="time_format" type="list" class="inputbox"
+            label="COM_JONGMAN_FIELD_SCHEDULE_TIME_FORMAT_LABEL"
+            description="COM_JONGMAN_FIELD_SCHEDULE_TIME_FORMAT_DESC"
+            required="true" filter="intval" size="1" default="24">
+                <option value="12">12</option>
+                <option value="24">24</option>
+        </field>
+        <field name="weekday_start" type="list" class="inputbox"
+            label="COM_JONGMAN_FIELD_SCHEDULE_WEEKDAY_START_LABEL"
+            description="COM_JONGMAN_FIELD_SCHEDULE_WEEKDAY_START_DESC"
+            required="true" filter="intval" size="1" default="0">
+                <option value="0">SUNDAY</option>
+                <option value="1">MONDAY</option>
+                <option value="2">TUESDAY</option>
+                <option value="3">WEDNESDAY</option>
+                <option value="4">THURSDAY</option>
+                <option value="5">FRIDAY</option>
+                <option value="6">SATURDAY</option>
+                <option value="100">COM_JONGMAN_CURRENT_DATE</option>
+        </field>
+        <field name="admin_email" type="email" class="inputbox"
+            label="COM_JONGMAN_FIELD_SCHEDULE_ADMIN_EMAIL_LABEL"
+            description="COM_JONGMAN_FIELD_SCHEDULE_ADMIN_EMAIL_DESC"
+            required="true" size="40" validate="email" />
+		<field name="notify_admin" type="radio" default="0"
+			label="COM_JONGMAN_FIELD_SCHEDULE_NOTIFY_ADMIN_LABEL"
+			description="COM_JONGMAN_FIELD_SCHEDULE_NOTIFY_ADMIN_DESC">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+		</field>
+		<field name="published" type="list"
+			label="COM_JONGMAN_FIELD_STATUS_LABEL"
+            description="COM_JONGMAN_FIELD_STATUS_DESC"
+			class="inputbox" size="1" default="1">
+                <option value="1">JPUBLISHED</option>
+                <option value="0">JUNPUBLISHED</option>
+		</field>
+        <field name="access" type="accesslevel" label="JFIELD_ACCESS_LABEL"
+            description="JFIELD_ACCESS_DESC" class="inputbox" size="1" />     
+    </fieldset>
+    
+	<fields name="params">
+		<fieldset name="basic" label="COM_JONGMAN_BASIC_PARAMS_FIELDSET_LABEL">
+			<field name="daily_date_format"
+				type="text" defualt="Y-m-d"
+				label="COM_JONGMAN_PARAM_SCHEDULE_DAILY_DATEFORMAT_LABEL"
+				description="COM_JONGMAN_PARAM_SCHEDULE_DAILY_DATEFORMAT_DESC"
+				/>
+		</fieldset>
+
+		<fieldset name="advanced" label="COM_JONGMAN_ADVANCED_PARAMS_FIELDSET_LABEL">
+
+		</fieldset>
+	</fields>
+ </form>
