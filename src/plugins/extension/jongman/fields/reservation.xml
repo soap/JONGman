@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="reservation_custom_fields">
+		<fieldset name="jobs" label="PLG_EXTENSION_JONGMAN_RESERVATION_TASKS">
+			<field 
+				name="fronthotel_task"
+				type="textarea" class="span12"
+				label="PLG_EXTENSION_JONGMAN_RESERVATION_FRONTHOTEL_TASK_LABEL"
+				description="PLG_EXTENSION_JONGMAN_RESERVATION_FRONTHOTEL_TASK_DESC" 
+			/>
+			<field 
+				name="golfoperation_task"
+				type="textarea" class="span12"
+				label="PLG_EXTENSION_JONGMAN_RESERVATION_GOLFOPERATION_TASK_LABEL"
+				description="PLG_EXTENSION_JONGMAN_RESERVATION_GOLFOPERATION_TASK_DESC" 
+			/>
+			<field 
+				name="frontgolf_task"
+				type="textarea" class="span12"
+				label="PLG_EXTENSION_JONGMAN_RESERVATION_FRONTGOLF_TASK_LABEL"
+				description="PLG_EXTENSION_JONGMAN_RESERVATION_FRONTGOLF_TASK_DESC" 
+			/>
+			<field 
+				name="hrm_task"
+				type="textarea" class="span12"
+				label="PLG_EXTENSION_JONGMAN_RESERVATION_HRM_TASK_LABEL"
+				description="PLG_EXTENSION_JONGMAN_RESERVATION_HRM_TASK_DESC" 
+			/>
+			<field 
+				name="artist_task"
+				type="textarea" class="span12"
+				label="PLG_EXTENSION_JONGMAN_RESERVATION_ARTIST_TASK_LABEL"
+				description="PLG_EXTENSION_JONGMAN_RESERVATION_ARTIST_TASK_DESC" 
+			/>
+			<field 
+				name="it_task"
+				type="textarea" class="span12"
+				label="PLG_EXTENSION_JONGMAN_RESERVATION_IT_TASK_LABEL"
+				description="PLG_EXTENSION_JONGMAN_RESERVATION_IT_TASK_DESC" 
+			/>
+			<field 
+				name="accountandfinance_task"
+				type="textarea" class="span12"
+				label="PLG_EXTENSION_JONGMAN_RESERVATION_ACCOUNTINGANDFINANCE_TASK_LABEL"
+				description="PLG_EXTENSION_JONGMAN_RESERVATION_ACCOUNTINGANDFINANCE_TASK_DESC" 
+			/>
+			<field 
+				name="fbbeverage_task"
+				type="textarea" class="span12"
+				label="PLG_EXTENSION_JONGMAN_RESERVATION_FBBEVERAGE_TASK_LABEL"
+				description="PLG_EXTENSION_JONGMAN_RESERVATION_FBBEVERAGE_TASK_DESC" 
+			/>	
+			<field 
+				name="fbfood_task"
+				type="textarea" class="span12"
+				label="PLG_EXTENSION_JONGMAN_RESERVATION_FBFOOD_TASK_LABEL"
+				description="PLG_EXTENSION_JONGMAN_RESERVATION_FBFOOD_TASK_DESC" 
+			/>
+			<field 
+				name="banquet_task"
+				type="textarea" class="span12"
+				label="PLG_EXTENSION_JONGMAN_RESERVATION_BANQUET_TASK_LABEL"
+				description="PLG_EXTENSION_JONGMAN_RESERVATION_BANQUET_TASK_DESC" 
+			/>			
+			<field 
+				name="engineering_task"
+				type="textarea" class="span12"
+				label="PLG_EXTENSION_JONGMAN_RESERVATION_ENGINEERING_TASK_LABEL"
+				description="PLG_EXTENSION_JONGMAN_RESERVATION_ENGINEERING_TASK_DESC" 
+			/>	
+			<field 
+				name="housekeeping_task"
+				type="textarea" class="span12"
+				label="PLG_EXTENSION_JONGMAN_RESERVATION_HOUSEKEEPING_TASK_LABEL"
+				description="PLG_EXTENSION_JONGMAN_RESERVATION_HOUSEKEEPING_TASK_DESC" 
+			/>										
+		</fieldset>
+	</fields>
+</form>
+	

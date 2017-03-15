@@ -28,6 +28,9 @@
 !/src/media/com_jongman/
 /src/modules
 /src/plugins/*
+!/src/plugins/extension
+/src/plugins/extension/joomla
+/src/plugins/extension/index.html
 !/src/plugins/extension/jongman
 /src/templates
 /src/tmp
