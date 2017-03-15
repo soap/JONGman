@@ -29,7 +29,6 @@
 /src/modules
 /src/plugins/*
 !/src/plugins/extension/jongman/
-jongman
 /src/templates
 /src/tmp
 /src/uploads
