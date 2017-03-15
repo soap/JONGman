@@ -736,9 +736,7 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 	 */
 	public function getRepeatType()
 	{
-		if (!isset($this->validData['repeat_type'])) return 'none';
-		
-		return $this->validData['repeat_type'];
+		return isset($this->validData['repeat_type']) ? $this->validData['repeat_type'] : 1;
 	}
 	
 	/**
@@ -758,7 +756,7 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 	*/
 	public function getRepeatWeekdays()
 	{
-		return $this->validData['repeat_days'];
+		return isset($this->validData['repeat_days']) ? $this->validData['repeat_days'] : [];
 	}
 	
 	/**
@@ -767,7 +765,7 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 	*/
 	public function getRepeatMonthlyType()
 	{
-		return $this->validData['repeat_monthly_type'];
+		return isset($this->validData['repeat_monthly_type']) ? $this->validData['repeat_monthly_type'] : null;
 	}
 	
 	/**
@@ -776,7 +774,7 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 	*/
 	public function getRepeatTerminationDate()
 	{
-		return $this->validData['repeat_terminated'];
+		return isset($this->validData['repeat_terminated']) ? $this->validData['repeat_terminated'] : null;
 	}
 	
 	/** ===== ============================================= **/
