@@ -82,3 +82,5 @@ src/web.config.txt
 src/configuration.php
 src/CONTRIBUTING.md
 
+
+tests/_output/*
