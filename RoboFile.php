@@ -301,11 +301,11 @@ class RoboFile extends \Robo\Tasks
             $this->_exec('chown -R ' . $this->configuration->localUser . ' ' . $this->cmsPath);
         }
         // Copy current package
-        if (!file_exists('dist/pkg-weblinks-current.zip'))
+        if (!file_exists('dist/pkg-jongman-current.zip'))
         {
             $this->build(true);
         }
-        $this->_copy('dist/pkg-weblinks-current.zip', $this->cmsPath . "/pkg-weblinks-current.zip");
+        $this->_copy('dist/pkg-jongman-current.zip', $this->cmsPath . "/pkg-jongman-current.zip");
         $this->say('Joomla CMS site created at ' . $this->cmsPath);
         // Optionally uses Joomla default htaccess file. Used by TravisCI
         if ($use_htaccess == true)
