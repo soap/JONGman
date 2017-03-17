@@ -457,6 +457,7 @@ class RoboFile extends \Robo\Tasks
     {
         $this->_exec('phpcpd' . $this->extension . ' ' . __DIR__ . '/src');
     }
+
     /**
      * Build the joomla extension package
      *
