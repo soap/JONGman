@@ -344,6 +344,17 @@ class RFReservationSeries extends JObject
 		return false;
 	}
 
+    public function withSeriesId($seriesId)
+    {
+        $this->seriesId = $seriesId;
+        /*foreach ($this->addedAttachments as $addedAttachment)
+        {
+            if ($addedAttachment != null)
+            {
+                $addedAttachment->WithSeriesId($seriesId);
+            }
+        }*/
+    }
 	/**
 	 * @return RFReservationReminder
 	 */

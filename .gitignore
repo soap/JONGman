@@ -1,37 +1,38 @@
-/src/.settings
-/src/.idea
-/src/bin
-/src/administrator/*
-!/src/administrator/components/com_jongman/
-!/src/administrator/manifests/libraries/jongman.xml
-!/src/administrator/manifests/packages/jongman/
-/src/cache
-/src/cli
-/src/components/*
-!/src/components/com_jongman/
-/src/images
-/src/includes
-/src/language
-/src/layouts
-/src/libraries/*
-!/src/libraries/jongman/
-/src/logs
-/src/media/*
-!/src/media/com_jongman/
-/src/modules/*
-/src/plugins/*
-!/src/plugins/extension/jongman/
-/src/templates
-/src/tmp
-/src/uploads
-/src/htaccess.txt
-/src/index.php
-/src/LICENSE.txt
-/src/README.md
-/src/README.txt
-/src/robots.txt
-/src/robots.txt.dist
-/src/web.config.txt
-/src/configuration.php
-/src/CONTRIBUTING.md
-/.idea
+# PHPStorm
+.idea/
+
+# Builds
+build
+releases
+
+# composer
+composer.phar
+vendor/*
+
+# Robo
+robo.phar
+RoboFile.ini
+
+# Test related files
+tests/acceptance.suite.yml
+tests/*/*Tester.php
+tests/_support/_generated/*TesterActions.php
+tests/joomla*
+tests/_output*
+selenium-server-standalone.jar
+codecept.phar
+selenium.log
+tests/cache
+
+# Package building related
+/dist
+jorobo.ini
+
+# Temp files
+*.tmp
+*.bak
+*.swp
+*~.nib
+*~
+
+tests/_output/*

@@ -1,14 +1,12 @@
 <?php
-/**
- * @version: $Id$
- */
+
 defined('_JEXEC') or die;
 jimport('jongman.controller.form');
 
 require_once(JPATH_COMPONENT.'/helpers/reservation.php');
 
 /**
- * Reservation Subcontroller.
+ * Reservation SubController.
  *
  * @package     JONGman
  * @subpackage  Frontend
@@ -75,7 +73,7 @@ class JongmanControllerReservation extends RFControllerForm {
 			$key = $table->getKeyName();
 		}
 
-		$recordId = JRequest::getInt($key);
+		$recordId = JFactory::getApplication()->input->getInt($key);
 
 		// Attempt to check-in the current record.
 		if ($recordId)
@@ -140,14 +138,15 @@ class JongmanControllerReservation extends RFControllerForm {
 	{
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-
+        $input = JFactory::getApplication()->input;
 		// Initialise variables.
 		$app   = JFactory::getApplication();
 		$lang  = JFactory::getLanguage();
 		$model = $this->getModel();
 		$table = $model->getTable();
-		$data  = JRequest::getVar('jform', array(), 'post', 'array');
-		$checkin = property_exists($table, 'checked_out');
+		$data  = $input->getVar('jform', array(), 'post', 'array');
+
+		//$checkin = property_exists($table, 'checked_out');
 		$context = "$this->option.edit.$this->context";
 		$task = $this->getTask();
 
@@ -163,7 +162,7 @@ class JongmanControllerReservation extends RFControllerForm {
 			$urlVar = $key;
 		}
 
-		$recordId = JRequest::getInt($urlVar);
+		$recordId = $input->getInt($urlVar);
 
 		if (!$this->checkEditId($context, $recordId))
 		{
@@ -217,6 +216,7 @@ class JongmanControllerReservation extends RFControllerForm {
 		}
 
 		// Test whether the data is valid.
+        // return RFReservationSeries if validation passed
 		$validData = $model->validate($form, $data);
 
 		// Check for validation errors.

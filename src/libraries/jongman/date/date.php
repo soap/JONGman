@@ -421,7 +421,7 @@ class RFDate
 	public function setTime(RFTime $time, $isEndTime = false)
 	{
 		$date = RFDate::create($this->year(), $this->month(), $this->day(), $time->hour(), $time->minute(),
-							 $time->Second(), $this->timezone());
+							 $time->second(), $this->timezone());
 
 		if ($isEndTime)
 		{

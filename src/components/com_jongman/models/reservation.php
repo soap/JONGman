@@ -33,7 +33,7 @@ class JongmanModelReservation extends JModelAdmin
 	
 	/**
 	 * 
-	 * @param unknown $config
+	 * @param array $config
 	 */
 	public function __construct($config = array())
 	{
@@ -61,6 +61,7 @@ class JongmanModelReservation extends JModelAdmin
 			}					
 		}
 	}
+
 	/**
      * Method to auto-populate the model state.
      * Note. Calling getState in this method will result in recursion.
@@ -69,10 +70,12 @@ class JongmanModelReservation extends JModelAdmin
      */
     protected function populateState()
     {
+        $input = JFactory::getApplication()->input;
         // Load state from the request.
-        $pk = JRequest::getInt('id');
+        $pk = $input->getInt('id');
         $this->setState($this->option .'.' .$this->getName() . '.id', $pk);
     }
+
 	/**
 	 * Method to get the Reservation form.
 	 *
@@ -131,7 +134,7 @@ class JongmanModelReservation extends JModelAdmin
 				$result->repeat_type 	= 'none';
 				$result->repeat_options = new JRegistry();
 			
-				// it will be conveted to user time zone in form (by field) 
+				// it will be converted to user time zone in form (by field)
 				$date = JFactory::getDate($app->input->getString('end'), $tz);
 				$date->setTimezone(new DateTimeZone('UTC'));
 				$result->end_date 	= $date->format('Y-m-d');
@@ -169,7 +172,7 @@ class JongmanModelReservation extends JModelAdmin
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-	 * @param   type    $type    The table type to instantiate
+	 * @param   string   $type    The table type to instantiate
 	 * @param   string  $prefix  A prefix for the table class name.
 	 * @param   array   $config  Configuration array for model.
 	 *
@@ -238,10 +241,15 @@ class JongmanModelReservation extends JModelAdmin
 	 */
 	public function validate($form, $data, $group = null)
 	{
+	    if (isset($data['repeat_terminated']) ) {
+	        $data['repeat_terminated'] .= ' 23:59:59';
+        }
 		$validData = parent::validate($form, $data, $group);
 		if ($validData === false) return false;
-		
+
+		/**  @todo split this part and put it in controller? */
 		$input = $validData;
+		var_dump($input);
 		$input['start_date'] = $input['start_date'].' '.$input['start_time'];
 		$input['end_date'] = $input['end_date'].' '.$input['end_time'];
 		$tz = RFApplicationHelper::getUserTimezone();
@@ -253,9 +261,10 @@ class JongmanModelReservation extends JModelAdmin
 		
 		if (isset($input['repeat_terminated'])) {
 			$terminated = RFDate::parse($input['repeat_terminated'], $tz);
-			$terminated->setTime(new RFTime(0, 0, 0, $tz));
+			// fixed: last date reservation was not made [2017-03-16]
+			$terminated = $terminated->setTime(new RFTime(23, 59, 59, $tz));
 		}
-		
+
 		$input['repeatOptions'] = JongmanHelper::getRepeatOptions($repeatType, $repeatInterval, $terminated, $weekDays, $monthlyType);
 		if (isset($input['resource_id']) && ($input['resource_id'] > 0)) {
 			$row = JTable::getInstance('Resource', 'JongmanTable');
@@ -330,12 +339,14 @@ class JongmanModelReservation extends JModelAdmin
 	 * @return  boolean  True on success, False on error.
 	 */
 	public function save($data)
-	{	
+	{
+	    // save reservation data first
 		$result = $this->insertSeries($data);
 		if ($result == false) {
 			return false;
 		}
-		
+
+		// then save reservation instance
 		$instances = $this->_series->getInstances();
 		foreach ($instances as $instance) {
 			$instanceTable = JTable::getInstance('Instance', 'JongmanTable');

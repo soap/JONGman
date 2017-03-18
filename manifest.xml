@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<updates>
+    <update>
+        <name>JONGman Extension Package</name>
+        <description>Joomla! CMS JONGman Package</description>
+        <element>pkg_jongman</element>
+        <type>package</type>
+        <version>3.1.0</version>
+        <client>site</client>
+        <infourl title="JONGman Extension Package">https://github.com/soap/jongman/releases/tag/3.1.0</infourl>
+        <downloads>
+            <downloadurl type="full" format="zip">https://github.com/soap/jongman/releases/download/3.1.0/pkg-jongman-3.1.0.zip</downloadurl>
+        </downloads>
+        <targetplatform name="joomla" version="3.[6789]" />
+    </update>
+</updates>

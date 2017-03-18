@@ -29,12 +29,15 @@ class JongmanHelper
 	
 		return $result;
 	}
+
 	/**
 	 * 
 	 * Get user timezone first from user parameter otherwise global configuration offset
-	 * @param int $uid
+	 * @param unknown $uid
+     * @return string timezone
 	 */
-	public static function getUserTimezone($uid = null) 
+
+	public static function getUserTimezone($uid = null)
 	{
 		if ($uid === null) {
 			$user = JFactory::getUser();
@@ -92,7 +95,7 @@ class JongmanHelper
 					return new RFReservationRepeatWeekly($interval, $terminationDate, $weekdays);
 				break;
 			case 'monthly' :
-					$class = 'RFReservationRepeat'.ucfirst($input['repeat_monthly_type']);
+					$class = 'RFReservationRepeat'.ucfirst($monthlyType);
 					return new $class($interval, $terminationDate);				
 				break;
 			case 'yearly' :
@@ -128,7 +131,7 @@ class JongmanHelper
      * @param RFResourceBookable $resource
      * @return boolean
      */
-    public function canApproveForResource(JUser $user, RFResourceBookable $resource ) 
+    public static function canApproveForResource(JUser $user, RFResourceBookable $resource )
     {
     	if ($user->authorise('core.admin','com_jongman')) {
     		return true;

@@ -180,7 +180,7 @@ class RFReservationRepository implements IReservationRepository
 
 		$data = array();
 		$data['reservation_custom_fields'] = array();
-		foreach ($reservationSeries->attributeValues() as $attribute)
+		foreach ($reservationSeries->getAttributeValues() as $attribute)
 		{
 			$data['reservation_custom_fields'][$attribute->attributeId] = $attribute->value; 
 		}
@@ -194,11 +194,11 @@ class RFReservationRepository implements IReservationRepository
 			//$this->setError($dispatcher->getError());
 			return false;
 		}
-
+        /*
 		foreach ($reservationSeries->addedAttachments() as $attachment)
 		{
 			//$this->AddReservationAttachment($attachment);
-		}
+		}*/
 
 		if ($reservationSeries->getStartReminder()->enabled())
 		{
