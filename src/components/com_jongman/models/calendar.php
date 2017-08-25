@@ -51,7 +51,7 @@ class JongmanModelCalendar extends JModelItem
 	{
 		return $this->getCalendar();	
 	}
-	
+
 
 	public function getCalendar()
 	{
@@ -79,20 +79,21 @@ class JongmanModelCalendar extends JModelItem
 		{
 			$day = $defaultDate->day();
 		}
-		
+
 		$user = JFactory::getUser();
 		$schedules = $this->scheduleRepository->getAll();
+
 		$showInaccessible = false; //Configuration::Instance()->GetSectionKey(ConfigSection::SCHEDULE, ConfigKeys::SCHEDULE_SHOW_INACCESSIBLE_RESOURCES, new BooleanConverter());
-		$resources = $this->resourceService->getAllResources($showInaccessible, $user);
-		
+        $resources = $this->resourceService->getAllResources($showInaccessible, $user);
+
 		$selectedScheduleId = $this->getState('schedule_id');
 		$selectedSchedule = $this->getDefaultSchedule($schedules);
 
 		$selectedResourceId = $this->getState('resource_id');
 		$selectedGroupId = $this->getState('group_id');
-		
+
 		$resourceGroups = $this->resourceService->getResourceGroups($selectedScheduleId, $user);
-		
+
 		if (!empty($selectedGroupId))
 		{
 			$tempResources = array();

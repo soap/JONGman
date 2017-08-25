@@ -22,6 +22,7 @@ class RFResourceRepository implements IResourceRepository
 		$resources = array();
 		foreach($rows as $row) 
 		{
+		    $row = new JRegistry($row->params);
 			$resources[] = RFResourceBookable::create($row);
 		}
 
@@ -44,7 +45,7 @@ class RFResourceRepository implements IResourceRepository
 	
 	/**
 	 * @param string $publicId
-	 * @return BookableResource
+	 * @return RFBookableResource
 	*/
 	public function loadByPublicId($publicId)
 	{
@@ -52,7 +53,7 @@ class RFResourceRepository implements IResourceRepository
 	}
 	
 	/**
-	 * @param BookableResource $resource
+	 * @param RFBookableResource $resource
 	 * @return int ID of created resource
 	*/
 	public function add(RFResourceBookable $resource)
@@ -61,7 +62,7 @@ class RFResourceRepository implements IResourceRepository
 	}
 	
 	/**
-	 * @param BookableResource $resource
+	 * @param RFBookableResource $resource
 	*/
 	public function update(RFResourceBookable $resource)
 	{
@@ -69,7 +70,7 @@ class RFResourceRepository implements IResourceRepository
 	}
 	
 	/**
-	 * @param BookableResource $resource
+	 * @param RFBookableResource $resource
 	*/
 	public function delete(RFResourceBookable $resource)
 	{
@@ -99,7 +100,7 @@ class RFResourceRepository implements IResourceRepository
 		
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
-		
+
 		$resources = array();
 		foreach($rows as $row) {
 			$resource = RFResourceBookable::create($row);
@@ -114,7 +115,7 @@ class RFResourceRepository implements IResourceRepository
 	 * @param string|null $sortField
 	 * @param string|null $sortDirection
 	 * @param ISqlFilter $filter
-	 * @return PageableData|BookableResource[]
+	 * @return BookableResource[]
 	*/
 	public function getList($pageNumber, $pageSize, $sortField = null, $sortDirection = null, $filter = null)
 	{
@@ -122,7 +123,7 @@ class RFResourceRepository implements IResourceRepository
 	}
 	/**
 	 * @abstract
-	 * @return array|AccessoryDto[] all accessories
+	 * @return array|Accessoryto[] all accessories
 	*/
 	public function getAccessoryList()
 	{
@@ -131,7 +132,7 @@ class RFResourceRepository implements IResourceRepository
 	/**
 	 * @param int|null $scheduleId
 	 * @param IResourceFilter|null $resourceFilter
-	 * @return ResourceGroupTree
+	 * @return RFResourceGroupTree
 	*/
 	public function getResourceGroups($scheduleId = null, $resourceFilter = null)
 	{
@@ -157,17 +158,17 @@ class RFResourceRepository implements IResourceRepository
 	}
 	
 	/**
-	 * @param ResourceGroup $group
-	 * @return ResourceGroup
+	 * @param RFResourceGroup $group
+	 * @return RFResourceGroup
 	*/
-	public function addResourceGroup(ResourceGroup $group)
+	public function addResourceGroup(RFResourceGroup $group)
 	{
 		
 	}
 	
 	/**
 	 * @param int $groupId
-	 * @return ResourceGroup
+	 * @return RFResourceGroup
 	*/
 	public function loadResourceGroup($groupId)
 	{
@@ -175,9 +176,9 @@ class RFResourceRepository implements IResourceRepository
 	}
 	
 	/**
-	 * @param ResourceGroup $group
+	 * @param RFResourceGroup $group
 	*/
-	public function updateResourceGroup(ResourceGroup $group)
+	public function updateResourceGroup(RFResourceGroup $group)
 	{
 		
 	}
@@ -191,7 +192,7 @@ class RFResourceRepository implements IResourceRepository
 	}
 	
 	/**
-	 * @return ResourceType[]|array
+	 * @return RFResourceType[]|array
 	*/
 	public function getResourceTypes()
 	{
@@ -199,7 +200,7 @@ class RFResourceRepository implements IResourceRepository
 	}
 	/**
 	 * @param int $resourceTypeId
-	 * @return ResourceType
+	 * @return RFResourceType
 	*/
 	public function loadResourceType($resourceTypeId)
 	{
@@ -207,18 +208,18 @@ class RFResourceRepository implements IResourceRepository
 	}
 	
 	/**
-	 * @param ResourceType $type
+	 * @param RFResourceType $type
 	 * @return int
 	*/
-	public function addResourceType(ResourceType $type)
+	public function addResourceType(RFResourceType $type)
 	{
 		
 	}
 	
 	/**
-	 * @param ResourceType $type
+	 * @param RFResourceType $type
 	*/
-	public function updateResourceType(ResourceType $type)
+	public function updateResourceType(RFResourceType $type)
 	{
 		
 	}
@@ -230,9 +231,9 @@ class RFResourceRepository implements IResourceRepository
 	{
 		
 	}
-	
+
 	/**
-	 * @return ResourceStatusReason[]
+	 * @return RFResourceStatusReason[]
 	*/
 	public function getStatusReasons()
 	{

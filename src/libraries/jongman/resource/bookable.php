@@ -83,11 +83,11 @@ class RFResourceBookable
 	 * @param int $scheduleId
 	 * @param bool $autoAssign
 	 * @param int $order
-	 * @return BookableResource
+	 * @return RFResourceBookable
 	 */
 	public static function createNew($resourceName, $scheduleId, $autoAssign = false, $order = 0)
 	{
-		return new ResourceBookable(null,
+		return new RFResourceBookable(null,
 			$resourceName,
 			null,
 			null,
@@ -106,13 +106,15 @@ class RFResourceBookable
 
 	/**
 	 * @param array $row
-	 * @return BookableResource
+	 * @return RFResourceBookable
 	 */
 	public static function create($row)
 	{
-		if (isset($row->params) && $row->params != '') {
-			$row->params = new JRegistry($row->params);
+		if (isset($row->params) && !empty($row->params) && !($row->params instanceof JRegistry)) {
+		    $registry = new JRegistry();
+		    $row->params = $registry->loadString($row->params);
 		}
+
 		$resource = new RFResourceBookable($row->id,
 			$row->title,
 			$row->location,
@@ -121,7 +123,7 @@ class RFResourceBookable
 			$row->params->get('min_reservation_duration'),
 			$row->params->get('max_reservation_duration'),
 			$row->params->get('auto_assign'),
-			$row->params->get('need_appoval'),
+			$row->params->get('need_approval'),
 			$row->params->get('overlap_day_reservation'),
 			$row->params->get('max_participants'),
 			$row->params->get('min_notice_duration'),

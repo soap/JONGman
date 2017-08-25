@@ -39,6 +39,7 @@ class JongmanController extends JControllerLegacy
 		
 		$this->_init();
 		$params = JComponentHelper::getParams('com_jongman');
+
 		$jongman_css = $params->get('jongman_css', '1');
 		if ($jongman_css) {
 			JHtml::_('stylesheet', 'com_jongman/jongman/jongman.css', false, true, false, false, false);
@@ -74,9 +75,8 @@ class JongmanController extends JControllerLegacy
 			JHtml::_('script', 'com_jongman/jongman/date-helper.js', false, true);
 			JHtml::_('script', 'com_jongman/jongman/recurrence.js', false, true);
 		}
+        parent::display($cachable, $urlparams);
 
-		parent::display($cachable, $urlparams);
-		
 		return $this;
 	}
 	

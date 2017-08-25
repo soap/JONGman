@@ -204,7 +204,6 @@ class JongmanModelResources extends JModelList
 	{
 		$items = parent::getItems();
 		if ($items === false) return false;
-		
 		foreach($items as $i => $item) {
 			$items[$i]->params = new JRegistry($item->params);
 			

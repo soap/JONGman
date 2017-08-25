@@ -31,19 +31,21 @@ class JongmanViewCalendar extends JViewLegacy
 		// Initialise variables.
 		$this->state		= $this->get('State');
 
-		$this->calendar 	= $this->get('Calendar'); 
+		$this->calendar 	= $this->get('Calendar');
 		$this->firstDay 	= $this->get('FirstDay');
+
 		$this->displayDate 	= $this->calendar->firstDay();
 		$this->filters 		= $this->get('Filters');
 		$this->resourceId	= $this->get('ResourceId');
 		$this->scheduleId	= $this->get('ScheduleId');
+
 		$prev 				= $this->calendar->getPreviousDate();
 		$next 				= $this->calendar->getNextDate();
 		$calendarType 		= $this->calendar->getType();
 
 		$this->prevLink = RFCalendarUrl::create($prev, $calendarType);
 		$this->nextLink = RFCalendarUrl::create($next, $calendarType);
-		
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));

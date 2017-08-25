@@ -1,9 +1,0 @@
-@CHARSET "UTF-8";
-
-div.bordered {
-	outline: 1px solid black;
-}
-
-td.signature {
-	height: 100px;
-}

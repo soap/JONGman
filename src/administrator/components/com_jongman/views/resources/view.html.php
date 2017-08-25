@@ -53,7 +53,8 @@ class JongmanViewResources extends JViewLegacy
         parent::display($tpl);
     }
 
-    protected function addToolbar() {
+    protected function addToolbar()
+    {
   		require_once JPATH_COMPONENT.'/helpers/jongman.php';
         JToolBarHelper::title(JText::_('COM_JONGMAN_RESOURCES_TITLE'), 'resources.png');
 
@@ -72,11 +73,15 @@ class JongmanViewResources extends JViewLegacy
             JToolBarHelper::publishList('resources.publish');
             JToolBarHelper::unpublishList('resources.unpublish');
         }
-        
-        if (($canDo->get('core.delete'))) {
-        	JToolBarHelper::divider();
-			JToolBarHelper::deleteList('resources.delete');
-		}
+        if ((int)$this->state->get('filter.state') == -2 && $canDo->get('core.delete'))
+        {
+            JToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'resources.delete', 'JTOOLBAR_EMPTY_TRASH');
+        }
+        elseif ($canDo->get('core.edit.state'))
+        {
+            JToolbarHelper::trash('resources.trash');
+        }
+
     }
 
 }

@@ -40,10 +40,14 @@ class JongmanControllerResources extends JControllerAdmin
 		// Check for request forgeries
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 
-		// Get items to publish from the request.
-		$cid = JRequest::getVar('cid', array(), '', 'array');
+        $request = JFactory::getApplication()->input;
+
+        // Get items to publish from the request.
+        $cid = $request->get('cid', array(), 'array');
+		//$cid = JRequest::getVar('cid', array(), '', 'array');
 		$data = array('setapproval' => 1, 'resetapproval' => 0);
 		$task = $this->getTask();
+
 		$value = JArrayHelper::getValue($data, $task, 0, 'int');
 
 		if (empty($cid))
@@ -76,8 +80,8 @@ class JongmanControllerResources extends JControllerAdmin
 				$this->setMessage(JText::plural($ntext, count($cid)));
 			}
 		}
-		$extension = JRequest::getCmd('extension');
-		$extensionURL = ($extension) ? '&extension=' . JRequest::getCmd('extension') : '';
+		$extension = $request->getCmd('extension');
+		$extensionURL = ($extension) ? '&extension=' . $request->getCmd('extension') : '';
 		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list . $extensionURL, false));
 	}
 	
