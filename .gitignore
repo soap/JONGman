@@ -2,7 +2,6 @@
 .idea/
 
 # Builds
-build
 releases
 
 # composer

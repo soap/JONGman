@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="filter">
+		<field
+			name="search"
+			type="text"
+			label="COM_JONGMAN_FILTER_SEARCH_DESC"
+			hint="COM_JONGMAN_HINT_RESERVATION_SEARCH_FILTER"
+		/>
+		<field 
+			name="schedule_id"
+			type="hidden"
+			label="COM_JONGMAN_SCHEDULE"
+			hint=""
+			class="" 
+		/>
+		<field 
+			name="resource_id"
+			type="resource"
+			label="COM_JONGMAN_RESOURCE"
+			description=""
+			class="js-stools-search-string"
+			onchange="this.form.submit();"
+			>
+			<option value="">COM_JONGMAN_OPTION_SELECT_RESOURCE</option>
+		</field>
+		<field
+			name="state"
+			type="status"
+			label="JOPTION_SELECT_PUBLISHED"
+			statuses="*,0,1,-1"
+			description="JOPTION_SELECT_PUBLISHED_DESC"
+			onchange="this.form.submit();"
+			>
+			<option value="">JOPTION_SELECT_PUBLISHED</option>
+		</field>
+		<field
+			name="workflow_state_id" 
+			type="workflowstate"
+			state="1"
+			label="COM_JONGMAN_WORKFLOW_STATE"
+			onchange="this.form.submit();"
+		/>
+		<field 
+			name="owner_id"
+			type="owner"
+			label="COM_JONGMAN_OWNER"
+			description=""
+			onchange="this.form.submit();"
+		/>
+		<field
+			name="start_date"
+			type="calendar"
+			label="COM_JONGMAN_SELECT_START_DATE"
+			hint="COM_JONGMAN_START_DATE"
+			filter="user_utc"
+			class="js-stools-search-date"
+			onchange="this.form.submit();"
+		/>
+		<field
+			name="end_date"
+			type="calendar"
+			label="COM_JONGMAN_SELECT_END_DATE"
+			hint="COM_JONGMAN_END_DATE"
+			filter="user_utc"
+			class="js-stools-search-date"
+			onchange="this.form.submit();"
+		/>
+	</fields>
+</form>
