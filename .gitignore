@@ -2,11 +2,11 @@
 .idea/
 
 # Builds
-buidl/pkg_jongman/*
+build/pkg_jongman/*
 build/zips/*
 build/scripts/build.properties
 build/scripts/project.properties
-releases
+build/releases/*
 
 # composer
 composer.phar
