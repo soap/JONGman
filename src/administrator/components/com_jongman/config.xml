@@ -65,6 +65,7 @@
 			label="COM_JONGMAN_CONFIG_DATETIME_LABEL" 
 			description="COM_JONGMAN_CONFIG_DATETIME_DESC"/>
 	</fieldset>
+
 	<fieldset name="schedule"
 		label="COM_JONGMAN_CONFIG_SCHEDULE_LABEL"
 		description="COM_JONGMAN_CONFIG_SCHEDULE_DESC"
@@ -178,6 +179,7 @@
 			label="COM_JONGMAN_CONFIG_REFERENCE_LENGTH_LABEL"
 			description="COM_JONGMAN_CONFIG_REFERENCE_LENGTH_DESC" />
 	</fieldset>
+
 	<fieldset 
 		name="logging"
 		label="COM_JONGMAN_CONFIG_LOGGING_LABEL"
@@ -186,14 +188,17 @@
 			name="logging_enabled"
 			type="radio"
 			default="0"
+			class="btn-group btn-group-yesno"
 			label="COM_JONGMAN_CONFIG_LOGGING_ENABLED_LABEL">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
+
 		<field 
 			name="logging_level"
-			type="list"
-			default="NOTICE"
+			type="radio"
+			class="btn-group btn-group-yesno btn-group-reversed"
+			default="32"
 			label="COM_JONGMAN_CONFIG_LOGGING_LEVEL_LABEL"
 			description="COM_JONGMAN_CONFIG_LOGGING_LEVEL_DESC">
 			<option value="128">COM_JONGMAN_OPTION_DEBUG_LEVEL_DEBUG</option>
@@ -202,6 +207,50 @@
 			<option value="16">COM_JONGMAN_OPTION_DEBUG_LEVEL_WARNING</option>
 			<option value="8">COM_JONGMAN_OPTION_DEBUG_LEVEL_ERROR</option>
 			<option value="30719">COM_JONGMAN_OPTION_DEBUG_LEVEL_ALL</option>
+		</field>
+	</fieldset>
+
+	<fieldset
+			name="integration"
+			label="JGLOBAL_INTEGRATION_LABEL"
+			description="COM_JONGMAN_CONFIG_INTEGRATION_SETTINGS_DESC"
+	>
+		<field
+				name="sef_advanced"
+				type="radio"
+				class="btn-group btn-group-yesno btn-group-reversed"
+				default="0"
+				label="JGLOBAL_SEF_ADVANCED_LABEL"
+				description="JGLOBAL_SEF_ADVANCED_DESC"
+				filter="integer"
+		>
+			<option value="0">JGLOBAL_SEF_ADVANCED_LEGACY</option>
+			<option value="1">JGLOBAL_SEF_ADVANCED_MODERN</option>
+		</field>
+
+		<field
+				name="sef_ids"
+				type="radio"
+				class="btn-group btn-group-yesno"
+				default="0"
+				label="JGLOBAL_SEF_NOIDS_LABEL"
+				description="JGLOBAL_SEF_NOIDS_DESC"
+				showon="sef_advanced:1"
+				filter="integer">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+
+		<field
+				name="custom_fields_enable"
+				type="radio"
+				label="JGLOBAL_CUSTOM_FIELDS_ENABLE_LABEL"
+				description="JGLOBAL_CUSTOM_FIELDS_ENABLE_DESC"
+				class="btn-group btn-group-yesno"
+				default="1"
+		>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</field>
 	</fieldset>
 	<fieldset

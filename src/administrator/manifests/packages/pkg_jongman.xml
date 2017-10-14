@@ -2,10 +2,10 @@
 <extension type="package" version="3.4" method="upgrade">
     <name>JONGman - Reservation system for Joomla!</name>
     <packagename>jongman</packagename>
-    <version>3.0.0-RC11</version>
+    <version>3.8.0-RC1</version>
     <url>http://www.joomlant.org</url>
     <creationDate>March 2014</creationDate>
-    <copyright>(C) 2009 - 2015 Prasit Gebsaap. All rights reserved.</copyright>
+    <copyright>(C) 2009 - 2017 Prasit Gebsaap. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>support@joomlant.org</authorEmail>
     <authorUrl>www.joomlant.org</authorUrl>

@@ -386,11 +386,13 @@ class JongmanModelSchedule extends JModelItem {
     		$adjustment = max($scheduleLength, 7);
     		$prevAdjustment = 7 * floor($adjustment / 7); // ie, if 10, we only want to go back 7 days so there is overlap
     	}
+        // This piece of code is not necessary, as JRoute::_ will provide Itemid and parameters
     	$menu = JFactory::getApplication()->getMenu();
-    	$url = $menu->getActive()->link.'&Itemid='.$menu->getActive()->id;
+    	$url = $menu->getActive()->link;
+        // End of This piece ================================
     	$obj = new stdClass();
-    	$obj->previousLink = $url.'&sd='.$startDate->addDays(-$prevAdjustment)->getDate()->format('Y-m-d');
-    	$obj->nextLink =  $url.'&sd='.$startDate->addDays($adjustment)->getDate()->format('Y-m-d');
+    	$obj->previousLink = JRoute::_($url.'&sd='.$startDate->addDays(-$prevAdjustment)->getDate()->format('Y-m-d'));
+    	$obj->nextLink =  JRoute::_($url.'&sd='.$startDate->addDays($adjustment)->getDate()->format('Y-m-d'));
     	    
     	return $obj;
     }

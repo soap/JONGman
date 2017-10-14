@@ -21,22 +21,22 @@ final class JMVersion
     public $PRODUCT = 'JONGman Library';
 
     /** @var  string  Release version. */
-    public $RELEASE = '3.0';
+    public $RELEASE = '3.8';
 
     /** @var  string  Maintenance version. */
-    public $DEV_LEVEL = '1';
+    public $DEV_LEVEL = '0';
 
     /** @var  string  Development status. */
     public $DEV_STATUS = 'releae candidate';
 
     /** @var  string  Build number. */
-    public $BUILD = '9';
+    public $BUILD = '1';
 
     /** @var  string  Code name. */
-    public $CODENAME = 'Nada';
+    public $CODENAME = 'Sep17';
 
     /** @var  string  Release date. */
-    public $RELDATE = '30-June-2013';
+    public $RELDATE = '30-Sep-2017';
 
     /** @var  string  Release time. */
     public $RELTIME = '20:00';
@@ -45,7 +45,7 @@ final class JMVersion
     public $RELTZ = 'CET';
 
     /** @var  string  Copyright Notice. */
-    public $COPYRIGHT = 'Copyright (C) 2007 - 2014 Prasit Gebsaap. All rights reserved.';
+    public $COPYRIGHT = 'Copyright (C) 2007 - 2017 Prasit Gebsaap. All rights reserved.';
 
     /** @var  string  Link text. */
     public $URL = '<a href="http://www.joomlant.org">joomlant.org</a> is Free Software released under the GNU General Public License.';

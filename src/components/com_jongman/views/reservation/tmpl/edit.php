@@ -118,7 +118,9 @@ JHtml::_('behavior.keepalive');
 			</div>
 		</div>
 		<div class="span5 form-horizontal">
+            <?php if (empty($this->item->instance_id)) : ?>
 			<?php echo $this->loadTemplate('repeatoptions')?>
+            <?php endif?>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'description', JText::_('COM_JONGMAN_RESERVATION_DESCRIPTION', true)); ?>

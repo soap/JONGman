@@ -28,7 +28,7 @@ class JongmanViewCpanel extends JViewLegacy
 	protected function addToolbar() 
 	{
 		$canDo	= JongmanHelper::getActions();
-		JToolBarHelper::title( '&nbsp;', 'jongman.png' );
+		JToolBarHelper::title( 'JONGman', 'jongman.png' );
 		
 		if ($canDo->get('core.admin')) {
 			JToolBarHelper::preferences('com_jongman');

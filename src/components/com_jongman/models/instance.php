@@ -66,20 +66,23 @@ class JongmanModelInstance extends JModelAdmin implements IReservationPage, IRes
 	public function getItem($pk = null)
 	{
         $context = "$this->option.edit.".$this->getName(). '.id';
-        $holdIds = (array) JFactory::getApplication()->getUserState($context);
-        $default = count($holdIds) ? $holdIds[0] : null;
+        $refNumber = JFactory::getApplication()->input->getCmd('reference_number', null);
 
-        $pk = (!empty($pk)) ? $pk : $this->getState($this->getName().'.id', $default);
-        if (empty($pk)) {
-            $refNumber = JFactory::getApplication()->input->getCmd('reference_number', null);
-            $table = $this->getTable('Instance', 'JongmanTable');
-            $return = $table->load(['reference_number' => $refNumber]);
-        }else{
-            $table = $this->getTable('Instance', 'JongmanTable');
-            $return = $table->load($pk);
+        if (!empty($refNumber)) {
+            $instanceTable = $this->getTable('Instance', 'JongmanTable');
+            $ret = $instanceTable->load(['reference_number' => $refNumber]);
+            if ($ret === false) {
+                $default = null;
+            }
+            $default = $instanceTable->id;
         }
 
-		// Check for a table object error.
+        $pk = (!empty($pk)) ? $pk : $this->getState($context.'.id', $default);
+
+        $table = $this->getTable('Instance', 'JongmanTable');
+        $return = $table->load($pk);
+
+        // Check for a table object error.
 		if ($return === false && $table->getError())
 		{
 			$this->setError($table->getError());

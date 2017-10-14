@@ -28,7 +28,7 @@ class JongmanControllerInstance extends RFControllerForm
      *
      * @since 3.1
      */
-	public function edit($key=null, $urlVar=null)
+	public function edit($key=null, $urlVar='reference_number')
 	{
 		$this->setReturnPage('com_jongman.reservation.return_page');
 
@@ -36,7 +36,6 @@ class JongmanControllerInstance extends RFControllerForm
         $table = $model->getTable();
         $cid   = $this->input->post->get('cid', array(), 'array');
         $context = "$this->option.edit.$this->context";
-
         // Determine the name of the primary key for the data.
         if (empty($key))
         {
