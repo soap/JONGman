@@ -2,27 +2,27 @@
 <extension type="component" version="3.4.0" method="upgrade">
     <name>COM_JONGMAN</name>
     <!-- The following elements are optional and free of formatting constraints -->
-    <creationDate>July 2015</creationDate>
+    <creationDate>##DATE##</creationDate>
     <author>Prasit Gebsaap</author>
     <authorEmail>prasit.gebsaap@gmail.com</authorEmail>
     <authorUrl>http://www.joomlant.org</authorUrl>
     <copyright>GPLv3</copyright>
     <license></license>
     <!--  The version string is recorded in the components table -->
-    <version>3.8.1-rc1</version>
+    <version>#__DEPLOY_VERSION__#</version>
     <!-- The description is optional and defaults to the name -->
     <description>COM_JONGMAN_XML_DESCRIPTION</description>
-    <install folder="admin"> <!-- Runs on install -->
+    <install folder="administrator/components/com_jongman"> <!-- Runs on install -->
         <sql>
             <file driver="mysql" charset="utf8">install/install.mysql.utf8.sql</file>
         </sql>
     </install>
-    <uninstall folder="admin"> <!-- Runs on uninstall -->
+    <uninstall folder="administrator/components/com_jongman"> <!-- Runs on uninstall -->
         <sql>
             <file driver="mysql" charset="utf8">install/uninstall.mysql.utf8.sql</file>
         </sql>
     </uninstall>
-    <update folder="admin"> 
+    <update folder="administrator/components/com_jongman">
     	<!-- Runs on update/main version id in #__schemas table -->
     	<!-- we have to provide files in this folder like 0.0.1.sql,0.0.2.sql -->
         <schemas>
@@ -41,7 +41,7 @@
     	<filename>index.html</filename>
     </media>
     <!-- Site Main File Copy Section -->
-    <files folder="site">
+    <files folder="components/com_jongman">
         <filename>jongman.php</filename>
         <filename>index.html</filename>
         <filename>controller.php</filename>
@@ -70,7 +70,7 @@
         <!-- Note the folder attribute: This attribute describes the folder
             to copy FROM in the package to install therefore files copied
             in this section are copied from /admin/ in the package -->
-        <files folder="admin">
+        <files folder="administrator/components/com_jongman">
  			<filename>access.xml</filename>
             <filename>config.xml</filename>
             <filename>controller.php</filename>       
