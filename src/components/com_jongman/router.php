@@ -1,10 +1,11 @@
 <?php
-/**
- * @version     $Id: router.php 497 2012-12-21 15:08:22Z mrs.siam $
- * @package     JONGman
- * @copyright   Copyright (C) 2009 - 2017  Prasit Gebsaap. All rights reserved.
- * @license     GNU/GPL, see LICENSE.php
- */
+/**
+* @package     Joomla Extensions
+* @subpackage  JONGman
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
 

@@ -1,17 +1,11 @@
-/**
- * Cut from jQuery-ui.js
- */
+/**
+* @package     Joomla Extensions
+* @subpackage  JONGman
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
-/*!
- * jQuery UI Datepicker 1.11.1
- * http://jqueryui.com
- *
- * Copyright 2014 jQuery Foundation and other contributors
- * Released under the MIT license.
- * http://jquery.org/license
- *
- * http://api.jqueryui.com/datepicker/
- */
 (function( factory ) {
 	if ( typeof define === "function" && define.amd ) {
 

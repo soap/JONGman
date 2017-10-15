@@ -1,14 +1,11 @@
+/**
+* @package     Joomla Extensions
+* @subpackage  JONGman
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
-/*!
- * jQuery UI Selectable 1.11.1
- * http://jqueryui.com
- *
- * Copyright 2014 jQuery Foundation and other contributors
- * Released under the MIT license.
- * http://jquery.org/license
- *
- * http://api.jqueryui.com/selectable/
- */
 (function($) {
 	
 var selectable = $.widget("ui.selectable", $.ui.mouse, {

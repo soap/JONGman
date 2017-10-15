@@ -1,12 +1,11 @@
 <?php
-/**
- * @package      Projectfork
- * @subpackage   Projects
- *
- * @author       Tobias Kuhn (eaxs)
- * @copyright    Copyright (C) 2006-2012 Tobias Kuhn. All rights reserved.
- * @license      http://www.gnu.org/licenses/gpl.html GNU/GPL, see LICENSE.txt
- */
+/**
+* @package     Joomla Extensions
+* @subpackage  JONGman
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 defined('_JEXEC') or die();
 

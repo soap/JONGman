@@ -1,9 +1,11 @@
 <?php
-/**
- * @version		$Id: controller.php 502 2012-12-24 13:15:38Z mrs.siam $
- * @copyright	Copyright (C) 2007 - 2014 Prasit Gebsaap. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
- */
+/**
+* @package     Joomla Extensions
+* @subpackage  JONGman
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 // No direct access
 defined('_JEXEC') or die;
 

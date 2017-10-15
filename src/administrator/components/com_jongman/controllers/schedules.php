@@ -1,9 +1,11 @@
 <?php
-/**
- * @version		$Id: schedules.php 403 2011-10-02 00:14:24Z mrs.siam $
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
- */
+/**
+* @package     Joomla Extensions
+* @subpackage  JONGman
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 // No direct access.
 defined('_JEXEC') or die;

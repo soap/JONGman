@@ -1,8 +1,10 @@
-/**
- * Select2 Swedish translation.
- *
- * Author: Jens Rantil <jens.rantil@telavox.com>
- */
+/**
+* @package     Joomla Extensions
+* @subpackage  JONGman
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 (function ($) {
     "use strict";
 

@@ -1,11 +1,11 @@
 <?php
-/**
- * @version     $Id$
- * @package     
- * @subpackage  
- * @copyright   Copyright 2011 New Life in IT Pty Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later.
- */
+/**
+* @package     Joomla Extensions
+* @subpackage  JONGman
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 // No direct access
 defined('_JEXEC') or die;

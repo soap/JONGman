@@ -1,10 +1,11 @@
 <?php
-/**
- * @version     $Id: default.php 506 2013-01-01 05:22:08Z mrs.siam $
- * @package     JONGman
- * @copyright   Copyright (C) 2009 - 2011  Prasit Gebsaap. All rights reserved.
- * @license     GNU/GPL, see LICENSE.php
- */
+/**
+* @package     Joomla Extensions
+* @subpackage  JONGman
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 // no direct access
 defined('_JEXEC') or die;
 

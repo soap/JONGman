@@ -1,18 +1,11 @@
-/*
- * qTip2 - Pretty powerful tooltips - v3.0.3
- * http://qtip2.com
- *
- * Copyright (c) 2016 
- * Released under the MIT licenses
- * http://jquery.org/license
- *
- * Date: Wed May 11 2016 10:31 GMT+0100+0100
- * Plugins: tips modal viewport svg imagemap ie6
- * Styles: core basic css3
- */
-/*global window: false, jQuery: false, console: false, define: false */
+/**
+* @package     Joomla Extensions
+* @subpackage  JONGman
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
-/* Cache window, document, undefined */
 (function( window, document, undefined ) {
 
 // Uses AMD or browser globals to create a jQuery plugin.

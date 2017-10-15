@@ -1,11 +1,17 @@
 <?php
 /**
- * @package      JONGman
- *
- * @author       Prasit Gebsaap
- * @copyright    Copyright (C) 2009-2013 Prasit Gebsaap. All rights reserved.
- * @license      http://www.gnu.org/licenses/gpl.html GNU/GPL, see LICENSE.txt
- */
+
+* @package     Joomla Extensions
+
+* @subpackage  JONGman
+
+*
+
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+
+*/
 
 defined('_JEXEC') or die();
 
@@ -23,8 +29,8 @@ class pkg_jongmanInstallerScript
     public function preflight($route, JAdapterInstance $adapter)
     {
         // Joomla version check
-        if (!version_compare(JVERSION, '3.0.0', 'ge')) {
-            $adapter->get('parent')->abort('Unsupported version! JONGman requires Joomla 3.0.0 or newer.');
+        if (!version_compare(JVERSION, '3.4.0', 'ge')) {
+            $adapter->get('parent')->abort('Unsupported version! JONGman requires Joomla 3.4.0 or newer.');
             return false;
         }
 

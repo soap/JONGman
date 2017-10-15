@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="library" method="upgrade" version="3.0">
+<extension type="library" method="upgrade" version="3.6">
     <name>JONGman</name>
     <libraryname>jongman</libraryname>
     <author>Prasit Gebsaap</author>

@@ -684,7 +684,7 @@ class RoboFile extends \Robo\Tasks
     }
 
     /**
-     * Update Version __DEPLOY_VERSION__ in Weblinks. (Set the version up in the jorobo.ini)
+     * Update Version __DEPLOY_VERSION__ in JONGman. (Set the version up in the jorobo.ini)
      *
      * @return  void
      */

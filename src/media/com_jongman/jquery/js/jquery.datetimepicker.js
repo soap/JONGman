@@ -1,8 +1,10 @@
-/**
- * @preserve jQuery DateTimePicker plugin v2.3.4
- * @homepage http://xdsoft.net/jqplugins/datetimepicker/
- * (c) 2014, Chupurnov Valeriy.
- */
+/**
+* @package     Joomla Extensions
+* @subpackage  JONGman
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 (function( $ ) {
 	'use strict';
 	var default_options  = {

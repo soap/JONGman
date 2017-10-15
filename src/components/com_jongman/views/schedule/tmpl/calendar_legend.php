@@ -1,3 +1,10 @@
+/**
+* @package     Joomla Extensions
+* @subpackage  JONGman
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 <div id="legend-container" class="row-fluid jm-container center">
 	<div class="legend rservable"><?php echo JText::_('COM_JONGMAN_RESERVABLE')?></div>
 	<div class="legend unreservable"><?php echo JText::_('COM_JONGMAN_UNRESERVABLE')?></div>

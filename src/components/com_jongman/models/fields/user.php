@@ -1,11 +1,11 @@
 <?php
-/**
- * Field to select a user id from a modal list.
- *
- * @package     JONGman
- * @subpackage  Frontend
- * @since       2.0
- */
+/**
+* @package     Joomla Extensions
+* @subpackage  JONGman
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 class JFormFieldUser extends JFormField
 {
 	/**
