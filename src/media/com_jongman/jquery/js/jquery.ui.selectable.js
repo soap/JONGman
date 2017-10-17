@@ -1,15 +1,9 @@
-/*
- * jQuery UI Selectable @VERSION
- *
- * Copyright (c) 2009 AUTHORS.txt (http://ui.jquery.com/about)
- * Dual licensed under the MIT (MIT-LICENSE.txt)
- * and GPL (GPL-LICENSE.txt) licenses.
- *
- * http://docs.jquery.com/UI/Selectables
- *
- * Depends:
- *      ui.core.js
- */
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 (function($) {
 
         $.widget('ui.selectable', $.extend({}, $.ui.mouse, {

@@ -1,34 +1,9 @@
-/*
- * jQuery UI dialogOptions v1.0
- * @desc extending jQuery Ui Dialog - Responsive, click outside, class handling
- * @author Jason Day
- *
- * Dependencies:
- *		jQuery: http://jquery.com/
- *		jQuery UI: http://jqueryui.com/
- *		Modernizr: http://modernizr.com/
- *
- * MIT license:
- *              http://www.opensource.org/licenses/mit-license.php
- *
- * (c) Jason Day 2014
- *
- * New Options:
- *  clickOut: true          // closes dialog when clicked outside
- *  responsive: true        // fluid width & height based on viewport
- *                          // true: always responsive
- *                          // false: never responsive
- *                          // "touch": only responsive on touch device
- *  scaleH: 0.8             // responsive scale height percentage, 0.8 = 80% of viewport
- *  scaleW: 0.8             // responsive scale width percentage, 0.8 = 80% of viewport
- *  showTitleBar: true      // false: hide titlebar
- *  showCloseButton: true   // false: hide close button
- *
- * Added functionality:
- *  add & remove dialogClass to .ui-widget-overlay for scoping styles
- *	patch for: http://bugs.jqueryui.com/ticket/4671
- *	recenter dialog - ajax loaded content
- */
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 (function($) {
 // add new options with default values
 $.ui.dialog.prototype.options.clickOut = true;

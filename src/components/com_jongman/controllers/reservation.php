@@ -1,4 +1,10 @@
 <?php
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 defined('_JEXEC') or die;
 jimport('jongman.controller.form');
@@ -138,7 +144,7 @@ class JongmanControllerReservation extends RFControllerForm {
 	{
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-        $input = JFactory::getApplication()->input;
+        $input = $this->input;
 		// Initialise variables.
 		$app   = JFactory::getApplication();
 		$lang  = JFactory::getLanguage();
@@ -365,7 +371,7 @@ class JongmanControllerReservation extends RFControllerForm {
 	protected function getRedirectToListAppend()
 	{
 		$append = parent::getRedirectToListAppend();
-		
+		/*
 		$app = JFactory::getApplication();
 		// from reservation view
 		$schedule_id = $app->input->getInt('schedule_id', null);
@@ -375,7 +381,7 @@ class JongmanControllerReservation extends RFControllerForm {
 		}
 		if (!empty($schedule_id)) {
 			$append .= '&layout=calendar&id='.$schedule_id;	
-		}
+		}*/
 		
 		return $append;
 		

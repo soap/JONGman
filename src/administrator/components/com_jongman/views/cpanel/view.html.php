@@ -1,9 +1,10 @@
 <?php
-/*
- * @package		JONGman
- * @copyright Copyright (C) Prasit Gebsaap www.joomlant.org
- * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License version 2 or later;
- */
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 defined('_JEXEC') or die();
 jimport( 'joomla.application.component.view' );
 jimport( 'joomla.html.pane' );
@@ -28,7 +29,7 @@ class JongmanViewCpanel extends JViewLegacy
 	protected function addToolbar() 
 	{
 		$canDo	= JongmanHelper::getActions();
-		JToolBarHelper::title( '&nbsp;', 'jongman.png' );
+		JToolBarHelper::title( 'JONGman', 'jongman.png' );
 		
 		if ($canDo->get('core.admin')) {
 			JToolBarHelper::preferences('com_jongman');

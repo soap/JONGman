@@ -1,4 +1,10 @@
 <?php
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 defined('_JEXEC') or die;
 jimport('jongman.controller.form');
 
@@ -28,7 +34,7 @@ class JongmanControllerInstance extends RFControllerForm
      *
      * @since 3.1
      */
-	public function edit($key=null, $urlVar=null)
+	public function edit($key=null, $urlVar='reference_number')
 	{
 		$this->setReturnPage('com_jongman.reservation.return_page');
 
@@ -36,7 +42,6 @@ class JongmanControllerInstance extends RFControllerForm
         $table = $model->getTable();
         $cid   = $this->input->post->get('cid', array(), 'array');
         $context = "$this->option.edit.$this->context";
-
         // Determine the name of the primary key for the data.
         if (empty($key))
         {

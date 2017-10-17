@@ -1,10 +1,9 @@
 <?php
-/**
- * @package      JONGman
-*
-* @author       Prasit Gebsaap (Soap)
-* @copyright    Copyright (C) 2006-2015 Prasit Gebsaap. All rights reserved.
-* @license      http://www.gnu.org/licenses/gpl.html GNU/GPL, see LICENSE.txt
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
 */
 
 defined('_JEXEC') or die;

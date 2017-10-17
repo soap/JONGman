@@ -1,4 +1,10 @@
 <?php
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 defined('_JEXEC');
 
 interface IResourceRepository
@@ -13,18 +19,18 @@ interface IResourceRepository
 
 	/**
 	 * @param int $resourceId
-	 * @return BookableResource
+	 * @return RFBookableResource
 	*/
 	public function loadById($resourceId);
 
 	/**
 	 * @param string $publicId
-	 * @return BookableResource
+	 * @return RFBookableResource
 	*/
 	public function loadByPublicId($publicId);
 
 	/**
-	 * @param BookableResource $resource
+	 * @param RFBookableResource $resource
 	 * @return int ID of created resource
 	*/
 	public function add(RFResourceBookable $resource);
@@ -35,7 +41,7 @@ interface IResourceRepository
 	public function update(RFResourceBookable $resource);
 
 	/**
-	 * @param BookableResource $resource
+	 * @param RFBookableResource $resource
 	*/
 	public function delete(RFResourceBookable $resource);
 
@@ -57,14 +63,14 @@ interface IResourceRepository
 
 	/**
 	 * @abstract
-	 * @return array|AccessoryDto[] all accessories
+	 * @return array|Accessoryto[] all accessories
 	*/
 	public function getAccessoryList();
 
 	/**
 	 * @param int|null $scheduleId
 	 * @param IResourceFilter|null $resourceFilter
-	 * @return ResourceGroupTree
+	 * @return RFResourceGroupTree
 	*/
 	public function getResourceGroups($scheduleId = null, $resourceFilter = null);
 
@@ -81,21 +87,21 @@ interface IResourceRepository
 	public function removeResourceFromGroup($resourceId, $groupId);
 
 	/**
-	 * @param ResourceGroup $group
-	 * @return ResourceGroup
+	 * @param RFResourceGroup $group
+	 * @return RFResourceGroup
 	*/
-	public function addResourceGroup(ResourceGroup $group);
+	public function addResourceGroup(RFResourceGroup $group);
 
 	/**
 	 * @param int $groupId
-	 * @return ResourceGroup
+	 * @return RFResourceGroup
 	*/
 	public function loadResourceGroup($groupId);
 
-	/**
-	 * @param ResourceGroup $group
+    /**
+     * @param RFResourceGroup $group
 	*/
-	public function updateResourceGroup(ResourceGroup $group);
+	public function updateResourceGroup(RFResourceGroup $group);
 
 	/**
 	 * @param $groupId
@@ -103,26 +109,26 @@ interface IResourceRepository
 	public function deleteResourceGroup($groupId);
 
 	/**
-	 * @return ResourceType[]|array
+	 * @return RFResourceType[]|array
 	*/
 	public function getResourceTypes();
 
 	/**
 	 * @param int $resourceTypeId
-	 * @return ResourceType
+	 * @return RFResourceType
 	*/
 	public function loadResourceType($resourceTypeId);
 
 	/**
-	 * @param ResourceType $type
+	 * @param RFResourceType $type
 	 * @return int
 	*/
-	public function addResourceType(ResourceType $type);
+	public function addResourceType(RFResourceType $type);
 
 	/**
-	 * @param ResourceType $type
+	 * @param RFResourceType $type
 	*/
-	public function updateResourceType(ResourceType $type);
+	public function updateResourceType(RFResourceType $type);
 
 	/**
 	 * @param int $id
@@ -130,7 +136,7 @@ interface IResourceRepository
 	public function removeResourceType($id);
 
 	/**
-	 * @return ResourceStatusReason[]
+	 * @return RFResourceStatusReason[]
 	*/
 	public function getStatusReasons();
 

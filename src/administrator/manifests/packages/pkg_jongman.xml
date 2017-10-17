@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="package" version="3.4" method="upgrade">
+    <name>JONGman - Reservation system for Joomla!</name>
+    <packagename>jongman</packagename>
+    <version>##VERSION##</version>
+    <url>http://www.joomlant.org</url>
+    <creationDate>##DATE##</creationDate>
+    <copyright>(C) 2009 - 2017 Prasit Gebsaap. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>support@joomlant.org</authorEmail>
+    <authorUrl>www.joomlant.org</authorUrl>
+    <author>Prasit Gebsaap</author>
+    <packager>JONGman</packager>
+    <packagerurl>http://www.joomlant.org</packagerurl>
+    <description></description>
+    <scriptfile>script.php</scriptfile>
+    <files>
+        <!-- It is important that the library and com_jongman are installed first -->
+        <file type="library" id="lib_jongman">lib_jongman.zip</file>
+        <!-- Install component -->
+        <file type="component" id="com_jongman">com_jongman.zip</file>
+        <!-- Install plugins -->
+        <file type="plugin" id="plg_extension_jongman" group="extension">plg_extension_jongman.zip</file>
+    </files>
+</extension>

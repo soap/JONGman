@@ -1,9 +1,10 @@
 <?php
-/**
- * @version		$Id: schedules.php 432 2012-01-09 12:32:27Z mrs.siam $
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
- */
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 defined('_JEXEC') or die;
 

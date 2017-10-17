@@ -1,14 +1,10 @@
-/*!
- * FullCalendar v1.6.2
- * Docs & License: http://arshaw.com/fullcalendar/
- * (c) 2013 Adam Shaw
- */
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
-/*
- * Use fullcalendar.css for basic styling.
- * For event drag & drop, requires jQuery UI draggable.
- * For event resizing, requires jQuery UI resizable.
- */
  
 (function($, undefined) {
 

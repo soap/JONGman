@@ -1,3 +1,9 @@
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 function Calendar(opts, reservations)
 {
 	var _options = opts;
@@ -48,28 +54,37 @@ function Calendar(opts, reservations)
 		});
 
 		jQuery('#calendarFilter').change(function() {
-			var day = getQueryStringValue('dd');
-			var month = getQueryStringValue('mm');
-			var year = getQueryStringValue('yy');
-			var type = getQueryStringValue('caltype');
-			var view = getQueryStringValue('view');
-			var itemId = getQueryStringValue('Itemid');
+			var queryString = jQuery(this).attr('ref').split('?')[1];
+            var queries = [];
+            jQuery.each(queryString.split('&'),function(c,q){
+                var i = q.split('=');
+                queries[i[0].toString()] = i[1].toString();
+            });
+            console.log(queries);
+
 			var scheduleId = '';
 			var resourceId = '';
-
+			if ((!('Itemid' in queries)) && ('view' in queries))
+			{
+                delete queries['view'];
+            }
 			if (jQuery(this).find(':selected').hasClass('schedule'))
 			{
-				scheduleId = '&sid=' + jQuery(this).val();
+				queries['sid'] = jQuery(this).val();
 			}
 			else
 			{
-				scheduleId = '&sid=' + jQuery(this).find(':selected').prevAll('.schedule').val();
-				resourceId = '&rid=' + jQuery(this).val();
+				queries['sid']= jQuery(this).find(':selected').prevAll('.schedule').val();
+				queries['rid'] = jQuery(this).val();
 			}
 
 			var url = [location.protocol, '//', location.host, location.pathname].join('');
-			url = url + '?option=com_jongman&view=' + view + '&Itemid=' + itemId+'&caltype=' + type + '&dd=' + day + '&mm=' + month + '&yy=' + year + scheduleId + resourceId;
-			
+
+            var esc = encodeURIComponent;
+            var query = Object.keys(queries).map(k => esc(k) + '=' + esc(queries[k])).join('&');
+
+			url = url + '?' + query;
+			//console.log(url);
 			window.location = url;
 		});
 

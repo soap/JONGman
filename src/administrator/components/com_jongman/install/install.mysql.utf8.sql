@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS `#__jongman_resources` (
   `asset_id` int(11) NOT NULL,
   `access` int(11) NOT NULL DEFAULT '0',
   `ordering` int(11) NOT NULL DEFAULT '0',
-  `published` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `published` tinyint(4) NOT NULL DEFAULT '1',
   `created_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created_by` int(11) NOT NULL DEFAULT '0',
   `modified_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',

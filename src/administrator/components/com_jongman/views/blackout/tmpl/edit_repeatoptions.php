@@ -1,4 +1,10 @@
 <?php
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 JText::script("COM_JONGMAN_DURATION_HOURS_1");
 JText::script("COM_JONGMAN_DURATION_HOURS_MORE");
 JText::script("COM_JONGMAN_DURATION_DAYS_1");

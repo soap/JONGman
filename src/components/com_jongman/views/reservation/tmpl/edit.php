@@ -1,4 +1,10 @@
 <?php
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 defined('_JEXEC') or die;
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidator'); // Joomla 3.4 upward
@@ -118,7 +124,9 @@ JHtml::_('behavior.keepalive');
 			</div>
 		</div>
 		<div class="span5 form-horizontal">
+            <?php if (empty($this->item->instance_id)) : ?>
 			<?php echo $this->loadTemplate('repeatoptions')?>
+            <?php endif?>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'description', JText::_('COM_JONGMAN_RESERVATION_DESCRIPTION', true)); ?>

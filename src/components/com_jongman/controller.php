@@ -1,9 +1,10 @@
 <?php
-/**
- * @version		$Id: controller.php 502 2012-12-24 13:15:38Z mrs.siam $
- * @copyright	Copyright (C) 2007 - 2014 Prasit Gebsaap. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
- */
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+*/
 // No direct access
 defined('_JEXEC') or die;
 
@@ -39,6 +40,7 @@ class JongmanController extends JControllerLegacy
 		
 		$this->_init();
 		$params = JComponentHelper::getParams('com_jongman');
+
 		$jongman_css = $params->get('jongman_css', '1');
 		if ($jongman_css) {
 			JHtml::_('stylesheet', 'com_jongman/jongman/jongman.css', false, true, false, false, false);
@@ -74,9 +76,8 @@ class JongmanController extends JControllerLegacy
 			JHtml::_('script', 'com_jongman/jongman/date-helper.js', false, true);
 			JHtml::_('script', 'com_jongman/jongman/recurrence.js', false, true);
 		}
+        parent::display($cachable, $urlparams);
 
-		parent::display($cachable, $urlparams);
-		
 		return $this;
 	}
 	
