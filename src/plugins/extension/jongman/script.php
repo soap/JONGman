@@ -1,11 +1,5 @@
 <?php
-/**
-* @package     Joomla Extensions
-* @subpackage  JONGman
-*
-* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
-* @license     GNU General Public License version 2 or later; see LICENSE.txt
-*/
+/**
   JONGman - Resource Reservation extension for Joomla
   ------------------------------------------------------------------------
   @Author    JONGman Team
@@ -13,6 +7,7 @@
   @Copyright Copyright (C) 2013 - 2015 JONGman Project. All Rights Reserved.
   @License   GNU General Public License version 3, or later
 ------------------------------------------------------------------------*/
+
 defined('_JEXEC') or die;
 
 /**
