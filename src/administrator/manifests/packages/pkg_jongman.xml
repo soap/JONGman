@@ -12,7 +12,7 @@
     <author>Prasit Gebsaap</author>
     <packager>JONGman</packager>
     <packagerurl>http://www.joomlant.org</packagerurl>
-    <description></description>
+    <description>JONGman Reservation System package for Joomla!</description>
     <scriptfile>script.php</scriptfile>
     <files>
         <!-- It is important that the library and com_jongman are installed first -->

@@ -1,11 +1,13 @@
 <?php
-/**
-* @package     JONGman Package
-*
-* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
-* @license     GNU General Public License version 2 or later; see LICENSE.txt
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
 */
 jimport('joomla.application.component.modellist');
+
+use \Joomla\CMS\Component\ComponentHelper;
 
 /**
  * reservation model.
@@ -407,16 +409,21 @@ class JongmanModelReservations extends JModelList
 	
 	protected function getItemIdsByWorkflowState($workflowStateId = null, $context='com_jongman.reservation' )
 	{
-		if ($workflowStateId === null) return array();
-		$dbo = JFactory::getDbo();
-		$query = $dbo->getQuery(true);
-		$query->select('item_id')
-		->from('#__wf_instances')
-		->where('workflow_state_id='.(int)$workflowStateId)
-		->where('context='.$dbo->quote($context));
-		$dbo->setQuery($query);
+		if ($workflowStateId === null) return [];
+
+		if  (ComponentHelper::isInstalled('com_workflow') && ComponentHelper::isEnabled('com_workflow')) {
+		    $dbo = JFactory::getDbo();
+		    $query = $dbo->getQuery(true);
+		    $query->select('item_id')
+		        ->from('#__wf_instances')
+		        ->where('workflow_state_id='.(int)$workflowStateId)
+		        ->where('context='.$dbo->quote($context));
+		    $dbo->setQuery($query);
 	
-		return $dbo->loadColumn();
+		    return $dbo->loadColumn();
+        }
+
+        return [];
 	}
 	
 }
