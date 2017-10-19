@@ -1,17 +1,14 @@
 <?php
-/**
-* @package     JONGman Package
-*
-* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
-* @license     GNU General Public License version 2 or later; see LICENSE.txt
-*/
- JONGman - Visualized Reservation System extension for Joomla
- ------------------------------------------------------------------------
- @Author    Prasit Gebsaap
- @Website   http://www.joomlant.com
- @Copyright Copyright (C) 2013 - 2015 Prasit Gebsaap. All Rights Reserved.
- @License   GNU General Public License version 3, or later
- ------------------------------------------------------------------------*/
+/**
+JONGman - Visualized Reservation System extension for Joomla
+------------------------------------------------------------------------
+@Author    Prasit Gebsaap
+@Website   http://www.joomlant.com
+@Copyright Copyright (C) 2013 - 2015 Prasit Gebsaap. All Rights Reserved.
+@License   GNU General Public License version 3, or later
+------------------------------------------------------------------------*/
+
+
 defined('_JEXEC') or die;
 
 class plgExtensionJongman extends JPlugin

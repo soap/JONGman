@@ -1,16 +1,10 @@
 <?php
-/**
-* @package     JONGman Package
-*
-* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
-* @license     GNU General Public License version 2 or later; see LICENSE.txt
-*/
-
-
-
-
-
-
+/**
+ * @package     JONGman Package
+ *
+ * @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ **/
 
 defined('_JEXEC') or die();
 
@@ -20,10 +14,10 @@ class pkg_jongmanInstallerScript
     /**
      * Called before any type of action
      *
-     * @param     string              $route      Which action is happening (install|uninstall|discover_install)
-     * @param     jadapterinstance    $adapter    The object responsible for running this script
-     *
-     * @return    boolean                         True on success
+     * @param   string              $route      Which action is happening (install|uninstall|discover_install)
+     * @param   jadapterinstance    $adapter    The object responsible for running this script
+     * @since   3.0
+     * @return  boolean                         True on success
      */
     public function preflight($route, JAdapterInstance $adapter)
     {
