@@ -1,89 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="3.5.0" method="upgrade">
-    <name>COM_JONGMAN</name>
-    <!-- The following elements are optional and free of formatting constraints -->
-    <creationDate>##DATE##</creationDate>
+<extension type="component" version="3.1" method="upgrade">
+    <name>com_jongman</name>
     <author>Prasit Gebsaap</author>
-    <authorEmail>prasit.gebsaap@gmail.com</authorEmail>
-    <authorUrl>http://www.joomlant.org</authorUrl>
-    <copyright>GPLv3</copyright>
-    <license></license>
-    <!--  The version string is recorded in the components table -->
-    <version>##VERSION##</version>
-    <!-- The description is optional and defaults to the name -->
+    <creationDate>October 2017</creationDate>
+    <copyright>(C) 2005 - 2017 Prasit Gebsaap. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>prasit.gebsaap@gmail.org</authorEmail>
+    <authorUrl>www.joomlant.org</authorUrl>
+    <version>4.0.0</version>
     <description>COM_JONGMAN_XML_DESCRIPTION</description>
-    <install folder="administrator/components/com_jongman"> <!-- Runs on install -->
-        <sql>
-            <file driver="mysql" charset="utf8">install/install.mysql.utf8.sql</file>
-        </sql>
-    </install>
-    <uninstall folder="administrator/components/com_jongman"> <!-- Runs on uninstall -->
-        <sql>
-            <file driver="mysql" charset="utf8">install/uninstall.mysql.utf8.sql</file>
-        </sql>
-    </uninstall>
-    <update folder="administrator/components/com_jongman">
-    	<!-- Runs on update/main version id in #__schemas table -->
-    	<!-- we have to provide files in this folder like 0.0.1.sql,0.0.2.sql -->
-        <schemas>
-            <schemapath type="mysql">install/schemas/mysql</schemapath>
-        </schemas>
-    </update>
-    <media destination="com_jongman" folder="media/com_jongman">
-    	<folder>administrator</folder>
-        <folder>bootstrap</folder>
-    	<folder>fullcalendar</folder>
-    	<folder>images</folder>
-    	<folder>jongman</folder>
-    	<folder>jquery</folder>
-    	<folder>mooGrowl</folder>
-    	<folder>select2</folder>
-    	<filename>index.html</filename>
-    </media>
-    <!-- Site Main File Copy Section -->
-    <files folder="components/com_jongman">
-        <filename>jongman.php</filename>
-        <filename>index.html</filename>
-        <filename>controller.php</filename>
-        <filename>router.php</filename>
-        <folder>controllers</folder>
-        <folder>helpers</folder>        
-        <folder>language</folder>
-        <folder>layouts</folder>
-        <folder>libraries</folder>
-        <folder>models</folder>
-        <folder>views</folder>
-    </files>
-    <scriptfile>script.php</scriptfile>
     <administration>
-        <!-- Administration Menu Section -->
-        <menu>COM_JONGMAN</menu>
-        <submenu>
-            <menu view="layouts">COM_JONGMAN_SUBMENU_LAYOUTS</menu>
-            <menu view="schedules">COM_JONGMAN_SUBMENU_SCHEDULES</menu>
-            <menu view="resources">COM_JONGMAN_SUBMENU_RESOURCES</menu>
-            <menu view="reservations">COM_JONGMAN_SUBMENU_RESERVATIONS</menu>
-            <menu view="blackouts">COM_JONGMAN_SUBMENU_BLACKOUTS</menu>
-            <menu view="quotas">COM_JONGMAN_SUBMENU_QUOTAS</menu>
-        </submenu>
-        <!-- Administration Main File Copy Section -->
-        <!-- Note the folder attribute: This attribute describes the folder
-            to copy FROM in the package to install therefore files copied
-            in this section are copied from /administrator/components/com_jongman/ in the package -->
-        <files folder="administrator/components/com_jongman">
-            <filename>access.xml</filename>
+        <menu img="class:jongman">com_jongman</menu>
+        <files folder="admin">
             <filename>config.xml</filename>
-            <filename>controller.php</filename>       
-            <filename>index.html</filename>                  			
+            <filename>controller.php</filename>
             <filename>jongman.php</filename>
             <folder>controllers</folder>
-            <folder>help</folder>
             <folder>helpers</folder>
-            <folder>install</folder>            
-            <folder>language</folder>
             <folder>models</folder>
-            <folder>tables</folder>
             <folder>views</folder>
-        </files>              
+        </files>
+        <languages folder="admin">
+            <language tag="en-GB">language/en-GB.com_jongman.ini</language>
+            <language tag="en-GB">language/en-GB.com_jongman.sys.ini</language>
+        </languages>
     </administration>
 </extension>
