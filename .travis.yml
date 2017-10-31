@@ -8,7 +8,6 @@ env:
 matrix:
   fast_finish: true
   include:
-      env: RUN_PHPCS="no"
     - php: 7.0
       sudo: true
       addons:
