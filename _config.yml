@@ -1,0 +1,8 @@
+title: JONGman
+description: JONGman is reservation system for Joomla! CMS
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-time-machine
+
+gems:
+  - jekyll-mentions
