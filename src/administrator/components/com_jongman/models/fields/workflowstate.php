@@ -1,11 +1,17 @@
 <?php
-/**
-* @package     JONGman Package
-*
-* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
-* @license     GNU General Public License version 2 or later; see LICENSE.txt
+/**
+
+* @package     JONGman Package
+
+*
+
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
+
 */
 defined('_JEXEC') or die;
+use \Joomla\CMS\Component\ComponentHelper;
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
@@ -23,6 +29,9 @@ class JFormFieldWorkflowState extends JFormFieldList
 	protected function getOptions()
 	{
 		$options = array();
+		if  (!ComponentHelper::isInstalled('com_workflow') || !ComponentHelper::isEnabled('com_workflow')) {
+			return $options;			
+		}
 		$user    = JFactory::getUser();
 		$db      = JFactory::getDbo();
 		$query   = $db->getQuery(true);

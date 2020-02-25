@@ -1,13 +1,14 @@
 <?php
-/**
-* @package     JONGman Package
-*
-* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
-* @license     GNU General Public License version 2 or later; see LICENSE.txt
+/**
+* @package     JONGman Package
+*
+* @copyright   Copyright (C) 2005 - 2017 Prasit Gebsaap, Inc. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
 */
+
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
-
+use \Joomla\CMS\Component\ComponentHelper;
 jimport('joomla.application.component.view');
 
 /**
@@ -54,7 +55,7 @@ class JongmanViewReservations extends JViewLegacy
 		$this->params     	= $this->state->get('params');
        	$this->owners		= $this->get('Owners');
        	
-       	$this->workflow   	= ($this->params->get('approvalSystem')==2);
+       	$this->workflow   	= $this->isWorkflowEnabled();
      
        	$this->filterForm    = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
@@ -125,9 +126,16 @@ class JongmanViewReservations extends JViewLegacy
 				JToolBarHelper::deleteList('', 'reservations.deletefuture','COM_JONGMAN_TOOLBAR_DELETE_FUTURE');
 			}
 		} 
-
 	}
-	
+	protected function isWorkflowEnabled() 
+	{
+		if  (ComponentHelper::isInstalled('com_workflow') && ComponentHelper::isEnabled('com_workflow')) {
+			if ($this->params->get('approvalSystem')==2) {
+				return true;
+			}				
+		}
+		return false;
+	}
 	protected function getWorkflowStates()
 	{
 		jimport('workflow.framework');

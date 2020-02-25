@@ -16,9 +16,9 @@
     "consolidation/robo": "~1",
     "joomla-projects/joomla-browser": "v3.6.5.1",
     "joomla-projects/selenium-server-standalone": "v3.1.0",
-    "joomla-projects/robo": "dev-master",
+    "joomla-projects/joomla-testing-robo": "dev-master",
     "joomla-projects/jorobo": "~0.6",
     "fzaninotto/faker": "^1.6",
-    "Behat/Gherkin": "^4.4.1"
+    "behat/gherkin": "^4.4.1"
   }
 }
