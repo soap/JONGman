@@ -11,7 +11,14 @@
   "require"    : {
     "php": ">=5.5.33"
   },
+  "repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/joomla/joomla-cms.git"
+    }
+  ],
   "require-dev": {
+    "joomla/joomla-cms": ">=3.9-stable",
     "codeception/codeception": "^2.2",
     "consolidation/robo": "~1",
     "joomla-projects/joomla-browser": "v3.6.5.1",
